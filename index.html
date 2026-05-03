@@ -6,976 +6,540 @@
   <title>Devaharsha — Embedded Firmware Engineer</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
-    /* ─── RESET & BASE ─────────────────────────────────────────── */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body {
-      background: #0F172A;
-      color: #E2E8F0;
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+    body { background: #0F172A; color: #E2E8F0; font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
     :root {
-      --blue: #3B82F6;
-      --blue-dim: #1D4ED8;
-      --blue-glow: rgba(59, 130, 246, 0.15);
-      --surface: #1E293B;
-      --surface2: #263244;
-      --border: rgba(148, 163, 184, 0.12);
-      --muted: #64748B;
-      --text: #E2E8F0;
-      --mono: 'IBM Plex Mono', monospace;
+      --blue: #3B82F6; --blue-dim: #1D4ED8; --blue-glow: rgba(59,130,246,0.15);
+      --surface: #1E293B; --surface2: #263244; --border: rgba(148,163,184,0.12);
+      --muted: #64748B; --text: #E2E8F0; --mono: 'IBM Plex Mono', monospace;
     }
 
-    /* ─── NAVIGATION ───────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1rem 2.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.1rem;
-      letter-spacing: -0.02em;
-      color: #fff;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .nav-links { display: flex; gap: 2rem; }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-family: var(--mono);
-      transition: color 0.2s;
-      cursor: pointer;
-    }
-    .nav-links a:hover { color: var(--blue); }
-    .nav-links a.active { color: var(--blue); }
+    /* NAV */
+    nav { position: fixed; top:0; left:0; right:0; z-index:100; padding:1rem 2.5rem; display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.88); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:#fff; visibility:hidden; pointer-events:none; }
+    .nav-links { display:flex; gap:2rem; }
+    .nav-links a { color:var(--muted); text-decoration:none; font-size:0.85rem; font-family:var(--mono); transition:color 0.2s; cursor:pointer; }
+    .nav-links a:hover { color:var(--blue); }
+    .nav-links a.active { color:var(--blue); }
 
-    /* ─── PAGE SYSTEM ──────────────────────────────────────────── */
-    .page { display: none; }
-    .page.active { display: block; }
+    /* PAGES */
+    .page { display:none; }
+    .page.active { display:block; }
 
-    /* ─── EMPTY PAGE PLACEHOLDER ───────────────────────────────── */
-    .empty-page {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 1rem;
-      padding-top: 80px;
-    }
-    .empty-label {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--blue);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-    .empty-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 2rem;
-      color: #fff;
-      letter-spacing: -0.02em;
-    }
-    .empty-sub {
-      font-size: 0.9rem;
-      color: var(--muted);
-      font-family: var(--mono);
-      text-align: center;
-      max-width: 420px;
-      line-height: 1.7;
-    }
+    /* HOME */
+    .empty-page { min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1rem; padding-top:80px; }
+    .empty-label { font-family:var(--mono); font-size:0.75rem; color:var(--blue); letter-spacing:0.15em; text-transform:uppercase; }
+    .empty-title { font-family:'Syne',sans-serif; font-weight:700; font-size:2rem; color:#fff; letter-spacing:-0.02em; }
+    .empty-sub { font-size:0.9rem; color:var(--muted); font-family:var(--mono); text-align:center; max-width:420px; line-height:1.7; }
 
-    /* ─── HERO ─────────────────────────────────────────────────── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 8rem 2.5rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute;
-      top: -200px; right: -200px;
-      width: 700px; height: 700px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    .hero-tag {
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: var(--blue);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .hero-tag::before {
-      content: '';
-      display: inline-block;
-      width: 24px; height: 1px;
-      background: var(--blue);
-    }
-    .hero-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      color: #fff;
-      margin-bottom: 1.5rem;
-    }
-    .hero-title em { color: var(--blue); font-style: normal; }
-    .hero-sub {
-      font-size: 1rem;
-      line-height: 1.75;
-      color: var(--muted);
-      max-width: 480px;
-      margin-bottom: 2.5rem;
-      font-weight: 300;
-    }
-    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.75rem;
-      background: var(--blue);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .btn-primary:hover { background: #2563EB; transform: translateY(-2px) scale(1.03); }
-    .btn-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.75rem;
-      background: transparent;
-      color: #E2E8F0;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+    /* HERO */
+    #hero { min-height:100vh; display:flex; align-items:center; padding:8rem 2.5rem 4rem; position:relative; overflow:hidden; }
+    .hero-bg { position:absolute; top:-200px; right:-200px; width:700px; height:700px; border-radius:50%; background:radial-gradient(circle,rgba(59,130,246,0.06) 0%,transparent 65%); pointer-events:none; }
+    .hero-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; max-width:1200px; margin:0 auto; width:100%; }
+    .hero-tag { font-family:var(--mono); font-size:0.75rem; color:var(--blue); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:1.5rem; display:flex; align-items:center; gap:0.75rem; }
+    .hero-tag::before { content:''; display:inline-block; width:24px; height:1px; background:var(--blue); }
+    .hero-title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(2rem,4vw,3.2rem); line-height:1.1; letter-spacing:-0.03em; color:#fff; margin-bottom:1.5rem; }
+    .hero-title em { color:var(--blue); font-style:normal; }
+    .hero-sub { font-size:1rem; line-height:1.75; color:var(--muted); max-width:480px; margin-bottom:2.5rem; font-weight:300; }
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; }
+    .btn-primary { display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1.75rem; background:var(--blue); color:#fff; border:none; border-radius:6px; font-size:0.9rem; font-weight:500; cursor:pointer; text-decoration:none; transition:background 0.2s,transform 0.2s; font-family:'DM Sans',sans-serif; }
+    .btn-primary:hover { background:#2563EB; transform:translateY(-2px); }
+    .btn-ghost { display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1.75rem; background:transparent; color:#E2E8F0; border:1px solid var(--border); border-radius:6px; font-size:0.9rem; font-weight:500; cursor:pointer; text-decoration:none; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+    .btn-ghost:hover { border-color:var(--blue); color:var(--blue); }
 
-    /* ─── ABOUT ────────────────────────────────────────────────── */
-    #about {
-      padding: 6rem 2.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .section-label {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--blue);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .section-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      letter-spacing: -0.02em;
-      color: #fff;
-      margin-bottom: 2rem;
-    }
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
-    }
-    .about-text {
-      font-size: 1.05rem;
-      line-height: 1.85;
-      color: #94A3B8;
-      font-weight: 300;
-    }
-    .about-text strong { color: #E2E8F0; font-weight: 500; }
-    .why-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .why-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: var(--blue);
-    }
-    .why-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #fff;
-      margin-bottom: 1rem;
-      padding-left: 0.75rem;
-    }
-    .why-text {
-      font-size: 0.9rem;
-      line-height: 1.8;
-      color: #94A3B8;
-      font-weight: 300;
-    }
+    /* ABOUT */
+    #about { padding:6rem 2.5rem; max-width:1200px; margin:0 auto; }
+    .section-label { font-family:var(--mono); font-size:0.7rem; color:var(--blue); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:1rem; }
+    .section-title { font-family:'Syne',sans-serif; font-weight:700; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:-0.02em; color:#fff; margin-bottom:2rem; }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:start; }
+    .about-text { font-size:1.05rem; line-height:1.85; color:#94A3B8; font-weight:300; }
+    .about-text strong { color:#E2E8F0; font-weight:500; }
+    .why-card { background:var(--surface2); border:1px solid var(--border); border-radius:14px; padding:2rem; position:relative; overflow:hidden; }
+    .why-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--blue); }
+    .why-title { font-family:'Syne',sans-serif; font-weight:700; font-size:1.1rem; color:#fff; margin-bottom:1rem; padding-left:0.75rem; }
+    .why-text { font-size:0.9rem; line-height:1.8; color:#94A3B8; font-weight:300; }
 
-    /* ─── JOURNEY ──────────────────────────────────────────────── */
-    #journey-section {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 8rem 2.5rem 6rem;
-    }
-    .journey-inner { max-width: 1200px; margin: 0 auto; }
-    .node-selector {
-      display: flex;
-      gap: 0;
-      margin-bottom: 3rem;
-      background: #0F172A;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 4px;
-    }
-    .node-btn {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      background: transparent;
-      border: none;
-      border-radius: 7px;
-      color: var(--muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.25s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-    .node-btn .step-num {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-    .node-btn.active { background: var(--blue); color: #fff; }
-    .node-btn.active .step-num { color: rgba(255,255,255,0.7); }
-    .node-btn:hover:not(.active) { background: var(--surface2); color: #E2E8F0; }
-    .journey-content {
-      display: grid;
-      grid-template-columns: 1fr 1.4fr;
-      gap: 3rem;
-      align-items: start;
-    }
-    .node-meta { display: flex; flex-direction: column; gap: 1rem; }
-    .node-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 0.75rem;
-      background: var(--blue-glow);
-      border: 1px solid rgba(59,130,246,0.3);
-      border-radius: 5px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--blue);
-      letter-spacing: 0.05em;
-      width: fit-content;
-    }
-    .node-heading {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1.8rem;
-      letter-spacing: -0.02em;
-      color: #fff;
-    }
-    .node-desc {
-      font-size: 0.95rem;
-      line-height: 1.75;
-      color: #94A3B8;
-      font-weight: 300;
-    }
-    .node-connector {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1rem;
-      background: #0F172A;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-top: 0.5rem;
-    }
-    .connector-icon {
-      width: 32px; height: 32px;
-      border-radius: 6px;
-      background: var(--blue-glow);
-      border: 1px solid rgba(59,130,246,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-    }
-    .connector-text { font-size: 0.82rem; color: #94A3B8; line-height: 1.55; }
-    .connector-text strong { color: var(--blue); font-weight: 500; }
-    .node-cards { display: flex; flex-direction: column; gap: 1rem; }
-    .info-card {
-      background: #0F172A;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      text-decoration: none;
-      display: block;
-      color: inherit;
-    }
-    .info-card-label {
-      font-family: var(--mono);
-      font-size: 0.65rem;
-      color: var(--blue);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-    .info-card-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      font-size: 1rem;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    .info-card-text {
-      font-size: 0.85rem;
-      line-height: 1.7;
-      color: #94A3B8;
-    }
-    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
-    .tag {
-      padding: 0.25rem 0.6rem;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--muted);
-    }
+    /* JOURNEY */
+    #journey-section { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:8rem 2.5rem 6rem; }
+    .journey-inner { max-width:1200px; margin:0 auto; }
+    .node-selector { display:flex; margin-bottom:3rem; background:#0F172A; border:1px solid var(--border); border-radius:10px; padding:4px; }
+    .node-btn { flex:1; padding:0.75rem 1rem; background:transparent; border:none; border-radius:7px; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:500; cursor:pointer; transition:all 0.25s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .node-btn .step-num { font-family:var(--mono); font-size:0.65rem; color:var(--muted); letter-spacing:0.05em; }
+    .node-btn.active { background:var(--blue); color:#fff; }
+    .node-btn.active .step-num { color:rgba(255,255,255,0.7); }
+    .node-btn:hover:not(.active) { background:var(--surface2); color:#E2E8F0; }
+    .journey-content { display:grid; grid-template-columns:1fr 1.4fr; gap:3rem; align-items:start; }
+    .node-meta { display:flex; flex-direction:column; gap:1rem; }
+    .node-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.35rem 0.75rem; background:var(--blue-glow); border:1px solid rgba(59,130,246,0.3); border-radius:5px; font-family:var(--mono); font-size:0.7rem; color:var(--blue); letter-spacing:0.05em; width:fit-content; }
+    .node-heading { font-family:'Syne',sans-serif; font-weight:700; font-size:1.8rem; letter-spacing:-0.02em; color:#fff; }
+    .node-desc { font-size:0.95rem; line-height:1.75; color:#94A3B8; font-weight:300; }
+    .node-connector { display:flex; align-items:center; gap:0.75rem; padding:1rem; background:#0F172A; border:1px solid var(--border); border-radius:8px; margin-top:0.5rem; }
+    .connector-icon { width:32px; height:32px; border-radius:6px; background:var(--blue-glow); border:1px solid rgba(59,130,246,0.3); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .connector-text { font-size:0.82rem; color:#94A3B8; line-height:1.55; }
+    .connector-text strong { color:var(--blue); font-weight:500; }
+    .node-cards { display:flex; flex-direction:column; gap:1rem; }
+    .info-card { background:#0F172A; border:1px solid var(--border); border-radius:12px; padding:1.25rem 1.5rem; }
+    .info-card-label { font-family:var(--mono); font-size:0.65rem; color:var(--blue); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.5rem; }
+    .info-card-title { font-family:'Syne',sans-serif; font-weight:600; font-size:1rem; color:#fff; margin-bottom:0.5rem; }
+    .info-card-text { font-size:0.85rem; line-height:1.7; color:#94A3B8; }
+    .tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.75rem; }
+    .tag { padding:0.25rem 0.6rem; background:var(--surface2); border:1px solid var(--border); border-radius:4px; font-family:var(--mono); font-size:0.68rem; color:var(--muted); }
 
-    /* ─── BLOG READER ──────────────────────────────────────────── */
-    .blog-reader {
-      padding-top: 80px;
-    }
-    .blog-inner {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 3rem 2.5rem 5rem;
-    }
-    .back-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      cursor: pointer;
-      margin-bottom: 2.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0;
-      letter-spacing: 0.05em;
-    }
-    .blog-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      line-height: 1.15;
-      letter-spacing: -0.03em;
-      color: #fff;
-      margin-bottom: 1rem;
-    }
-    .blog-subtitle {
-      color: #64748B;
-      font-size: 1rem;
-      line-height: 1.75;
-      font-weight: 300;
-      margin-bottom: 1rem;
-    }
-    .blog-divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 2rem 0 3rem;
-    }
-    .blog-section { margin-bottom: 2.5rem; }
-    .blog-h2 {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 1.15rem;
-      color: #fff;
-      margin-bottom: 1rem;
-    }
-    .blog-p {
-      color: #CBD5E1;
-      line-height: 1.85;
-      font-size: 0.975rem;
-      margin-bottom: 1rem;
-      white-space: pre-line;
-    }
-    .blog-quote {
-      border-left: 3px solid var(--blue);
-      padding-left: 1rem;
-      margin: 1.5rem 0;
-      color: #94A3B8;
-      font-size: 0.95rem;
-      line-height: 1.75;
-      white-space: pre-line;
-    }
-    .blog-code {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.25rem;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: #7DD3FC;
-      margin: 1.5rem 0;
-      letter-spacing: 0.02em;
-    }
-    .blog-footer-note {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      font-family: var(--mono);
-      font-size: 0.75rem;
-      color: #64748B;
-    }
+    /* BLOG */
+    .blog-reader { padding-top:80px; }
+    .blog-inner { max-width:760px; margin:0 auto; padding:3rem 2.5rem 5rem; }
+    .back-btn { background:none; border:none; color:var(--muted); font-family:var(--mono); font-size:0.75rem; cursor:pointer; margin-bottom:2.5rem; display:flex; align-items:center; gap:0.4rem; padding:0; letter-spacing:0.05em; }
+    .back-btn:hover { color:var(--blue); }
+    .blog-title { font-family:'Syne',sans-serif; font-weight:800; font-size:clamp(1.6rem,3vw,2.4rem); line-height:1.15; letter-spacing:-0.03em; color:#fff; margin-bottom:1rem; }
+    .blog-subtitle { color:#64748B; font-size:1rem; line-height:1.75; font-weight:300; margin-bottom:1rem; }
+    .blog-divider { border:none; border-top:1px solid var(--border); margin:2rem 0 3rem; }
+    .blog-section { margin-bottom:2.5rem; }
+    .blog-h2 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.15rem; color:#fff; margin-bottom:1rem; }
+    .blog-p { color:#CBD5E1; line-height:1.85; font-size:0.975rem; margin-bottom:1rem; white-space:pre-line; }
+    .blog-quote { border-left:3px solid var(--blue); padding-left:1rem; margin:1.5rem 0; color:#94A3B8; font-size:0.95rem; line-height:1.75; white-space:pre-line; }
+    .blog-code { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1rem 1.25rem; font-family:var(--mono); font-size:0.85rem; color:#7DD3FC; margin:1.5rem 0; letter-spacing:0.02em; }
+    .blog-footer-note { margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border); font-family:var(--mono); font-size:0.75rem; color:#64748B; }
 
-    /* ─── BLOGS LISTING ────────────────────────────────────────── */
-    .blogs-inner {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 3rem 2.5rem;
-    }
-    .blogs-desc {
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      margin-bottom: 2.5rem;
-    }
-    .blog-card {
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.2s;
-      margin-bottom: 1.25rem;
-    }
-    .blog-card:hover {
-      border-color: var(--blue) !important;
-      transform: translateY(-2px);
-    }
+    /* BLOGS LISTING */
+    .blogs-inner { max-width:760px; margin:0 auto; padding:3rem 2.5rem; }
+    .blogs-desc { color:var(--muted); font-family:var(--mono); font-size:0.8rem; margin-bottom:2.5rem; }
+    .blog-card { cursor:pointer; transition:border-color 0.2s,transform 0.2s; margin-bottom:1.25rem; }
+    .blog-card:hover { border-color:var(--blue) !important; transform:translateY(-2px); }
 
-    /* ─── FOOTER ───────────────────────────────────────────────── */
-    footer {
-      padding: 3rem 2.5rem;
-      text-align: center;
-      border-top: 1px solid var(--border);
-      background: #0A1020;
-    }
-    .footer-text { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+    /* CONTACT CARDS */
+    .contact-link { display:block; text-decoration:none; color:inherit; cursor:pointer; transition:border-color 0.2s,transform 0.2s; }
+    .contact-link:hover { border-color:var(--blue) !important; transform:translateY(-2px); }
 
-    /* ─── ANIMATIONS ───────────────────────────────────────────── */
-    .fade-in { animation: fadeIn 0.35s ease forwards; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    /* FOOTER */
+    footer { padding:3rem 2.5rem; text-align:center; border-top:1px solid var(--border); background:#0A1020; }
+    .footer-text { font-family:var(--mono); font-size:0.75rem; color:var(--muted); }
 
-    /* ─── RESPONSIVE ───────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      .hero-grid       { grid-template-columns: 1fr; }
-      .about-grid      { grid-template-columns: 1fr; gap: 2.5rem; }
-      .journey-content { grid-template-columns: 1fr; }
-      .node-selector   { flex-wrap: wrap; }
-      .node-btn        { min-width: 45%; }
+    /* ANIMATION */
+    .fade-in { animation:fadeIn 0.35s ease forwards; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .hero-grid,.about-grid,.journey-content { grid-template-columns:1fr; }
+      .node-selector { flex-wrap:wrap; }
+      .node-btn { min-width:45%; }
+      .about-grid { gap:2.5rem; }
     }
-    @media (max-width: 480px) {
-      nav { padding: 1rem 1.25rem; }
-      .nav-links { gap: 1.25rem; }
+    @media(max-width:480px){
+      nav { padding:1rem 1.25rem; }
+      .nav-links { gap:1.25rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ══ NAVIGATION ══ -->
-  <nav>
-    <div class="nav-logo" aria-hidden="true">Devaharsha.</div>
-    <div class="nav-links">
-      <a id="nav-home"    onclick="showPage('home')">Home</a>
-      <a id="nav-blogs"   onclick="showPage('blogs')">Exploration</a>
-      <a id="nav-about"   onclick="showPage('about')">About</a>
-      <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" aria-hidden="true">Devaharsha.</div>
+  <div class="nav-links">
+    <a id="nav-home"    onclick="showPage('home')">Home</a>
+    <a id="nav-blogs"   onclick="showPage('blogs')">Exploration</a>
+    <a id="nav-about"   onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<!-- ══ HOME ══ -->
+<div id="page-home" class="page active">
+  <div class="empty-page">
+    <div class="empty-title">From Signal to Intelligence</div>
+    <div class="empty-sub">
+      Systems don't just run — they evolve.<br>
+      I explore how they begin, adapt, and think.
     </div>
-  </nav>
-
-  <!-- ══════════════════════════════════════════
-       PAGE: HOME
-  ══════════════════════════════════════════ -->
-  <div id="page-home" class="page">
-    <div class="empty-page">
-      <div class="empty-title">From Signal to Intelligence</div>
-      <div class="empty-sub">
-        Systems don't just run — they evolve.<br>
-        I explore how they begin, adapt, and think.
-      </div>
-
-      <div style="margin-top:3.5rem; text-align:center;">
-        <div style="font-family:var(--mono); font-size:0.65rem; color:var(--blue); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.6rem;">
-          // also explore
-        </div>
-        <div style="font-size:0.8rem; color:var(--muted); font-family:'Syne',sans-serif; font-weight:600; margin-bottom:1rem;">
-          Also Explore
-        </div>
-        <div
-          style="display:inline-block; opacity:0.65; border:1px solid var(--border); border-radius:8px; padding:0.85rem 1.5rem; text-align:left; min-width:200px; cursor:default; transition:opacity 0.2s;"
-          onmouseover="this.style.opacity='0.85'"
-          onmouseout="this.style.opacity='0.65'"
-        >
-          <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:#E2E8F0; margin-bottom:0.3rem;">
-            PravahaPath
-          </div>
-          <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); letter-spacing:0.08em;">
-            In progress
-          </div>
-        </div>
+    <div style="margin-top:3.5rem;text-align:center;">
+      <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.6rem;">// also explore</div>
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem;">Also Explore</div>
+      <div style="display:inline-block;opacity:0.65;border:1px solid var(--border);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:opacity 0.2s;"
+           onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.65'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#E2E8F0;margin-bottom:0.3rem;">System01</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.08em;">In progress</div>
       </div>
     </div>
-    <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
   </div>
+  <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
+</div>
 
-  <!-- ══════════════════════════════════════════
-       PAGE: EXPLORATION (BLOGS)
-  ══════════════════════════════════════════ -->
-  <div id="page-blogs" class="page">
-    <div style="padding-top:80px; min-height:100vh;">
-      <div class="blogs-inner">
-        <div class="section-label">// blogs</div>
-        <h2 class="section-title">Articles &amp; Write-ups</h2>
-        <p class="blogs-desc">Exploring how systems evolve from hardware to intelligence.</p>
-        <div id="blogList"></div>
+<!-- ══ EXPLORATION (BLOGS) ══ -->
+<div id="page-blogs" class="page">
+  <div style="padding-top:80px;min-height:100vh;">
+    <div class="blogs-inner">
+      <div class="section-label">// exploration</div>
+      <h2 class="section-title">Articles &amp; Write-ups</h2>
+      <p class="blogs-desc">Exploring how systems evolve from hardware to intelligence.</p>
+      <div id="blogList"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
+</div>
+
+<!-- ══ BLOG POST READER ══ -->
+<div id="page-blog-post" class="page">
+  <div class="blog-reader">
+    <div class="blog-inner" id="blogContent"></div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<div id="page-about" class="page">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <h1 class="hero-title">Building <em>Intelligent Systems</em><br>from Silicon to Edge AI</h1>
+        <p class="hero-sub">Embedded Firmware Engineer focused on real-time systems, hardware-software integration, and Edge AI. Engineering from the ground up — one register at a time.</p>
+        <div class="hero-btns">
+          <a href="https://drive.google.com/file/d/1mdjCw3FLykr4mYYbYynORgVibzIR8KQx/view" target="_blank" rel="noopener noreferrer" class="btn-primary">View Resume &rarr;</a>
+          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey &darr;</button>
+        </div>
       </div>
     </div>
-    <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       PAGE: BLOG POST READER
-  ══════════════════════════════════════════ -->
-  <div id="page-blog-post" class="page">
-    <div class="blog-reader">
-      <div class="blog-inner" id="blogContent"></div>
+  </section>
+  <section id="about">
+    <div class="section-label">// about</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
+        <p class="about-text">I work on <strong>low-level systems</strong> where hardware meets software, building reliable real-time embedded systems and moving toward intelligent edge systems.<br><br>My path spans electronics fundamentals, embedded firmware, and artificial intelligence — a deliberate arc from understanding silicon to making it think.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Why This Site Exists</div>
+        <p class="why-text">This is not just a portfolio. It is a space where I explore, document, and simplify how systems evolve from hardware to intelligent behavior.<br><br>Every section is a layer of the stack — from the transistor to the trained model. The goal is to make the journey from silicon to edge AI legible.</p>
+      </div>
     </div>
-    <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
-  </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
+</div>
 
-  <!-- ══════════════════════════════════════════
-       PAGE: ABOUT  (default)
-  ══════════════════════════════════════════ -->
-  <div id="page-about" class="page active">
-
-    <section id="hero">
-      <div class="hero-bg"></div>
-      <div class="hero-grid">
-        <div>
-          <div class="hero-tag">Embedded Firmware Engineer</div>
-          <h1 class="hero-title">
-            Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
-          </h1>
-          <p class="hero-sub">
-            Embedded Firmware Engineer focused on real-time systems,
-            hardware-software integration, and Edge AI.
-            Engineering from the ground up — one register at a time.
-          </p>
-          <div class="hero-btns">
-            <a href="https://drive.google.com/file/d/1mdjCw3FLykr4mYYbYynORgVibzIR8KQx/view"
-               target="_blank" rel="noopener noreferrer"
-               class="btn-primary">View Resume &rarr;</a>
-            <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey &darr;</button>
-          </div>
-        </div>
+<!-- ══ JOURNEY ══ -->
+<div id="page-journey" class="page">
+  <section id="journey-section">
+    <div class="journey-inner">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title">Interactive Career Journey</h2>
+      <div class="node-selector" id="nodeSelector">
+        <button class="node-btn active" onclick="setNode(0)"><span class="step-num">01</span>Foundations</button>
+        <button class="node-btn" onclick="setNode(1)"><span class="step-num">02</span>Systems</button>
+        <button class="node-btn" onclick="setNode(2)"><span class="step-num">03</span>Intelligence</button>
+        <button class="node-btn" onclick="setNode(3)"><span class="step-num">04</span>Current Focus</button>
       </div>
-    </section>
+      <div class="journey-content" id="journeyContent"></div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
+</div>
 
-    <section id="about">
-      <div class="section-label">// about</div>
-      <div class="about-grid">
-        <div>
-          <h2 class="section-title">Where Hardware Meets Intelligence</h2>
-          <p class="about-text">
-            I work on <strong>low-level systems</strong> where hardware meets software,
-            building reliable real-time embedded systems and moving toward
-            intelligent edge systems.<br><br>
-            My path spans electronics fundamentals, embedded firmware, and
-            artificial intelligence — a deliberate arc from understanding
-            silicon to making it think.
-          </p>
-        </div>
-        <div class="why-card">
-          <div class="why-title">Why This Site Exists</div>
-          <p class="why-text">
-            This is not just a portfolio. It is a space where I explore,
-            document, and simplify how systems evolve from hardware to
-            intelligent behavior.<br><br>
-            Every section is a layer of the stack — from the transistor to
-            the trained model. The goal is to make the journey from silicon
-            to edge AI legible.
-          </p>
-        </div>
-      </div>
-    </section>
+<!-- ══ CONTACT ══ -->
+<div id="page-contact" class="page">
+  <section class="empty-page">
+    <div class="empty-label">// contact</div>
+    <div class="empty-title">Let's Connect</div>
+    <div class="empty-sub">If you're working on systems, intelligence, or something in between — I'd like to hear about it.</div>
+    <div style="margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
+      <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer"
+         class="info-card contact-link" style="min-width:140px;text-align:center;">
+        LinkedIn<br><span style="color:#64748B;font-size:0.8rem;">View profile</span>
+      </a>
+      <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer"
+         class="info-card contact-link" style="min-width:140px;text-align:center;">
+        GitHub<br><span style="color:#64748B;font-size:0.8rem;">Explore work</span>
+      </a>
+      <a href="mailto:meesarapud@gmail.com"
+         class="info-card contact-link" style="min-width:140px;text-align:center;">
+        Email<br><span style="color:#64748B;font-size:0.8rem;">Send message</span>
+      </a>
+    </div>
+    <div style="margin-top:2rem;font-size:0.8rem;color:#64748B;">Open to conversations, ideas, and interesting problems.</div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
+</div>
 
-    <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
-  </div>
+<script>
+/* ═══ DATA ═══════════════════════════════════════════════════════════════ */
 
-  <!-- ══════════════════════════════════════════
-       PAGE: JOURNEY
-  ══════════════════════════════════════════ -->
-  <div id="page-journey" class="page">
-    <section id="journey-section">
-      <div class="journey-inner">
-        <div class="section-label">// career_journey</div>
-        <h2 class="section-title">Interactive Career Journey</h2>
-        <div class="node-selector" id="nodeSelector">
-          <button class="node-btn active" onclick="setNode(0)"><span class="step-num">01</span>Foundations</button>
-          <button class="node-btn" onclick="setNode(1)"><span class="step-num">02</span>Systems</button>
-          <button class="node-btn" onclick="setNode(2)"><span class="step-num">03</span>Intelligence</button>
-          <button class="node-btn" onclick="setNode(3)"><span class="step-num">04</span>Current Focus</button>
-        </div>
-        <div class="journey-content" id="journeyContent"></div>
-      </div>
-    </section>
-    <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
-  </div>
+var nodes = [
+  {
+    badge:"BTech · ECE", heading:"Foundations",
+    desc:"Where it all began — understanding the physical layer of computation. Circuits, signals, and systems gave me a mental model of how information moves through hardware.",
+    connector:{icon:"⬡",label:"Connects to Systems",text:"Understanding circuits directly enables writing firmware that talks to peripherals at the register level."},
+    cards:[
+      {label:"What it is",title:"BTech in Electronics and Communication",text:"Undergraduate foundation covering analog & digital circuits, signal processing, microprocessors, and communication systems.",tags:["Circuits","Signal Processing","Microprocessors","VLSI"]},
+      {label:"What I did",title:"Core Engineering Fundamentals",text:"Studied semiconductor physics, digital logic design, and embedded microcontrollers. Built prototypes using 8-bit MCUs.",tags:["8051","Logic Design","PCB Basics"]},
+      {label:"What I learned",title:"The Hardware Mental Model",text:"Every software abstraction sits on physical reality. Understanding silicon teaches you why timing, power, and noise are first-class engineering problems.",tags:[]}
+    ]
+  },
+  {
+    badge:"MTech · Embedded Systems", heading:"Systems",
+    desc:"Moving deeper into the machine — this phase was about making hardware do reliable, real-world work. Writing code close to metal, in real-time, with real constraints.",
+    connector:{icon:"⬡",label:"Connects to Intelligence",text:"Real-time systems expertise is the foundation for deploying ML inference on constrained embedded targets."},
+    cards:[
+      {label:"What it is",title:"MTech in Embedded Systems",text:"Postgraduate specialisation in RTOS, MCU peripherals, power management, and hardware-software co-design.",tags:["RTOS","Bare-metal C","FreeRTOS","CAN / I2C / SPI"]},
+      {label:"What I did",title:"Post-Silicon Validation & Firmware Engineering",text:"Validated silicon post-fabrication, wrote production firmware for MCUs, and debugged hardware with oscilloscopes and logic analysers.",tags:["JTAG","Firmware","Validation","Debugging"]},
+      {label:"What I learned",title:"Reliability is a Design Choice",text:"Real-time means guarantees, not averages. Learned how to reason about timing, memory safety, and fault handling in constrained environments.",tags:[]}
+    ]
+  },
+  {
+    badge:"MSc · Artificial Intelligence", heading:"Intelligence",
+    desc:"Bridging the gap between compute and cognition — this phase added machine learning as a tool in the systems engineer's toolbox, not as a separate discipline.",
+    connector:{icon:"⬡",label:"Connects to Current Focus",text:"ML fundamentals + systems thinking = the ability to deploy efficient, real-time inference at the edge."},
+    cards:[
+      {label:"What it is",title:"MSc in Artificial Intelligence",text:"Graduate programme covering machine learning theory, deep learning, optimisation, and intelligent systems design.",tags:["ML","Deep Learning","PyTorch","Optimisation"]},
+      {label:"What I did",title:"ML Fundamentals + System-Level Thinking",text:"Studied neural networks, CNNs, model training pipelines, and mapped AI concepts to embedded deployment constraints.",tags:["Neural Networks","Model Compression","Inference"]},
+      {label:"What I learned",title:"Intelligence Has a Cost",text:"Every model has a compute, memory, and energy budget. Systems thinking transforms this from a limitation into a design parameter.",tags:[]}
+    ]
+  },
+  {
+    badge:"Current · Edge AI", heading:"Current Focus",
+    desc:"The synthesis — bringing ML inference to microcontrollers and embedded platforms. This is where all three phases converge: hardware knowledge, firmware craft, and AI capability.",
+    connector:{icon:"★",label:"The Synthesis Point",text:"Edge AI is where circuits, real-time systems, and machine learning become a single, unified engineering problem."},
+    cards:[
+      {label:"What it is",title:"Edge AI Systems Engineering",text:"Running trained ML models on embedded devices with strict power, memory, and latency constraints — without a cloud connection.",tags:["TensorFlow Lite","CMSIS-NN","MCU","Quantisation"]},
+      {label:"What I'm building",title:"Real-Time Intelligent Decision Systems",text:"Deploying lightweight neural networks on microcontrollers for sensor fusion, anomaly detection, and on-device inference backed by an RTOS.",tags:["TFLite Micro","FreeRTOS","Cortex-M","INT8"]},
+      {label:"What's next",title:"Closing the Silicon-to-Intelligence Gap",text:"Making embedded systems not just reliable and real-time, but aware — capable of learning from their environment without leaving the device.",tags:[]}
+    ]
+  }
+];
 
-  <!-- ══════════════════════════════════════════
-       PAGE: CONTACT
-  ══════════════════════════════════════════ -->
-  <div id="page-contact" class="page">
-    <section class="empty-page">
-      <div class="empty-label">// contact</div>
-      <div class="empty-title">Let's Connect</div>
-      <div class="empty-sub">
-        If you're working on systems, intelligence, or something in between — I'd like to hear about it.
-      </div>
-      <div style="margin-top:2.5rem; display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
-        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer"
-           class="info-card" style="cursor:pointer; min-width:140px; text-align:center;">
-          LinkedIn<br><span style="color:#64748B; font-size:0.8rem;">View profile</span>
-        </a>
-        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer"
-           class="info-card" style="cursor:pointer; min-width:140px; text-align:center;">
-          GitHub<br><span style="color:#64748B; font-size:0.8rem;">Explore work</span>
-        </a>
-        <a href="mailto:meesarapud@gmail.com"
-           class="info-card" style="cursor:pointer; min-width:140px; text-align:center;">
-          Email<br><span style="color:#64748B; font-size:0.8rem;">Send message</span>
-        </a>
-      </div>
-      <div style="margin-top:2rem; font-size:0.8rem; color:#64748B;">
-        Open to conversations, ideas, and interesting problems.
-      </div>
-    </section>
-    <footer><p class="footer-text">// built with engineering thinking &bull; Devaharsha &copy; 2026</p></footer>
-  </div>
-
-  <script>
-  /* ═══════════════════════════════════════════════════════════
-     DATA
-  ═══════════════════════════════════════════════════════════ */
-
-  var nodes = [
-    {
-      badge: "BTech · ECE", heading: "Foundations",
-      desc: "Where it all began — understanding the physical layer of computation. Circuits, signals, and systems gave me a mental model of how information moves through hardware.",
-      connector: { icon: "⬡", label: "Connects to Systems", text: "Understanding circuits directly enables writing firmware that talks to peripherals at the register level." },
-      cards: [
-        { label: "What it is", title: "BTech in Electronics and Communication", text: "Undergraduate foundation covering analog & digital circuits, signal processing, microprocessors, and communication systems.", tags: ["Circuits", "Signal Processing", "Microprocessors", "VLSI"] },
-        { label: "What I did", title: "Core Engineering Fundamentals", text: "Studied semiconductor physics, digital logic design, and embedded microcontrollers. Built prototypes using 8-bit MCUs.", tags: ["8051", "Logic Design", "PCB Basics"] },
-        { label: "What I learned", title: "The Hardware Mental Model", text: "Every software abstraction sits on physical reality. Understanding silicon teaches you why timing, power, and noise are first-class engineering problems.", tags: [] }
-      ]
+var blogPosts = [
+  {
+    id:"chemistry-of-intelligence-1",
+    series:"The Chemistry of Intelligence",
+    title:"The Chemistry of Intelligence (Part 1): The Semi-Metal",
+    subtitle:"To understand how an Edge AI model runs on an STM32 or NXP chip, you have to start far below firmware — at the level of the silicon atom.",
+    tags:["Silicon","Semiconductors","Embedded","Edge AI"],
+    sections:[
+      {heading:"1. The Magic of Four",content:[
+        {type:"p",text:"Silicon is a Group 14 element. Which means it has four valence electrons."},
+        {type:"p",text:"In a pure silicon crystal, each atom shares these electrons with its neighbors, forming a stable lattice."},
+        {type:"p",text:"But there's a problem."},
+        {type:"quote",text:"In this perfect structure, nothing moves."},
+        {type:"p",text:"There are no free electrons. No current. No signal. Pure silicon is not intelligent — it is simply structured sand."}
+      ]},
+      {heading:"2. Doping: Introducing Imperfection",content:[
+        {type:"p",text:"To make silicon useful, we intentionally break this perfection."},
+        {type:"p",text:"This process is called doping — introducing controlled impurities."},
+        {type:"p",text:"N-Type: Add phosphorus (5 electrons). One becomes free.\nP-Type: Add boron (3 electrons). A hole is created."},
+        {type:"p",text:"Now charge can move — but in a controlled way."},
+        {type:"quote",text:"Engineering begins when we control imperfection."}
+      ]},
+      {heading:"3. The Junction: Where Logic Begins",content:[
+        {type:"p",text:"When N-type and P-type silicon meet, a P–N junction is formed."},
+        {type:"p",text:"This junction allows current in one direction and blocks it in the other."},
+        {type:"p",text:"It behaves like a one-way gate — the foundation of the transistor."},
+        {type:"quote",text:"A transistor is just a switch.\nBut it is a switch built from engineered sand."}
+      ]},
+      {heading:"4. From Atoms to Architecture",content:[
+        {type:"p",text:"This process is scaled across entire silicon wafers."},
+        {type:"p",text:"Billions of these junctions form logic gates, memory, and control circuits."},
+        {type:"p",text:"Together, they create the hardware systems we program."}
+      ]},
+      {heading:"5. From Registers to Electrons",content:[
+        {type:"p",text:"When you write firmware, you are not just writing code."},
+        {type:"code",text:"GPIOA->ODR |= (1 << 5);"},
+        {type:"p",text:"You are influencing physical electron movement inside doped silicon regions."},
+        {type:"quote",text:"Your code becomes a physical effect."}
+      ]}
+    ],
+    closing:{
+      heading:"Closing Thought",
+      paragraphs:["Before models. Before firmware. Before logic.","There is silicon — modified, imperfect, and controlled."],
+      quote:"Intelligence does not begin with algorithms.\nIt begins with how we allow electrons to move."
     },
-    {
-      badge: "MTech · Embedded Systems", heading: "Systems",
-      desc: "Moving deeper into the machine — this phase was about making hardware do reliable, real-world work. Writing code close to metal, in real-time, with real constraints.",
-      connector: { icon: "⬡", label: "Connects to Intelligence", text: "Real-time systems expertise is the foundation for deploying ML inference on constrained embedded targets." },
-      cards: [
-        { label: "What it is", title: "MTech in Embedded Systems", text: "Postgraduate specialisation in RTOS, MCU peripherals, power management, and hardware-software co-design.", tags: ["RTOS", "Bare-metal C", "FreeRTOS", "CAN / I2C / SPI"] },
-        { label: "What I did", title: "Post-Silicon Validation & Firmware Engineering", text: "Validated silicon post-fabrication, wrote production firmware for MCUs, and debugged hardware with oscilloscopes and logic analysers.", tags: ["JTAG", "Firmware", "Validation", "Debugging"] },
-        { label: "What I learned", title: "Reliability is a Design Choice", text: "Real-time means guarantees, not averages. Learned how to reason about timing, memory safety, and fault handling in constrained environments.", tags: [] }
-      ]
+    footer:"Part 1 of a series on how intelligence emerges from hardware."
+  },
+  {
+    id:"chemistry-of-intelligence-2",
+    series:"The Chemistry of Intelligence",
+    title:"The Chemistry of Intelligence (Part 2): Architecting the Atom",
+    subtitle:"In Part 1, we turned inert sand into a semiconductor by introducing controlled imperfections. But a bucket of doped silicon is still just material. To build intelligence, we must organize it.",
+    tags:["Photolithography","Fabrication","Transistors","Embedded"],
+    sections:[
+      {heading:"1. The Wafer as a Blank Canvas",content:[
+        {type:"p",text:"Everything begins with a silicon wafer — a perfectly grown crystal, sliced and polished to near perfection."},
+        {type:"p",text:"At this stage, it contains no logic. No computation. No behavior."},
+        {type:"quote",text:"It is potential, not intelligence."},
+        {type:"p",text:"As an embedded engineer, you can think of this as Layer 0 — the physical foundation beneath every register, every instruction, every signal."}
+      ]},
+      {heading:"2. Photolithography: Writing with Light",content:[
+        {type:"p",text:"We don't carve circuits.\nWe print them — using light and chemistry."},
+        {type:"p",text:"The process is called photolithography."},
+        {type:"p",text:"A light-sensitive material (photoresist) is applied to the wafer. A mask — containing the circuit design — is placed above it. Ultraviolet light exposes specific regions."},
+        {type:"p",text:"Where light hits, the material changes. What remains is a microscopic stencil defining where transistors will exist."},
+        {type:"quote",text:"Architecture is no longer abstract — it is physically encoded into silicon."}
+      ]},
+      {heading:"3. Creating the Junctions (Ion Implantation)",content:[
+        {type:"p",text:"Now we return to doping — but with precision."},
+        {type:"p",text:"Using the stencil created by light, ions such as phosphorus or boron are implanted into specific regions."},
+        {type:"p",text:"This creates controlled P–N junctions across the wafer."},
+        {type:"quote",text:"This is the moment silicon stops being passive and becomes active."},
+        {type:"p",text:"Each junction becomes a building block. Together, they form transistors."}
+      ]},
+      {heading:"4. The Metal Layers: Building Connectivity",content:[
+        {type:"p",text:"A transistor alone does nothing. To compute, transistors must communicate."},
+        {type:"p",text:"Thin layers of metal (typically copper) are deposited and patterned to connect transistors."},
+        {type:"p",text:"Modern chips contain multiple layers of these interconnects, stacked vertically."},
+        {type:"quote",text:"These layers form the microscopic highways of the chip."},
+        {type:"p",text:"When firmware accesses memory or peripherals, signals travel through these physical paths."},
+        {type:"p",text:"Buses like AHB or APB are not abstractions — they are real connections etched into silicon."}
+      ]},
+      {heading:"5. From Wafer to Chip",content:[
+        {type:"p",text:"At this stage, the wafer contains hundreds of identical dies — each a complete system."},
+        {type:"p",text:"The wafer is cut into individual chips, and each die is packaged and connected to external pins."},
+        {type:"p",text:"Now the hardware is ready."}
+      ]}
+    ],
+    closing:{
+      heading:"Closing Thought",
+      paragraphs:["At the end of this process, nothing magical has appeared.","There are still only electrons, materials, and structures — but now they are organized."],
+      quote:"Intelligence is not created.\nIt is constructed — layer by layer.\n\nWhen you flash your first program, you are not just running code.\nYou are orchestrating a system built from light, chemistry, and controlled imperfection."
     },
-    {
-      badge: "MSc · Artificial Intelligence", heading: "Intelligence",
-      desc: "Bridging the gap between compute and cognition — this phase added machine learning as a tool in the systems engineer's toolbox, not as a separate discipline.",
-      connector: { icon: "⬡", label: "Connects to Current Focus", text: "ML fundamentals + systems thinking = the ability to deploy efficient, real-time inference at the edge." },
-      cards: [
-        { label: "What it is", title: "MSc in Artificial Intelligence", text: "Graduate programme covering machine learning theory, deep learning, optimisation, and intelligent systems design.", tags: ["ML", "Deep Learning", "PyTorch", "Optimisation"] },
-        { label: "What I did", title: "ML Fundamentals + System-Level Thinking", text: "Studied neural networks, CNNs, model training pipelines, and mapped AI concepts to embedded deployment constraints.", tags: ["Neural Networks", "Model Compression", "Inference"] },
-        { label: "What I learned", title: "Intelligence Has a Cost", text: "Every model has a compute, memory, and energy budget. Systems thinking transforms this from a limitation into a design parameter.", tags: [] }
-      ]
+    footer:"Part 2 of a series on how intelligence emerges from hardware."
+  },
+  {
+    id:"chemistry-of-intelligence-3",
+    series:"The Chemistry of Intelligence",
+    title:"The Chemistry of Intelligence (Part 3): From Switch to Thought",
+    subtitle:"In Part 1, we shaped silicon. In Part 2, we structured it into transistors. But a transistor is still just a switch. Intelligence begins when switches start making decisions.",
+    tags:["Logic Gates","CPU","Firmware","Embedded"],
+    sections:[
+      {heading:"1. The First Abstraction: Logic",content:[
+        {type:"p",text:"A transistor has only one job — allow current to flow, or block it."},
+        {type:"p",text:"That's it. One binary decision."},
+        {type:"p",text:"But combine multiple transistors and something new emerges: logic gates."},
+        {type:"p",text:"AND gates output a signal only when both inputs are active. OR gates output when any input is active. NOT gates invert the signal entirely."},
+        {type:"quote",text:"These are not software constructs.\nThey are physical arrangements of transistors deciding the flow of electrons."}
+      ]},
+      {heading:"2. From Logic to Circuits",content:[
+        {type:"p",text:"A single gate is not useful on its own."},
+        {type:"p",text:"But when you connect them, behavior emerges. Adders perform arithmetic. Multiplexers select data paths. Flip-flops store state."},
+        {type:"p",text:"Now the system can remember, compare, and decide."},
+        {type:"quote",text:"State is what turns logic into behavior."},
+        {type:"p",text:"This is the first step toward computation — not intelligence yet, but the scaffolding it requires."}
+      ]},
+      {heading:"3. The Birth of the CPU",content:[
+        {type:"p",text:"Scale this further. Combine an Arithmetic Logic Unit, registers, and a control unit."},
+        {type:"p",text:"You get the CPU."},
+        {type:"p",text:"The CPU does not think. It executes."},
+        {type:"p",text:"Every operation is broken into steps: fetch the instruction, decode it, execute it, and write the result back. Millions of these cycles happen per second."},
+        {type:"quote",text:"Execution is not understanding.\nBut at sufficient speed and scale, it becomes indistinguishable from it."}
+      ]},
+      {heading:"4. What an Instruction Really Means",content:[
+        {type:"p",text:"Take this simple line of code:"},
+        {type:"code",text:"a = b + c;"},
+        {type:"p",text:"At the hardware level, this becomes a sequence of physical events: load a value from memory, move it into a register, perform addition using the ALU, store the result back."},
+        {type:"p",text:"Each step activates specific circuits, triggers specific transistors, and moves electrons through defined paths."},
+        {type:"quote",text:"Code is not executed.\nIt is translated into a sequence of electrical events."}
+      ]},
+      {heading:"5. Timing: The Invisible Constraint",content:[
+        {type:"p",text:"All of this is synchronized by a clock."},
+        {type:"p",text:"The clock defines when data moves, when decisions happen, when state updates. Every embedded engineer knows this constraint — it is why we care about clock speed, wait states, and pipeline stalls."},
+        {type:"quote",text:"Without timing, logic collapses into chaos.\nIntelligence requires not just structure, but coordination."},
+        {type:"p",text:"This is why real-time systems are not about being fast — they are about being predictable."}
+      ]},
+      {heading:"6. Firmware: Entering the System",content:[
+        {type:"p",text:"At this point, the hardware is complete: transistors became logic, logic became circuits, circuits became a CPU."},
+        {type:"p",text:"Now something new enters: you."},
+        {type:"p",text:"When you write firmware, you are not creating intelligence. You are directing it — deciding which instructions run, when they run, and how hardware behaves in response to the physical world."},
+        {type:"quote",text:"The engineer is the final layer of the stack."}
+      ]}
+    ],
+    closing:{
+      heading:"Closing Thought",
+      paragraphs:["Nothing in this system is aware.","There are only switches, signals, and timing."],
+      quote:"And yet, when organized — a system emerges that can process, decide, and respond.\n\nIntelligence is not inside the transistor.\nIt is in the structure of decisions across billions of them."
     },
-    {
-      badge: "Current · Edge AI", heading: "Current Focus",
-      desc: "The synthesis — bringing ML inference to microcontrollers and embedded platforms. This is where all three phases converge: hardware knowledge, firmware craft, and AI capability.",
-      connector: { icon: "★", label: "The Synthesis Point", text: "Edge AI is where circuits, real-time systems, and machine learning become a single, unified engineering problem." },
-      cards: [
-        { label: "What it is", title: "Edge AI Systems Engineering", text: "Running trained ML models on embedded devices with strict power, memory, and latency constraints — without a cloud connection.", tags: ["TensorFlow Lite", "CMSIS-NN", "MCU", "Quantisation"] },
-        { label: "What I'm building", title: "Real-Time Intelligent Decision Systems", text: "Deploying lightweight neural networks on microcontrollers for sensor fusion, anomaly detection, and on-device inference backed by an RTOS.", tags: ["TFLite Micro", "FreeRTOS", "Cortex-M", "INT8"] },
-        { label: "What's next", title: "Closing the Silicon-to-Intelligence Gap", text: "Making embedded systems not just reliable and real-time, but aware — capable of learning from their environment without leaving the device.", tags: [] }
-      ]
-    }
-  ];
-
-  var blogPosts = [
-    {
-      id: "chemistry-of-intelligence-1",
-      series: "The Chemistry of Intelligence",
-      title: "The Chemistry of Intelligence (Part 1): The Semi-Metal",
-      subtitle: "To understand how an Edge AI model runs on an STM32 or NXP chip, you have to start far below firmware — at the level of the silicon atom.",
-      tags: ["Silicon", "Semiconductors", "Embedded", "Edge AI"],
-      sections: [
-        { heading: "1. The Magic of Four", content: [
-          { type: "p", text: "Silicon is a Group 14 element. Which means it has four valence electrons." },
-          { type: "p", text: "In a pure silicon crystal, each atom shares these electrons with its neighbors, forming a stable lattice." },
-          { type: "p", text: "But there's a problem." },
-          { type: "quote", text: "In this perfect structure, nothing moves." },
-          { type: "p", text: "There are no free electrons. No current. No signal. Pure silicon is not intelligent — it is simply structured sand." }
-        ]},
-        { heading: "2. Doping: Introducing Imperfection", content: [
-          { type: "p", text: "To make silicon useful, we intentionally break this perfection." },
-          { type: "p", text: "This process is called doping — introducing controlled impurities." },
-          { type: "p", text: "N-Type: Add phosphorus (5 electrons). One becomes free.\nP-Type: Add boron (3 electrons). A hole is created." },
-          { type: "p", text: "Now charge can move — but in a controlled way." },
-          { type: "quote", text: "Engineering begins when we control imperfection." }
-        ]},
-        { heading: "3. The Junction: Where Logic Begins", content: [
-          { type: "p", text: "When N-type and P-type silicon meet, a P–N junction is formed." },
-          { type: "p", text: "This junction allows current in one direction and blocks it in the other." },
-          { type: "p", text: "It behaves like a one-way gate — the foundation of the transistor." },
-          { type: "quote", text: "A transistor is just a switch.\nBut it is a switch built from engineered sand." }
-        ]},
-        { heading: "4. From Atoms to Architecture", content: [
-          { type: "p", text: "This process is scaled across entire silicon wafers." },
-          { type: "p", text: "Billions of these junctions form logic gates, memory, and control circuits." },
-          { type: "p", text: "Together, they create the hardware systems we program." }
-        ]},
-        { heading: "5. From Registers to Electrons", content: [
-          { type: "p", text: "When you write firmware, you are not just writing code." },
-          { type: "code", text: "GPIOA->ODR |= (1 << 5);" },
-          { type: "p", text: "You are influencing physical electron movement inside doped silicon regions." },
-          { type: "quote", text: "Your code becomes a physical effect." }
-        ]}
-      ],
-      closing: {
-        heading: "Closing Thought",
-        paragraphs: ["Before models. Before firmware. Before logic.", "There is silicon — modified, imperfect, and controlled."],
-        quote: "Intelligence does not begin with algorithms.\nIt begins with how we allow electrons to move."
-      },
-      footer: "Part 1 of a series on how intelligence emerges from hardware."
-    },
-    {
-      id: "chemistry-of-intelligence-2",
-      series: "The Chemistry of Intelligence",
-      title: "The Chemistry of Intelligence (Part 2): Architecting the Atom",
-      subtitle: "In Part 1, we turned inert sand into a semiconductor by introducing controlled imperfections. But a bucket of doped silicon is still just material. To build intelligence, we must organize it.",
-      tags: ["Photolithography", "Fabrication", "Transistors", "Embedded"],
-      sections: [
-        { heading: "1. The Wafer as a Blank Canvas", content: [
-          { type: "p", text: "Everything begins with a silicon wafer — a perfectly grown crystal, sliced and polished to near perfection." },
-          { type: "p", text: "At this stage, it contains no logic. No computation. No behavior." },
-          { type: "quote", text: "It is potential, not intelligence." },
-          { type: "p", text: "As an embedded engineer, you can think of this as Layer 0 — the physical foundation beneath every register, every instruction, every signal." }
-        ]},
-        { heading: "2. Photolithography: Writing with Light", content: [
-          { type: "p", text: "We don't carve circuits.\nWe print them — using light and chemistry." },
-          { type: "p", text: "The process is called photolithography." },
-          { type: "p", text: "A light-sensitive material (photoresist) is applied to the wafer. A mask — containing the circuit design — is placed above it. Ultraviolet light exposes specific regions." },
-          { type: "p", text: "Where light hits, the material changes. What remains is a microscopic stencil defining where transistors will exist." },
-          { type: "quote", text: "Architecture is no longer abstract — it is physically encoded into silicon." }
-        ]},
-        { heading: "3. Creating the Junctions (Ion Implantation)", content: [
-          { type: "p", text: "Now we return to doping — but with precision." },
-          { type: "p", text: "Using the stencil created by light, ions such as phosphorus or boron are implanted into specific regions." },
-          { type: "p", text: "This creates controlled P–N junctions across the wafer." },
-          { type: "quote", text: "This is the moment silicon stops being passive and becomes active." },
-          { type: "p", text: "Each junction becomes a building block. Together, they form transistors." }
-        ]},
-        { heading: "4. The Metal Layers: Building Connectivity", content: [
-          { type: "p", text: "A transistor alone does nothing. To compute, transistors must communicate." },
-          { type: "p", text: "Thin layers of metal (typically copper) are deposited and patterned to connect transistors." },
-          { type: "p", text: "Modern chips contain multiple layers of these interconnects, stacked vertically." },
-          { type: "quote", text: "These layers form the microscopic highways of the chip." },
-          { type: "p", text: "When firmware accesses memory or peripherals, signals travel through these physical paths." },
-          { type: "p", text: "Buses like AHB or APB are not abstractions — they are real connections etched into silicon." }
-        ]},
-        { heading: "5. From Wafer to Chip", content: [
-          { type: "p", text: "At this stage, the wafer contains hundreds of identical dies — each a complete system." },
-          { type: "p", text: "The wafer is cut into individual chips, and each die is packaged and connected to external pins." },
-          { type: "p", text: "Now the hardware is ready." }
-        ]}
-      ],
-      closing: {
-        heading: "Closing Thought",
-        paragraphs: ["At the end of this process, nothing magical has appeared.", "There are still only electrons, materials, and structures — but now they are organized."],
-        quote: "Intelligence is not created.\nIt is constructed — layer by layer.\n\nWhen you flash your first program, you are not just running code.\nYou are orchestrating a system built from light, chemistry, and controlled imperfection."
-      },
-      footer: "Part 2 of a series on how intelligence emerges from hardware."
-    }
-  ];
-
-  /* ═══════════════════════════════════════════════════════════
-     PAGE ROUTER
-  ═══════════════════════════════════════════════════════════ */
-  function showPage(pageName) {
-    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
-    var target = document.getElementById('page-' + pageName);
-    if (target) target.classList.add('active');
-    document.querySelectorAll('.nav-links a').forEach(function(a) { a.classList.remove('active'); });
-    var navKey = (pageName === 'blog-post') ? 'blogs' : pageName;
-    var activeLink = document.getElementById('nav-' + navKey);
-    if (activeLink) activeLink.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (pageName === 'journey') renderJourney();
-    if (pageName === 'blogs') renderBlogList();
+    footer:"Part 3 of a series on how intelligence emerges from hardware."
   }
+];
 
-  /* ═══════════════════════════════════════════════════════════
-     JOURNEY
-  ═══════════════════════════════════════════════════════════ */
-  var activeNode = 0;
+/* ═══ ROUTER ══════════════════════════════════════════════════════════════ */
+function showPage(pageName) {
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  var t = document.getElementById('page-'+pageName);
+  if(t) t.classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(function(a){a.classList.remove('active');});
+  var key = (pageName==='blog-post')?'blogs':pageName;
+  var link = document.getElementById('nav-'+key);
+  if(link) link.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(pageName==='journey') renderJourney();
+  if(pageName==='blogs') renderBlogList();
+}
 
-  function setNode(idx) {
-    activeNode = idx;
-    document.querySelectorAll('.node-btn').forEach(function(btn, i) {
-      btn.classList.toggle('active', i === idx);
-    });
-    renderJourney();
-  }
-
-  function renderJourney() {
-    var n = nodes[activeNode];
-    function tagsHtml(tags) {
-      if (!tags.length) return '';
-      return '<div class="tags">' + tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') + '</div>';
-    }
-    var cardsHtml = n.cards.map(function(c) {
-      return '<div class="info-card">' +
-        '<div class="info-card-label">' + c.label + '</div>' +
-        '<div class="info-card-title">' + c.title + '</div>' +
-        '<div class="info-card-text">' + c.text + '</div>' +
-        tagsHtml(c.tags) + '</div>';
-    }).join('');
-    document.getElementById('journeyContent').innerHTML =
-      '<div class="node-meta fade-in">' +
-        '<span class="node-badge">' + n.badge + '</span>' +
-        '<h3 class="node-heading">' + n.heading + '</h3>' +
-        '<p class="node-desc">' + n.desc + '</p>' +
-        '<div class="node-connector">' +
-          '<div class="connector-icon">' + n.connector.icon + '</div>' +
-          '<div class="connector-text"><strong>' + n.connector.label + '</strong><br>' + n.connector.text + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="node-cards fade-in">' + cardsHtml + '</div>';
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     BLOG LISTING
-  ═══════════════════════════════════════════════════════════ */
-  function renderBlogList() {
-    var html = blogPosts.map(function(post, idx) {
-      var tagsHtml = post.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('');
-      return '<div class="info-card blog-card" onclick="openBlog(' + idx + ')">' +
-        '<div class="info-card-label">' + post.series + '</div>' +
-        '<div class="info-card-title" style="font-size:1.05rem; margin-bottom:0.6rem;">' + post.title + '</div>' +
-        '<div class="info-card-text" style="margin-bottom:1rem;">' + post.subtitle + '</div>' +
-        '<div class="tags">' + tagsHtml + '</div>' +
-        '</div>';
-    }).join('');
-    document.getElementById('blogList').innerHTML = html;
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     BLOG READER
-  ═══════════════════════════════════════════════════════════ */
-  function openBlog(idx) {
-    var post = blogPosts[idx];
-    var html = '<button class="back-btn" onclick="showPage(\'blogs\')">&#8592; Back to Exploration</button>';
-    html += '<div class="section-label" style="margin-bottom:0.75rem;">// ' + post.series + '</div>';
-    html += '<h1 class="blog-title">' + post.title + '</h1>';
-    html += '<p class="blog-subtitle">' + post.subtitle + '</p>';
-    var tagsHtml = '<div class="tags" style="margin-bottom:3rem;">' + post.tags.map(function(t) { return '<span class="tag">' + t + '</span>'; }).join('') + '</div>';
-    html += tagsHtml;
-    html += '<hr class="blog-divider">';
-    post.sections.forEach(function(sec) {
-      html += '<div class="blog-section"><h2 class="blog-h2">' + sec.heading + '</h2>';
-      sec.content.forEach(function(block) {
-        if (block.type === 'p') html += '<p class="blog-p">' + block.text + '</p>';
-        else if (block.type === 'quote') html += '<div class="blog-quote">' + block.text + '</div>';
-        else if (block.type === 'code') html += '<div class="blog-code">' + block.text + '</div>';
-      });
-      html += '</div>';
-    });
-    html += '<div class="blog-section"><h2 class="blog-h2">' + post.closing.heading + '</h2>';
-    post.closing.paragraphs.forEach(function(p) { html += '<p class="blog-p">' + p + '</p>'; });
-    html += '<div class="blog-quote">' + post.closing.quote + '</div></div>';
-    html += '<div class="blog-footer-note">' + post.footer + '</div>';
-    document.getElementById('blogContent').innerHTML = html;
-    showPage('blog-post');
-  }
-
-  /* ═══════════════════════════════════════════════════════════
-     BOOT
-  ═══════════════════════════════════════════════════════════ */
-  document.getElementById('nav-about').classList.add('active');
+/* ═══ JOURNEY ══════════════════════════════════════════════════════════════ */
+var activeNode=0;
+function setNode(idx){
+  activeNode=idx;
+  document.querySelectorAll('.node-btn').forEach(function(b,i){b.classList.toggle('active',i===idx);});
   renderJourney();
+}
+function renderJourney(){
+  var n=nodes[activeNode];
+  function tagsHtml(t){return t.length?'<div class="tags">'+t.map(function(x){return'<span class="tag">'+x+'</span>';}).join('')+'</div>':'';}
+  document.getElementById('journeyContent').innerHTML=
+    '<div class="node-meta fade-in">'+
+      '<span class="node-badge">'+n.badge+'</span>'+
+      '<h3 class="node-heading">'+n.heading+'</h3>'+
+      '<p class="node-desc">'+n.desc+'</p>'+
+      '<div class="node-connector">'+
+        '<div class="connector-icon">'+n.connector.icon+'</div>'+
+        '<div class="connector-text"><strong>'+n.connector.label+'</strong><br>'+n.connector.text+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="node-cards fade-in">'+
+      n.cards.map(function(c){return'<div class="info-card"><div class="info-card-label">'+c.label+'</div><div class="info-card-title">'+c.title+'</div><div class="info-card-text">'+c.text+'</div>'+tagsHtml(c.tags)+'</div>';}).join('')+
+    '</div>';
+}
 
-  </script>
+/* ═══ BLOG LIST ════════════════════════════════════════════════════════════ */
+function renderBlogList(){
+  document.getElementById('blogList').innerHTML=blogPosts.map(function(post,idx){
+    return'<div class="info-card blog-card" onclick="openBlog('+idx+')">'+
+      '<div class="info-card-label">'+post.series+'</div>'+
+      '<div class="info-card-title" style="font-size:1.05rem;margin-bottom:0.6rem;">'+post.title+'</div>'+
+      '<div class="info-card-text" style="margin-bottom:1rem;">'+post.subtitle+'</div>'+
+      '<div class="tags">'+post.tags.map(function(t){return'<span class="tag">'+t+'</span>';}).join('')+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+/* ═══ BLOG READER ══════════════════════════════════════════════════════════ */
+function openBlog(idx){
+  var post=blogPosts[idx];
+  var html='<button class="back-btn" onclick="showPage(\'blogs\')">&#8592; Back to Exploration</button>';
+  html+='<div class="section-label" style="margin-bottom:0.75rem;">// '+post.series+'</div>';
+  html+='<h1 class="blog-title">'+post.title+'</h1>';
+  html+='<p class="blog-subtitle">'+post.subtitle+'</p>';
+  html+='<div class="tags" style="margin-bottom:3rem;">'+post.tags.map(function(t){return'<span class="tag">'+t+'</span>';}).join('')+'</div>';
+  html+='<hr class="blog-divider">';
+  post.sections.forEach(function(sec){
+    html+='<div class="blog-section"><h2 class="blog-h2">'+sec.heading+'</h2>';
+    sec.content.forEach(function(b){
+      if(b.type==='p') html+='<p class="blog-p">'+b.text+'</p>';
+      else if(b.type==='quote') html+='<div class="blog-quote">'+b.text+'</div>';
+      else if(b.type==='code') html+='<div class="blog-code">'+b.text+'</div>';
+    });
+    html+='</div>';
+  });
+  html+='<div class="blog-section"><h2 class="blog-h2">'+post.closing.heading+'</h2>';
+  post.closing.paragraphs.forEach(function(p){html+='<p class="blog-p">'+p+'</p>';});
+  html+='<div class="blog-quote">'+post.closing.quote+'</div></div>';
+  html+='<div class="blog-footer-note">'+post.footer+'</div>';
+  document.getElementById('blogContent').innerHTML=html;
+  showPage('blog-post');
+}
+
+/* ═══ BOOT ══════════════════════════════════════════════════════════════════ */
+document.getElementById('nav-home').classList.add('active');
+renderJourney();
+</script>
 </body>
 </html>
