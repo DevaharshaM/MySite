@@ -630,6 +630,16 @@ function escHtml(str) {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 renderBlogList();
+
+// ___Link to About page _________________________________________________________
+window.addEventListener("DOMContentLoaded", () => {
+  const hash = window.location.hash;
+
+  if (hash === "#page-about") {
+    showPage("about");
+  }
+});
+  
 </script>
 </body>
 </html>
