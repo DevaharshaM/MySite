@@ -359,7 +359,7 @@ const blogPosts = [
     series:"The Chemistry of Intelligence",
     title:"The Chemistry of Intelligence (Part 1): The Semi-Metal",
     subtitle:"If you want to understand how an Edge AI model runs on an STM32 or NXP chip, you have to trace it all the way back. Past the RTOS. Past the peripherals. Past the register map. Down to the material everything is built from.",
-    date:"2025", tags:["Silicon","Semiconductors","Embedded","Edge AI"],
+    date:"2026", tags:["Silicon","Semiconductors","Embedded","Edge AI"],
     sections:[
       {heading:"1. The Magic of Four",content:[
         {type:"p",text:"If you zoom far enough down — past the firmware, past the transistors, past even the junctions — everything we build runs on a single material. Silicon."},
@@ -404,7 +404,7 @@ const blogPosts = [
     series:"The Chemistry of Intelligence",
     title:"The Chemistry of Intelligence (Part 2): Architecting the Atom",
     subtitle:"Doped silicon gives us material that can conduct. But conductivity alone isn't useful. What matters is where it conducts, when it conducts, and what happens at the boundaries.",
-    date:"2025", tags:["Photolithography","Fabrication","Transistors","Embedded"],
+    date:"2026", tags:["Photolithography","Fabrication","Transistors","Embedded"],
     sections:[
       {heading:"1. The Wafer as a Blank Canvas",content:[
         {type:"p",text:"Start with a wafer — a circular slice of crystal silicon, polished to a smoothness that makes glass look rough."},
@@ -449,7 +449,7 @@ const blogPosts = [
     series:"The Chemistry of Intelligence",
     title:"The Chemistry of Intelligence (Part 3): From Switch to Thought",
     subtitle:"We have silicon that conducts. We have junctions that switch. But a switch sitting alone in silicon doesn't compute anything. Something has to organize the switching — and that's where the real story begins.",
-    date:"2025", tags:["Logic Gates","CPU","Firmware","Embedded"],
+    date:"2026", tags:["Logic Gates","CPU","Firmware","Embedded"],
     sections:[
       {heading:"1. The First Abstraction: Logic",content:[
         {type:"p",text:"A transistor does one thing — it either lets current through or it doesn't. That's the whole vocabulary."},
@@ -494,7 +494,143 @@ const blogPosts = [
       quote:"And yet, when you put it all together, something emerges that can process, decide, and respond.\n\nIntelligence isn't in the transistor.\nIt's in the structure of decisions across billions of them."
     },
     footer:"Part 3 of a series on how intelligence emerges from hardware."
-  }
+  },
+{
+  id:"illusion-of-software",
+  series:"Explorations",
+  title:"The Illusion of Software",
+  subtitle:"We talk about software as if it exists independently. But in embedded systems, software is never really separate from hardware. The deeper you go, the harder that illusion becomes to maintain.",
+  date:"2025",
+  tags:["Embedded Systems","Firmware","Hardware","Systems Thinking"],
+
+  sections:[
+    {
+      heading:"1. Software Feels Abstract",
+      content:[
+        {
+          type:"p",
+          text:"Most modern software development happens several layers above the machine. APIs call libraries. Libraries call frameworks. Frameworks eventually reach hardware — but the hardware itself disappears behind abstraction."
+        },
+        {
+          type:"p",
+          text:"And honestly, that's useful. Abstractions let us build systems faster."
+        },
+        {
+          type:"quote",
+          text:"But abstraction also creates distance."
+        },
+        {
+          type:"p",
+          text:"In embedded systems, that distance starts collapsing very quickly."
+        }
+      ]
+    },
+
+    {
+      heading:"2. A Register Write is a Physical Event",
+      content:[
+        {
+          type:"p",
+          text:"Consider something extremely ordinary:"
+        },
+        {
+          type:"code",
+          text:"GPIOA->ODR |= (1 << 5);"
+        },
+        {
+          type:"p",
+          text:"At first glance, this feels like software manipulating memory."
+        },
+        {
+          type:"p",
+          text:"But underneath, something physical changes. Transistors switch. Electrical paths open. Voltage appears on a pin."
+        },
+        {
+          type:"quote",
+          text:"That line of code eventually becomes movement inside silicon."
+        }
+      ]
+    },
+
+    {
+      heading:"3. Timing Changes the Nature of Software",
+      content:[
+        {
+          type:"p",
+          text:"In many systems, a delay is annoying."
+        },
+        {
+          type:"p",
+          text:"In embedded systems, a delay can break communication, corrupt data, destabilize control loops, or miss real-world events entirely."
+        },
+        {
+          type:"p",
+          text:"This changes how you think about software."
+        },
+        {
+          type:"quote",
+          text:"Real-time systems don't just care about correctness.\nThey care about when correctness happens."
+        }
+      ]
+    },
+
+    {
+      heading:"4. The Hardware Never Disappears",
+      content:[
+        {
+          type:"p",
+          text:"The deeper I moved into firmware, the more software started feeling less independent."
+        },
+        {
+          type:"p",
+          text:"Memory has physical limits. Clocks drift. Buses stall. Power fluctuates. Interrupts arrive asynchronously."
+        },
+        {
+          type:"p",
+          text:"The hardware is always participating in the behavior of the system — even when hidden."
+        },
+        {
+          type:"quote",
+          text:"Embedded engineering is really the study of constraints pretending to be software."
+        }
+      ]
+    },
+
+    {
+      heading:"5. Why This Matters for Intelligence",
+      content:[
+        {
+          type:"p",
+          text:"As AI moves toward the edge, this distinction matters even more."
+        },
+        {
+          type:"p",
+          text:"Inference isn't just mathematics anymore. It's memory bandwidth, thermal limits, latency budgets, quantization, scheduling, and power consumption."
+        },
+        {
+          type:"p",
+          text:"The model is only one part of the system."
+        },
+        {
+          type:"quote",
+          text:"At the edge, intelligence becomes a hardware problem again."
+        }
+      ]
+    }
+  ],
+
+  closing:{
+    heading:"Closing Thought",
+    paragraphs:[
+      "Software feels abstract because modern systems are designed to hide the machine beneath them.",
+      "But embedded systems never fully let you forget."
+    ],
+
+    quote:"The deeper you go into real systems, the more software starts disappearing.\n\nWhat remains is timing, behavior, physics, and control."
+  },
+
+  footer:""
+} 
 ];
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
