@@ -355,243 +355,926 @@ const nodes = [
 
 const blogPosts = [
   {
-    id:"chemistry-of-intelligence-1",
-    series:"The Chemistry of Intelligence",
-    title:"The Chemistry of Intelligence (Part 1): The Semi-Metal",
-    subtitle:"If you want to understand how an Edge AI model runs on an STM32 or NXP chip, you have to trace it all the way back. Past the RTOS. Past the peripherals. Past the register map. Down to the material everything is built from.",
-    date:"2026", tags:["Silicon","Semiconductors","Embedded","Edge AI"],
-    sections:[
-      {heading:"1. The Magic of Four",content:[
-        {type:"p",text:"If you zoom far enough down — past the firmware, past the transistors, past even the junctions — everything we build runs on a single material. Silicon."},
-        {type:"p",text:"In its purest form, silicon is elegant. Every atom bonds perfectly with its neighbors, forming a crystal lattice that's geometrically beautiful and computationally useless."},
-        {type:"quote",text:"That perfection is the problem. Nothing flows. No current. No signal."},
-        {type:"p",text:"Pure silicon isn't intelligence waiting to be unlocked. It's just structured sand."}
-      ]},
-      {heading:"2. Doping: Introducing Imperfection",content:[
-        {type:"p",text:"Here's the interesting part — we make it useful by breaking it."},
-        {type:"p",text:"Deliberately. Precisely. We introduce impurities into the crystal — a process called doping."},
-        {type:"p",text:"Add phosphorus and you get a free electron with nowhere to go. Add boron and you get a hole — an absence that behaves like a positive charge. Both versions are unstable by design."},
-        {type:"p",text:"And that instability is exactly what we wanted."},
-        {type:"quote",text:"Engineering begins when we learn to control imperfection."}
-      ]},
-      {heading:"3. The Junction: Where Logic Begins",content:[
-        {type:"p",text:"Place the two types side by side and something interesting happens at the boundary."},
-        {type:"p",text:"Charge wants to cross. But it can't — not without a push. Apply voltage in one direction and it flows. Reverse it and it stops."},
-        {type:"p",text:"That asymmetry is the foundation of the transistor."},
-        {type:"quote",text:"At its core, everything reduces to a switch.\nBut not the kind you imagine — this one is built from engineered sand."}
-      ]},
-      {heading:"4. From Atoms to Architecture",content:[
-        {type:"p",text:"What starts with a single junction gets replicated billions of times across a wafer."},
-        {type:"p",text:"Gates. Memory. Control units. All of it emerges from the same basic idea — a junction that decides."},
-        {type:"p",text:"The hardware we write firmware for is, at its lowest level, just a very precise arrangement of impurities."}
-      ]},
-      {heading:"5. From Registers to Electrons",content:[
-        {type:"p",text:"Every time I write firmware, I try to hold this in mind."},
-        {type:"code",text:"GPIOA->ODR |= (1 << 5);"},
-        {type:"p",text:"That line doesn't just flip a bit. It moves electrons — in a specific region of silicon that was deliberately contaminated to make this moment possible."},
-        {type:"quote",text:"Your code becomes a physical effect."}
-      ]}
-    ],
-    closing:{
-      heading:"Closing Thought",
-      paragraphs:["Before the model. Before the firmware. Before the logic gate.","There's silicon — modified, imperfect, and precisely controlled."],
-      quote:"Intelligence doesn't begin with algorithms.\nIt begins with how we allow electrons to move."
+  id:"chemistry-intelligence-part1",
+  series:"The Chemistry of Intelligence",
+  title:"Part 1 — Why Silicon?",
+  subtitle:"Before processors, memory, or artificial intelligence, there is a material choice. Computation did not emerge from just any element — it emerged from silicon. The question is why.",
+  date:"2026",
+  tags:["Chemistry","Silicon","Semiconductors","Systems"],
+  sections:[
+    {
+      heading:"1. Every Material Behaves Differently",
+      content:[
+        {
+          type:"p",
+          text:"If you zoom far enough down, every system eventually becomes a question of material behavior."
+        },
+        {
+          type:"p",
+          text:"Copper moves electrons easily. Rubber resists them. Glass interacts with light differently from metal."
+        },
+
+        {
+          type:"p",
+          text:"Computation also depends on material behavior — specifically, how electrons move through matter."
+        },
+        {
+          type:"quote",
+          text:"The modern digital world exists because one material behaves in a very particular way."
+        }
+      ]
     },
-    footer:"Part 1 of a series on how intelligence emerges from hardware."
+    {
+      heading:"2. The Periodic Table is a Map of Behavior",
+      content:[
+        {
+          type:"p",
+          text:"Elements are arranged into groups because they share similar outer electron structures."
+        },
+        {
+          type:"p",
+          text:"These outer electrons — called valence electrons — determine how atoms bond and interact."
+        },
+        {
+          type:"p",
+          text:"Silicon belongs to Group 14, meaning it has four valence electrons."
+        },
+        {
+          type:"p",
+          text:"That number turns out to be extremely important."
+        }
+      ]
+    },
+    {
+      heading:"3. Why Four Electrons Matter",
+      content:[
+        {
+          type:"p",
+          text:"Atoms naturally seek stable electron configurations."
+        },
+        {
+          type:"p",
+          text:"With four valence electrons, silicon can form stable bonds in multiple directions at once."
+        },
+        {
+          type:"p",
+          text:"When billions of silicon atoms arrange together, they create an organized crystal lattice where electrons are shared across the structure."
+        },
+        {
+          type:"quote",
+          text:"At this stage, silicon is stable — but not yet useful for computation."
+        }
+      ]
+    },
+    {
+      heading:"4. Why Not Carbon?",
+      content:[
+        {
+          type:"p",
+          text:"Carbon also belongs to Group 14. In theory, it can form similar structures."
+        },
+        {
+          type:"p",
+          text:"But engineering is rarely about what is theoretically possible. It is about controllability."
+        },
+        {
+          type:"p",
+          text:"Silicon became dominant because it is abundant, stable at practical temperatures, and forms a natural oxide layer useful for manufacturing."
+        },
+        {
+          type:"p",
+          text:"That oxide layer — silicon dioxide — became one of the key reasons modern chip fabrication became scalable."
+        },
+        {
+          type:"quote",
+          text:"The success of silicon was not just chemistry.\nIt was manufacturability."
+        }
+      ]
+    },
+    {
+      heading:"5. The Strange Position of Silicon",
+      content:[
+        {
+          type:"p",
+          text:"Silicon sits between conductors and insulators."
+        },
+        {
+          type:"p",
+          text:"Copper allows electrons to move very freely. Rubber barely allows movement at all."
+        },
+        {
+          type:"p",
+          text:"Silicon exists somewhere in between."
+        },
+        {
+          type:"p",
+          text:"Under normal conditions, it does not conduct well enough to behave like metal."
+        },
+        {
+          type:"p",
+          text:"But under the right conditions, its behavior can be controlled."
+        },
+        {
+          type:"quote",
+          text:"That controllability is what makes computation possible."
+        }
+      ]
+    }
+  ],
+  closing:{
+    heading:"Closing Thought",
+    paragraphs:[
+      "Long before software existed, the foundations of computation were already hidden inside material behavior.",
+      "The story of intelligence does not begin with algorithms or processors."
+    ],
+    quote:"It begins with a material capable of controlling electrons without letting them move too freely."
   },
+  footer:"Part 1 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+},
   {
-    id:"chemistry-of-intelligence-2",
-    series:"The Chemistry of Intelligence",
-    title:"The Chemistry of Intelligence (Part 2): Architecting the Atom",
-    subtitle:"Doped silicon gives us material that can conduct. But conductivity alone isn't useful. What matters is where it conducts, when it conducts, and what happens at the boundaries.",
-    date:"2026", tags:["Photolithography","Fabrication","Transistors","Embedded"],
-    sections:[
-      {heading:"1. The Wafer as a Blank Canvas",content:[
-        {type:"p",text:"Start with a wafer — a circular slice of crystal silicon, polished to a smoothness that makes glass look rough."},
-        {type:"p",text:"There's nothing on it yet. No logic, no circuit, no behavior. Just material."},
-        {type:"quote",text:"It is potential, not intelligence."},
-        {type:"p",text:"What I find compelling is that every register you ever write to, every interrupt you ever trigger — it all starts here, on this blank disk."}
-      ]},
-      {heading:"2. Photolithography: Writing with Light",content:[
-        {type:"p",text:"This is where it gets strange. We don't carve circuits into silicon. We print them — using light."},
-        {type:"p",text:"A light-sensitive material is applied to the wafer. A mask carrying the circuit design is placed above it. UV light exposes specific regions, chemically changing what it touches."},
-        {type:"p",text:"What's left is a microscopic stencil. A shadow of the architecture, etched by photons."},
-        {type:"quote",text:"This is where the design leaves the schematic and enters the physical world."}
-      ]},
-      {heading:"3. Creating the Junctions (Ion Implantation)",content:[
-        {type:"p",text:"Now we return to doping — but guided by that stencil."},
-        {type:"p",text:"Ions are fired into specific regions through the exposed areas. Phosphorus here. Boron there. The pattern of the mask becomes the pattern of the junctions."},
-        {type:"quote",text:"This is where silicon stops being passive and becomes active."},
-        {type:"p",text:"Each implanted region is a building block. Together, they are transistors — not drawn, not coded, but grown into the material."}
-      ]},
-      {heading:"4. The Metal Layers: Building Connectivity",content:[
-        {type:"p",text:"A transistor alone is silent. It needs something to talk to."},
-        {type:"p",text:"So we add metal. Thin layers of copper deposited and patterned above the silicon, connecting transistors to each other in precisely defined ways."},
-        {type:"p",text:"Modern chips stack many of these layers — routing signals vertically through a microscopic city of wires."},
-        {type:"quote",text:"When you access a peripheral register in firmware, a signal travels through these physical paths."},
-        {type:"p",text:"The AHB bus isn't an abstraction your code talks to. It's copper, etched into silicon, carrying your intent as electrons."}
-      ]},
-      {heading:"5. From Wafer to Chip",content:[
-        {type:"p",text:"By this point, the wafer holds hundreds of identical dies — each one a complete, functional system compressed into a few square millimetres."},
-        {type:"p",text:"The wafer is cut. Each die is packaged, bonded to pins, enclosed in plastic or ceramic. What was once a disk becomes the component you solder to a board."},
-        {type:"p",text:"The hardware is ready. Now it's waiting for someone to tell it what to do."}
-      ]}
-    ],
-    closing:{
-      heading:"Closing Thought",
-      paragraphs:["Nothing magical happened in any of these steps.","Light hit material. Ions were implanted. Metal was deposited. But the result is a system that can compute."],
-      quote:"Intelligence isn't conjured.\nIt's constructed — layer by layer, junction by junction.\n\nWhen you flash your first program, you're not just running code.\nYou're directing a system built from light, chemistry, and controlled imperfection."
+  id:"chemistry-intelligence-part2",
+  series:"The Chemistry of Intelligence",
+  title:"Part 2 — From Sand to Silicon",
+  subtitle:"Silicon is everywhere. Beaches contain it. Rocks contain it. The challenge was never finding silicon — the challenge was purifying it enough for computation.",
+  date:"2026",
+  tags:["Silicon","Manufacturing","Semiconductors","Materials"],
+  sections:[
+    {
+      heading:"1. Silicon Begins as Ordinary Sand",
+      content:[
+        {
+          type:"p",
+          text:"One of the strangest things about modern computing is that its foundation begins as one of the most common materials on Earth."
+        },
+        {
+          type:"p",
+          text:"Silicon is typically found inside silica — a compound made of silicon and oxygen."
+        },
+        {
+          type:"p",
+          text:"Silica exists in sand, quartz, and rocks all around us."
+        },
+        {
+          type:"quote",
+          text:"The starting point of modern intelligence looks surprisingly ordinary."
+        }
+      ]
     },
-    footer:"Part 2 of a series on how intelligence emerges from hardware."
+    {
+      heading:"2. Raw Silicon is Not Good Enough",
+      content:[
+        {
+          type:"p",
+          text:"The problem is purity."
+        },
+        {
+          type:"p",
+          text:"Computation depends on extremely predictable electrical behavior. Even tiny impurities can disrupt how electrons move through the material."
+        },
+        {
+          type:"p",
+          text:"For construction, impurities rarely matter.\nFor semiconductors, they matter enormously."
+        },
+        {
+          type:"p",
+          text:"This means raw silicon extracted from sand is still far too inconsistent for electronics."
+        },
+        {
+          type:"quote",
+          text:"A processor requires material precision far beyond what nature naturally provides."
+        }
+      ]
+    },
+    {
+      heading:"3. Purification: Creating Electronic-Grade Silicon",
+      content:[
+        {
+          type:"p",
+          text:"The silicon purification process removes unwanted atoms until the material reaches extraordinary levels of purity."
+        },
+        {
+          type:"p",
+          text:"Modern semiconductor manufacturing works with silicon purity levels exceeding 99.9999999%."
+        },
+        {
+          type:"p",
+          text:"At this stage, the goal is no longer mining.\nIt is atomic-level control."
+        },
+        {
+          type:"p",
+          text:"The cleaner the crystal structure becomes, the more predictable electron behavior becomes."
+        }
+      ]
+    },
+    {
+      heading:"4. Growing a Crystal",
+      content:[
+        {
+          type:"p",
+          text:"Once purified, the silicon is melted and carefully grown into a single continuous crystal."
+        },
+        {
+          type:"p",
+          text:"This process matters because random crystal structures create inconsistent electrical behavior."
+        },
+        {
+          type:"p",
+          text:"Instead, semiconductor manufacturing tries to create one highly ordered atomic structure extending throughout the material."
+        },
+        {
+          type:"quote",
+          text:"The goal is not just purity.\nThe goal is order."
+        }
+      ]
+    },
+    {
+      heading:"5. Why Structure Matters",
+      content:[
+        {
+          type:"p",
+          text:"Computation depends on predictability."
+        },
+        {
+          type:"p",
+          text:"Every transistor inside a processor must behave almost identically to billions of others."
+        },
+        {
+          type:"p",
+          text:"That level of consistency only becomes possible when the underlying material itself is highly structured."
+        },
+        {
+          type:"p",
+          text:"At this point, silicon is no longer just a material."
+        },
+        {
+          type:"quote",
+          text:"It has become a controlled electronic foundation."
+        }
+      ]
+    }
+  ],
+  closing:{
+    heading:"Closing Thought",
+    paragraphs:[
+      "Modern processors are often described as products of software and electronics.",
+      "But before either could exist, industry first had to learn how to control matter itself."
+    ],
+    quote:"The journey from sand to intelligence begins with purification, precision, and structure."
   },
+  footer:"Part 2 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+},
   {
-    id:"chemistry-of-intelligence-3",
-    series:"The Chemistry of Intelligence",
-    title:"The Chemistry of Intelligence (Part 3): From Switch to Thought",
-    subtitle:"We have silicon that conducts. We have junctions that switch. But a switch sitting alone in silicon doesn't compute anything. Something has to organize the switching — and that's where the real story begins.",
-    date:"2026", tags:["Logic Gates","CPU","Firmware","Embedded"],
-    sections:[
-      {heading:"1. The First Abstraction: Logic",content:[
-        {type:"p",text:"A transistor does one thing — it either lets current through or it doesn't. That's the whole vocabulary."},
-        {type:"p",text:"But here's what I find remarkable: from just that one idea, you can build every logical operation that exists."},
-        {type:"p",text:"Group transistors carefully and you get gates — AND, OR, NOT. Each one is a physical arrangement of switches that produces a predictable output based on its inputs."},
-        {type:"quote",text:"These aren't software abstractions sitting on top of hardware.\nThey are the hardware — electrons deciding, in real time, which path to take."}
-      ]},
-      {heading:"2. From Logic to Circuits",content:[
-        {type:"p",text:"A single gate doesn't do much. But connect gates together and something changes."},
-        {type:"p",text:"Adders emerge. Multiplexers. Flip-flops — structures that don't just process signals, they hold them. State enters the picture."},
-        {type:"quote",text:"State is what turns logic into behavior."},
-        {type:"p",text:"A system that can remember is fundamentally different from one that can only react. This is the scaffolding that computation is built on."}
-      ]},
-      {heading:"3. The Birth of the CPU",content:[
-        {type:"p",text:"Scale this further — an arithmetic unit, a set of registers, a control unit that orchestrates all of it — and you have something that can run instructions."},
-        {type:"p",text:"The CPU."},
-        {type:"p",text:"What matters here is that the CPU doesn't think. It executes. Fetch, decode, execute, write back. Millions of times per second. Relentlessly mechanical."},
-        {type:"quote",text:"Execution is not understanding.\nBut at sufficient speed and scale, it becomes indistinguishable from it."}
-      ]},
-      {heading:"4. What an Instruction Really Means",content:[
-        {type:"p",text:"Consider something as ordinary as this:"},
-        {type:"code",text:"a = b + c;"},
-        {type:"p",text:"That single line decomposes into a chain of physical events — values loaded from memory, moved into registers, summed by the ALU, written back. Each step is a cascade of gates opening and closing."},
-        {type:"quote",text:"Code isn't executed in the abstract.\nIt's translated into a sequence of electrical events happening in real silicon."}
-      ]},
-      {heading:"5. Timing: The Invisible Constraint",content:[
-        {type:"p",text:"None of this works without a clock."},
-        {type:"p",text:"The clock is what coordinates everything — it defines when signals are valid, when state updates, when the next instruction begins. Without it, gates would fire in arbitrary order and the whole thing would collapse into noise."},
-        {type:"quote",text:"This is why real-time systems aren't really about being fast.\nThey're about being predictable."},
-        {type:"p",text:"Every wait state, every pipeline stall, every interrupt latency — it all traces back to this: logic needs time, and time must be controlled."}
-      ]},
-      {heading:"6. Firmware: Entering the System",content:[
-        {type:"p",text:"The stack is now complete. Silicon became junctions. Junctions became transistors. Transistors became logic. Logic became a processor."},
-        {type:"p",text:"And now, you enter."},
-        {type:"p",text:"When you write firmware, you're not creating intelligence from nothing. You're directing a system that was already capable — deciding which paths it takes, when, and in response to what."},
-        {type:"quote",text:"The engineer is the final layer of the stack."}
-      ]}
-    ],
-    closing:{
-      heading:"Closing Thought",
-      paragraphs:["None of what I've described is aware of itself.","There are only switches, timing, and paths — organized with intent."],
-      quote:"And yet, when you put it all together, something emerges that can process, decide, and respond.\n\nIntelligence isn't in the transistor.\nIt's in the structure of decisions across billions of them."
+  id:"chemistry-intelligence-part3",
+
+  series:"The Chemistry of Intelligence",
+
+  title:"Part 3 — From Silicon to Wafer",
+
+  subtitle:"Purified silicon alone is still not enough. Computation requires not only clean material, but a surface precise enough to build billions of microscopic structures repeatedly and reliably.",
+
+  date:"2026",
+
+  tags:["Wafer","Semiconductors","Manufacturing","Silicon"],
+
+  sections:[
+
+    {
+      heading:"1. A Crystal is Still Not a Processor",
+      content:[
+        {
+          type:"p",
+          text:"By this stage, silicon has already been purified and grown into a highly ordered crystal."
+        },
+
+        {
+          type:"p",
+          text:"But a crystal alone cannot perform computation."
+        },
+
+        {
+          type:"p",
+          text:"The challenge now becomes manufacturing — how do you build billions of microscopic electronic structures on top of this material with precision?"
+        },
+
+        {
+          type:"quote",
+          text:"Computation requires not just material control, but geometric control."
+        }
+      ]
     },
-    footer:"Part 3 of a series on how intelligence emerges from hardware."
+
+    {
+      heading:"2. Slicing the Crystal",
+      content:[
+        {
+          type:"p",
+          text:"The large silicon crystal is sliced into extremely thin circular discs."
+        },
+
+        {
+          type:"p",
+          text:"These discs become wafers — the foundation on which processors, memory, sensors, and microcontrollers are built."
+        },
+
+        {
+          type:"p",
+          text:"Each wafer must remain remarkably flat and smooth."
+        },
+
+        {
+          type:"p",
+          text:"Even microscopic irregularities can affect how future transistor structures behave."
+        },
+
+        {
+          type:"quote",
+          text:"At nanometer scales, tiny imperfections become engineering problems."
+        }
+      ]
+    },
+
+    {
+      heading:"3. Why Wafers Are Circular",
+      content:[
+        {
+          type:"p",
+          text:"The circular shape is not aesthetic."
+        },
+
+        {
+          type:"p",
+          text:"It emerges naturally from how the crystal itself is grown and processed."
+        },
+
+        {
+          type:"p",
+          text:"Circular wafers also distribute thermal and mechanical stress more evenly during manufacturing."
+        },
+
+        {
+          type:"p",
+          text:"This matters because semiconductor fabrication involves repeated heating, cooling, coating, etching, and chemical processing."
+        }
+      ]
+    },
+
+    {
+      heading:"4. The Wafer as a Manufacturing Surface",
+      content:[
+        {
+          type:"p",
+          text:"A wafer is not a chip."
+        },
+
+        {
+          type:"p",
+          text:"It is better understood as a construction platform."
+        },
+
+        {
+          type:"p",
+          text:"Modern wafers may contain hundreds of identical processor dies fabricated simultaneously across a single surface."
+        },
+
+        {
+          type:"p",
+          text:"This is one reason semiconductor manufacturing became scalable."
+        },
+
+        {
+          type:"quote",
+          text:"Instead of building one processor at a time, industry learned how to manufacture entire fields of computation together."
+        }
+      ]
+    },
+
+    {
+      heading:"5. Preparing for Structure",
+      content:[
+        {
+          type:"p",
+          text:"At this point, the wafer is still mostly passive material."
+        },
+
+        {
+          type:"p",
+          text:"No intelligence exists yet. No instructions execute. No logic gates operate."
+        },
+
+        {
+          type:"p",
+          text:"But the foundation is now ready for the next transformation."
+        },
+
+        {
+          type:"p",
+          text:"The surface has become precise enough to begin engineering electrical behavior directly into the material itself."
+        },
+
+        {
+          type:"quote",
+          text:"The wafer is where chemistry begins turning into architecture."
+        }
+      ]
+    }
+
+  ],
+
+  closing:{
+    heading:"Closing Thought",
+
+    paragraphs:[
+      "The modern processor is often imagined as a tiny object hidden inside a device.",
+      "But before it becomes a processor, it first exists as a carefully engineered surface designed for microscopic construction."
+    ],
+
+    quote:"Before computation can emerge, matter must first become manufacturable."
   },
+
+  footer:"Part 3 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+},
+{
+  id:"chemistry-intelligence-part4",
+
+  series:"The Chemistry of Intelligence",
+
+  title:"Part 4 — From Wafer to Transistor",
+
+  subtitle:"A wafer is still only structured material. Intelligence begins much later — when we learn how to control the movement of electrons across specific regions of silicon.",
+
+  date:"2026",
+
+  tags:["Transistor","Semiconductors","Photolithography","Electronics"],
+
+  sections:[
+
+    {
+      heading:"1. The Problem of Control",
+      content:[
+        {
+          type:"p",
+          text:"At this stage, we have a highly purified silicon wafer with an extremely precise surface."
+        },
+
+        {
+          type:"p",
+          text:"But the wafer itself still does nothing."
+        },
+
+        {
+          type:"p",
+          text:"For computation to exist, engineers needed a way to control how electrons move through very small regions of material."
+        },
+
+        {
+          type:"quote",
+          text:"The challenge was no longer creating silicon.\nThe challenge was engineering behavior into it."
+        }
+      ]
+    },
+
+    {
+      heading:"2. Writing Patterns with Light",
+      content:[
+        {
+          type:"p",
+          text:"Modern processors are not carved mechanically."
+        },
+
+        {
+          type:"p",
+          text:"Instead, semiconductor manufacturing uses light, chemistry, and extremely precise patterning."
+        },
+
+        {
+          type:"p",
+          text:"A light-sensitive layer called photoresist is applied to the wafer."
+        },
+
+        {
+          type:"p",
+          text:"Ultraviolet light passes through masks containing microscopic circuit patterns."
+        },
+
+        {
+          type:"p",
+          text:"These patterns define where future electronic structures will exist."
+        },
+
+        {
+          type:"quote",
+          text:"At this scale, architecture is physically printed into matter."
+        }
+      ]
+    },
+
+    {
+      heading:"3. Doping: Changing Electrical Behavior",
+      content:[
+        {
+          type:"p",
+          text:"The next step is modifying selected regions of silicon itself."
+        },
+
+        {
+          type:"p",
+          text:"This process — called doping — introduces carefully chosen impurities into the material."
+        },
+
+        {
+          type:"p",
+          text:"Some regions gain extra electrons.\nOthers develop electron shortages called holes."
+        },
+
+        {
+          type:"p",
+          text:"This changes how electrical charge moves through different parts of the wafer."
+        },
+
+        {
+          type:"quote",
+          text:"The material is no longer uniform.\nDifferent regions now behave differently."
+        }
+      ]
+    },
+
+    {
+      heading:"4. The Birth of the Junction",
+      content:[
+        {
+          type:"p",
+          text:"When differently doped regions meet, a junction forms."
+        },
+
+        {
+          type:"p",
+          text:"This boundary behaves in unusual ways."
+        },
+
+        {
+          type:"p",
+          text:"Current may flow under certain conditions and stop under others."
+        },
+
+        {
+          type:"p",
+          text:"For the first time, electrical behavior becomes controllable."
+        },
+
+        {
+          type:"quote",
+          text:"This is the moment silicon stops being passive material and starts behaving like a system."
+        }
+      ]
+    },
+
+    {
+      heading:"5. The Transistor",
+      content:[
+        {
+          type:"p",
+          text:"A transistor is ultimately a controllable electronic switch."
+        },
+
+        {
+          type:"p",
+          text:"Small electrical signals determine whether current is allowed to flow or blocked."
+        },
+
+        {
+          type:"p",
+          text:"Individually, a transistor is simple."
+        },
+
+        {
+          type:"p",
+          text:"But modern processors contain billions of them interacting together."
+        },
+
+        {
+          type:"quote",
+          text:"Computation emerges when billions of microscopic switches begin coordinating behavior."
+        }
+      ]
+    }
+
+  ],
+
+  closing:{
+    heading:"Closing Thought",
+
+    paragraphs:[
+      "At the beginning of this series, silicon was just a material found in sand.",
+      "Now it has become something else entirely — a controllable electronic structure capable of making decisions."
+    ],
+
+    quote:"The transistor is where chemistry stops looking like matter and starts looking like intelligence."
+  },
+
+  footer:"Part 4 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+},
+  {
+  id:"chemistry-intelligence-part5",
+
+  series:"The Chemistry of Intelligence",
+
+  title:"Part 5 — From Transistor to CPU",
+
+  subtitle:"A transistor alone does not compute. Intelligence only begins to emerge when billions of switches become organized into systems capable of storing state, processing signals, and coordinating decisions.",
+
+  date:"2026",
+
+  tags:["CPU","Logic Gates","Transistors","Computation"],
+
+  sections:[
+
+    {
+      heading:"1. A Single Transistor Changes Nothing",
+      content:[
+        {
+          type:"p",
+          text:"By itself, a transistor is remarkably simple."
+        },
+
+        {
+          type:"p",
+          text:"It controls whether electrical current flows or stops."
+        },
+
+        {
+          type:"p",
+          text:"Individually, that behavior is not intelligent.\nIt is just controlled switching."
+        },
+
+        {
+          type:"quote",
+          text:"Computation does not emerge from a single switch.\nIt emerges from organization."
+        }
+      ]
+    },
+
+    {
+      heading:"2. Building Logic",
+      content:[
+        {
+          type:"p",
+          text:"When transistors are connected together, they begin forming logic gates."
+        },
+
+        {
+          type:"p",
+          text:"These gates create predictable decision behavior:"
+        },
+
+        {
+          type:"p",
+          text:"AND gates require multiple conditions.\nOR gates accept alternative conditions.\nNOT gates reverse states."
+        },
+
+        {
+          type:"p",
+          text:"At this stage, electrical switching starts becoming logical structure."
+        },
+
+        {
+          type:"quote",
+          text:"Matter is no longer only conducting electricity.\nIt is beginning to process relationships."
+        }
+      ]
+    },
+
+    {
+      heading:"3. From Logic to Memory",
+      content:[
+        {
+          type:"p",
+          text:"Logic alone is not enough."
+        },
+
+        {
+          type:"p",
+          text:"A useful system must also remember previous states."
+        },
+
+        {
+          type:"p",
+          text:"Special transistor arrangements create memory cells capable of storing binary values."
+        },
+
+        {
+          type:"p",
+          text:"Now the system can preserve information over time."
+        },
+
+        {
+          type:"quote",
+          text:"The moment a system remembers state, behavior becomes far more complex."
+        }
+      ]
+    },
+
+    {
+      heading:"4. Coordination Through Timing",
+      content:[
+        {
+          type:"p",
+          text:"As transistor networks grow larger, coordination becomes critical."
+        },
+
+        {
+          type:"p",
+          text:"Signals must move in the correct order and at predictable times."
+        },
+
+        {
+          type:"p",
+          text:"This is why processors depend on clocks — synchronized timing systems controlling when operations occur."
+        },
+
+        {
+          type:"p",
+          text:"Without timing, billions of transistors would behave chaotically."
+        },
+
+        {
+          type:"quote",
+          text:"Computation is not only logic.\nIt is organized timing."
+        }
+      ]
+    },
+
+    {
+      heading:"5. The CPU",
+      content:[
+        {
+          type:"p",
+          text:"Eventually, these systems become organized into processors."
+        },
+
+        {
+          type:"p",
+          text:"Arithmetic units perform calculations.\nRegisters store temporary state.\nControl logic coordinates execution."
+        },
+
+        {
+          type:"p",
+          text:"Instructions move through these structures continuously."
+        },
+
+        {
+          type:"p",
+          text:"Every operation — from simple addition to artificial intelligence inference — ultimately becomes orchestrated electrical behavior across billions of transistors."
+        },
+
+        {
+          type:"quote",
+          text:"The CPU is not a thinking machine.\nIt is a precisely coordinated system of physical decisions."
+        }
+      ]
+    }
+
+  ],
+
+  closing:{
+    heading:"Closing Thought",
+
+    paragraphs:[
+      "At the beginning of this series, intelligence seemed distant from chemistry.",
+      "Now the connection becomes unavoidable."
+    ],
+
+    quote:"Modern computation is ultimately the result of matter organized carefully enough to control information, timing, and behavior."
+  },
+
+  footer:"Part 5 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+},
+  ,
 {
   id:"illusion-of-software",
+
   series:"Explorations",
+
   title:"The Illusion of Software",
-  subtitle:"We talk about software as if it exists independently. But in embedded systems, software is never really separate from hardware. The deeper you go, the harder that illusion becomes to maintain.",
+
+  subtitle:"We often talk about software as if it exists independently from hardware. But the deeper you go into embedded systems, the harder that separation becomes to believe.",
+
   date:"2026",
+
   tags:["Embedded Systems","Firmware","Hardware","Systems Thinking"],
 
   sections:[
+
     {
       heading:"1. Software Feels Abstract",
       content:[
         {
           type:"p",
-          text:"Most modern software development happens several layers above the machine. APIs call libraries. Libraries call frameworks. Frameworks eventually reach hardware — but the hardware itself disappears behind abstraction."
+          text:"Most modern software development happens several layers above the machine itself."
         },
+
         {
           type:"p",
-          text:"And honestly, that's useful. Abstractions let us build systems faster."
+          text:"Frameworks call libraries. Libraries call operating systems. Operating systems eventually interact with hardware."
         },
+
+        {
+          type:"p",
+          text:"At some point, the physical system underneath disappears from view."
+        },
+
         {
           type:"quote",
-          text:"But abstraction also creates distance."
-        },
-        {
-          type:"p",
-          text:"In embedded systems, that distance starts collapsing very quickly."
+          text:"Modern software succeeds partly because it hides the machine beneath it."
         }
       ]
     },
 
     {
-      heading:"2. A Register Write is a Physical Event",
+      heading:"2. Embedded Systems Break the Illusion",
       content:[
         {
           type:"p",
-          text:"Consider something extremely ordinary:"
+          text:"Embedded systems feel different because the hardware never fully disappears."
         },
+
+        {
+          type:"p",
+          text:"Memory is limited. Timing matters. Voltage levels matter. Physical interfaces matter."
+        },
+
+        {
+          type:"p",
+          text:"Even small delays can change how the system behaves."
+        },
+
+        {
+          type:"quote",
+          text:"In embedded systems, software is constantly negotiating with physics."
+        }
+      ]
+    },
+
+    {
+      heading:"3. A Register Write is a Physical Event",
+      content:[
+        {
+          type:"p",
+          text:"Consider a simple firmware operation:"
+        },
+
         {
           type:"code",
           text:"GPIOA->ODR |= (1 << 5);"
         },
+
         {
           type:"p",
-          text:"At first glance, this feels like software manipulating memory."
+          text:"At first glance, this appears to be software modifying memory."
         },
+
         {
           type:"p",
-          text:"But underneath, something physical changes. Transistors switch. Electrical paths open. Voltage appears on a pin."
+          text:"But underneath, transistors switch states. Electrical paths change. Voltage appears on a physical pin."
         },
+
+        {
+          type:"p",
+          text:"Eventually, something in the real world responds."
+        },
+
         {
           type:"quote",
-          text:"That line of code eventually becomes movement inside silicon."
+          text:"That line of code ultimately becomes movement inside silicon."
         }
       ]
     },
 
     {
-      heading:"3. Timing Changes the Nature of Software",
+      heading:"4. Timing Changes Everything",
       content:[
         {
           type:"p",
-          text:"In many systems, a delay is annoying."
+          text:"In many computing systems, delays are inconvenient."
         },
-        {
-          type:"p",
-          text:"In embedded systems, a delay can break communication, corrupt data, destabilize control loops, or miss real-world events entirely."
-        },
-        {
-          type:"p",
-          text:"This changes how you think about software."
-        },
-        {
-          type:"quote",
-          text:"Real-time systems don't just care about correctness.\nThey care about when correctness happens."
-        }
-      ]
-    },
 
-    {
-      heading:"4. The Hardware Never Disappears",
-      content:[
         {
           type:"p",
-          text:"The deeper I moved into firmware, the more software started feeling less independent."
+          text:"In embedded systems, delays can destabilize communication, corrupt signals, or break synchronization entirely."
         },
+
         {
           type:"p",
-          text:"Memory has physical limits. Clocks drift. Buses stall. Power fluctuates. Interrupts arrive asynchronously."
+          text:"This changes how software is written."
         },
+
         {
           type:"p",
-          text:"The hardware is always participating in the behavior of the system — even when hidden."
+          text:"Correctness alone is not enough.\nBehavior must also happen at the correct time."
         },
+
         {
           type:"quote",
-          text:"Embedded engineering is really the study of constraints pretending to be software."
+          text:"Real-time systems care not only about what happens — but when it happens."
         }
       ]
     },
@@ -601,36 +1284,41 @@ const blogPosts = [
       content:[
         {
           type:"p",
-          text:"As AI moves toward the edge, this distinction matters even more."
+          text:"As computation moves toward the edge, the distinction between software and hardware becomes even less clear."
         },
+
         {
           type:"p",
-          text:"Inference isn't just mathematics anymore. It's memory bandwidth, thermal limits, latency budgets, quantization, scheduling, and power consumption."
+          text:"Machine learning models now run under constraints involving power consumption, memory bandwidth, latency, thermal behavior, and scheduling."
         },
+
         {
           type:"p",
-          text:"The model is only one part of the system."
+          text:"The model itself becomes only one part of the system."
         },
+
         {
           type:"quote",
           text:"At the edge, intelligence becomes a hardware problem again."
         }
       ]
     }
+
   ],
 
   closing:{
     heading:"Closing Thought",
+
     paragraphs:[
-      "Software feels abstract because modern systems are designed to hide the machine beneath them.",
-      "But embedded systems never fully let you forget."
+      "Software often feels abstract because modern systems are designed to hide physical complexity.",
+      "Embedded systems rarely let you forget that complexity completely."
     ],
 
     quote:"The deeper you go into real systems, the more software starts disappearing.\n\nWhat remains is timing, behavior, physics, and control."
   },
 
   footer:""
-} 
+}
 ];
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
