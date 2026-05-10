@@ -102,6 +102,21 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .blog-quote{border-left:3px solid var(--blue);padding-left:1rem;margin:1.5rem 0;color:#94A3B8;font-size:0.95rem;line-height:1.75;white-space:pre-line}
 .blog-code{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:0.85rem;color:#7DD3FC;margin:1.5rem 0;letter-spacing:0.02em}
 
+/* BLOG CARDS */
+.blog-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem 1.75rem;cursor:pointer;transition:border-color 0.2s,transform 0.2s,background 0.2s}
+.blog-card:hover{border-color:var(--blue);transform:translateY(-2px);background:var(--surface2)}
+.blog-series{font-family:var(--mono);font-size:0.68rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem}
+.blog-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;margin-bottom:0.5rem;line-height:1.3}
+.blog-subtitle{font-size:0.85rem;color:#94A3B8;line-height:1.65;margin-bottom:0.75rem;font-weight:300}
+.blog-meta{font-family:var(--mono);font-size:0.7rem;color:var(--muted)}
+
+/* BLOG SERIES CONTINUE LINK */
+.blog-continue{display:inline-flex;align-items:center;gap:0.5rem;margin-top:2.5rem;padding:0.75rem 1.5rem;background:transparent;border:1px solid var(--border);border-radius:8px;color:#E2E8F0;font-family:var(--mono);font-size:0.82rem;cursor:pointer;transition:border-color 0.2s,color 0.2s;text-decoration:none}
+.blog-continue:hover{border-color:var(--blue);color:var(--blue)}
+.blog-continue-label{font-size:0.68rem;color:var(--muted);display:block;margin-bottom:0.2rem;letter-spacing:0.08em;text-transform:uppercase}
+.blog-continue-title{color:#E2E8F0;transition:color 0.2s}
+.blog-continue:hover .blog-continue-title{color:var(--blue)}
+
 /* TABLET */
 @media(max-width:900px){
   .hero-grid{grid-template-columns:1fr}
@@ -182,7 +197,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
       <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem;margin-bottom:2.5rem">
         Exploring how systems evolve from hardware to intelligence.
       </p>
-      <div id="blog-list" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
   <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
@@ -1119,7 +1134,6 @@ const blogPosts = [
 
   footer:"Part 5 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
 },
-  ,
 {
   id:"illusion-of-software",
 
@@ -1308,93 +1322,189 @@ function showPage(page) {
 }
 
 // ─── BLOG LIST ────────────────────────────────────────────────────────────────
-function renderBlogs(page = 1) {
+// Newest first: last entry in array = most recent, shown on page 1.
+// To add a new post, push it to the END of blogPosts — it will appear first automatically.
+const blogPostsOrdered = blogPosts.slice().reverse();
+
+function renderBlogs(page) {
+  page = page || 1;
   currentBlogPage = page;
+
   const container = document.getElementById('blogList');
+  if (!container) return;
+
+  const totalPages = Math.ceil(blogPostsOrdered.length / BLOGS_PER_PAGE);
+  // Clamp page to valid range
+  if (page < 1) page = 1;
+  if (page > totalPages) page = totalPages;
+  currentBlogPage = page;
+
   const start = (page - 1) * BLOGS_PER_PAGE;
-  const end = start + BLOGS_PER_PAGE;
-  const visiblePosts = blogPosts.slice(start, end);
-  container.innerHTML = visiblePosts.map(post => `
-    <div class="blog-card" onclick="openBlog('${post.id}')">
-      <div class="blog-series">${post.series}</div>
-      <div class="blog-title">${post.title}</div>
-      <div class="blog-subtitle">${post.subtitle}</div>
-      <div class="blog-meta">
-        <span>${post.date}</span>
-      </div>
-    </div>
-  `).join('');
-  renderPagination();
+  const slice = blogPostsOrdered.slice(start, start + BLOGS_PER_PAGE);
+
+  container.innerHTML = slice.map(function(post) {
+    // Series badge: show "Part X of 5" only for Chemistry series
+    var seriesBadge = '';
+    if (post.series === 'The Chemistry of Intelligence' && typeof post.part === 'number') {
+      seriesBadge = '<div style="font-family:var(--mono);font-size:0.65rem;color:#3B82F6;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem">'
+        + escHtml(post.series) + ' &middot; Part ' + post.part + ' of 5</div>';
+    } else {
+      seriesBadge = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem">'
+        + escHtml(post.series) + '</div>';
+    }
+    return '<div class="blog-card" onclick="openBlog(\'' + post.id + '\')">'
+      + seriesBadge
+      + '<div class="blog-title">' + escHtml(post.title) + '</div>'
+      + '<div class="blog-subtitle">' + escHtml(post.subtitle) + '</div>'
+      + '<div class="blog-meta"><span>' + escHtml(post.date) + '</span></div>'
+      + '</div>';
+  }).join('');
+
+  renderPagination(totalPages);
 }
 
-function renderPagination() {
-  const totalPages = Math.ceil(blogPosts.length / BLOGS_PER_PAGE);
+function renderPagination(totalPages) {
+  // Remove stale pagination node if it exists
+  var old = document.getElementById('blogPagination');
+  if (old) old.remove();
+
   if (totalPages <= 1) return;
-  let pagination = document.getElementById('pagination');
-  if (!pagination) {
-    pagination = document.createElement('div');
-    pagination.id = 'pagination';
-    pagination.style.marginTop = '3rem';
-    pagination.style.display = 'flex';
-    pagination.style.justifyContent = 'center';
-    pagination.style.gap = '1rem';
-    document.getElementById('blogList').after(pagination);
-  }
-  let html = '';
+
+  var wrap = document.createElement('div');
+  wrap.id = 'blogPagination';
+  wrap.style.cssText = 'margin-top:2.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap';
+
+  var parts = [];
+
+  // ← Previous
   if (currentBlogPage > 1) {
-    html += `<span class="tag" style="cursor:pointer" onclick="renderBlogs(${currentBlogPage - 1})">← Prev</span>`;
+    parts.push('<button onclick="renderBlogs(' + (currentBlogPage - 1) + ')" style="'
+      + 'background:transparent;border:1px solid var(--border);border-radius:6px;'
+      + 'color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;'
+      + 'cursor:pointer;transition:border-color 0.2s,color 0.2s"'
+      + ' onmouseover="this.style.borderColor=\'#3B82F6\';this.style.color=\'#3B82F6\'"'
+      + ' onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\';this.style.color=\'#64748B\'"'
+      + '>← Prev</button>');
   }
-  for (let i = 1; i <= totalPages; i++) {
-    html += `
-      <span
-        class="tag"
-        style="cursor:pointer; ${i === currentBlogPage ? 'border-color:#3B82F6;color:#3B82F6;' : ''}"
-        onclick="renderBlogs(${i})"
-      >
-        ${i}
-      </span>
-    `;
+
+  // Page numbers
+  for (var i = 1; i <= totalPages; i++) {
+    var isCurrent = i === currentBlogPage;
+    var style = isCurrent
+      ? 'background:var(--blue);border:1px solid var(--blue);border-radius:6px;color:#fff;font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.75rem;cursor:default'
+      : 'background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.75rem;cursor:pointer;transition:border-color 0.2s,color 0.2s';
+    var hover = isCurrent ? '' 
+      : ' onmouseover="this.style.borderColor=\'#3B82F6\';this.style.color=\'#3B82F6\'"'
+      + ' onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\';this.style.color=\'#64748B\'"';
+    var click = isCurrent ? '' : ' onclick="renderBlogs(' + i + ')"';
+    parts.push('<button style="' + style + '"' + hover + click + '>' + i + '</button>');
   }
+
+  // Next →
   if (currentBlogPage < totalPages) {
-    html += `<span class="tag" style="cursor:pointer" onclick="renderBlogs(${currentBlogPage + 1})">Next →</span>`;
+    parts.push('<button onclick="renderBlogs(' + (currentBlogPage + 1) + ')" style="'
+      + 'background:transparent;border:1px solid var(--border);border-radius:6px;'
+      + 'color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;'
+      + 'cursor:pointer;transition:border-color 0.2s,color 0.2s"'
+      + ' onmouseover="this.style.borderColor=\'#3B82F6\';this.style.color=\'#3B82F6\'"'
+      + ' onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\';this.style.color=\'#64748B\'"'
+      + '>Next →</button>');
   }
-  pagination.innerHTML = html;
+
+  wrap.innerHTML = parts.join('');
+  document.getElementById('blogList').after(wrap);
 }
-  
+
 // ─── BLOG READER ──────────────────────────────────────────────────────────────
-function openBlog(index) {
-  const post = blogPosts[index];
+var CHEMISTRY_SERIES = 'The Chemistry of Intelligence';
 
-  const sectionsHtml = post.sections.map(sec => `
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(sec.heading)}</h2>
-      ${sec.content.map(block => {
-        if (block.type === 'p')     return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${escHtml(block.text)}</p>`;
-        if (block.type === 'quote') return `<div class="blog-quote">${escHtml(block.text)}</div>`;
-        if (block.type === 'code')  return `<div class="blog-code">${escHtml(block.text)}</div>`;
-        return '';
-      }).join('')}
-    </div>
-  `).join('');
+function openBlog(postId) {
+  var post = blogPosts.find(function(p) { return p.id === postId; });
+  if (!post) return;
 
-  const closingParas = post.closing.paragraphs.map(p =>
-    `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">${escHtml(p)}</p>`
-  ).join('');
+  var isSeries = (post.series === CHEMISTRY_SERIES && typeof post.part === 'number');
 
-  document.getElementById('blog-post-content').innerHTML = `
-    <div class="section-label" style="margin-bottom:0.75rem">// ${escHtml(post.series)}</div>
-    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">${escHtml(post.title)}</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">${escHtml(post.subtitle)}</p>
-    <div class="tags" style="margin-bottom:3rem">${post.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}</div>
-    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    ${sectionsHtml}
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(post.closing.heading)}</h2>
-      ${closingParas}
-      <div class="blog-quote">${escHtml(post.closing.quote)}</div>
-    </div>
-    <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);font-family:var(--mono);font-size:0.75rem;color:#64748B">${escHtml(post.footer)}</div>
-  `;
+  // ── Series label above title (Chemistry series only) ──────────────────────
+  var seriesLabelHtml = '';
+  if (isSeries) {
+    seriesLabelHtml = '<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;'
+      + 'letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">'
+      + escHtml(post.series) + ' &nbsp;·&nbsp; Part ' + post.part + ' of 5'
+      + '</div>';
+  }
+
+  // ── Sections ──────────────────────────────────────────────────────────────
+  var sectionsHtml = post.sections.map(function(sec) {
+    var blocksHtml = sec.content.map(function(block) {
+      if (block.type === 'p')     return '<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">' + escHtml(block.text) + '</p>';
+      if (block.type === 'quote') return '<div class="blog-quote">' + escHtml(block.text) + '</div>';
+      if (block.type === 'code')  return '<div class="blog-code">' + escHtml(block.text) + '</div>';
+      return '';
+    }).join('');
+    return '<div style="margin-bottom:2.5rem">'
+      + '<h2 style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">' + escHtml(sec.heading) + '</h2>'
+      + blocksHtml
+      + '</div>';
+  }).join('');
+
+  // ── Closing ───────────────────────────────────────────────────────────────
+  var closingParas = post.closing.paragraphs.map(function(p) {
+    return '<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">' + escHtml(p) + '</p>';
+  }).join('');
+
+  var closingHtml = '<div style="margin-bottom:2.5rem">'
+    + '<h2 style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">' + escHtml(post.closing.heading) + '</h2>'
+    + closingParas
+    + '<div class="blog-quote">' + escHtml(post.closing.quote) + '</div>'
+    + '</div>';
+
+  // ── Series prev / next navigation (Chemistry series only) ─────────────────
+  var seriesNavHtml = '';
+  if (isSeries) {
+    var prevPost = blogPosts.find(function(p) { return p.series === CHEMISTRY_SERIES && p.part === post.part - 1; });
+    var nextPost = blogPosts.find(function(p) { return p.series === CHEMISTRY_SERIES && p.part === post.part + 1; });
+
+    // Build individual nav buttons
+    var prevBtn = prevPost
+      ? '<button onclick="openBlog(\'' + prevPost.id + '\')" style="'
+        + 'flex:1;min-width:0;background:transparent;border:1px solid var(--border);border-radius:8px;'
+        + 'padding:0.9rem 1.1rem;cursor:pointer;text-align:left;transition:border-color 0.2s"'
+        + ' onmouseover="this.style.borderColor=\'#3B82F6\'" onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\'">'
+        + '<div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.08em;margin-bottom:0.3rem">← Previous</div>'
+        + '<div style="font-family:\'Syne\',sans-serif;font-weight:600;font-size:0.88rem;color:#E2E8F0">' + escHtml(prevPost.title) + '</div>'
+        + '</button>'
+      : '<div style="flex:1"></div>'; // empty spacer to keep layout balanced
+
+    var nextBtn = nextPost
+      ? '<button onclick="openBlog(\'' + nextPost.id + '\')" style="'
+        + 'flex:1;min-width:0;background:transparent;border:1px solid var(--border);border-radius:8px;'
+        + 'padding:0.9rem 1.1rem;cursor:pointer;text-align:right;transition:border-color 0.2s"'
+        + ' onmouseover="this.style.borderColor=\'#3B82F6\'" onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\'">'
+        + '<div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.08em;margin-bottom:0.3rem">Continue →</div>'
+        + '<div style="font-family:\'Syne\',sans-serif;font-weight:600;font-size:0.88rem;color:#E2E8F0">' + escHtml(nextPost.title) + '</div>'
+        + '</button>'
+      : ''; // Part 5 has no next — nothing rendered
+
+    seriesNavHtml = '<div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)">'
+      + '<div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem">'
+      + escHtml(CHEMISTRY_SERIES) + '</div>'
+      + '<div style="display:flex;gap:1rem;align-items:stretch">'
+      + prevBtn + nextBtn
+      + '</div>'
+      + '</div>';
+  }
+  // No series nav and no footer for exploration / standalone blogs
+
+  // ── Assemble full post ────────────────────────────────────────────────────
+  document.getElementById('blog-post-content').innerHTML =
+    seriesLabelHtml
+    + '<h1 style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">' + escHtml(post.title) + '</h1>'
+    + '<p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">' + escHtml(post.subtitle) + '</p>'
+    + '<div class="tags" style="margin-bottom:3rem">' + post.tags.map(function(t) { return '<span class="tag">' + escHtml(t) + '</span>'; }).join('') + '</div>'
+    + '<div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>'
+    + sectionsHtml
+    + closingHtml
+    + seriesNavHtml;
 
   showPage('blog-post');
 }
@@ -1462,7 +1572,7 @@ function escHtml(str) {
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-renderBlogList();
+renderBlogs(1);
 
 // ___Link to About page _________________________________________________________
 window.addEventListener("DOMContentLoaded", () => {
