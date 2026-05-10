@@ -353,10 +353,14 @@ const nodes = [
   }
 ];
 
+const BLOGS_PER_PAGE = 6;
+let currentBlogPage = 1;
+
 const blogPosts = [
   {
   id:"chemistry-intelligence-part1",
   series:"The Chemistry of Intelligence",
+  part:1,
   title:"Part 1 — Why Silicon?",
   subtitle:"Before processors, memory, or artificial intelligence, there is a material choice. Computation did not emerge from just any element — it emerged from silicon. The question is why.",
   date:"2026",
@@ -494,6 +498,7 @@ const blogPosts = [
   {
   id:"chemistry-intelligence-part2",
   series:"The Chemistry of Intelligence",
+  part:2,
   title:"Part 2 — From Sand to Silicon",
   subtitle:"Silicon is everywhere. Beaches contain it. Rocks contain it. The challenge was never finding silicon — the challenge was purifying it enough for computation.",
   date:"2026",
@@ -625,19 +630,13 @@ const blogPosts = [
 },
   {
   id:"chemistry-intelligence-part3",
-
   series:"The Chemistry of Intelligence",
-
+  part:3,
   title:"Part 3 — From Silicon to Wafer",
-
   subtitle:"Purified silicon alone is still not enough. Computation requires not only clean material, but a surface precise enough to build billions of microscopic structures repeatedly and reliably.",
-
   date:"2026",
-
   tags:["Wafer","Semiconductors","Manufacturing","Silicon"],
-
   sections:[
-
     {
       heading:"1. A Crystal is Still Not a Processor",
       content:[
@@ -645,24 +644,20 @@ const blogPosts = [
           type:"p",
           text:"By this stage, silicon has already been purified and grown into a highly ordered crystal."
         },
-
         {
           type:"p",
           text:"But a crystal alone cannot perform computation."
         },
-
         {
           type:"p",
           text:"The challenge now becomes manufacturing — how do you build billions of microscopic electronic structures on top of this material with precision?"
         },
-
         {
           type:"quote",
           text:"Computation requires not just material control, but geometric control."
         }
       ]
     },
-
     {
       heading:"2. Slicing the Crystal",
       content:[
@@ -670,29 +665,24 @@ const blogPosts = [
           type:"p",
           text:"The large silicon crystal is sliced into extremely thin circular discs."
         },
-
         {
           type:"p",
           text:"These discs become wafers — the foundation on which processors, memory, sensors, and microcontrollers are built."
         },
-
         {
           type:"p",
           text:"Each wafer must remain remarkably flat and smooth."
         },
-
         {
           type:"p",
           text:"Even microscopic irregularities can affect how future transistor structures behave."
         },
-
         {
           type:"quote",
           text:"At nanometer scales, tiny imperfections become engineering problems."
         }
       ]
     },
-
     {
       heading:"3. Why Wafers Are Circular",
       content:[
@@ -700,24 +690,20 @@ const blogPosts = [
           type:"p",
           text:"The circular shape is not aesthetic."
         },
-
         {
           type:"p",
           text:"It emerges naturally from how the crystal itself is grown and processed."
         },
-
         {
           type:"p",
           text:"Circular wafers also distribute thermal and mechanical stress more evenly during manufacturing."
         },
-
         {
           type:"p",
           text:"This matters because semiconductor fabrication involves repeated heating, cooling, coating, etching, and chemical processing."
         }
       ]
     },
-
     {
       heading:"4. The Wafer as a Manufacturing Surface",
       content:[
@@ -725,29 +711,24 @@ const blogPosts = [
           type:"p",
           text:"A wafer is not a chip."
         },
-
         {
           type:"p",
           text:"It is better understood as a construction platform."
         },
-
         {
           type:"p",
           text:"Modern wafers may contain hundreds of identical processor dies fabricated simultaneously across a single surface."
         },
-
         {
           type:"p",
           text:"This is one reason semiconductor manufacturing became scalable."
         },
-
         {
           type:"quote",
           text:"Instead of building one processor at a time, industry learned how to manufacture entire fields of computation together."
         }
       ]
     },
-
     {
       heading:"5. Preparing for Structure",
       content:[
@@ -755,49 +736,39 @@ const blogPosts = [
           type:"p",
           text:"At this point, the wafer is still mostly passive material."
         },
-
         {
           type:"p",
           text:"No intelligence exists yet. No instructions execute. No logic gates operate."
         },
-
         {
           type:"p",
           text:"But the foundation is now ready for the next transformation."
         },
-
         {
           type:"p",
           text:"The surface has become precise enough to begin engineering electrical behavior directly into the material itself."
         },
-
         {
           type:"quote",
           text:"The wafer is where chemistry begins turning into architecture."
         }
       ]
     }
-
   ],
-
   closing:{
     heading:"Closing Thought",
-
     paragraphs:[
       "The modern processor is often imagined as a tiny object hidden inside a device.",
       "But before it becomes a processor, it first exists as a carefully engineered surface designed for microscopic construction."
     ],
-
     quote:"Before computation can emerge, matter must first become manufacturable."
   },
-
   footer:"Part 3 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
 },
 {
   id:"chemistry-intelligence-part4",
-
   series:"The Chemistry of Intelligence",
-
+  part:4,
   title:"Part 4 — From Wafer to Transistor",
 
   subtitle:"A wafer is still only structured material. Intelligence begins much later — when we learn how to control the movement of electrons across specific regions of silicon.",
@@ -977,7 +948,7 @@ const blogPosts = [
   id:"chemistry-intelligence-part5",
 
   series:"The Chemistry of Intelligence",
-
+  part:5,
   title:"Part 5 — From Transistor to CPU",
 
   subtitle:"A transistor alone does not compute. Intelligence only begins to emerge when billions of switches become organized into systems capable of storing state, processing signals, and coordinating decisions.",
@@ -1337,21 +1308,59 @@ function showPage(page) {
 }
 
 // ─── BLOG LIST ────────────────────────────────────────────────────────────────
-function renderBlogList() {
-  const container = document.getElementById('blog-list');
-  container.innerHTML = blogPosts.map((post, i) => `
-    <div class="info-card" onclick="openBlog(${i})"
-         style="cursor:pointer;transition:border-color 0.2s,transform 0.2s"
-         onmouseover="this.style.borderColor='var(--blue)';this.style.transform='translateY(-2px)'"
-         onmouseout="this.style.borderColor='';this.style.transform=''">
-      <div class="info-card-label">${escHtml(post.series)}</div>
-      <div class="info-card-title" style="font-size:1.05rem;margin-bottom:0.6rem">${escHtml(post.title)}</div>
-      <div class="info-card-text" style="margin-bottom:1rem">${escHtml(post.subtitle)}</div>
-      <div class="tags">${post.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}</div>
+function renderBlogs(page = 1) {
+  currentBlogPage = page;
+  const container = document.getElementById('blogList');
+  const start = (page - 1) * BLOGS_PER_PAGE;
+  const end = start + BLOGS_PER_PAGE;
+  const visiblePosts = blogPosts.slice(start, end);
+  container.innerHTML = visiblePosts.map(post => `
+    <div class="blog-card" onclick="openBlog('${post.id}')">
+      <div class="blog-series">${post.series}</div>
+      <div class="blog-title">${post.title}</div>
+      <div class="blog-subtitle">${post.subtitle}</div>
+      <div class="blog-meta">
+        <span>${post.date}</span>
+      </div>
     </div>
   `).join('');
+  renderPagination();
 }
 
+function renderPagination() {
+  const totalPages = Math.ceil(blogPosts.length / BLOGS_PER_PAGE);
+  if (totalPages <= 1) return;
+  let pagination = document.getElementById('pagination');
+  if (!pagination) {
+    pagination = document.createElement('div');
+    pagination.id = 'pagination';
+    pagination.style.marginTop = '3rem';
+    pagination.style.display = 'flex';
+    pagination.style.justifyContent = 'center';
+    pagination.style.gap = '1rem';
+    document.getElementById('blogList').after(pagination);
+  }
+  let html = '';
+  if (currentBlogPage > 1) {
+    html += `<span class="tag" style="cursor:pointer" onclick="renderBlogs(${currentBlogPage - 1})">← Prev</span>`;
+  }
+  for (let i = 1; i <= totalPages; i++) {
+    html += `
+      <span
+        class="tag"
+        style="cursor:pointer; ${i === currentBlogPage ? 'border-color:#3B82F6;color:#3B82F6;' : ''}"
+        onclick="renderBlogs(${i})"
+      >
+        ${i}
+      </span>
+    `;
+  }
+  if (currentBlogPage < totalPages) {
+    html += `<span class="tag" style="cursor:pointer" onclick="renderBlogs(${currentBlogPage + 1})">Next →</span>`;
+  }
+  pagination.innerHTML = html;
+}
+  
 // ─── BLOG READER ──────────────────────────────────────────────────────────────
 function openBlog(index) {
   const post = blogPosts[index];
