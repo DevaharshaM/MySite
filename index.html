@@ -1303,6 +1303,155 @@ const blogPosts = [
   },
 
   footer:""
+},
+  {
+  id:"why-systems-need-interfaces",
+  series:"Explorations",
+  title:"Why Systems Need Interfaces",
+  subtitle:"A processor can compute internally forever. But without interfaces, it cannot observe, respond, or interact with the physical world around it.",
+  date:"2026",
+  tags:["Embedded Systems","Interfaces","GPIO","Communication"],
+  sections:[
+    {
+      heading:"1. A CPU Exists in Isolation",
+      content:[
+        {
+          type:"p",
+          text:"By the time a processor exists, an enormous amount of engineering has already happened."
+        },
+        {
+          type:"p",
+          text:"Silicon has been purified. Transistors have been fabricated. Logic has been organized into computation."
+        },
+        {
+          type:"p",
+          text:"But even after all of that, a CPU still has a limitation."
+        },
+        {
+          type:"quote",
+          text:"A processor cannot naturally see or affect the physical world."
+        },
+        {
+          type:"p",
+          text:"It only processes internal electrical states."
+        }
+      ]
+    },
+    {
+      heading:"2. Reality is Not Digital",
+      content:[
+        {
+          type:"p",
+          text:"The physical world is continuous."
+        },
+        {
+          type:"p",
+          text:"Temperature changes gradually. Sound behaves as waves. Light intensity varies continuously."
+        },
+        {
+          type:"p",
+          text:"Processors, however, operate through discrete electrical states — transitions interpreted as binary information."
+        },
+        {
+          type:"p",
+          text:"This creates a boundary between computation and reality."
+        },
+
+        {
+          type:"quote",
+          text:"Embedded systems exist largely to bridge that boundary."
+        }
+      ]
+    },
+    {
+      heading:"3. GPIO: The Simplest Connection",
+      content:[
+        {
+          type:"p",
+          text:"One of the simplest forms of interaction is General Purpose Input/Output — GPIO."
+        },
+        {
+          type:"p",
+          text:"At first glance, GPIO feels like software changing a value."
+        },
+        {
+          type:"code",
+          text:"GPIOA->ODR |= (1 << 5);"
+        },
+        {
+          type:"p",
+          text:"But underneath, this changes voltage on a physical pin."
+        },
+        {
+          type:"p",
+          text:"Eventually, something outside the processor responds:\nan LED turns on, a relay switches, a motor moves."
+        },
+        {
+          type:"quote",
+          text:"Interfaces are where software starts influencing reality."
+        }
+      ]
+    },
+    {
+      heading:"4. Why One Interface Was Not Enough",
+      content:[
+        {
+          type:"p",
+          text:"As systems became more complex, simple pins were no longer sufficient."
+        },
+        {
+          type:"p",
+          text:"Some devices needed faster communication.\nOthers needed multiple devices sharing connections.\nSome needed longer-distance reliability."
+        },
+        {
+          type:"p",
+          text:"This is why multiple communication models emerged."
+        },
+        {
+          type:"p",
+          text:"UART prioritized simplicity.\nSPI prioritized speed.\nI2C prioritized scalable device communication."
+        },
+        {
+          type:"quote",
+          text:"Different interfaces exist because systems optimize for different constraints."
+        }
+      ]
+    },
+    {
+      heading:"5. Embedded Systems are Really About Interaction",
+      content:[
+        {
+          type:"p",
+          text:"At a distance, embedded systems appear to be about processors and software."
+        },
+        {
+          type:"p",
+          text:"But much of embedded engineering is actually about controlled interaction with the outside world."
+        },
+        {
+          type:"p",
+          text:"Sensors continuously feed information inward.\nActuators push decisions outward.\nCommunication buses coordinate systems together."
+        },
+        {
+          type:"p",
+          text:"The processor becomes the center of an ongoing exchange between computation and reality."
+        },
+        {
+          type:"quote",
+          text:"A processor becomes useful only when it stops computing in isolation and starts interacting with the world around it."
+        }
+      ]
+    }
+  ],
+  closing:{
+    heading:"Closing Thought",
+    paragraphs:[
+      "Modern computation often feels abstract because most systems hide the physical world beneath layers of software.",
+      "Embedded systems rarely allow that separation completely."
+    ],
+    quote:"Interfaces are not just connections between devices.\n\nThey are connections between computation and reality."
+  },
+  footer:""
 }
 ];
 
