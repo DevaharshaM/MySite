@@ -29,8 +29,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
 .page{display:none}
 .page.active{display:block}
 
-/* EMPTY PAGE */
-.empty-page{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:80px 1.5rem 3rem;text-align:center}
+/* EMPTY PAGE / HOME HERO CONTAINER */
+.empty-page{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;padding:120px 1.5rem 3rem;text-align:center}
 .empty-label{font-family:var(--mono);font-size:0.75rem;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase}
 .empty-title{font-family:'Syne',sans-serif;font-weight:700;font-size:clamp(1.6rem,5vw,2rem);color:#fff;letter-spacing:-0.02em;text-align:center}
 .empty-sub{font-size:0.9rem;color:var(--muted);font-family:var(--mono);text-align:center;max-width:380px;line-height:1.7}
@@ -121,16 +121,11 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .blog-continue:hover .blog-continue-title{color:var(--blue)}
 
 /* EVOLUTION TREE STYLES */
-.tree-container{max-width:600px;margin:0 auto;display:flex;flex-direction:column;align-items:center;padding:120px 1.5rem 5rem;position:relative}
-.tree-header{text-align:center;margin-bottom:3rem}
-.tree-header h1{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:#fff;letter-spacing:-0.02em;margin-bottom:0.5rem}
-.tree-header p{color:var(--muted);font-size:0.95rem;font-weight:300}
-.tree-branch{display:flex;flex-direction:column;align-items:center;width:100%}
-.tree-node{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:100%;max-width:320px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;z-index:2}
+.tree-branch{display:flex;flex-direction:column;align-items:center;width:100%;margin-top:2.5rem}
+.tree-node{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:100%;max-width:320px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;z-index:2}
 .tree-node:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 10px 25px -5px var(--blue-glow)}
-.tree-node-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;letter-spacing:0.02em}
-.tree-node-tag{font-family:var(--mono);font-size:0.65rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.25rem}
-.tree-arrow{width:2px;height:40px;background:linear-gradient(to bottom, var(--blue), transparent);opacity:0.4;margin:0.25rem 0;position:relative;z-index:1}
+.tree-node-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;letter-spacing:0.02em}
+.tree-arrow{width:2px;height:32px;background:linear-gradient(to bottom, var(--blue), transparent);opacity:0.4;margin:0.2rem 0;position:relative;z-index:1}
 
 /* MODAL SYSTEM */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;padding:1.5rem}
@@ -160,7 +155,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   nav{padding:0.9rem 1.25rem;justify-content:center}
   .nav-links{gap:1.5rem}
   .nav-links a{font-size:0.8rem}
-  .empty-page{padding:90px 1.25rem 3rem}
+  .empty-page{padding:100px 1.25rem 3rem}
   .empty-title{font-size:clamp(1.5rem,6vw,1.9rem)}
   .empty-sub{font-size:0.82rem}
   #hero{padding:5.5rem 1.25rem 3rem}
@@ -178,7 +173,6 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   .info-card{padding:1rem 1.1rem}
   footer{padding:2rem 1.25rem}
   .footer-text{font-size:0.68rem}
-  .tree-container{padding-top:100px}
 }
 @media(max-width:380px){
   .nav-links{gap:1rem}
@@ -199,44 +193,49 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 </nav>
 
 <div class="page active" id="page-home">
-  <div class="tree-container">
-    <div class="tree-header">
-      <h1>Systems Evolution</h1>
-      <p>From core physics to adaptive machine cognition</p>
+  <div class="empty-page">
+    <div class="empty-title">From Signal to Intelligence</div>
+    <div class="empty-sub" style="max-width:420px;text-align:center;line-height:1.7">
+      Systems don't just run — they evolve.<br>
+      I explore how they begin, adapt, and think.
     </div>
-    
+
     <div class="tree-branch">
       <div class="tree-node" onclick="openModal('Matter')">
-        <div class="tree-node-tag">// layer_01</div>
         <div class="tree-node-title">Matter</div>
       </div>
       
       <div class="tree-arrow"></div>
       
       <div class="tree-node" onclick="openModal('Computation')">
-        <div class="tree-node-tag">// layer_02</div>
         <div class="tree-node-title">Computation</div>
       </div>
       
       <div class="tree-arrow"></div>
       
       <div class="tree-node" onclick="openModal('Interaction')">
-        <div class="tree-node-tag">// layer_03</div>
         <div class="tree-node-title">Interaction</div>
       </div>
       
       <div class="tree-arrow"></div>
       
       <div class="tree-node" onclick="openModal('Coordination')">
-        <div class="tree-node-tag">// layer_04</div>
         <div class="tree-node-title">Coordination</div>
       </div>
       
       <div class="tree-arrow"></div>
       
       <div class="tree-node" onclick="openModal('Intelligence')">
-        <div class="tree-node-tag">// layer_05</div>
         <div class="tree-node-title">Intelligence</div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Also Explore</div>
+      <div style="display:inline-block;opacity:0.65;border:1px solid var(--border);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:opacity 0.2s"
+           onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.65'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#E2E8F0;margin-bottom:0.3rem">System01</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.08em">In progress</div>
       </div>
     </div>
   </div>
@@ -485,7 +484,6 @@ const blogPosts = [
           type:"p",
           text:"Copper moves electrons easily. Rubber resists them. Glass interacts with light differently from metal."
         },
-
         {
           type:"p",
           text:"Computation also depends on material behavior — specifically, how electrons move through matter."
@@ -1456,7 +1454,7 @@ const blogPosts = [
   footer:""
 },
 {
-id:"the-physical-edge of-software",
+id:"the-physical-edge-of-software",
 category:"Interaction",
 series:"System Explorations",
 title:"The Physical Edge of Software",
@@ -1584,7 +1582,7 @@ function openModal(nodeKey) {
     <ul class="modal-explores-list">
       ${data.explores.map(item => `<li class="modal-explores-item">${escHtml(item)}</li>`).join('')}
     </ul>
-    <button class="btn-primary" style="width:100%; justify-content:center;" onclick="filterBlogsFromModal('${nodeKey}')">Explore Articles →</button>
+    <button class="btn-primary" style="width:100%; justify-content:center;" onclick="filterBlogsFromModal('${nodeKey}')">Explore →</button>
   `;
   
   document.getElementById('nodeModal').classList.add('active');
@@ -1739,7 +1737,7 @@ function openBlog(postId) {
   } else if (post.category) {
     seriesLabelHtml = '<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;'
       + 'letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">'
-      + 'Layer Architecture &nbsp;·&nbsp; ' + escHtml(post.category)
+      + escHtml(post.category)
       + '</div>';
   }
 
