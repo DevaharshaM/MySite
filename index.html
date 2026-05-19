@@ -127,6 +127,12 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .tree-node-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;letter-spacing:0.02em}
 .tree-arrow{width:2px;height:32px;background:linear-gradient(to bottom, var(--blue), transparent);opacity:0.4;margin:0.2rem 0;position:relative;z-index:1}
 
+/* CONTROL FILTER HOUSING */
+.control-housing{display:flex;align-items:center;gap:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.75rem}
+.control-label{font-family:var(--mono);font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.select-dark{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:0.75rem;outline:none;cursor:pointer}
+.select-dark option{background:#1E293B;color:var(--text)}
+
 /* MODAL SYSTEM */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;padding:1.5rem}
 .modal-overlay.active{opacity:1;pointer-events:all}
@@ -245,16 +251,30 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 <div class="page" id="page-blogs">
   <div style="padding-top:80px;min-height:100vh">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1fr; margin-bottom:2.5rem;">
         <div>
-          <h2 class="section-title" id="blogsPageTitle">Articles &amp; Write-ups</h2>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
           <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
             Exploring how systems evolve from hardware to intelligence.
           </p>
         </div>
-        <button id="clearFilterBtn" class="tag" style="display:none; padding:0.4rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearBlogFilter()">
-          Clear Filter [x]
-        </button>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange()">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearBlogFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
       </div>
       <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
@@ -461,6 +481,7 @@ const modalData = {
 const BLOGS_PER_PAGE = 6;
 let currentBlogPage = 1;
 let selectedCategoryFilter = null;
+let currentSortOrder = "newest";
 
 const blogPosts = [
   {
@@ -1225,10 +1246,6 @@ const blogPosts = [
         },
         {
           type:"p",
-          text:"At first glance, this appears to be software modifying memory."
-        },
-        {
-          type:"p",
           text:"But underneath, transistors switch states. Electrical paths change. Voltage appears on a physical pin."
         },
         {
@@ -1599,12 +1616,14 @@ function filterBlogsFromModal(category) {
   document.getElementById('nodeModal').classList.remove('active');
   
   const clearBtn = document.getElementById('clearFilterBtn');
+  const treeBackBtn = document.getElementById('blogsBackToTreeBtn');
   const pageTitle = document.getElementById('blogsPageTitle');
   const pageSubtitle = document.getElementById('blogsPageSubtitle');
   
   if (clearBtn) clearBtn.style.display = 'block';
+  if (treeBackBtn) treeBackBtn.style.display = 'block';
   if (pageTitle) pageTitle.innerText = `Articles: ${category}`;
-  if (pageSubtitle) pageSubtitle.innerText = `Showing all dynamic explorations inside the "${category}" layer.`;
+  if (pageSubtitle) pageSubtitle.innerText = `Showing explorations inside the "${category}" layer.`;
   
   showPage('blogs');
 }
@@ -1613,13 +1632,25 @@ function clearBlogFilter() {
   selectedCategoryFilter = null;
   
   const clearBtn = document.getElementById('clearFilterBtn');
+  const treeBackBtn = document.getElementById('blogsBackToTreeBtn');
   const pageTitle = document.getElementById('blogsPageTitle');
   const pageSubtitle = document.getElementById('blogsPageSubtitle');
   
   if (clearBtn) clearBtn.style.display = 'none';
+  if (treeBackBtn) treeBackBtn.style.display = 'none';
   if (pageTitle) pageTitle.innerText = 'Articles & Write-ups';
   if (pageSubtitle) pageSubtitle.innerText = 'Exploring how systems evolve from hardware to intelligence.';
   
+  renderBlogs(1);
+}
+
+function clearBlogFilterAndGoHome() {
+  clearBlogFilter();
+  showPage('home');
+}
+
+function handleSortChange() {
+  currentSortOrder = document.getElementById('blogSortOrderSelect').value;
   renderBlogs(1);
 }
 
@@ -1631,25 +1662,29 @@ function renderBlogs(page) {
   const container = document.getElementById('blogList');
   if (!container) return;
 
-  let blogPostsOrdered = blogPosts.slice().reverse();
+  let processedBlogs = blogPosts.slice();
   
-  if (selectedCategoryFilter) {
-    blogPostsOrdered = blogPostsOrdered.filter(post => post.category === selectedCategoryFilter);
+  if (currentSortOrder === "newest") {
+    processedBlogs.reverse(); 
   }
 
-  if (blogPostsOrdered.length === 0) {
+  if (selectedCategoryFilter) {
+    processedBlogs = processedBlogs.filter(post => post.category === selectedCategoryFilter);
+  }
+
+  if (processedBlogs.length === 0) {
     container.innerHTML = `<div style="text-align:center; color:var(--muted); font-family:var(--mono); padding:3rem 0;">// No write-ups published under this layer yet</div>`;
     renderPagination(0);
     return;
   }
 
-  const totalPages = Math.ceil(blogPostsOrdered.length / BLOGS_PER_PAGE);
+  const totalPages = Math.ceil(processedBlogs.length / BLOGS_PER_PAGE);
   if (page < 1) page = 1;
   if (page > totalPages) page = totalPages;
   currentBlogPage = page;
 
   const start = (page - 1) * BLOGS_PER_PAGE;
-  const slice = blogPostsOrdered.slice(start, start + BLOGS_PER_PAGE);
+  const slice = processedBlogs.slice(start, start + BLOGS_PER_PAGE);
 
   container.innerHTML = slice.map(function(post) {
     var seriesBadge = '';
