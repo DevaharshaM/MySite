@@ -633,42 +633,49 @@ const demoPosts = [
     id: "edge-ai-uno-mpu6050",
     category: "Intelligence",
     series: "Edge AI Prototypes",
-    title: "On-Device Gesture Intelligence on an 8-bit Target (Uno + MPU6050)",
-    subtitle: "Executing raw mathematical classifications under an unforgiving 2KB SRAM threshold, completely isolated from cloud infrastructure.",
+    title: "Intelligence Under Constraint",
+    subtitle: "How to squeeze a real gesture-recognition algorithm inside an Arduino Uno with only 2KB of RAM.",
     date: "23rd May, 2026",
-    tags: ["Arduino Uno", "MPU6050", "Edge AI", "Bare-Metal Math"],
+    tags: ["Arduino Uno", "MPU6050", "Edge AI", "Fixed-Point Math"],
     sections: [
       {
-        heading: "1. The Tyranny of 2 Kilobytes of SRAM",
+        heading: "1. The 2KB RAM Wall",
         content: [
-          { type: "p", text: "When developers envision Edge AI, they typically target 32-bit ARM Cortex processors or custom hardware accelerators. Deploying an intelligence module onto the ATmega328P demands a total rejection of heavy neural layers." },
-          { type: "p", text: "On an Arduino Uno, memory is the primary engineering constraint. If a model structure breaches 2KB of SRAM, stack overflows instantly corrupt the execution stack. Intelligence here cannot rely on automated runtime interpreters; it must exist as deterministic algorithmic execution." }
+          { type: "p", text: "When we talk about Edge AI, we usually think of powerful chips, massive neural networks, and gigabytes of memory. But what happens when your target is a basic Arduino Uno running an 8-bit ATmega328P processor?" },
+          { type: "p", text: "You get exactly 2 Kilobytes of SRAM. If your code uses even a byte more, the stack crashes, variables corrupt, and the system resets. On this scale, running a heavy AI framework like TensorFlow Lite is out of the question. You have to build smart, efficient code by hand." }
         ]
       },
       {
-        heading: "2. The Physical Layer: Harvesting IMU Vectors",
+        heading: "2. The Hardware: Pulling Raw Sensor Vectors",
         content: [
-          { type: "p", text: "The hardware relies on an MPU6050 connected via I2C. The microcontroller queries the sensor's internal registers to stream 3-axis acceleration and 3-axis angular rotation data over a 400kHz bus." },
-          { type: "code", text: "// Direct wire extraction sequence\nWire.beginTransmission(0x68);\nWire.write(0x3B); // ACCEL_XOUT_H register coordinate\nWire.endTransmission(false);\nWire.requestFrom(0x68, 6);\nint16_t ax = (Wire.read() << 8) | Wire.read();" },
-          { type: "p", text: "Rather than caching heavy time-series arrays, data points must be parsed through compressed sliding windows or compressed into simple statistical footprints (mean, variance, peaks) directly inside the processing loop." }
+          { type: "p", text: "For this setup, I wired an MPU6050 accelerometer and gyroscope to the Uno using the I2C pins (A4 and A5). The sensor continuously measures acceleration and rotation along the X, Y, and Z axes." },
+          { type: "p", text: "Instead of saving hundreds of sensor readings into a massive array—which would instantly kill our 2KB RAM budget—we process the values on the fly. As soon as the raw bytes arrive over the I2C bus, we immediately convert them into basic features like averages, moving peaks, and signal direction." },
+          { type: "code", text: "// Reading raw accelerometer data over the I2C bus\nWire.beginTransmission(0x68); // MPU6050 address\nWire.write(0x3B);             // Register for Accel X High Byte\nWire.endTransmission(false);\nWire.requestFrom(0x68, 6);    // Pull 6 bytes for X, Y, and Z\n\nint16_t rawX = (Wire.read() << 8) | Wire.read();" }
         ]
       },
       {
-        heading: "3. Stripping Down the Model: Pure Array Arrays",
+        heading: "3. Dropping Floats for Speed and Space",
         content: [
-          { type: "p", text: "To make on-device categorization viable, a trained Decision Tree or a pruned, quantized structural pipeline is parsed directly into plain structural arrays inside C++ code." },
-          { type: "p", text: "Floating point math generates considerable binary footprints on an 8-bit core lacking an FPU. By scaling floating values to integer potentials (fixed-point quantization), logic is converted into raw comparative conditionals." },
-          { type: "quote", text: "If (accel_x > 4500) {\n  if (gyro_z < -1200) return GESTURE_A;\n} else {\n  return GESTURE_IDLE;\n}" }
+          { type: "p", text: "The Arduino Uno does not have a hardware Floating Point Unit (FPU). Every time you use a decimal number (like 1.45 or -0.82), the processor has to emulate the math via software, which is incredibly slow and blows up your compiled file size." },
+          { type: "p", text: "To get around this, we use fixed-point quantization. Instead of working with decimals, we scale our values up into raw integers. For example, multiplying a threshold by 1000 lets us do all of our pattern checks using simple, lightning-fast integer logic." }
+        ]
+      },
+      {
+        heading: "4. Turning Logic Into Arrays",
+        content: [
+          { type: "p", text: "Instead of a deep learning model, I trained a highly optimized Decision Tree on my computer using gesture data. Once the tree structure was ready, I exported its exact boundaries as plain C++ conditional logic blocks and small arrays." },
+          { type: "p", text: "The result is an automated processing path that checks raw signals against tight integer limits to map movements instantly." },
+          { type: "quote", text: "if (currentAccelX > 4000) {\n  if (gyroZ < -1500) return GESTURE_WAVE;\n} else {\n  return GESTURE_IDLE;\n}" }
         ]
       }
     ],
     closing: {
-      heading: "System Realization",
+      heading: "How it Performs",
       paragraphs: [
-        "By utilizing raw arrays and fixed-point math, true classification takes less than 1.2KB of program flash memory and executes in under 4 milliseconds.",
-        "This architectural exploration proves that intelligence is not defined by compute size; it is a direct product of resource optimization."
+        "Because everything is written in clean, direct C++ code, the entire pattern-matching sequence runs in less than 4 milliseconds.",
+        "The model uses under 1.1KB of RAM, leaving plenty of room for stable system execution. It proves you don't need expensive hardware to create an intelligent, self-contained edge device."
       ],
-      quote: "When computing power approaches zero, firmware design becomes the ultimate structural optimization puzzle."
+      quote: "True efficiency shines when you build intelligent behavior directly into the hardware limits."
     }
   }
 ];
