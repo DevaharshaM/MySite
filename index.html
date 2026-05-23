@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Devaharsha — Embedded Firmware Engineer</title>
+<title>PrajnaEdge — From Signal to Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
@@ -81,7 +81,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
 .connector-text{font-size:0.82rem;color:#94A3B8;line-height:1.55}
 .connector-text strong{color:var(--blue);font-weight:500}
 .node-cards{display:flex;flex-direction:column;gap:1rem}
-.info-card{background:#0F172A;border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
+.info-card(background:#0F172A;border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem}
 .info-card-label{font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.5rem}
 .info-card-title{font-family:'Syne',sans-serif;font-weight:600;font-size:1rem;color:#fff;margin-bottom:0.5rem}
 .info-card-text{font-size:0.85rem;line-height:1.7;color:#94A3B8}
@@ -96,7 +96,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .fade-in{animation:fadeIn 0.35s ease forwards}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-/* BLOG */
+/* BLOG & DEMO CONTENTCOMMON STYLES */
 .blog-back-btn{background:transparent;border:none;color:var(--muted);font-family:var(--mono);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.4rem;padding:0;letter-spacing:0.05em;margin-bottom:2rem;transition:color 0.2s}
 .blog-back-btn:hover{color:var(--blue)}
 .blog-quote{border-left:3px solid var(--blue);padding-left:1rem;margin:1.5rem 0;color:#94A3B8;font-size:0.95rem;line-height:1.75;white-space:pre-line}
@@ -105,20 +105,13 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .blog-img-wrap img{max-width:100%;width:100%;max-width:900px;height:auto;border-radius:10px;border:1px solid var(--border);box-shadow:0 4px 32px rgba(0,0,0,0.4);display:inline-block}
 .blog-img-caption{margin-top:0.65rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);font-style:italic;text-align:center;letter-spacing:0.02em}
 
-/* BLOG CARDS */
+/* CARD LAYOUTS (USED BY BOTH EXPLORATION & DEMONSTRATION) */
 .blog-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem 1.75rem;cursor:pointer;transition:border-color 0.2s,transform 0.2s,background 0.2s}
 .blog-card:hover{border-color:var(--blue);transform:translateY(-2px);background:var(--surface2)}
 .blog-series{font-family:var(--mono);font-size:0.68rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem}
 .blog-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;color:#fff;margin-bottom:0.5rem;line-height:1.3}
 .blog-subtitle{font-size:0.85rem;color:#94A3B8;line-height:1.65;margin-bottom:0.75rem;font-weight:300}
 .blog-meta{font-family:var(--mono);font-size:0.7rem;color:var(--muted)}
-
-/* BLOG SERIES CONTINUE LINK */
-.blog-continue{display:inline-flex;align-items:center;gap:0.5rem;margin-top:2.5rem;padding:0.75rem 1.5rem;background:transparent;border:1px solid var(--border);border-radius:8px;color:#E2E8F0;font-family:var(--mono);font-size:0.82rem;cursor:pointer;transition:border-color 0.2s,color 0.2s;text-decoration:none}
-.blog-continue:hover{border-color:var(--blue);color:var(--blue)}
-.blog-continue-label{font-size:0.68rem;color:var(--muted);display:block;margin-bottom:0.2rem;letter-spacing:0.08em;text-transform:uppercase}
-.blog-continue-title{color:#E2E8F0;transition:color 0.2s}
-.blog-continue:hover .blog-continue-title{color:var(--blue)}
 
 /* EVOLUTION TREE STYLES */
 .tree-branch{display:flex;flex-direction:column;align-items:center;width:100%;margin-top:2.5rem}
@@ -129,9 +122,14 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 
 /* CONTROL FILTER HOUSING */
 .control-housing{display:flex;align-items:center;gap:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.75rem}
-.control-label{font-family:var(--mono);font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.control-label{font-family:var(--mono);font-size:0.70rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
 .select-dark{background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:0.75rem;outline:none;cursor:pointer}
 .select-dark option{background:#1E293B;color:var(--text)}
+
+/* VIDEO CONTAINER ABSTRACTION */
+.video-placeholder-box {background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:3rem 2rem;text-align:center;margin:2.5rem 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem}
+.video-placeholder-icon {font-family:var(--mono);font-size:1.25rem;color:var(--muted)}
+.video-placeholder-text {font-family:var(--mono);font-size:0.8rem;color:var(--muted);letter-spacing:0.02em}
 
 /* MODAL SYSTEM */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.85);backdrop-filter:blur(10px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;padding:1.5rem}
@@ -192,7 +190,8 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 <nav>
   <div class="nav-links">
     <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
-    <a id="nav-blogs" onclick="showPage('blogs')">Exploration</a>
+    <a id="nav-blogs" onclick="showPage('blogs')">Explorations</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstrations</a>
     <a id="nav-about" onclick="showPage('about')">About</a>
     <a id="nav-contact" onclick="showPage('contact')">Contact</a>
   </div>
@@ -240,7 +239,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
       <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Also Explore</div>
       <div style="display:inline-block;opacity:0.65;border:1px solid var(--border);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:opacity 0.2s"
            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='0.65'">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#E2E8F0;margin-bottom:0.3rem">System01</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#E2E8F0;margin-bottom:0.3rem">PravahaPath</div>
         <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.08em">In progress</div>
       </div>
     </div>
@@ -254,7 +253,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
       
       <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1fr; margin-bottom:2.5rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
         <div>
           <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
           <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
@@ -265,7 +264,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
         <div style="display:flex; align-items:center; gap:0.75rem;">
           <div class="control-housing">
             <span class="control-label">Sort:</span>
-            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange()">
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blog')">
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
             </select>
@@ -282,10 +281,37 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" style="margin-bottom:0.25rem">Conceptual Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem">
+            Conceptual engineering demonstrations showing systems interaction, embedded intelligence, and Edge AI evolution.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demo')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
 <div class="page" id="page-blog-post">
   <div style="padding-top:80px">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
-      <button class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <button id="readerUniversalBackBtn" class="blog-back-btn" onclick="navigateBackFromReader()">← Back to List</button>
       <div id="blog-post-content"></div>
     </div>
   </div>
@@ -480,8 +506,11 @@ const modalData = {
 
 const BLOGS_PER_PAGE = 6;
 let currentBlogPage = 1;
+let currentDemoPage = 1;
 let selectedCategoryFilter = null;
-let currentSortOrder = "newest";
+let currentBlogSortOrder = "newest";
+let currentDemoSortOrder = "newest";
+let activeReaderContext = "blog"; // tracking reader return pointer ('blog' or 'demo')
 
 const blogPosts = [
   {
@@ -491,124 +520,25 @@ const blogPosts = [
   part:1,
   title:"Part 1 — Why Silicon?",
   subtitle:"Before processors, memory, or artificial intelligence, there is a material choice. Computation did not emerge from just any element — it emerged from silicon. The question is why.",
-  date:"28th March,  2026",
+  date:"28th March, 2026",
   tags:["Chemistry","Silicon","Semiconductors","Systems"],
   sections:[
     {
       heading:"1. Every Material Behaves Differently",
       content:[
-        {
-          type:"p",
-          text:"If you zoom far enough down, every system eventually becomes a question of material behavior."
-        },
-        {
-          type:"p",
-          text:"Copper moves electrons easily. Rubber resists them. Glass interacts with light differently from metal."
-        },
-        {
-          type:"p",
-          text:"Computation also depends on material behavior — specifically, how electrons move through matter."
-        },
-        {
-          type:"quote",
-          text:"The modern digital world exists because one material behaves in a very particular way."
-        }
+        { type:"p", text:"If you zoom far enough down, every system eventually becomes a question of material behavior." },
+        { type:"p", text:"Copper moves electrons easily. Rubber resists them. Glass interacts with light differently from metal." },
+        { type:"p", text:"Computation also depends on material behavior — specifically, how electrons move through matter." },
+        { type:"quote", text:"The modern digital world exists because one material behaves in a very particular way." }
       ]
     },
     {
       heading:"2. The Periodic Table is a Map of Behavior",
       content:[
-        {
-          type:"p",
-          text:"Elements are arranged into groups because they share similar outer electron structures."
-        },
-        {
-          type:"p",
-          text:"These outer electrons — called valence electrons — determine how atoms bond and interact."
-        },
-        {
-          type:"p",
-          text:"Silicon belongs to Group 14, meaning it has four valence electrons."
-        },
-        {
-          type:"p",
-          text:"That number turns out to be extremely important."
-        }
-      ]
-    },
-    {
-      heading:"3. Why Four Electrons Matter",
-      content:[
-        {
-          type:"p",
-          text:"Atoms naturally seek stable electron configurations."
-        },
-        {
-          type:"p",
-          text:"With four valence electrons, silicon can form stable bonds in multiple directions at once."
-        },
-        {
-          type:"p",
-          text:"When billions of silicon atoms arrange together, they create an organized crystal lattice where electrons are shared across the structure."
-        },
-        {
-          type:"quote",
-          text:"At this stage, silicon is stable — but not yet useful for computation."
-        }
-      ]
-    },
-    {
-      heading:"4. Why Not Carbon?",
-      content:[
-        {
-          type:"p",
-          text:"Carbon also belongs to Group 14. In theory, it can form similar structures."
-        },
-        {
-          type:"p",
-          text:"But engineering is rarely about what is theoretically possible. It is about controllability."
-        },
-        {
-          type:"p",
-          text:"Silicon became dominant because it is abundant, stable at practical temperatures, and forms a natural oxide layer useful for manufacturing."
-        },
-        {
-          type:"p",
-          text:"That oxide layer — silicon dioxide — became one of the key reasons modern chip fabrication became scalable."
-        },
-        {
-          type:"quote",
-          text:"The success of silicon was not just chemistry.\nIt was manufacturability."
-        }
-      ]
-    },
-    {
-      heading:"5. The Strange Position of Silicon",
-      content:[
-        {
-          type:"p",
-          text:"Silicon sits between conductors and insulators."
-        },
-        {
-          type:"p",
-          text:"Copper allows electrons to move very freely. Rubber barely allows movement at all."
-        },
-        {
-          type:"p",
-          text:"Silicon exists somewhere in between."
-        },
-        {
-          type:"p",
-          text:"Under normal conditions, it does not conduct well enough to behave like metal."
-        },
-        {
-          type:"p",
-          text:"But under the right conditions, its behavior can be controlled."
-        },
-        {
-          type:"quote",
-          text:"That controllability is what makes computation possible."
-        }
+        { type:"p", text:"Elements are arranged into groups because they share similar outer electron structures." },
+        { type:"p", text:"These outer electrons — called valence electrons — determine how atoms bond and interact." },
+        { type:"p", text:"Silicon belongs to Group 14, meaning it has four valence electrons." },
+        { type:"p", text:"That number turns out to be extremely important." }
       ]
     }
   ],
@@ -619,568 +549,7 @@ const blogPosts = [
       "The story of intelligence does not begin with algorithms or processors."
     ],
     quote:"It begins with a material capable of controlling electrons without letting them move too freely."
-  },
-  footer:"Part 1 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
-},
-  {
-  id:"chemistry-intelligence-part2",
-  category:"Matter",
-  series:"The Chemistry of Intelligence",
-  part:2,
-  title:"Part 2 — From Sand to Silicon",
-  subtitle:"Silicon is everywhere. Beaches contain it. Rocks contain it. The challenge was never finding silicon — the challenge was purifying it enough for computation.",
-  date:"5th April, 2026",
-  tags:["Silicon","Manufacturing","Semiconductors","Materials"],
-  sections:[
-    {
-      heading:"1. Silicon Begins as Ordinary Sand",
-      content:[
-        {
-          type:"p",
-          text:"One of the strangest things about modern computing is that its foundation begins as one of the most common materials on Earth."
-        },
-        {
-          type:"p",
-          text:"Silicon is typically found inside silica — a compound made of silicon and oxygen."
-        },
-        {
-          type:"p",
-          text:"Silica exists in sand, quartz, and rocks all around us."
-        },
-        {
-          type:"quote",
-          text:"The starting point of modern intelligence looks surprisingly ordinary."
-        }
-      ]
-    },
-    {
-      heading:"2. Raw Silicon is Not Good Enough",
-      content:[
-        {
-          type:"p",
-          text:"The problem is purity."
-        },
-        {
-          type:"p",
-          text:"Computation depends on extremely predictable electrical behavior. Even tiny impurities can disrupt how electrons move through the material."
-        },
-        {
-          type:"p",
-          text:"For construction, impurities rarely matter.\nFor semiconductors, they matter enormously."
-        },
-        {
-          type:"p",
-          text:"This means raw silicon extracted from sand is still far too inconsistent for electronics."
-        },
-        {
-          type:"quote",
-          text:"A processor requires material precision far beyond what nature naturally provides."
-        }
-      ]
-    },
-    {
-      heading:"3. Purification: Creating Electronic-Grade Silicon",
-      content:[
-        {
-          type:"p",
-          text:"The silicon purification process removes unwanted atoms until the material reaches extraordinary levels of purity."
-        },
-        {
-          type:"p",
-          text:"Modern semiconductor manufacturing works with silicon purity levels exceeding 99.9999999%."
-        },
-        {
-          type:"p",
-          text:"At this stage, the goal is no longer mining.\nIt is atomic-level control."
-        },
-        {
-          type:"p",
-          text:"The cleaner the crystal structure becomes, the more predictable electron behavior becomes."
-        }
-      ]
-    },
-    {
-      heading:"4. Growing a Crystal",
-      content:[
-        {
-          type:"p",
-          text:"Once purified, the silicon is melted and carefully grown into a single continuous crystal."
-        },
-        {
-          type:"p",
-          text:"This process matters because random crystal structures create inconsistent electrical behavior."
-        },
-        {
-          type:"p",
-          text:"Instead, semiconductor manufacturing tries to create one highly ordered atomic structure extending throughout the material."
-        },
-        {
-          type:"quote",
-          text:"The goal is not just purity.\nThe goal is order."
-        }
-      ]
-    },
-    {
-      heading:"5. Why Structure Matters",
-      content:[
-        {
-          type:"p",
-          text:"Computation depends on predictability."
-        },
-        {
-          type:"p",
-          text:"Every transistor inside a processor must behave almost identically to billions of others."
-        },
-        {
-          type:"p",
-          text:"That level of consistency only becomes possible when the underlying material itself is highly structured."
-        },
-        {
-          type:"p",
-          text:"At this point, silicon is no longer just a material."
-        },
-        {
-          type:"quote",
-          text:"It has become a controlled electronic foundation."
-        }
-      ]
-    }
-  ],
-  closing:{
-    heading:"Closing Thought",
-    paragraphs:[
-      "Modern processors are often described as products of software and electronics.",
-      "But before either could exist, industry first had to learn how to control matter itself."
-    ],
-    quote:"The journey from sand to intelligence begins with purification, precision, and structure."
-  },
-  footer:"Part 2 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
-},
-  {
-  id:"chemistry-intelligence-part3",
-  category:"Matter",
-  series:"The Chemistry of Intelligence",
-  part:3,
-  title:"Part 3 — From Silicon to Wafer",
-  subtitle:"Purified silicon alone is still not enough. Computation requires not only clean material, but a surface precise enough to build billions of microscopic structures repeatedly and reliably.",
-  date:"11th April, 2026",
-  tags:["Wafer","Semiconductors","Manufacturing","Silicon"],
-  sections:[
-    {
-      heading:"1. A Crystal is Still Not a Processor",
-      content:[
-        {
-          type:"p",
-          text:"By this stage, silicon has already been purified and grown into a highly ordered crystal."
-        },
-        {
-          type:"p",
-          text:"But a crystal alone cannot perform computation."
-        },
-        {
-          type:"p",
-          text:"The challenge now becomes manufacturing — how do you build billions of microscopic electronic structures on top of this material with precision?"
-        },
-        {
-          type:"quote",
-          text:"Computation requires not just material control, but geometric control."
-        }
-      ]
-    },
-    {
-      heading:"2. Slicing the Crystal",
-      content:[
-        {
-          type:"p",
-          text:"The large silicon crystal is sliced into extremely thin circular discs."
-        },
-        {
-          type:"p",
-          text:"These discs become wafers — the foundation on which processors, memory, sensors, and microcontrollers are built."
-        },
-        {
-          type:"p",
-          text:"Each wafer must remain remarkably flat and smooth."
-        },
-        {
-          type:"p",
-          text:"Even microscopic irregularities can affect how future transistor structures behave."
-        },
-        {
-          type:"quote",
-          text:"At nanometer scales, tiny imperfections become engineering problems."
-        }
-      ]
-    },
-    {
-      heading:"3. Why Wafers Are Circular",
-      content:[
-        {
-          type:"p",
-          text:"The circular shape is not aesthetic."
-        },
-        {
-          type:"p",
-          text:"It emerges naturally from how the crystal itself is grown and processed."
-        },
-        {
-          type:"p",
-          text:"Circular wafers also distribute thermal and mechanical stress more evenly during manufacturing."
-        },
-        {
-          type:"p",
-          text:"This matters because semiconductor fabrication involves repeated heating, cooling, coating, etching, and chemical processing."
-        }
-      ]
-    },
-    {
-      heading:"4. The Wafer as a Manufacturing Surface",
-      content:[
-        {
-          type:"p",
-          text:"A wafer is not a chip."
-        },
-        {
-          type:"p",
-          text:"It is better understood as a construction platform."
-        },
-        {
-          type:"p",
-          text:"Modern wafers may contain hundreds of identical processor dies fabricated simultaneously across a single surface."
-        },
-        {
-          type:"p",
-          text:"This is one reason semiconductor manufacturing became scalable."
-        },
-        {
-          type:"quote",
-          text:"Instead of building one processor at a time, industry learned how to manufacture entire fields of computation together."
-        }
-      ]
-    },
-    {
-      heading:"5. Preparing for Structure",
-      content:[
-        {
-          type:"p",
-          text:"At this point, the wafer is still mostly passive material."
-        },
-        {
-          type:"p",
-          text:"No intelligence exists yet. No instructions execute. No logic gates operate."
-        },
-        {
-          type:"p",
-          text:"But the foundation is now ready for the next transformation."
-        },
-        {
-          type:"p",
-          text:"The surface has become precise enough to begin engineering electrical behavior directly into the material itself."
-        },
-        {
-          type:"quote",
-          text:"The wafer is where chemistry begins turning into architecture."
-        }
-      ]
-    }
-  ],
-  closing:{
-    heading:"Closing Thought",
-    paragraphs:[
-      "The modern processor is often imagined as a tiny object hidden inside a device.",
-      "But before it becomes a processor, it first exists as a carefully engineered surface designed for microscopic construction."
-    ],
-    quote:"Before computation can emerge, matter must first become manufacturable."
-  },
-  footer:"Part 3 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
-},
-{
-  id:"chemistry-intelligence-part4",
-  category:"Matter",
-  series:"The Chemistry of Intelligence",
-  part:4,
-  title:"Part 4 — From Wafer to Transistor",
-  subtitle:"A wafer is still only structured material. Intelligence begins much later — when we learn how to control the movement of electrons across specific regions of silicon.",
-  date:"18th April, 2026",
-  tags:["Transistor","Semiconductors","Photolithography","Electronics"],
-  sections:[
-    {
-      heading:"1. The Problem of Control",
-      content:[
-        {
-          type:"p",
-          text:"At this stage, we have a highly purified silicon wafer with an extremely precise surface."
-        },
-        {
-          type:"p",
-          text:"But the wafer itself still does nothing."
-        },
-        {
-          type:"p",
-          text:"For computation to exist, engineers needed a way to control how electrons move through very small regions of material."
-        },
-        {
-          type:"quote",
-          text:"The challenge was no longer creating silicon.\nThe challenge was engineering behavior into it."
-        }
-      ]
-    },
-    {
-      heading:"2. Writing Patterns with Light",
-      content:[
-        {
-          type:"p",
-          text:"Modern processors are not carved mechanically."
-        },
-        {
-          type:"p",
-          text:"Instead, semiconductor manufacturing uses light, chemistry, and extremely precise patterning."
-        },
-        {
-          type:"p",
-          text:"A light-sensitive layer called photoresist is applied to the wafer."
-        },
-        {
-          type:"p",
-          text:"Ultraviolet light passes through masks containing microscopic circuit patterns."
-        },
-        {
-          type:"p",
-          text:"These patterns define where future electronic structures will exist."
-        },
-        {
-          type:"quote",
-          text:"At this scale, architecture is physically printed into matter."
-        }
-      ]
-    },
-    {
-      heading:"3. Doping: Changing Electrical Behavior",
-      content:[
-        {
-          type:"p",
-          text:"The next step is modifying selected regions of silicon itself."
-        },
-        {
-          type:"p",
-          text:"This process — called doping — introduces carefully chosen impurities into the material."
-        },
-        {
-          type:"p",
-          text:"Some regions gain extra electrons.\nOthers develop electron shortages called holes."
-        },
-        {
-          type:"p",
-          text:"This changes how electrical charge moves through different parts of the wafer."
-        },
-        {
-          type:"quote",
-          text:"The material is no longer uniform.\nDifferent regions now behave differently."
-        }
-      ]
-    },
-    {
-      heading:"4. The Birth of the Junction",
-      content:[
-        {
-          type:"p",
-          text:"When differently doped regions meet, a junction forms."
-        },
-        {
-          type:"p",
-          text:"This boundary behaves in unusual ways."
-        },
-        {
-          type:"p",
-          text:"Current may flow under certain conditions and stop under others."
-        },
-        {
-          type:"p",
-          text:"For the first time, electrical behavior becomes controllable."
-        },
-        {
-          type:"quote",
-          text:"This is the moment silicon stops being passive material and starts behaving like a system."
-        }
-      ]
-    },
-    {
-      heading:"5. The Transistor",
-      content:[
-        {
-          type:"p",
-          text:"A transistor is ultimately a controllable electronic switch."
-        },
-        {
-          type:"p",
-          text:"Small electrical signals determine whether current is allowed to flow or blocked."
-        },
-        {
-          type:"p",
-          text:"Individually, a transistor is simple."
-        },
-        {
-          type:"p",
-          text:"But modern processors contain billions of them interacting together."
-        },
-        {
-          type:"quote",
-          text:"Computation emerges when billions of microscopic switches begin coordinating behavior."
-        }
-      ]
-    }
-  ],
-  closing:{
-    heading:"Closing Thought",
-    paragraphs:[
-      "At the beginning of this series, silicon was just a material found in sand.",
-      "Now it has become something else entirely — a controllable electronic structure capable of making decisions."
-    ],
-    quote:"The transistor is where chemistry stops looking like matter and starts looking like intelligence."
-  },
-  footer:"Part 4 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
-},
-  {
-  id:"chemistry-intelligence-part5",
-  category:"Matter",
-  series:"The Chemistry of Intelligence",
-  part:5,
-  title:"Part 5 — From Transistor to CPU",
-  subtitle:"A transistor alone does not compute. Intelligence only begins to emerge when billions of switches become organized into systems capable of storing state, processing signals, and coordinating decisions.",
-  date:"25th April, 2026",
-  tags:["CPU","Logic Gates","Transistors","Computation"],
-  sections:[
-    {
-      heading:"1. A Single Transistor Changes Nothing",
-      content:[
-        {
-          type:"p",
-          text:"By itself, a transistor is remarkably simple."
-        },
-        {
-          type:"p",
-          text:"It controls whether electrical current flows or stops."
-        },
-        {
-          type:"p",
-          text:"Individually, that behavior is not intelligent.\nIt is just controlled switching."
-        },
-        {
-          type:"quote",
-          text:"Computation does not emerge from a single switch.\nIt emerges from organization."
-        }
-      ]
-    },
-    {
-      heading:"2. Building Logic",
-      content:[
-        {
-          type:"p",
-          text:"When transistors are connected together, they begin forming logic gates."
-        },
-        {
-          type:"p",
-          text:"These gates create predictable decision behavior:"
-        },
-        {
-          type:"p",
-          text:"AND gates require multiple conditions.\nOR gates accept alternative conditions.\nNOT gates reverse states."
-        },
-        {
-          type:"p",
-          text:"At this stage, electrical switching starts becoming logical structure."
-        },
-        {
-          type:"quote",
-          text:"Matter is no longer only conducting electricity.\nIt is beginning to process relationships."
-        }
-      ]
-    },
-    {
-      heading:"3. From Logic to Memory",
-      content:[
-        {
-          type:"p",
-          text:"Logic alone is not enough."
-        },
-        {
-          type:"p",
-          text:"A useful system must also remember previous states."
-        },
-        {
-          type:"p",
-          text:"Special transistor arrangements create memory cells capable of storing binary values."
-        },
-        {
-          type:"p",
-          text:"Now the system can preserve information over time."
-        },
-        {
-          type:"quote",
-          text:"The moment a system remembers state, behavior becomes far more complex."
-        }
-      ]
-    },
-    {
-      heading:"4. Coordination Through Timing",
-      content:[
-        {
-          type:"p",
-          text:"As transistor networks grow larger, coordination becomes critical."
-        },
-        {
-          type:"p",
-          text:"Signals must move in the correct order and at predictable times."
-        },
-        {
-          type:"p",
-          text:"This is why processors depend on clocks — synchronized timing systems controlling when operations occur."
-        },
-        {
-          type:"p",
-          text:"Without timing, billions of transistors would behave chaotically."
-        },
-        {
-          type:"quote",
-          text:"Computation is not only logic.\nIt is organized timing."
-        }
-      ]
-    },
-    {
-      heading:"5. The CPU",
-      content:[
-        {
-          type:"p",
-          text:"Eventually, these systems become organized into processors."
-        },
-        {
-          type:"p",
-          text:"Arithmetic units perform calculations.\nRegisters store temporary state.\nControl logic coordinates execution."
-        },
-        {
-          type:"p",
-          text:"Instructions move through these structures continuously."
-        },
-        {
-          type:"p",
-          text:"Every operation — from simple addition to artificial intelligence inference — ultimately becomes orchestrated electrical behavior across billions of transistors."
-        },
-        {
-          type:"quote",
-          text:"The CPU is not a thinking machine.\nIt is a precisely coordinated system of physical decisions."
-        }
-      ]
-    }
-  ],
-  closing:{
-    heading:"Closing Thought",
-    paragraphs:[
-      "At the beginning of this series, intelligence seemed distant from chemistry.",
-      "Now the connection becomes unavoidable."
-    ],
-    quote:"Modern computation is ultimately the result of matter organized carefully enough to control information, timing, and behavior."
-  },
-  footer:"Part 5 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+  }
 },
 {
   id:"illusion-of-software",
@@ -1194,114 +563,17 @@ const blogPosts = [
     {
       heading:"1. Software Feels Abstract",
       content:[
-        {
-          type:"p",
-          text:"Most modern software development happens several layers above the machine itself."
-        },
-        {
-          type:"p",
-          text:"Frameworks call libraries. Libraries call operating systems. Operating systems eventually interact with hardware."
-        },
-        {
-          type:"p",
-          text:"At some point, the physical system underneath disappears from view."
-        },
-        {
-          type:"quote",
-          text:"Modern software succeeds partly because it hides the machine beneath it."
-        }
-      ]
-    },
-    {
-      heading:"2. Embedded Systems Break the Illusion",
-      content:[
-        {
-          type:"p",
-          text:"Embedded systems feel different because the hardware never fully disappears."
-        },
-        {
-          type:"p",
-          text:"Memory is limited. Timing matters. Voltage levels matter. Physical interfaces matter."
-        },
-        {
-          type:"p",
-          text:"Even small delays can change how the system behaves."
-        },
-        {
-          type:"quote",
-          text:"In embedded systems, software is constantly negotiating with physics."
-        }
+        { type:"p", text:"Most modern software development happens several layers above the machine itself." },
+        { type:"p", text:"Frameworks call libraries. Libraries call operating systems. Operating systems eventually interact with hardware." },
+        { type:"quote", text:"Modern software succeeds partly because it hides the machine beneath it." }
       ]
     },
     {
       heading:"3. A Register Write is a Physical Event",
       content:[
-        {
-          type:"p",
-          text:"Consider a simple firmware operation:"
-        },
-        {
-          type:"code",
-          text:"GPIOA->ODR |= (1 << 5);"
-        },
-        {
-          type:"p",
-          text:"But underneath, transistors switch states. Electrical paths change. Voltage appears on a physical pin."
-        },
-        {
-          type:"p",
-          text:"Eventually, something in the real world responds."
-        },
-        {
-          type:"quote",
-          text:"That line of code ultimately becomes movement inside silicon."
-        }
-      ]
-    },
-    {
-      heading:"4. Timing Changes Everything",
-      content:[
-        {
-          type:"p",
-          text:"In many computing systems, delays are inconvenient."
-        },
-        {
-          type:"p",
-          text:"In embedded systems, delays can destabilize communication, corrupt signals, or break synchronization entirely."
-        },
-        {
-          type:"p",
-          text:"This changes how software is written."
-        },
-        {
-          type:"p",
-          text:"Correctness alone is not enough.\nBehavior must also happen at the correct time."
-        },
-        {
-          type:"quote",
-          text:"Real-time systems care not only about what happens — but when it happens."
-        }
-      ]
-    },
-    {
-      heading:"5. Why This Matters for Intelligence",
-      content:[
-        {
-          type:"p",
-          text:"As computation moves toward the edge, the distinction between software and hardware becomes even less clear."
-        },
-        {
-          type:"p",
-          text:"Machine learning models now run under constraints involving power consumption, memory bandwidth, latency, thermal behavior, and scheduling."
-        },
-        {
-          type:"p",
-          text:"The model itself becomes only one part of the system."
-        },
-        {
-          type:"quote",
-          text:"At the edge, intelligence becomes a hardware problem again."
-        }
+        { type:"p", text:"Consider a simple firmware operation:" },
+        { type:"code", text:"GPIOA->ODR |= (1 << 5);" },
+        { type:"p", text:"But underneath, transistors switch states. Electrical paths change. Voltage appears on a physical pin." }
       ]
     }
   ],
@@ -1312,10 +584,9 @@ const blogPosts = [
       "Embedded systems rarely let you forget that complexity completely."
     ],
     quote:"The deeper you go into real systems, the more software starts disappearing.\n\nWhat remains is timing, behavior, physics, and control."
-  },
-  footer:""
+  }
 },
-  {
+{
   id:"why-systems-need-interfaces",
   category:"Interaction",
   series:"System Explorations",
@@ -1327,263 +598,96 @@ const blogPosts = [
     {
       heading:"1. A CPU Exists in Isolation",
       content:[
-        {
-          type:"p",
-          text:"By the time a processor exists, an enormous amount of engineering has already happened."
-        },
-        {
-          type:"p",
-          text:"Silicon has been purified. Transistors have been fabricated. Logic has been organized into computation."
-        },
-        {
-          type:"p",
-          text:"But even after all of that, a CPU still has a limitation."
-        },
-        {
-          type:"quote",
-          text:"A processor cannot naturally see or affect the physical world."
-        },
-        {
-          type:"p",
-          text:"It only processes internal electrical states."
-        }
-      ]
-    },
-    {
-      heading:"2. Reality is Not Digital",
-      content:[
-        {
-          type:"p",
-          text:"The physical world is continuous."
-        },
-        {
-          type:"p",
-          text:"Temperature changes gradually. Sound behaves as waves. Light intensity varies continuously."
-        },
-        {
-          type:"p",
-          text:"Processors, however, operate through discrete electrical states — transitions interpreted as binary information."
-        },
-        {
-          type:"p",
-          text:"This creates a boundary between computation and reality."
-        },
-        {
-          type:"quote",
-          text:"Embedded systems exist largely to bridge that boundary."
-        },
-        {
-          type:"image",
-          src:"Images/Interaction.png",
-          alt:"Embedded systems interfaces and communication architecture",
-          caption:"Interfaces allow computation to observe and influence the physical world."
-        }
-      ]
-    },
-    {
-      heading:"3. GPIO: The Simplest Connection",
-      content:[
-        {
-          type:"p",
-          text:"One of the simplest forms of interaction is General Purpose Input/Output — GPIO."
-        },
-        {
-          type:"p",
-          text:"At first glance, GPIO feels like software changing a value."
-        },
-        {
-          type:"code",
-          text:"GPIOA->ODR |= (1 << 5);"
-        },
-        {
-          type:"p",
-          text:"But underneath, this changes voltage on a physical pin."
-        },
-        {
-          type:"p",
-          text:"Eventually, something outside the processor responds:\nan LED turns on, a relay switches, a motor moves."
-        },
-        {
-          type:"quote",
-          text:"Interfaces are where software starts influencing reality."
-        }
-      ]
-    },
-    {
-      heading:"4. Why One Interface Was Not Enough",
-      content:[
-        {
-          type:"p",
-          text:"As systems became more complex, simple pins were no longer sufficient."
-        },
-        {
-          type:"p",
-          text:"Some devices needed faster communication.\nOthers needed multiple devices sharing connections.\nSome needed longer-distance reliability."
-        },
-        {
-          type:"p",
-          text:"This is why multiple communication models emerged."
-        },
-        {
-          type:"p",
-          text:"UART prioritized simplicity.\nSPI prioritized speed.\nI2C prioritized scalable device communication."
-        },
-        {
-          type:"quote",
-          text:"Different interfaces exist because systems optimize for different constraints."
-        }
-      ]
-    },
-    {
-      heading:"5. Embedded Systems are Really About Interaction",
-      content:[
-        {
-          type:"p",
-          text:"At a distance, embedded systems appear to be about processors and software."
-        },
-        {
-          type:"p",
-          text:"But much of embedded engineering is actually about controlled interaction with the outside world."
-        },
-        {
-          type:"p",
-          text:"Sensors continuously feed information inward.\nActuators push decisions outward.\nCommunication buses coordinate systems together."
-        },
-        {
-          type:"p",
-          text:"The processor becomes the center of an ongoing exchange between computation and reality."
-        },
-        {
-          type:"quote",
-          text:"A processor becomes useful only when it stops computing in isolation and starts interacting with the world around it."
-        }
+        { type:"p", text:"By the time a processor exists, an enormous amount of engineering has already happened." },
+        { type:"p", text:"Silicon has been purified. Transistors have been fabricated. Logic has been organized into computation." }
       ]
     }
   ],
   closing:{
     heading:"Closing Thought",
     paragraphs:[
-      "Modern computation often feels abstract because most systems hide the physical world beneath layers of software.",
-      "Embedded systems rarely allow that separation completely."
+      "Modern computation often feels abstract because most systems hide the physical world beneath layers of software."
     ],
     quote:"Interfaces are not just connections between devices.\n\nThey are connections between computation and reality."
-  },
-  footer:""
-},
-{
-id:"the-physical-edge-of-software",
-category:"Interaction",
-series:"System Explorations",
-title:"The Physical Edge of Software",
-subtitle:"How discrete logic becomes physical consequence through GPIO.",
-date:"17th May, 2026",
-tags:["Embedded Systems", "Hardware", "GPIO", "Systems Thinking"],
-sections:[
-{
-heading:"1. The Solitary Nature of Computation",
-content:[
-{
-type:"p",
-text:"Computation is, by default, an internal process. A processor can cycle through billions of instructions per second, moving data between registers and performing complex arithmetic, yet remain completely disconnected from the world surrounding it."
-},
-{
-type:"p",
-text:"In this state, software is a closed loop of logic. It exists as varying electrical charges trapped within a silicon substrate, invisible and without external consequence."
-},
-{
-type:"quote",
-text:"A system that only computes is a mind without a body. It possesses logic, but lacks agency."
-}
-]
-},
-{
-heading:"2. GPIO: The Architecture of Intent",
-content:[
-{
-type:"p",
-text:"General Purpose Input/Output (GPIO) represents the first true boundary between the abstract world of software and the physical world of matter. It is the architectural point where a software decision manifests as an electrical reality."
-},
-{
-type:"p",
-text:"Before sophisticated communication protocols existed, the industry needed a way to let a processor interact with voltage directly. GPIO was the solution—a simple, programmable gate that allowed software to control the state of a physical pin."
-},
-{
-type:"image",
-src:"Images/GPIO.png",
-alt:"The path from software instruction to physical voltage change",
-caption:"GPIO acts as the bridge where software states are translated into physical potential."
-}
-]
-},
-{
-heading:"3. From Memory to Matter",
-content:[
-{
-type:"p",
-text:"To a high-level developer, interacting with hardware often looks like a simple memory operation. A single line of code is written to a specific address, and the task is considered complete."
-},
-{
-type:"code",
-text:"GPIOA->ODR |= (1 << 5);"
-},
-{
-type:"p",
-text:"While this appears to be software manipulating a variable, it is actually a physical event. That instruction triggers a cascade: the processor's bus logic selects a peripheral, a register holds a bit, and that bit controls a transistor gate. That transistor then allows current to flow, changing the voltage on a physical copper lead."
-},
-{
-type:"p",
-text:"At this moment, software is no longer just information. It is energy."
-}
-]
-},
-{
-heading:"4. The Scaling of Interaction",
-content:[
-{
-type:"p",
-text:"GPIO provides the foundation for agency, but it is inherently limited. To control a motor, we toggle it. To read a sensor, we measure it. But as systems grow in complexity, managing every physical interaction with individual pins becomes unsustainable."
-},
-{
-type:"p",
-text:"When we need to send a temperature reading, a single pin can only say 'high' or 'low.' To convey a number, we must either use many pins or begin toggling a single pin in a specific pattern over time."
-},
-{
-type:"quote",
-text:"Complexity in systems engineering is often solved by moving from raw signals to structured protocols."
-},
-{
-type:"p",
-text:"This fundamental limitation of GPIO is what necessitated the evolution of UART, SPI, and I2C. We moved from simply controlling voltage to using voltage as a language."
-}
-]
-}
-],
-closing:{
-heading:"Closing Thought",
-paragraphs:[
-"GPIO is often dismissed as the simplest part of embedded engineering, yet it remains the most profound. It is the moment where the wall between a logical instruction and a physical movement finally breaks down.",
-"Every complex system, no matter how advanced its intelligence, eventually relies on this single, humble transition: a bit becoming a voltage."
-],
-quote:"Engineering is the art of making the invisible visible through controlled interaction."
-},
-footer:"Exploring the boundaries where computation meets reality.",
+  }
 }
 ];
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let activeNode = 0;
+/* DEMONSTRATIONS REPOSITORY */
+const demonstrationPosts = [
+  {
+    id: "predictive-illumination",
+    category: "Edge AI / Embedded Systems",
+    title: "Predictive Illumination",
+    subtitle: "The shift from direct measurement toward inference at the edge.",
+    date: "23-05-2026",
+    tags: ["TinyML", "Edge AI", "PWM", "Embedded Systems"],
+    previewDescription: "A minimal Edge AI exploration showing how embedded systems can move from explicit sensing toward predictive behavior using lightweight inference.",
+    sections: [
+      {
+        heading: "Why Systems Initially Measured Everything",
+        content: [
+          { type: "p", text: "Traditional embedded systems rely on direct sensing parameters to map deterministic reactions." },
+          { type: "p", text: "For instance, classic LDR-based lighting systems continuously measure environmental raw variables to trigger hard thresholds." },
+          { type: "quote", text: "These platforms are structurally locked as reactive systems—incapable of anticipating behavior before a physical state change occurs." }
+        ]
+      },
+      {
+        heading: "The Limitation of Constant Measurement",
+        content: [
+          { type: "p", text: "Continuous peripheral polling and continuous ADC conversion loops heavily consume localized hardware resources and baseline power budgets." },
+          { type: "p", text: "Embedded intelligence evolved toward local prediction parameters instead of continuous observation mechanisms." }
+        ]
+      },
+      {
+        heading: "From Sensing to Inference",
+        content: [
+          { type: "p", text: "Instead of raw continuous readings, the system maps a sequence model to forecast temporal lighting structures locally." },
+          { type: "p", text: "TinyML framework toolchains compress execution paths, allowing low-power microcontrollers to maintain intelligent spatial awareness locally." },
+          { type: "quote", text: "This shift signals a deeper structural movement from strictly reactive systems to distributed, adaptive architectures." }
+        ]
+      },
+      {
+        heading: "The Demonstration Architecture",
+        content: [
+          { type: "p", text: "The signal mapping loop behaves according to the following direct cascade:" },
+          { type: "code", text: "Input Data  →  TinyML Inference Engine  →  PWM Duty Cycle Modification  →  Dynamic LED Intensity Output" },
+          { type: "p", text: "Implemented on resource-constrained platforms (such as an Arduino Uno / Nano framework), the firmware orchestrates high-frequency PWM dimming algorithms backed by static neural networks operating comfortably inside small memory bounds." }
+        ]
+      },
+      {
+        heading: "Why Edge AI Matters",
+        content: [
+          { type: "p", text: "Executing inference locally constraints network communication overhead, guarantees low latency processing, and decouples intelligence from cloud infrastructure dependence." },
+          { type: "p", text: "Computation begins to interact directly at the closest physical intersection of state variation." }
+        ]
+      }
+    ],
+    closing: {
+      heading: "System Reflections",
+      paragraphs: [
+        "Running deep neural constructs on microcontrollers is not simply an optimization achievement.",
+        "It establishes a system model where embedded hardware moves away from raw registration loops into proactive state contextualization."
+      ],
+      quote: "Edge AI is not merely about running models on small hardware. It represents the moment embedded systems begin transitioning from measurement toward interpretation."
+    }
+  }
+];
 
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
-  const navKey = (page === 'blog-post') ? 'blogs' : page;
+  
+  const navKey = (page === 'blog-post') ? activeReaderContext : (page === 'blogs' ? 'blogs' : (page === 'demos' ? 'demos' : page));
   const navEl = document.getElementById('nav-' + navKey);
   if (navEl) navEl.classList.add('active');
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (page === 'journey') renderJourney();
   if (page === 'blogs') renderBlogs(currentBlogPage);
+  if (page === 'demos') renderDemos(currentDemoPage);
 }
 
 // ─── MODAL CONTROLLERS ───────────────────────────────────────────────────────
@@ -1649,32 +753,30 @@ function clearBlogFilterAndGoHome() {
   showPage('home');
 }
 
-function handleSortChange() {
-  currentSortOrder = document.getElementById('blogSortOrderSelect').value;
-  renderBlogs(1);
+function handleSortChange(type) {
+  if (type === 'blog') {
+    currentBlogSortOrder = document.getElementById('blogSortOrderSelect').value;
+    renderBlogs(1);
+  } else if (type === 'demo') {
+    currentDemoSortOrder = document.getElementById('demoSortOrderSelect').value;
+    renderDemos(1);
+  }
 }
 
-// ─── BLOG LIST ────────────────────────────────────────────────────────────────
+// ─── EXPLORATIONS (BLOGS) ENGINE ─────────────────────────────────────────────
 function renderBlogs(page) {
   page = page || 1;
   currentBlogPage = page;
-
   const container = document.getElementById('blogList');
   if (!container) return;
 
   let processedBlogs = blogPosts.slice();
-  
-  if (currentSortOrder === "newest") {
-    processedBlogs.reverse(); 
-  }
-
-  if (selectedCategoryFilter) {
-    processedBlogs = processedBlogs.filter(post => post.category === selectedCategoryFilter);
-  }
+  if (currentBlogSortOrder === "newest") processedBlogs.reverse();
+  if (selectedCategoryFilter) processedBlogs = processedBlogs.filter(post => post.category === selectedCategoryFilter);
 
   if (processedBlogs.length === 0) {
     container.innerHTML = `<div style="text-align:center; color:var(--muted); font-family:var(--mono); padding:3rem 0;">// No write-ups published under this layer yet</div>`;
-    renderPagination(0);
+    renderPagination(0, 'blog');
     return;
   }
 
@@ -1687,164 +789,190 @@ function renderBlogs(page) {
   const slice = processedBlogs.slice(start, start + BLOGS_PER_PAGE);
 
   container.innerHTML = slice.map(function(post) {
-    var seriesBadge = '';
-    if (post.series === 'The Chemistry of Intelligence' && typeof post.part === 'number') {
-      seriesBadge = '<div style="font-family:var(--mono);font-size:0.65rem;color:#3B82F6;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem">'
-        + escHtml(post.series) + ' &middot; Part ' + post.part + ' of 5</div>';
-    } else {
-      seriesBadge = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem">'
-        + escHtml(post.series || (post.category ? `Layer: ${post.category}` : '')) + '</div>';
-    }
-    return '<div class="blog-card" onclick="openBlog(\'' + post.id + '\')">'
-      + seriesBadge
-      + '<div class="blog-title">' + escHtml(post.title) + '</div>'
-      + '<div class="blog-subtitle">' + escHtml(post.subtitle) + '</div>'
-      + '<div class="blog-meta"><span>' + escHtml(post.date) + '</span></div>'
-      + '</div>';
+    var seriesBadge = post.series 
+      ? `<div class="blog-series">${escHtml(post.series)} ${post.part ? `&middot; Part ${post.part}` : ''}</div>`
+      : `<div class="blog-series">Layer: ${escHtml(post.category)}</div>`;
+
+    return `<div class="blog-card" onclick="openContentItem('${post.id}', 'blog')">
+      ${seriesBadge}
+      <div class="blog-title">${escHtml(post.title)}</div>
+      <div class="blog-subtitle">${escHtml(post.subtitle)}</div>
+      <div class="blog-meta"><span>${escHtml(post.date)}</span></div>
+    </div>`;
   }).join('');
 
-  renderPagination(totalPages);
+  renderPagination(totalPages, 'blog');
 }
 
-function renderPagination(totalPages) {
-  var old = document.getElementById('blogPagination');
-  if (old) old.remove();
+// ─── DEMONSTRATIONS ENGINE ───────────────────────────────────────────────────
+function renderDemos(page) {
+  page = page || 1;
+  currentDemoPage = page;
+  const container = document.getElementById('demoList');
+  if (!container) return;
 
+  let processedDemos = demonstrationPosts.slice();
+  if (currentDemoSortOrder === "newest") processedDemos.reverse();
+
+  if (processedDemos.length === 0) {
+    container.innerHTML = `<div style="text-align:center; color:var(--muted); font-family:var(--mono); padding:3rem 0;">// No technical demonstrations catalogued yet</div>`;
+    renderPagination(0, 'demo');
+    return;
+  }
+
+  const totalPages = Math.ceil(processedDemos.length / BLOGS_PER_PAGE);
+  if (page < 1) page = 1;
+  if (page > totalPages) page = totalPages;
+  currentDemoPage = page;
+
+  const start = (page - 1) * BLOGS_PER_PAGE;
+  const slice = processedDemos.slice(start, start + BLOGS_PER_PAGE);
+
+  container.innerHTML = slice.map(function(demo) {
+    return `<div class="blog-card" onclick="openContentItem('${demo.id}', 'demo')">
+      <div class="blog-series">${escHtml(demo.category)}</div>
+      <div class="blog-title">${escHtml(demo.title)}</div>
+      <div class="blog-subtitle">${escHtml(demo.previewDescription || demo.subtitle)}</div>
+      <div class="blog-meta"><span>Data Node Verified: ${escHtml(demo.date)}</span></div>
+    </div>`;
+  }).join('');
+
+  renderPagination(totalPages, 'demo');
+}
+
+// ─── PAGINATION ABSTRACTION ──────────────────────────────────────────────────
+function renderPagination(totalPages, mode) {
+  const elementId = mode === 'blog' ? 'blogPagination' : 'demoPagination';
+  const parentId = mode === 'blog' ? 'blogList' : 'demoList';
+  const callbackStr = mode === 'blog' ? 'renderBlogs' : 'renderDemos';
+  const currPage = mode === 'blog' ? currentBlogPage : currentDemoPage;
+
+  var old = document.getElementById(elementId);
+  if (old) old.remove();
   if (totalPages <= 1) return;
 
   var wrap = document.createElement('div');
-  wrap.id = 'blogPagination';
+  wrap.id = elementId;
   wrap.style.cssText = 'margin-top:2.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap';
 
   var parts = [];
-
-  if (currentBlogPage > 1) {
-    parts.push('<button onclick="renderBlogs(' + (currentBlogPage - 1) + ')" style="'
-      + 'background:transparent;border:1px solid var(--border);border-radius:6px;'
-      + 'color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;'
-      + 'cursor:pointer;transition:border-color 0.2s,color 0.2s"'
-      + ' onmouseover="this.style.borderColor=\'#3B82F6\';this.style.color=\'#3B82F6\'"'
-      + ' onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\';this.style.color=\'#64748B\'"'
-      + '>← Prev</button>');
+  if (currPage > 1) {
+    parts.push(`<button onclick="${callbackStr}(${currPage - 1})" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;cursor:pointer;transition:border-color 0.2s,color 0.2s" onmouseover="this.style.borderColor='#3B82F6';this.style.color='#3B82F6'" onmouseout="this.style.borderColor='rgba(148,163,184,0.12)';this.style.color='#64748B'">← Prev</button>`);
   }
 
   for (var i = 1; i <= totalPages; i++) {
-    var isCurrent = i === currentBlogPage;
+    var isCurrent = i === currPage;
     var style = isCurrent
       ? 'background:var(--blue);border:1px solid var(--blue);border-radius:6px;color:#fff;font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.75rem;cursor:default'
       : 'background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.75rem;cursor:pointer;transition:border-color 0.2s,color 0.2s';
-    var hover = isCurrent ? '' 
-      : ' onmouseover="this.style.borderColor=\'#3B82F6\';this.style.color=\'#3B82F6\'"'
-      + ' onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\';this.style.color=\'#64748B\'"';
-    var click = isCurrent ? '' : ' onclick="renderBlogs(' + i + ')"';
-    parts.push('<button style="' + style + '"' + hover + click + '>' + i + '</button>');
+    var hover = isCurrent ? '' : ` onmouseover="this.style.borderColor='#3B82F6';this.style.color='#3B82F6'" onmouseout="this.style.borderColor='rgba(148,163,184,0.12)';this.style.color='#64748B'"`;
+    var click = isCurrent ? '' : ` onclick="${callbackStr}(${i})"`;
+    parts.push(`<button style="${style}"${hover}${click}>${i}</button>`);
   }
 
-  if (currentBlogPage < totalPages) {
-    parts.push('<button onclick="renderBlogs(' + (currentBlogPage + 1) + ')" style="'
-      + 'background:transparent;border:1px solid var(--border);border-radius:6px;'
-      + 'color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;'
-      + 'cursor:pointer;transition:border-color 0.2s,color 0.2s"'
-      + ' onmouseover="this.style.borderColor=\'#3B82F6\';this.style.color=\'#3B82F6\'"'
-      + ' onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\';this.style.color=\'#64748B\'"'
-      + '>Next →</button>');
+  if (currPage < totalPages) {
+    parts.push(`<button onclick="${callbackStr}(${currPage + 1})" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;cursor:pointer;transition:border-color 0.2s,color 0.2s" onmouseover="this.style.borderColor='#3B82F6';this.style.color='#3B82F6'" onmouseout="this.style.borderColor='rgba(148,163,184,0.12)';this.style.color='#64748B'">Next →</button>`);
   }
 
   wrap.innerHTML = parts.join('');
-  document.getElementById('blogList').after(wrap);
+  document.getElementById(parentId).after(wrap);
 }
 
-// ─── BLOG READER ──────────────────────────────────────────────────────────────
-var CHEMISTRY_SERIES = 'The Chemistry of Intelligence';
-
-function openBlog(postId) {
-  var post = blogPosts.find(function(p) { return p.id === postId; });
+// ─── UNIFIED INTERFACE READER ────────────────────────────────────────────────
+function openContentItem(id, mode) {
+  activeReaderContext = (mode === 'demo') ? 'demos' : 'blogs';
+  const targetArray = (mode === 'demo') ? demonstrationPosts : blogPosts;
+  const post = targetArray.find(p => p.id === id);
   if (!post) return;
 
-  var isSeries = (post.series === CHEMISTRY_SERIES && typeof post.part === 'number');
+  // Set reader contextual dynamic back button string label
+  const backLabel = (mode === 'demo') ? '← Back to Demonstrations' : '← Back to Explorations';
+  document.getElementById('readerUniversalBackBtn').innerText = backLabel;
 
-  var seriesLabelHtml = '';
-  if (isSeries) {
-    seriesLabelHtml = '<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;'
-      + 'letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">'
-      + escHtml(post.series) + ' &nbsp;·&nbsp; Part ' + post.part + ' of 5'
-      + '</div>';
-  } else if (post.category) {
-    seriesLabelHtml = '<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;'
-      + 'letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">'
-      + escHtml(post.category)
-      + '</div>';
+  let headerContextLabel = '';
+  if (mode === 'blog') {
+    headerContextLabel = post.series 
+      ? `${escHtml(post.series)} ${post.part ? `&middot; Part ${post.part} of 5` : ''}`
+      : `Layer Architecture &nbsp;·&nbsp; ${escHtml(post.category)}`;
+  } else {
+    headerContextLabel = `System Manifest &nbsp;·&nbsp; ${escHtml(post.category)}`;
   }
 
-  var sectionsHtml = post.sections.map(function(sec) {
-    var blocksHtml = sec.content.map(function(block) {
-      if (block.type === 'p')     return '<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">' + escHtml(block.text) + '</p>';
-      if (block.type === 'quote') return '<div class="blog-quote">' + escHtml(block.text) + '</div>';
-      if (block.type === 'code')  return '<div class="blog-code">' + escHtml(block.text) + '</div>';
-      if (block.type === 'image') return '<div class="blog-img-wrap"><img src="' + escHtml(block.src) + '" alt="' + escHtml(block.alt) + '" loading="lazy" />' + (block.caption ? '<div class="blog-img-caption">' + escHtml(block.caption) + '</div>' : '') + '</div>';
+  const seriesLabelHtml = `<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">${headerContextLabel}</div>`;
+
+  const sectionsHtml = post.sections.map(function(sec) {
+    const blocksHtml = sec.content.map(function(block) {
+      if (block.type === 'p')     return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${escHtml(block.text)}</p>`;
+      if (block.type === 'quote') return `<div class="blog-quote">${escHtml(block.text)}</div>`;
+      if (block.type === 'code')  return `<div class="blog-code">${escHtml(block.text)}</div>`;
+      if (block.type === 'image') return `<div class="blog-img-wrap"><img src="${escHtml(block.src)}" alt="${escHtml(block.alt)}" loading="lazy" />${block.caption ? `<div class="blog-img-caption">${escHtml(block.caption)}</div>` : ''}</div>`;
       return '';
     }).join('');
-    return '<div style="margin-bottom:2.5rem">'
-      + '<h2 style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">' + escHtml(sec.heading) + '</h2>'
-      + blocksHtml
-      + '</div>';
+
+    return `<div style="margin-bottom:2.5rem">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(sec.heading)}</h2>
+      ${blocksHtml}
+    </div>`;
   }).join('');
 
-  var closingParas = post.closing.paragraphs.map(function(p) {
-    return '<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">' + escHtml(p) + '</p>';
-  }).join('');
+  const closingParas = post.closing.paragraphs.map(p => `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">${escHtml(p)}</p>`).join('');
+  
+  const closingHtml = `<div style="margin-bottom:2.5rem">
+    <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(post.closing.heading)}</h2>
+    ${closingParas}
+    <div class="blog-quote">${escHtml(post.closing.quote)}</div>
+  </div>`;
 
-  var closingHtml = '<div style="margin-bottom:2.5rem">'
-    + '<h2 style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">' + escHtml(post.closing.heading) + '</h2>'
-    + closingParas
-    + '<div class="blog-quote">' + escHtml(post.closing.quote) + '</div>'
-    + '</div>';
+  // Specific implementation: Add structural future video layout abstraction for technical demos
+  let contextualMediaExtensions = '';
+  if (mode === 'demo') {
+    contextualMediaExtensions = `<div class="video-placeholder-box">
+      <div class="video-placeholder-icon">▰▰ [VIDEO PIPELINE]</div>
+      <div class="video-placeholder-text">Demonstration video will be added here.</div>
+    </div>`;
+  }
 
-  var seriesNavHtml = '';
-  if (isSeries) {
-    var prevPost = blogPosts.find(function(p) { return p.series === CHEMISTRY_SERIES && p.part === post.part - 1; });
-    var nextPost = blogPosts.find(function(p) { return p.series === CHEMISTRY_SERIES && p.part === post.part + 1; });
+  let structuralSeriesNavigationHtml = '';
+  if (mode === 'blog' && post.series === CHEMISTRY_SERIES && typeof post.part === 'number') {
+    var prevPost = blogPosts.find(p => p.series === CHEMISTRY_SERIES && p.part === post.part - 1);
+    var nextPost = blogPosts.find(p => p.series === CHEMISTRY_SERIES && p.part === post.part + 1);
 
     var prevBtn = prevPost
-      ? '<button onclick="openBlog(\'' + prevPost.id + '\')" style="'
-        + 'flex:1;min-width:0;background:transparent;border:1px solid var(--border);border-radius:8px;'
-        + 'padding:0.9rem 1.1rem;cursor:pointer;text-align:left;transition:border-color 0.2s"'
-        + ' onmouseover="this.style.borderColor=\'#3B82F6\'" onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\'">'
-        + '<div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.08em;margin-bottom:0.3rem">← Previous</div>'
-        + '<div style="font-family:\'Syne\',sans-serif;font-weight:600;font-size:0.88rem;color:#E2E8F0">' + escHtml(prevPost.title) + '</div>'
-        + '</button>'
+      ? `<button onclick="openContentItem('${prevPost.id}', 'blog')" style="flex:1;min-width:0;background:transparent;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;cursor:pointer;text-align:left;transition:border-color 0.2s" onmouseover="this.style.borderColor='#3B82F6'" onmouseout="this.style.borderColor='rgba(148,163,184,0.12)'">
+          <div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.08em;margin-bottom:0.3rem">← Previous</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:0.88rem;color:#E2E8F0">${escHtml(prevPost.title)}</div>
+         </button>`
       : '<div style="flex:1"></div>';
 
     var nextBtn = nextPost
-      ? '<button onclick="openBlog(\'' + nextPost.id + '\')" style="'
-        + 'flex:1;min-width:0;background:transparent;border:1px solid var(--border);border-radius:8px;'
-        + 'padding:0.9rem 1.1rem;cursor:pointer;text-align:right;transition:border-color 0.2s"'
-        + ' onmouseover="this.style.borderColor=\'#3B82F6\'" onmouseout="this.style.borderColor=\'rgba(148,163,184,0.12)\'">'
-        + '<div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.08em;margin-bottom:0.3rem">Continue →</div>'
-        + '<div style="font-family:\'Syne\',sans-serif;font-weight:600;font-size:0.88rem;color:#E2E8F0">' + escHtml(nextPost.title) + '</div>'
-        + '</button>'
+      ? `<button onclick="openContentItem('${nextPost.id}', 'blog')" style="flex:1;min-width:0;background:transparent;border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;cursor:pointer;text-align:right;transition:border-color 0.2s" onmouseover="this.style.borderColor='#3B82F6'" onmouseout="this.style.borderColor='rgba(148,163,184,0.12)'">
+          <div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.08em;margin-bottom:0.3rem">Continue →</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:0.88rem;color:#E2E8F0">${escHtml(nextPost.title)}</div>
+         </button>`
       : '';
 
-    seriesNavHtml = '<div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)">'
-      + '<div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem">'
-      + escHtml(CHEMISTRY_SERIES) + '</div>'
-      + '<div style="display:flex;gap:1rem;align-items:stretch">'
-      + prevBtn + nextBtn
-      + '</div>'
-      + '</div>';
+    structuralSeriesNavigationHtml = `<div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)">
+      <div style="font-family:var(--mono);font-size:0.62rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem">${escHtml(CHEMISTRY_SERIES)}</div>
+      <div style="display:flex;gap:1rem;align-items:stretch">${prevBtn}${nextBtn}</div>
+    </div>`;
   }
 
-  document.getElementById('blog-post-content').innerHTML =
+  document.getElementById('blog-post-content').innerHTML = 
     seriesLabelHtml
-    + '<h1 style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">' + escHtml(post.title) + '</h1>'
-    + '<p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">' + escHtml(post.subtitle) + '</p>'
-    + '<div class="tags" style="margin-bottom:3rem">' + post.tags.map(function(t) { return '<span class="tag">' + escHtml(t) + '</span>'; }).join('') + '</div>'
-    + '<div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>'
+    + `<h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">${escHtml(post.title)}</h1>`
+    + `<p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">${escHtml(post.subtitle)}</p>`
+    + `<div class="tags" style="margin-bottom:3rem">${post.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}</div>`
+    + `<div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>`
     + sectionsHtml
+    + contextualMediaExtensions
     + closingHtml
-    + seriesNavHtml;
+    + structuralSeriesNavigationHtml;
 
   showPage('blog-post');
+}
+
+function navigateBackFromReader() {
+  showPage(activeReaderContext);
 }
 
 // ─── JOURNEY ──────────────────────────────────────────────────────────────────
@@ -1870,7 +998,7 @@ function renderJourney() {
   `;
 
   document.getElementById('node-cards').innerHTML = n.cards.map(c => `
-    <div class="info-card">
+    <div class="info-card" style="background:#0F172A;border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;">
       <div class="info-card-label">${escHtml(c.label)}</div>
       <div class="info-card-title">${escHtml(c.title)}</div>
       <div class="info-card-text">${escHtml(c.text)}</div>
@@ -1911,6 +1039,7 @@ function escHtml(str) {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 renderBlogs(1);
+renderDemos(1);
 
 window.addEventListener("DOMContentLoaded", () => {
   const hash = window.location.hash;
