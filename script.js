@@ -1165,6 +1165,110 @@ const blogPosts = [
     quote:"Engineering is the art of making the invisible visible through controlled interaction."
   },
   footer:"Exploring the boundaries where computation meets reality."
+},
+{
+  id: "the-architecture-of-memory",
+  category:"Computation",
+  series:"System Explorations",
+  title: "The Architecture of Memory",
+  subtitle: "How physical constraints and electrical charge define the boundaries of digital state.",
+  date: "28th May, 2026",
+  tags: ["Memory", "SRAM", "DRAM", "Flash", "Embedded Systems"],
+  sections: [
+    {
+      heading: "1. The Hierarchy of State",
+      content: [
+        {
+          type: "p",
+          text: "Every processor is fundamentally a state machine. It executes instructions by reading data from memory, transforming it, and writing it back. But not all memory is created equal. The physical reality of silicon forces a compromise between speed, capacity, and cost."
+        },
+        {
+          type: "p",
+          text: "To build a useful system, we construct a hierarchy: registers and SRAM at the very top (tapering down near the CPU core for speed), backed by main DRAM system memory, and finally persistent NOR and NAND flash for mass storage. This tiered architecture ensures the CPU is never starved of instructions while keeping persistent data accessible."
+        },
+        {
+          type: "image",
+          src: "Images/memory_hierarchy.png",
+          alt: "The Memory Hierarchy showing speed vs density trade-offs",
+          caption: "A vertical structural view of memory layers tapering down as they approach the CPU core."
+        }
+      ]
+    },
+    {
+      heading: "2. The Battle for the Bit: SRAM vs DRAM",
+      content: [
+        {
+          type: "p",
+          text: "At the volatile layer, the choice comes down to topology: how do we store a single bit of data?"
+        },
+        {
+          type: "p",
+          text: "Static RAM (SRAM) uses a cross-coupled latch constructed with 6 transistors (6T). This design creates an active, stable state that holds its value as long as power is applied. However, this complexity makes SRAM physically large and expensive, limiting its use to small, fast CPU caches and microcontroller registers."
+        },
+        {
+          type: "p",
+          text: "Dynamic RAM (DRAM) takes the opposite approach. It shrinks the cell down to a single transistor and a single storage capacitor (1T1C). While this allows massive densities (gigabytes on a single chip), the capacitor is a leaky reservoir. It naturally drains its charge within milliseconds, requiring a continuous refresh loop to prevent data corruption."
+        },
+        {
+          type: "image",
+          src: "Images/sram_vs_dram.png",
+          alt: "SRAM 6T vs DRAM 1T1C circuit diagram",
+          caption: "Circuit topologies representing the active stable latch of SRAM versus the leaky reservoir of DRAM."
+        }
+      ]
+    },
+    {
+      heading: "3. Persistence: NOR vs NAND Flash",
+      content: [
+        {
+          type: "p",
+          text: "When power is removed, we rely on non-volatile flash memory to retain our programs and data. Flash operates by trapping charge within a floating gate transistor. The layout configuration of these gates determines how they can be accessed."
+        },
+        {
+          type: "p",
+          text: "NOR Flash connects storage transistors in parallel directly across word lines. This parallel alignment allows the processor to perform instant random byte reads, making it the standard choice for executing firmware binary code directly on-board."
+        },
+        {
+          type: "p",
+          text: "NAND Flash daisy-chains transistor arrays in a tight serial configuration. By eliminating the individual contacts needed for parallel routing, NAND achieves extraordinary densities. However, this serial chain prevents byte-level access, requiring the processor to read and write data in sequential sector blocks, ideal for mass storage filesystems."
+        },
+        {
+          type: "image",
+          src: "Images/nor_vs_nand.png",
+          alt: "NOR parallel vs NAND serial micro-architectural layouts",
+          caption: "Transistor cell layout detailing parallel random-access lines in NOR vs serial block lines in NAND."
+        }
+      ]
+    },
+    {
+      heading: "4. The Address Map: Dividing Space",
+      content: [
+        {
+          type: "p",
+          text: "To the developer, all of these physical layers are abstracted into a single, contiguous address space. The microcontroller registers map specific memory regions to Flash and SRAM boundaries."
+        },
+        {
+          type: "p",
+          text: "From top to bottom, the register space is divided into proportional segments: .text (NOR Flash for execution), .data and .bss (RAM for initialized and zeroed variables), followed by the Stack (runtime context engine) and the Heap (dynamic allocation workspace)."
+        },
+        {
+          type: "image",
+          src: "Images/embedded_memory_map.png",
+          alt: "Microcontroller memory map segment boundaries",
+          caption: "The vertical register allocation of persistent Flash versus internal SRAM workspace segments."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Architecture of State",
+    paragraphs: [
+      "Memory is not just a passive buffer; it is the physical medium where logic meets reality. The boundaries of digital state are defined by the speeds, densities, and physical layout structures of silicon.",
+      "Understanding these hardware constraints is what allows us to write firmware that pushes performance to the very edge."
+    ],
+    quote: "True efficiency is achieved when you align your software execution path with the physical layout of the silicon."
+  },
+  footer: "Reflections on Memory and State - PrajnaEdge.dev"
 }
 ];
 
@@ -1427,6 +1531,7 @@ function openItem(id, type) {
       if (b.type === 'p') return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${escHtml(b.text)}</p>`;
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
+      if (b.type === 'image') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
       return '';
     }).join('');
     return `<div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(sec.heading)}</h2>${blocks}</div>`;
