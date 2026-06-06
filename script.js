@@ -52,31 +52,52 @@ const nodes = [
   }
 ];
 
-const modalData = {
+const systemsTreeNodes = {
   Matter: {
     title: "Matter",
     description: "How physical matter became controllable computation.",
-    explores: ["Silicon", "Doping", "Wafer fabrication", "Transistors", "CPUs"]
+    explorations: [
+      { id: "chemistry-intelligence-part1", title: "Why Silicon?" },
+      { id: "chemistry-intelligence-part2", title: "From Sand to Crystal" },
+      { id: "chemistry-intelligence-part3", title: "The Architecture of the Wafer" },
+      { id: "chemistry-intelligence-part4", title: "The Birth of the Transistor" },
+      { id: "chemistry-intelligence-part5", title: "The First Processor" }
+    ]
   },
   Computation: {
     title: "Computation",
     description: "The hidden abstractions that make software appear independent from physics.",
-    explores: ["Software abstraction", "Registers", "Memory", "CPU behavior", "State"]
+    explorations: [
+      { id: "illusion-of-software", title: "The Illusion of Software" },
+      { id: "the-architecture-of-memory", title: "The Architecture of Memory" },
+      { id: "the-hidden-geography-of-firmware", title: "The Hidden Geography of Firmware" },
+      { id: null, title: "The First Instruction", status: "Coming Soon" },
+      { id: null, title: "Coming Soon" }
+    ]
   },
   Interaction: {
     title: "Interaction",
     description: "The moment software crossed into physical consequence.",
-    explores: ["Interfaces", "GPIO", "Sensors", "Actuators", "Physical systems"]
+    explorations: [
+      { id: "why-systems-need-interfaces", title: "Why Systems Need Interfaces" },
+      { id: "the-physical-edge-of-software", title: "The Physical Edge of Software" },
+      { id: null, title: "Why Embedded Systems Speak in Protocols", status: "Coming Soon" },
+      { id: null, title: "Coming Soon" }
+    ]
   },
   Coordination: {
     title: "Coordination",
     description: "Why isolated computation evolved into synchronized systems.",
-    explores: ["UART", "SPI", "I2C", "Interrupts", "RTOS", "Timing"]
+    explorations: [
+      { id: null, title: "Coming Soon" }
+    ]
   },
   Intelligence: {
     title: "Intelligence",
     description: "How systems evolved from deterministic control into adaptive intelligence.",
-    explores: ["Edge AI", "TinyML", "NPUs", "On-device AI", "Distributed intelligence"]
+    explorations: [
+      { id: null, title: "Coming Soon" }
+    ]
   }
 };
 
@@ -87,7 +108,7 @@ const blogPosts = [
   category:"Matter",
   series:"The Chemistry of Intelligence",
   part:1,
-  title:"Part 1 — Why Silicon?",
+  title:"Why Silicon?",
   subtitle:"Before processors, memory, or artificial intelligence, there is a material choice. Computation did not emerge from just any element — it emerged from silicon. The question is why.",
   date:"28th March,  2026",
   tags:["Chemistry","Silicon","Semiconductors","Systems"],
@@ -218,14 +239,14 @@ const blogPosts = [
     ],
     quote:"It begins with a material capable of controlling electrons without letting them move too freely."
   },
-  footer:"Part 1 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+  footer:"Reflections on chemistry and computation - PrajnaEdge.dev"
 },
   {
   id:"chemistry-intelligence-part2",
   category:"Matter",
   series:"The Chemistry of Intelligence",
   part:2,
-  title:"Part 2 — From Sand to Silicon",
+  title:"From Sand to Crystal",
   subtitle:"Silicon is everywhere. Beaches contain it. Rocks contain it. The challenge was never finding silicon — the challenge was purifying it enough for computation.",
   date:"5th April, 2026",
   tags:["Silicon","Manufacturing","Semiconductors","Materials"],
@@ -352,14 +373,14 @@ const blogPosts = [
     ],
     quote:"The journey from sand to intelligence begins with purification, precision, and structure."
   },
-  footer:"Part 2 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+  footer:"Reflections on chemistry and computation - PrajnaEdge.dev"
 },
   {
   id:"chemistry-intelligence-part3",
   category:"Matter",
   series:"The Chemistry of Intelligence",
   part:3,
-  title:"Part 3 — From Silicon to Wafer",
+  title:"The Architecture of the Wafer",
   subtitle:"Purified silicon alone is still not enough. Computation requires not only clean material, but a surface precise enough to build billions of microscopic structures repeatedly and reliably.",
   date:"11th April, 2026",
   tags:["Wafer","Semiconductors","Manufacturing","Silicon"],
@@ -490,14 +511,14 @@ const blogPosts = [
     ],
     quote:"Before computation can emerge, matter must first become manufacturable."
   },
-  footer:"Part 3 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+  footer:"Reflections on chemistry and computation - PrajnaEdge.dev"
 },
 {
   id:"chemistry-intelligence-part4",
   category:"Matter",
   series:"The Chemistry of Intelligence",
   part:4,
-  title:"Part 4 — From Wafer to Transistor",
+  title:"The Birth of the Transistor",
   subtitle:"A wafer is still only structured material. Intelligence begins much later — when we learn how to control the movement of electrons across specific regions of silicon.",
   date:"18th April, 2026",
   tags:["Transistor","Semiconductors","Photolithography","Electronics"],
@@ -636,14 +657,14 @@ const blogPosts = [
     ],
     quote:"The transistor is where chemistry stops looking like matter and starts looking like intelligence."
   },
-  footer:"Part 4 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+  footer:"Reflections on chemistry and computation - PrajnaEdge.dev"
 },
   {
   id:"chemistry-intelligence-part5",
   category:"Matter",
   series:"The Chemistry of Intelligence",
   part:5,
-  title:"Part 5 — From Transistor to CPU",
+  title:"The First Processor",
   subtitle:"A transistor alone does not compute. Intelligence only begins to emerge when billions of switches become organized into systems capable of storing state, processing signals, and coordinating decisions.",
   date:"25th April, 2026",
   tags:["CPU","Logic Gates","Transistors","Computation"],
@@ -778,7 +799,7 @@ const blogPosts = [
     ],
     quote:"Modern computation is ultimately the result of matter organized carefully enough to control information, timing, and behavior."
   },
-  footer:"Part 5 of a 5-part exploration on how intelligence emerges from chemistry, structure, and computation."
+  footer:"Reflections on chemistry and computation - PrajnaEdge.dev"
 },
 {
   id:"illusion-of-software",
@@ -1510,26 +1531,92 @@ function showPage(page) {
   if (page === 'demos') renderDemos(currentDemoPage);
 }
 
+// ─── SCROLL TO SYSTEMS TREE ──────────────────────────────────────────────────
+function scrollToSystemsTree() {
+  showPage('home');
+  const treeContainer = document.querySelector('.tree-branch');
+  if (treeContainer) {
+    setTimeout(() => {
+      treeContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+  }
+}
+
+// ─── RENDER HOME TREE ────────────────────────────────────────────────────────
+function renderHomeTree() {
+  const treeContainer = document.querySelector('.tree-branch');
+  if (!treeContainer) return;
+  
+  const nodesKeys = ["Matter", "Computation", "Interaction", "Coordination", "Intelligence"];
+  let html = '';
+  
+  nodesKeys.forEach((key, idx) => {
+    const node = systemsTreeNodes[key];
+    const activeCount = node.explorations.filter(e => e.id !== null).length;
+    const progressText = activeCount > 0 ? `${activeCount} Exploration${activeCount > 1 ? 's' : ''}` : "Coming Soon";
+    const isClickable = activeCount > 0;
+    
+    html += `
+      <div class="tree-node${!isClickable ? ' disabled' : ''}" 
+           ${isClickable ? `onclick="openNodeModal('${key}')"` : 'style="cursor:default; opacity:0.6;"'}>
+        <div class="tree-node-title">${escHtml(node.title)}</div>
+        <div class="tree-node-progress">${escHtml(progressText)}</div>
+      </div>
+    `;
+    
+    if (idx < nodesKeys.length - 1) {
+      html += `<div class="tree-arrow"></div>`;
+    }
+  });
+  
+  treeContainer.innerHTML = html;
+}
+
 // ─── MODAL CONTROLLERS ───────────────────────────────────────────────────────
-function openModal(nodeKey) {
-  const data = modalData[nodeKey];
-  if (!data) return;
+function openNodeModal(nodeKey) {
+  const node = systemsTreeNodes[nodeKey];
+  if (!node) return;
   
   const wrapper = document.getElementById('modal-content-wrapper');
+  
+  const explorationsHtml = node.explorations.map((exp, index) => {
+    const isPublished = exp.id !== null;
+    const num = String(index + 1).padStart(2, '0');
+    if (isPublished) {
+      return `
+        <div class="progression-item active" onclick="openNodeExploration('${exp.id}')">
+          <span class="progression-num">${num}</span>
+          <span class="progression-title">${escHtml(exp.title)}</span>
+        </div>
+      `;
+    } else {
+      const isComingSoon = exp.status === "Coming Soon" || exp.title !== "Coming Soon";
+      const badgeHtml = isComingSoon ? `<span class="progression-badge">Coming Soon</span>` : '';
+      return `
+        <div class="progression-item locked">
+          <span class="progression-num">${num}</span>
+          <span class="progression-title">${escHtml(exp.title)}</span>
+          ${badgeHtml}
+        </div>
+      `;
+    }
+  }).join('');
+  
   wrapper.innerHTML = `
-    <h2 class="modal-title">${escHtml(data.title)}</h2>
-    <p class="modal-desc">${escHtml(data.description)}</p>
-    <div class="modal-explores-label">Explores:</div>
-    <ul class="modal-explores-list">
-      ${data.explores.map(item => `<li class="modal-explores-item">${escHtml(item)}</li>`).join('')}
-    </ul>
-    <div style="display:flex; gap:0.75rem;">
-      <button class="btn-primary" style="flex:1; justify-content:center; font-size:0.8rem; padding:0.6rem;" onclick="filterLayerRoute('${nodeKey}', 'blogs')">Explorations</button>
-      <button class="btn-ghost" style="flex:1; justify-content:center; font-size:0.8rem; padding:0.6rem; border-color:var(--blue); color:var(--blue);" onclick="filterLayerRoute('${nodeKey}', 'demos')">Demos</button>
+    <h2 class="modal-title">${escHtml(node.title)}</h2>
+    <p class="modal-desc">${escHtml(node.description)}</p>
+    <div class="modal-explores-label">Systems Map Progression:</div>
+    <div class="exploration-progression">
+      ${explorationsHtml}
     </div>
   `;
   
   document.getElementById('nodeModal').classList.add('active');
+}
+
+function openNodeExploration(blogId) {
+  closeModal(null);
+  openItem(blogId, 'blogs');
 }
 
 function closeModal(event) {
@@ -1704,6 +1791,76 @@ function openItem(id, type) {
     return `<div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(sec.heading)}</h2>${blocks}</div>`;
   }).join('');
 
+  let navHtml = '';
+  if (type === 'blogs') {
+    const nodeKey = item.category;
+    const node = systemsTreeNodes[nodeKey];
+    if (node) {
+      const currentIndex = node.explorations.findIndex(e => e.id === item.id);
+      if (currentIndex !== -1) {
+        const prevExp = currentIndex > 0 ? node.explorations[currentIndex - 1] : null;
+        const nextExp = currentIndex < node.explorations.length - 1 ? node.explorations[currentIndex + 1] : null;
+
+        let prevHtml = '';
+        if (prevExp) {
+          if (prevExp.id) {
+            prevHtml = `
+              <span class="nav-dir-label">← Previous</span>
+              <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
+            `;
+          } else {
+            prevHtml = `
+              <span class="nav-dir-label">← Previous</span>
+              <span class="nav-link locked">Coming Soon</span>
+            `;
+          }
+        } else {
+          prevHtml = `
+            <span class="nav-dir-label">← Previous</span>
+            <span class="nav-link locked">None</span>
+          `;
+        }
+
+        let nextHtml = '';
+        if (nextExp) {
+          if (nextExp.id) {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
+            `;
+          } else {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked">${escHtml(nextExp.title || "Coming Soon")}</span>
+            `;
+          }
+        } else {
+          nextHtml = `
+            <span class="nav-dir-label">Next →</span>
+            <span class="nav-link locked">Coming Soon</span>
+          `;
+        }
+
+        navHtml = `
+          <div class="exploration-nav-block">
+            <div class="exploration-nav-header">
+              <span class="nav-node-label">System Tree Node</span>
+              <span class="nav-node-name">${escHtml(node.title)}</span>
+            </div>
+            <div class="exploration-nav-grid">
+              <div class="nav-prev">${prevHtml}</div>
+              <div class="nav-current">
+                <span class="nav-dir-label">Current Exploration</span>
+                <span class="nav-title-current">${escHtml(item.title)}</span>
+              </div>
+              <div class="nav-next">${nextHtml}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+  }
+
   document.getElementById('blog-post-content').innerHTML = `
     <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">${escHtml(label)}</div>
     <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">${escHtml(item.title)}</h1>
@@ -1716,6 +1873,7 @@ function openItem(id, type) {
       ${item.closing.paragraphs.map(p => `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">${escHtml(p)}</p>`).join('')}
       <div class="blog-quote">${escHtml(item.closing.quote)}</div>
     </div>
+    ${navHtml}
   `;
   showPage('blog-post');
 }
@@ -1756,6 +1914,7 @@ function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 renderBlogs(1);
 renderDemos(1);
+renderHomeTree();
 
 // ─── FEEDBACK FORM HANDLER ───────────────────────────────────────────────────
 const feedbackForm = document.getElementById("feedback-form");

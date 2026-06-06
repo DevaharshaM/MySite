@@ -182,3 +182,165 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   flex-direction: column;
   width: 100%;
 }
+
+/* SYSTEMS TREE NODE PROGRESS */
+.tree-node-progress {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+  letter-spacing: 0.02em;
+}
+.tree-node.disabled {
+  pointer-events: none;
+}
+
+/* SYSTEMS MAP PROGRESSION (MODAL) */
+.exploration-progression {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+}
+.progression-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+.progression-item.active {
+  cursor: pointer;
+}
+.progression-item.active:hover {
+  border-color: var(--blue);
+  background: rgba(59, 130, 246, 0.05);
+  transform: translateX(4px);
+}
+.progression-item.locked {
+  opacity: 0.55;
+  background: rgba(30, 41, 59, 0.35);
+  border-style: dashed;
+}
+.progression-num {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--blue);
+  margin-right: 0.85rem;
+  font-weight: 500;
+}
+.progression-item.locked .progression-num {
+  color: var(--muted);
+}
+.progression-title {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #E2E8F0;
+}
+.progression-item.locked .progression-title {
+  color: var(--muted);
+}
+.progression-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--blue);
+  background: var(--blue-glow);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* EXPLORATION NAV BLOCK (DOUBLE-LINKED LIST) */
+.exploration-nav-block {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--border);
+  font-family: 'DM Sans', sans-serif;
+}
+.exploration-nav-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.nav-node-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.nav-node-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #fff;
+}
+.exploration-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.nav-prev, .nav-current, .nav-next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.nav-prev {
+  text-align: left;
+}
+.nav-current {
+  text-align: center;
+}
+.nav-next {
+  text-align: right;
+}
+.nav-dir-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.nav-link {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--blue);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1.4;
+}
+.nav-link.active:hover {
+  color: #fff;
+}
+.nav-link.locked {
+  color: var(--muted);
+  font-style: italic;
+  cursor: default;
+}
+.nav-title-current {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #E2E8F0;
+  line-height: 1.4;
+}
+@media (max-width: 640px) {
+  .exploration-nav-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    text-align: center;
+  }
+  .nav-prev, .nav-current, .nav-next {
+    text-align: center;
+  }
+}

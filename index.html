@@ -26,7 +26,7 @@
 <nav>
   <div class="nav-links">
     <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
-    <a id="nav-blogs" onclick="showPage('blogs')">Exploration</a>
+    <a id="nav-blogs" onclick="scrollToSystemsTree()">Exploration</a>
     <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
     <a id="nav-about" onclick="showPage('about')">About</a>
     <a id="nav-contact" onclick="showPage('contact')">Contact</a>
@@ -36,40 +36,11 @@
 <div class="page active" id="page-home">
   <div class="empty-page">
     <div class="empty-title">From Signal to Intelligence</div>
-    <div class="empty-sub" style="max-width:420px;text-align:center;line-height:1.7">
-      Systems don't just run — they evolve.<br>
-      I explore how they begin, adapt, and think.
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      PrajnaEdge is not a tutorial website. It is an evolving exploration of how intelligent systems emerge through successive engineering layers.
     </div>
 
-    <div class="tree-branch">
-      <div class="tree-node" onclick="openModal('Matter')">
-        <div class="tree-node-title">Matter</div>
-      </div>
-      
-      <div class="tree-arrow"></div>
-      
-      <div class="tree-node" onclick="openModal('Computation')">
-        <div class="tree-node-title">Computation</div>
-      </div>
-      
-      <div class="tree-arrow"></div>
-      
-      <div class="tree-node" onclick="openModal('Interaction')">
-        <div class="tree-node-title">Interaction</div>
-      </div>
-      
-      <div class="tree-arrow"></div>
-      
-      <div class="tree-node" onclick="openModal('Coordination')">
-        <div class="tree-node-title">Coordination</div>
-      </div>
-      
-      <div class="tree-arrow"></div>
-      
-      <div class="tree-node" onclick="openModal('Intelligence')">
-        <div class="tree-node-title">Intelligence</div>
-      </div>
-    </div>
+    <div class="tree-branch"></div>
 
     <div style="margin-top:3.5rem;text-align:center">
       <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
