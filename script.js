@@ -1629,8 +1629,10 @@ function filterLayerRoute(category, targetPage) {
 
 function clearBlogFilter() {
   selectedCategoryFilter = null;
-  document.getElementById('clearFilterBtn').style.display = 'none';
-  document.getElementById('blogsBackToTreeBtn').style.display = 'none';
+  const clearBtn = document.getElementById('clearFilterBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  const backBtn = document.getElementById('blogsBackToTreeBtn');
+  if (backBtn) backBtn.style.display = 'none';
   document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
   document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to intelligence.';
   renderBlogs(1);
@@ -1645,7 +1647,10 @@ function clearDemoFilter() {
   renderDemos(1);
 }
 
-function clearBlogFilterAndGoHome() { clearBlogFilter(); showPage('home'); }
+function clearBlogFilterAndGoHome() {
+  clearBlogFilter();
+  scrollToSystemsTree();
+}
 function clearDemoFilterAndGoHome() { clearDemoFilter(); showPage('home'); }
 
 function handleSortChange(type) {
