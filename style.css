@@ -286,23 +286,22 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 }
 .exploration-nav-grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
   align-items: flex-start;
+  max-width: 600px;
+  margin: 0 auto;
 }
-.nav-prev, .nav-current, .nav-next {
+.nav-prev, .nav-next {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 .nav-prev {
-  text-align: left;
-}
-.nav-current {
-  text-align: center;
+  text-align: right;
 }
 .nav-next {
-  text-align: right;
+  text-align: left;
 }
 .nav-dir-label {
   font-family: var(--mono);
@@ -340,7 +339,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
     gap: 1.75rem;
     text-align: center;
   }
-  .nav-prev, .nav-current, .nav-next {
+  .nav-prev, .nav-next {
     text-align: center;
   }
 }

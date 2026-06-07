@@ -1553,12 +1553,10 @@ function renderHomeTree() {
   nodesKeys.forEach((key, idx) => {
     const node = systemsTreeNodes[key];
     const activeCount = node.explorations.filter(e => e.id !== null).length;
-    const progressText = activeCount > 0 ? `${activeCount} Exploration${activeCount > 1 ? 's' : ''}` : "Coming Soon";
-    const isClickable = activeCount > 0;
+    const progressText = `(${activeCount})`;
     
     html += `
-      <div class="tree-node${!isClickable ? ' disabled' : ''}" 
-           ${isClickable ? `onclick="openNodeModal('${key}')"` : 'style="cursor:default; opacity:0.6;"'}>
+      <div class="tree-node" onclick="openNodeModal('${key}')">
         <div class="tree-node-title">${escHtml(node.title)}</div>
         <div class="tree-node-progress">${escHtml(progressText)}</div>
       </div>
@@ -1579,44 +1577,29 @@ function openNodeModal(nodeKey) {
   
   const wrapper = document.getElementById('modal-content-wrapper');
   
-  const explorationsHtml = node.explorations.map((exp, index) => {
-    const isPublished = exp.id !== null;
-    const num = String(index + 1).padStart(2, '0');
-    if (isPublished) {
-      return `
-        <div class="progression-item active" onclick="openNodeExploration('${exp.id}')">
-          <span class="progression-num">${num}</span>
-          <span class="progression-title">${escHtml(exp.title)}</span>
-        </div>
-      `;
-    } else {
-      const isComingSoon = exp.status === "Coming Soon" || exp.title !== "Coming Soon";
-      const badgeHtml = isComingSoon ? `<span class="progression-badge">Coming Soon</span>` : '';
-      return `
-        <div class="progression-item locked">
-          <span class="progression-num">${num}</span>
-          <span class="progression-title">${escHtml(exp.title)}</span>
-          ${badgeHtml}
-        </div>
-      `;
-    }
-  }).join('');
-  
   wrapper.innerHTML = `
     <h2 class="modal-title">${escHtml(node.title)}</h2>
-    <p class="modal-desc">${escHtml(node.description)}</p>
-    <div class="modal-explores-label">Systems Map Progression:</div>
-    <div class="exploration-progression">
-      ${explorationsHtml}
-    </div>
+    <p class="modal-desc" style="margin-bottom: 2.25rem;">${escHtml(node.description)}</p>
+    <button class="btn-primary" style="width:100%; justify-content:center; padding:0.85rem; font-size:0.85rem;" onclick="exploreNode('${nodeKey}')">
+      Explore ${escHtml(node.title)}
+    </button>
   `;
   
   document.getElementById('nodeModal').classList.add('active');
 }
 
-function openNodeExploration(blogId) {
+function exploreNode(nodeKey) {
   closeModal(null);
-  openItem(blogId, 'blogs');
+  filterNodeRoute(nodeKey);
+}
+
+function filterNodeRoute(category) {
+  selectedCategoryFilter = category;
+  document.getElementById('blogsBackToTreeBtn').style.display = 'block';
+  document.getElementById('blogsPageTitle').innerText = category;
+  document.getElementById('blogsPageSubtitle').innerText = systemsTreeNodes[category].description;
+  renderBlogs(1);
+  showPage('blogs');
 }
 
 function closeModal(event) {
@@ -1681,27 +1664,80 @@ function renderBlogs(page) {
   const container = document.getElementById('blogList');
   if (!container) return;
 
-  let processed = blogPosts.slice();
-  if (currentSortOrder === "newest") processed.reverse();
-  if (selectedCategoryFilter) processed = processed.filter(p => p.category === selectedCategoryFilter);
+  if (!selectedCategoryFilter) {
+    selectedCategoryFilter = 'Matter';
+  }
 
-  if (processed.length === 0) {
+  const node = systemsTreeNodes[selectedCategoryFilter];
+  if (!node) return;
+
+  // Build the list of items from systemsTreeNodes sequence
+  let items = node.explorations.map(exp => {
+    if (exp.id !== null) {
+      const post = blogPosts.find(p => p.id === exp.id);
+      return {
+        id: exp.id,
+        title: post ? post.title : exp.title,
+        subtitle: post ? post.subtitle : '',
+        date: post ? post.date : '',
+        tags: post ? post.tags : [],
+        isPublished: true
+      };
+    } else {
+      return {
+        id: null,
+        title: exp.title,
+        subtitle: '',
+        date: '',
+        tags: [],
+        isPublished: false
+      };
+    }
+  });
+
+  // Separate and sort
+  const publishedItems = items.filter(i => i.isPublished);
+  const comingSoonItems = items.filter(i => !i.isPublished);
+
+  if (currentSortOrder === "newest") {
+    publishedItems.reverse();
+  }
+
+  const finalItems = [...publishedItems, ...comingSoonItems];
+
+  if (finalItems.length === 0) {
     container.innerHTML = `<div style="text-align:center; color:var(--muted); font-family:var(--mono); padding:3rem 0;">// No write-ups found under this category</div>`;
     renderPagination(0, 'blogs');
     return;
   }
 
-  const totalPages = Math.ceil(processed.length / BLOGS_PER_PAGE);
-  const slice = processed.slice((page - 1) * BLOGS_PER_PAGE, page * BLOGS_PER_PAGE);
+  const totalPages = Math.ceil(finalItems.length / BLOGS_PER_PAGE);
+  const slice = finalItems.slice((page - 1) * BLOGS_PER_PAGE, page * BLOGS_PER_PAGE);
 
-  container.innerHTML = slice.map(post => `
-    <div class="blog-card" onclick="openItem('${post.id}', 'blogs')">
-      <div class="blog-series">${escHtml(post.series || `Layer: ${post.category}`)}</div>
-      <div class="blog-title">${escHtml(post.title)}</div>
-      <div class="blog-subtitle">${escHtml(post.subtitle)}</div>
-      <div class="blog-meta"><span>${escHtml(post.date)}</span></div>
-    </div>
-  `).join('');
+  container.innerHTML = slice.map(item => {
+    if (item.isPublished) {
+      return `
+        <div class="blog-card" onclick="openItem('${item.id}', 'blogs')">
+          <div class="blog-title" style="margin-bottom: 0.5rem;">${escHtml(item.title)}</div>
+          <div class="blog-subtitle" style="margin-bottom: 0.85rem;">${escHtml(item.subtitle)}</div>
+          <div class="blog-meta" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <span>${escHtml(item.date)}</span>
+            <div class="tags">${item.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}</div>
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="blog-card locked" style="opacity:0.55; cursor:default; border-style:dashed;">
+          <div class="blog-title" style="color:var(--muted); margin-bottom: 0.5rem;">${escHtml(item.title)}</div>
+          <div class="blog-meta">
+            <span class="tag" style="color:var(--blue); border-color:var(--blue); background:var(--blue-glow); text-transform:uppercase; font-size:0.6rem; letter-spacing:0.05em;">Coming Soon</span>
+          </div>
+        </div>
+      `;
+    }
+  }).join('');
+
   renderPagination(totalPages, 'blogs');
 }
 
@@ -1772,14 +1808,14 @@ function openItem(id, type) {
 
   const backBtn = document.getElementById('readerBackBtn');
   if (type === 'blogs') {
-    backBtn.innerText = "← Back to Exploration";
-    backBtn.setAttribute('onclick', "showPage('blogs')");
+    backBtn.innerText = `← Back to ${item.category}`;
+    backBtn.setAttribute('onclick', `filterNodeRoute('${item.category}')`);
   } else {
     backBtn.innerText = "← Back to Demonstration";
     backBtn.setAttribute('onclick', "showPage('demos')");
   }
 
-  let label = item.series || item.category;
+  let label = item.category;
   let sectionsHtml = item.sections.map(sec => {
     let blocks = sec.content.map(b => {
       if (b.type === 'p') return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${escHtml(b.text)}</p>`;
@@ -1802,18 +1838,11 @@ function openItem(id, type) {
         const nextExp = currentIndex < node.explorations.length - 1 ? node.explorations[currentIndex + 1] : null;
 
         let prevHtml = '';
-        if (prevExp) {
-          if (prevExp.id) {
-            prevHtml = `
-              <span class="nav-dir-label">← Previous</span>
-              <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
-            `;
-          } else {
-            prevHtml = `
-              <span class="nav-dir-label">← Previous</span>
-              <span class="nav-link locked">Coming Soon</span>
-            `;
-          }
+        if (prevExp && prevExp.id) {
+          prevHtml = `
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
+          `;
         } else {
           prevHtml = `
             <span class="nav-dir-label">← Previous</span>
@@ -1822,37 +1851,22 @@ function openItem(id, type) {
         }
 
         let nextHtml = '';
-        if (nextExp) {
-          if (nextExp.id) {
-            nextHtml = `
-              <span class="nav-dir-label">Next →</span>
-              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
-            `;
-          } else {
-            nextHtml = `
-              <span class="nav-dir-label">Next →</span>
-              <span class="nav-link locked">${escHtml(nextExp.title || "Coming Soon")}</span>
-            `;
-          }
+        if (nextExp && nextExp.id) {
+          nextHtml = `
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
+          `;
         } else {
           nextHtml = `
             <span class="nav-dir-label">Next →</span>
-            <span class="nav-link locked">Coming Soon</span>
+            <span class="nav-link locked">None</span>
           `;
         }
 
         navHtml = `
           <div class="exploration-nav-block">
-            <div class="exploration-nav-header">
-              <span class="nav-node-label">System Tree Node</span>
-              <span class="nav-node-name">${escHtml(node.title)}</span>
-            </div>
             <div class="exploration-nav-grid">
               <div class="nav-prev">${prevHtml}</div>
-              <div class="nav-current">
-                <span class="nav-dir-label">Current Exploration</span>
-                <span class="nav-title-current">${escHtml(item.title)}</span>
-              </div>
               <div class="nav-next">${nextHtml}</div>
             </div>
           </div>
