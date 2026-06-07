@@ -1593,8 +1593,25 @@ function exploreNode(nodeKey) {
   filterNodeRoute(nodeKey);
 }
 
+function openDirectExplorations() {
+  selectedCategoryFilter = null;
+  currentSortOrder = 'newest';
+  const sortSelect = document.getElementById('blogSortOrderSelect');
+  if (sortSelect) sortSelect.value = 'newest';
+  
+  document.getElementById('blogsBackToTreeBtn').style.display = 'none';
+  document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
+  document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to intelligence.';
+  renderBlogs(1);
+  showPage('blogs');
+}
+
 function filterNodeRoute(category) {
   selectedCategoryFilter = category;
+  currentSortOrder = 'oldest';
+  const sortSelect = document.getElementById('blogSortOrderSelect');
+  if (sortSelect) sortSelect.value = 'oldest';
+
   document.getElementById('blogsBackToTreeBtn').style.display = 'block';
   document.getElementById('blogsPageTitle').innerText = category;
   document.getElementById('blogsPageSubtitle').innerText = systemsTreeNodes[category].description;
@@ -1669,46 +1686,61 @@ function renderBlogs(page) {
   const container = document.getElementById('blogList');
   if (!container) return;
 
-  if (!selectedCategoryFilter) {
-    selectedCategoryFilter = 'Matter';
-  }
+  let finalItems = [];
 
-  const node = systemsTreeNodes[selectedCategoryFilter];
-  if (!node) return;
+  if (selectedCategoryFilter) {
+    // Guided Mode: Filtered by Node
+    const node = systemsTreeNodes[selectedCategoryFilter];
+    if (!node) return;
 
-  // Build the list of items from systemsTreeNodes sequence
-  let items = node.explorations.map(exp => {
-    if (exp.id !== null) {
-      const post = blogPosts.find(p => p.id === exp.id);
-      return {
-        id: exp.id,
-        title: post ? post.title : exp.title,
-        subtitle: post ? post.subtitle : '',
-        date: post ? post.date : '',
-        tags: post ? post.tags : [],
-        isPublished: true
-      };
-    } else {
-      return {
-        id: null,
-        title: exp.title,
-        subtitle: '',
-        date: '',
-        tags: [],
-        isPublished: false
-      };
+    // Build the list of items from systemsTreeNodes sequence
+    let items = node.explorations.map(exp => {
+      if (exp.id !== null) {
+        const post = blogPosts.find(p => p.id === exp.id);
+        return {
+          id: exp.id,
+          title: post ? post.title : exp.title,
+          subtitle: post ? post.subtitle : '',
+          date: post ? post.date : '',
+          tags: post ? post.tags : [],
+          isPublished: true
+        };
+      } else {
+        return {
+          id: null,
+          title: exp.title,
+          subtitle: '',
+          date: '',
+          tags: [],
+          isPublished: false
+        };
+      }
+    });
+
+    const publishedItems = items.filter(i => i.isPublished);
+    const comingSoonItems = items.filter(i => !i.isPublished);
+
+    if (currentSortOrder === "newest") {
+      publishedItems.reverse();
     }
-  });
 
-  // Separate and sort
-  const publishedItems = items.filter(i => i.isPublished);
-  const comingSoonItems = items.filter(i => !i.isPublished);
+    finalItems = [...publishedItems, ...comingSoonItems];
+  } else {
+    // Discovery Mode: Direct/Unfiltered
+    let processed = blogPosts.map(post => ({
+      id: post.id,
+      title: post.title,
+      subtitle: post.subtitle,
+      date: post.date,
+      tags: post.tags,
+      isPublished: true
+    }));
 
-  if (currentSortOrder === "newest") {
-    publishedItems.reverse();
+    if (currentSortOrder === "newest") {
+      processed.reverse();
+    }
+    finalItems = processed;
   }
-
-  const finalItems = [...publishedItems, ...comingSoonItems];
 
   if (finalItems.length === 0) {
     container.innerHTML = `<div style="text-align:center; color:var(--muted); font-family:var(--mono); padding:3rem 0;">// No write-ups found under this category</div>`;
@@ -1813,8 +1845,13 @@ function openItem(id, type) {
 
   const backBtn = document.getElementById('readerBackBtn');
   if (type === 'blogs') {
-    backBtn.innerText = `← Back to ${item.category}`;
-    backBtn.setAttribute('onclick', `filterNodeRoute('${item.category}')`);
+    if (selectedCategoryFilter) {
+      backBtn.innerText = `← Back to ${item.category}`;
+      backBtn.setAttribute('onclick', `filterNodeRoute('${item.category}')`);
+    } else {
+      backBtn.innerText = "← Back to Exploration";
+      backBtn.setAttribute('onclick', "openDirectExplorations()");
+    }
   } else {
     backBtn.innerText = "← Back to Demonstration";
     backBtn.setAttribute('onclick', "showPage('demos')");
