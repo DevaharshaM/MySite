@@ -1854,120 +1854,87 @@ const blogPosts = [
   tags: ["UART", "Serial Protocols", "Asynchronous", "Baud Rate", "Embedded Systems"],
   sections: [
     {
-      heading: "1. The Asynchronous Challenge",
+      heading: "1. From Raw Voltage to Structured Language",
       content: [
         {
           type: "p",
-          text: "In the evolution of system interfaces, synchronous communication is the natural starting point. By sharing a dedicated clock line alongside the data wire, a transmitter can physically guide the receiver, signaling exactly when to sample each bit of information. It is a simple relationship: the clock line rises, the receiver reads, and correct state transfer is guaranteed."
+          text: "At its absolute physical foundation, a General Purpose Input/Output (GPIO) line is a simple copper trace holding a voltage. It can be pulled high, or it can be driven low. In isolation, a voltage transition is a binary event—a simple statement that something has changed. But if two independent processors are to exchange thoughts, a raw voltage transition is not enough. Without structure, a change in state is indistinguishable from electrical noise, and there is no way to represent a sequence of letters, numbers, or commands."
         },
         {
           type: "p",
-          text: "But as systems scale and physical distance increases, this shared clock line becomes a liability. Running high-frequency clock signals over long cables introduces electromagnetic radiation and crosstalk. It also demands additional physical connections, wasting valuable microcontroller pins. When we need to connect two separate devices—sometimes separated by meters of cable—sharing a physical clock wire is no longer practical."
+          text: "Universal Asynchronous Receiver-Transmitter (UART) is the architectural answer to this limitation. It is the bridge that transforms a simple, volatile voltage line into a channel for structured information. It does this not by adding more wires or introducing a complex shared clock, but by establishing a strict contract: an agreement on how time and voltage translate into a digital language."
         },
         {
           type: "p",
-          text: "Asynchronous communication removes the clock wire entirely. In a Universal Asynchronous Receiver-Transmitter (UART) link, only two signals exist: Transmit (TX) and Receive (RX), plus a shared electrical ground. But this physical simplicity shifts the engineering burden to timing logic. Without a physical clock line to synchronize them, how can two independent systems agree on time?"
-        },
-        {
-          type: "quote",
-          text: "Asynchronous communication is the transition from a conducted symphony to two independent minds keeping the same tempo."
+          text: "By eliminating the physical clock line, UART minimizes physical pin count to a bare minimum: Transmit (TX), Receive (RX), and a shared Ground reference. But this simplicity at the physical layer moves the engineering burden entirely into the domain of timing agreements. The devices must agree on a set of rules—a communication contract—that allows them to reconstruct structured data from the transient rise and fall of voltages."
         }
       ]
     },
     {
-      heading: "2. The Baud Rate Contract",
+      heading: "2. Anatomy of the UART Frame",
       content: [
         {
           type: "p",
-          text: "If there is no physical clock wire, timing must be established by prior agreement. This agreement is the Baud Rate—the transmission speed measured in bits per second."
+          text: "To transmit structured data asynchronous to any clock, UART packages bits into small, predictable containers called Frames. Each frame is a sequential series of voltage levels representing synchronization markers, the payload, and validation data. Understanding the frame is to understand the engineering motivation behind each transition:"
         },
         {
           type: "p",
-          text: "When both systems are configured to run at 9600 bps, they sign an invisible contract: each bit transmitted will occupy exactly 104.16 microseconds on the wire. If the receiver registers a state change, it starts a timer and samples the wire at intervals of 104.16 microseconds, expecting to find the middle of each subsequent bit."
+          text: "• Idle State: When no data is being sent, the line remains at a constant High voltage level (logical 1). Keeping the line high serves two purposes: it makes the link noise-resistant during quiet periods, and it ensures that a transition to Low is instantly detectable as a deliberate communication event rather than passive interference."
         },
         {
           type: "p",
-          text: "But hardware oscillators are not perfect. Microcontroller crystals and internal RC oscillators are subject to physical drift, caused by variations in temperature, age, and supply voltage. If the transmitter runs at exactly 9600 bps, but the receiver's clock is 5% slower, the receiver will sample slightly late. By the time the tenth bit is transmitted, this error will have accumulated, and the receiver will sample the wrong segment of the signal, corrupting the payload."
+          text: "• Start Bit: The transmission starts with a sharp, forced transition from High to Low (logical 0) for exactly one bit period. This falling edge is the receiver's alarm clock. The moment it occurs, the receiver's hardware wakes up, resets its internal timing counters, and aligns its sampling logic to the start of the payload."
         },
         {
-          type: "quote",
-          text: "A clock drift of only a few percent can shift the sampling phase completely, turning structure into garbage."
+          type: "p",
+          text: "• Data Bits: Following the start bit, the payload—typically 8 bits—is serialized and driven onto the line, Least Significant Bit (LSB) first. Sending LSB first simplifies the design of shift registers in silicon, as the lowest bit corresponds directly to the first shift out."
+        },
+        {
+          type: "p",
+          text: "• Parity Bit: An optional mathematical helper used for error detection. The transmitter counts the number of logical 1s in the data and sets the parity bit to ensure the total count is either Even or Odd. If a stray electromagnetic spike flips a voltage on the wire, the receiver's computed parity will not match the received parity bit, signaling a transmission failure."
+        },
+        {
+          type: "p",
+          text: "• Stop Bit(s): To conclude the frame, the transmitter drives the line back to a High state (logical 1) for one or two bit periods. This stop bit ensures the line is held at High, creating a clean boundary and guaranteeing that the next frame can start with a visible High-to-Low transition."
+        },
+        {
+          type: "p",
+          text: "The diagram below represents the exact structure of a single UART frame as it progresses over the physical line from left to right:"
+        },
+        {
+          type: "img",
+          src: "Images/uart_frame_schematic.png",
+          alt: "UART Frame Schematic Layout"
         }
       ]
     },
     {
-      heading: "3. The Frame: Defining the Boundaries",
+      heading: "3. The Synchronous Expectation",
       content: [
         {
           type: "p",
-          text: "To manage clock drift and establish alignment, UART structures data into short packets called Frames. A frame is a strictly organized electrical sequence bookended by synchronization boundaries."
+          text: "Asynchronous communication is fundamentally a contract of expectations. Since the receiver has no shared clock line to coordinate when to sample, it must rely entirely on its local oscillator. The receiver listens for the falling edge of the Start Bit, waits for 1.5 bit-times to sample the first data bit at its exact physical center, and then samples every subsequent bit at 1-bit intervals."
         },
         {
           type: "p",
-          text: "Idle State: When no data is being sent, the line is held at a continuous High voltage level (logical 1). This ensures that the line remains electrically active and noise-resistant."
+          text: "This mechanism is highly sensitive to clock differences. If the transmitter sends data at 9600 bps (104.16 µs per bit) but the receiver's clock runs slightly slower, the receiver's sampling points will accumulate an error. By the time it reaches the 8th data bit or the stop bit, the phase drift can be so large that it samples a transition edge or an adjacent bit. This is why UART frames are kept short—by resetting the timing alignment on every single frame's Start Bit, the accumulated phase error is reset to zero before it can corrupt the data."
         },
         {
           type: "p",
-          text: "Start Bit: The transmission begins with a transition from High to Low (logical 0) lasting for one bit period. This falling edge is the alarm clock. It forces the receiver's hardware to wake up, reset its internal timers, and align its sampling phase."
-        },
-        {
-          type: "p",
-          text: "Data Bits: The core payload, typically 8 bits, is transmitted LSB (Least Significant Bit) first."
-        },
-        {
-          type: "p",
-          text: "Parity Bit: An optional bit used for basic error detection. In even parity, the bit is set so the total count of 1s in the data and parity is even. If noise corrupts a single bit on the wire, the receiver's parity check fails, signaling corruption."
-        },
-        {
-          type: "p",
-          text: "Stop Bit(s): The transmission concludes by pulling the line back to a High state (logical 1) for one or two bit periods. The stop bit guarantees that the line returns to the idle state, ensuring that the next frame will start with a clear, detectable High-to-Low edge."
+          text: "UART does not synchronize processors. It synchronizes expectations. A microcontroller running at 120 MHz can speak perfectly to a server running at 2 GHz, because they have agreed to slice time and voltage in the exact same way."
         }
       ]
     },
     {
-      heading: "4. Interactive Timing Demonstration",
+      heading: "4. Interactive: Build a UART Conversation",
       content: [
         {
           type: "p",
-          text: "Use the Timing Explorer below to visualize how baud rate mismatch and clock drift affect signal decoding. Observe how sample points (S0 to S10) drift away from the bit centers as clock frequencies diverge, leading to framing errors."
+          text: "Use the interactive conversation builder below to explore how letters are encoded into ASCII, packed into serial UART frames, and transmitted as electrical voltages. Toggle the advanced mode to simulate mismatched configurations and observe how timing errors corrupt the signal."
         },
         {
           type: "edgecase",
-          id: "uart-timing-explorer"
-        }
-      ]
-    },
-    {
-      heading: "5. The Synchronization Limits",
-      content: [
-        {
-          type: "p",
-          text: "The reason UART frames are kept short—usually limited to 8 or 9 bits—is directly related to timing drift. Because there is no shared clock, the receiver only resets its timing alignment on the falling edge of the Start Bit."
-        },
-        {
-          type: "p",
-          text: "Once the frame begins, the clock drift error accumulates cumulative phase shift over each successive bit. If a frame contained 100 bits, even a microscopic clock difference of 0.5% would accumulate to a 50% phase shift by the end of the frame, causing the receiver to sample the transitions rather than the stable bit centers."
-        },
-        {
-          type: "p",
-          text: "By packing data into short 8-bit characters and surrounding them with Start and Stop bits, UART boundaries limit error accumulation. The clock drift is reset to zero at the start of every single byte, allowing reliable communication even with low-cost, imprecise internal oscillators."
-        }
-      ]
-    },
-    {
-      heading: "6. The Universal Baseline",
-      content: [
-        {
-          type: "p",
-          text: "Despite the overhead of start/stop bits (which add at least 20% latency penalty to every byte) and sensitivity to baud rate mismatch, UART remains the universal baseline interface. It requires only two copper lines, costs zero processor cycles when offloaded to dedicated hardware blocks, and is supported by virtually every microcontroller fabricated."
-        },
-        {
-          type: "p",
-          text: "From system console logs to wireless transceiver commands, UART is the first interface brought up on a new PCB. It is the raw, rugged foundation of hardware interaction."
-        },
-        {
-          type: "p",
-          text: "As we move further up the Interaction node, we will explore how systems solved the limits of point-to-point asynchronous links: SPI (sharing a clock for high-speed master-slave register arrays), I2C (using addresses to create multi-device shared buses on two wires), and CAN (incorporating differential signaling and hardware-level collision resistance for reliable networks)."
+          id: "uart-conversation-builder"
         }
       ]
     }
@@ -1975,8 +1942,8 @@ const blogPosts = [
   closing: {
     heading: "The Baseline Contract",
     paragraphs: [
-      "UART is a study in engineering trade-offs. It trades wire count and hardware simplicity for clock constraints and timing sensitivity.",
-      "In the silent gaps between frames, it represents the baseline agreement that allows independent processors to communicate."
+      "In the physical layer, there is only voltage over time. It is the shared protocol agreement that turns this electricity into human language.",
+      "UART remains the ultimate baseline interface because it demonstrates that system coordination is not a matter of speed, but of agreement."
     ],
     quote: "Time is the invisible wire in asynchronous communication. When we agree on time, we only need a single wire for the conversation."
   },
@@ -2520,338 +2487,538 @@ function setNode(i) { activeNode = i; renderJourney(); }
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function initEdgeCase(containerId) {
-  if (containerId === 'uart-timing-explorer') {
-    renderUartTimingExplorer();
+  if (containerId === 'uart-conversation-builder') {
+    renderUartConversationBuilder();
   }
 }
 
-function renderUartTimingExplorer() {
-  const container = document.getElementById('uart-timing-explorer');
+function renderUartConversationBuilder() {
+  const container = document.getElementById('uart-conversation-builder');
   if (!container) return;
 
   container.className = 'edgecase-wrapper';
   container.innerHTML = `
-    <div class="edgecase-header">EdgeCase: UART Timing Explorer</div>
-    <div class="edgecase-subheader">Simulate clock drift and sample point alignment on an asynchronous serial link.</div>
-    
-    <div class="edgecase-controls">
-      <div class="edgecase-control-group">
-        <label for="ec-tx-baud">TX Baud Rate</label>
-        <select id="ec-tx-baud" class="edgecase-select">
-          <option value="9600" selected>9600 bps</option>
-          <option value="19200">19200 bps</option>
-          <option value="115200">115200 bps</option>
-        </select>
+    <div class="edgecase-header">EdgeCase: Build a UART Conversation</div>
+    <div class="edgecase-subheader">Watch a message transform from human-readable text into electrical pulses and back again.</div>
+
+    <!-- PANEL 1: Message Input & Conversion -->
+    <div class="ec-panel">
+      <div class="ec-panel-title">Panel 1: Message Input &amp; Serialization</div>
+      <div class="edgecase-control-group" style="margin-bottom:1rem;">
+        <label for="ec-text">Text to Transmit</label>
+        <div style="display:flex; gap:0.75rem; align-items:center;">
+          <input type="text" id="ec-text" class="edgecase-input" value="Hello" maxlength="12" style="max-width:300px;">
+          <button id="ec-tx-btn" class="edgecase-button" style="margin:0;">Transmit &amp; Decode</button>
+        </div>
       </div>
+      <div>
+        <label style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:0.4rem;">Character to Bitstream Mapping</label>
+        <div id="ec-serialization-table-container"></div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: UART Frame Builder -->
+    <div class="ec-panel">
+      <div class="ec-panel-title">Panel 2: UART Frame Builder (TX Contract)</div>
       
-      <div class="edgecase-control-group">
-        <label for="ec-rx-drift">RX Clock Drift</label>
-        <div class="edgecase-slider-container">
-          <input type="range" id="ec-rx-drift" class="edgecase-slider" min="-15" max="15" value="0" step="0.5">
-          <span id="ec-rx-drift-val" class="edgecase-slider-val">0.0%</span>
+      <div class="edgecase-controls">
+        <div class="edgecase-control-group">
+          <label for="ec-tx-baud">Baud Rate</label>
+          <select id="ec-tx-baud" class="edgecase-select">
+            <option value="9600" selected>9600 bps</option>
+            <option value="19200">19200 bps</option>
+            <option value="115200">115200 bps</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tx-databits">Data Bits</label>
+          <select id="ec-tx-databits" class="edgecase-select">
+            <option value="5">5 Bits</option>
+            <option value="6">6 Bits</option>
+            <option value="7">7 Bits</option>
+            <option value="8" selected>8 Bits</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tx-parity">Parity</label>
+          <select id="ec-tx-parity" class="edgecase-select">
+            <option value="none" selected>None</option>
+            <option value="even">Even</option>
+            <option value="odd">Odd</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tx-stopbits">Stop Bits</label>
+          <select id="ec-tx-stopbits" class="edgecase-select">
+            <option value="1" selected>1 Bit</option>
+            <option value="2">2 Bits</option>
+          </select>
         </div>
       </div>
 
-      <div class="edgecase-control-group">
-        <label for="ec-parity">Parity</label>
-        <select id="ec-parity" class="edgecase-select">
-          <option value="none" selected>None (8N1)</option>
-          <option value="even">Even (8E1)</option>
-          <option value="odd">Odd (8O1)</option>
-        </select>
-      </div>
-
-      <div class="edgecase-control-group">
-        <label for="ec-stop-bits">Stop Bits</label>
-        <select id="ec-stop-bits" class="edgecase-select">
-          <option value="1" selected>1 Bit</option>
-          <option value="2">2 Bits</option>
-        </select>
+      <div style="margin-top:1rem;">
+        <label style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:0.4rem;">Constructed UART Frame (First Character)</label>
+        <div id="ec-frame-layout" class="ec-frame-bits-container"></div>
       </div>
     </div>
 
-    <div class="edgecase-control-group" style="margin-bottom:1.5rem;">
-      <label for="ec-text">Text to Transmit</label>
-      <div style="display:flex; gap:0.75rem;">
-        <input type="text" id="ec-text" class="edgecase-input" value="UART" maxlength="16">
-        <button id="ec-tx-btn" class="edgecase-button">Transmit</button>
+    <!-- PANEL 3: Transmission Waveform -->
+    <div class="ec-panel">
+      <div class="ec-panel-title">Panel 3: Electrical Waveform (Physical Wire)</div>
+      <div class="ec-transmission-wire">
+        <div class="ec-wire-signal"></div>
+        <div id="ec-wire-pulse" class="ec-wire-pulse"></div>
       </div>
+      <div class="edgecase-visual" id="ec-waveform-container" style="margin-top:1rem; margin-bottom:0;"></div>
     </div>
 
-    <div class="edgecase-control-group" style="margin-bottom:1rem;">
-      <label>Waveform &amp; Sampling Points (First Character)</label>
-      <div class="edgecase-visual" id="ec-visual-canvas"></div>
-    </div>
-
-    <div class="edgecase-output-panel">
-      <div class="edgecase-output-title">Receiver Diagnostic Report</div>
-      <div class="edgecase-output-grid">
-        <div class="edgecase-output-box">
-          <div class="edgecase-output-label">Status</div>
-          <div class="edgecase-output-val" id="ec-status">-</div>
+    <!-- PANEL 4: Receiver & Reconstruction -->
+    <div class="ec-panel">
+      <div class="ec-panel-title">Panel 4: Receiver &amp; Reconstruction</div>
+      <div class="edgecase-output-panel" style="background:#0F172A; border-color:var(--border);">
+        <div class="edgecase-output-grid">
+          <div class="edgecase-output-box">
+            <div class="edgecase-output-label">Receiver Status</div>
+            <div class="edgecase-output-val" id="ec-rx-status" style="font-size:0.8rem;">-</div>
+          </div>
+          <div class="edgecase-output-box">
+            <div class="edgecase-output-label">Recovered Message</div>
+            <div class="edgecase-output-val" id="ec-rx-recovered" style="font-size:1.1rem; font-weight:600; color:#10B981;">-</div>
+          </div>
         </div>
-        <div class="edgecase-output-box">
-          <div class="edgecase-output-label">Decoded Output</div>
-          <div class="edgecase-output-val" id="ec-output" style="font-size:1.1rem; font-weight:500;">-</div>
+      </div>
+    </div>
+
+    <!-- ADVANCED MODE toggle -->
+    <div class="ec-advanced-toggle-container">
+      <input type="checkbox" id="ec-adv-toggle" class="ec-checkbox">
+      <label for="ec-adv-toggle" class="ec-checkbox-label">Advanced Mode: Unlock Receiver Mismatch Experiment</label>
+    </div>
+
+    <!-- ADVANCED PANEL -->
+    <div id="ec-advanced-panel" class="ec-panel" style="display:none; margin-top:1.25rem; border-color:rgba(239,68,68,0.3);">
+      <div class="ec-panel-title" style="color:#EF6868; font-size:0.8rem;">Advanced: Mismatched Receiver Settings (RX Contract)</div>
+      <div class="edgecase-controls">
+        <div class="edgecase-control-group">
+          <label for="ec-rx-baud">RX Baud Rate</label>
+          <select id="ec-rx-baud" class="edgecase-select">
+            <option value="4800">4800 bps</option>
+            <option value="9600" selected>9600 bps</option>
+            <option value="14400">14400 bps</option>
+            <option value="19200">19200 bps</option>
+            <option value="115200">115200 bps</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-rx-databits">RX Data Bits</label>
+          <select id="ec-rx-databits" class="edgecase-select">
+            <option value="5">5 Bits</option>
+            <option value="6">6 Bits</option>
+            <option value="7">7 Bits</option>
+            <option value="8" selected>8 Bits</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-rx-parity">RX Parity</label>
+          <select id="ec-rx-parity" class="edgecase-select">
+            <option value="none" selected>None</option>
+            <option value="even">Even</option>
+            <option value="odd">Odd</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-rx-stopbits">RX Stop Bits</label>
+          <select id="ec-rx-stopbits" class="edgecase-select">
+            <option value="1" selected>1 Bit</option>
+            <option value="2">2 Bits</option>
+          </select>
         </div>
       </div>
     </div>
   `;
 
-  const txBaudSelect = document.getElementById('ec-tx-baud');
-  const rxDriftSlider = document.getElementById('ec-rx-drift');
-  const rxDriftVal = document.getElementById('ec-rx-drift-val');
-  const paritySelect = document.getElementById('ec-parity');
-  const stopBitsSelect = document.getElementById('ec-stop-bits');
+  // Get DOM elements
   const textInput = document.getElementById('ec-text');
   const txBtn = document.getElementById('ec-tx-btn');
+  const tableContainer = document.getElementById('ec-serialization-table-container');
+  const frameLayout = document.getElementById('ec-frame-layout');
+  const waveformContainer = document.getElementById('ec-waveform-container');
+  const rxStatusEl = document.getElementById('ec-rx-status');
+  const rxRecoveredEl = document.getElementById('ec-rx-recovered');
+  const advToggle = document.getElementById('ec-adv-toggle');
+  const advPanel = document.getElementById('ec-advanced-panel');
+  const pulseEl = document.getElementById('ec-wire-pulse');
 
-  // Slide listener
-  rxDriftSlider.addEventListener('input', () => {
-    const val = parseFloat(rxDriftSlider.value);
-    const sign = val > 0 ? '+' : '';
-    rxDriftVal.innerText = `${sign}${val.toFixed(1)}%`;
-    simulateUart();
+  // TX elements
+  const txBaudSel = document.getElementById('ec-tx-baud');
+  const txDataBitsSel = document.getElementById('ec-tx-databits');
+  const txParitySel = document.getElementById('ec-tx-parity');
+  const txStopBitsSel = document.getElementById('ec-tx-stopbits');
+
+  // RX elements
+  const rxBaudSel = document.getElementById('ec-rx-baud');
+  const rxDataBitsSel = document.getElementById('ec-rx-databits');
+  const rxParitySel = document.getElementById('ec-rx-parity');
+  const rxStopBitsSel = document.getElementById('ec-rx-stopbits');
+
+  // Add event listeners
+  advToggle.addEventListener('change', () => {
+    if (advToggle.checked) {
+      advPanel.style.display = 'block';
+    } else {
+      advPanel.style.display = 'none';
+      // Reset RX values to match TX
+      rxBaudSel.value = txBaudSel.value;
+      rxDataBitsSel.value = txDataBitsSel.value;
+      rxParitySel.value = txParitySel.value;
+      rxStopBitsSel.value = txStopBitsSel.value;
+    }
+    runSimulation();
   });
 
-  // Controls change
-  [txBaudSelect, paritySelect, stopBitsSelect, textInput].forEach(ctrl => {
-    ctrl.addEventListener('change', simulateUart);
+  const allControls = [
+    textInput, txBaudSel, txDataBitsSel, txParitySel, txStopBitsSel,
+    rxBaudSel, rxDataBitsSel, rxParitySel, rxStopBitsSel
+  ];
+  allControls.forEach(ctrl => {
+    ctrl.addEventListener('change', runSimulation);
   });
-  textInput.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') simulateUart();
+  textInput.addEventListener('input', runSimulation);
+
+  txBtn.addEventListener('click', () => {
+    // Re-trigger pulse animation by removing and adding class
+    pulseEl.style.animation = 'none';
+    pulseEl.offsetHeight; // trigger reflow
+    pulseEl.style.animation = 'travelWire 1.5s infinite linear';
+    runSimulation();
   });
-  txBtn.addEventListener('click', simulateUart);
 
   // Run initial simulation
-  simulateUart();
+  runSimulation();
 
-  function simulateUart() {
+  function runSimulation() {
     const text = textInput.value || " ";
-    const txBaud = parseInt(txBaudSelect.value);
-    const driftPercent = parseFloat(rxDriftSlider.value);
-    const rxBaud = txBaud * (1 + (driftPercent / 100));
-    const parity = paritySelect.value;
-    const stopBits = parseInt(stopBitsSelect.value);
+    const txBaud = parseInt(txBaudSel.value);
+    const txDataBits = parseInt(txDataBitsSel.value);
+    const txParity = txParitySel.value;
+    const txStopBits = parseInt(txStopBitsSel.value);
 
-    // TX Bit timing: T = 1 / TX_Baud
-    // RX Bit timing: T_rx = 1 / RX_Baud
-    const T_tx = 1.0;
-    const T_rx = txBaud / rxBaud; // RX bit duration in TX time units
-
-    // Determine bits for a character (the first character of the string)
-    const firstChar = text.charCodeAt(0) || 32;
-    let dataBits = [];
-    for (let i = 0; i < 8; i++) {
-      dataBits.push((firstChar >> i) & 1);
+    // If advanced mode is disabled, sync RX to TX
+    if (!advToggle.checked) {
+      rxBaudSel.value = txBaudSel.value;
+      rxDataBitsSel.value = txDataBitsSel.value;
+      rxParitySel.value = txParitySel.value;
+      rxStopBitsSel.value = txStopBitsSel.value;
     }
 
-    // Parity bit calculation
-    let parityBit = null;
-    if (parity !== 'none') {
-      const sum = dataBits.reduce((a, b) => a + b, 0);
-      if (parity === 'even') {
-        parityBit = sum % 2 === 0 ? 0 : 1;
-      } else {
-        parityBit = sum % 2 === 0 ? 1 : 0;
-      }
-    }
+    const rxBaud = parseInt(rxBaudSel.value);
+    const rxDataBits = parseInt(rxDataBitsSel.value);
+    const rxParity = rxParitySel.value;
+    const rxStopBits = parseInt(rxStopBitsSel.value);
 
-    // Build complete frame bits
-    let frameBits = [0]; // Start bit
-    frameBits.push(...dataBits);
-    if (parityBit !== null) {
-      frameBits.push(parityBit);
-    }
-    for (let i = 0; i < stopBits; i++) {
-      frameBits.push(1);
-    }
-
-    const totalBits = frameBits.length;
-
-    // Simulate RX sampling for each character in the input string
-    let decodedText = '';
-    let totalErrors = 0;
-    let framingErrorFirstChar = false;
-    let parityErrorFirstChar = false;
+    // Panel 1: ASCII & Binary mapping table
+    let tableHtml = `<table class="ec-conversion-table">
+      <thead>
+        <tr>
+          <th>Character</th>
+          <th>ASCII Decimal</th>
+          <th>Binary Byte (MSB -> LSB)</th>
+          <th>Serialization Order (LSB First)</th>
+        </tr>
+      </thead>
+      <tbody>`;
     
-    // For visualization, we keep sampling data for the first character
-    let samples = [];
-
-    for (let charIdx = 0; charIdx < text.length; charIdx++) {
-      const charVal = text.charCodeAt(charIdx);
-      let charData = [];
-      for (let i = 0; i < 8; i++) {
-        charData.push((charVal >> i) & 1);
+    // Show conversion for up to 5 characters for visual clean layout
+    const charsToShow = text.slice(0, 5);
+    for (let i = 0; i < charsToShow.length; i++) {
+      const char = charsToShow[i];
+      const code = char.charCodeAt(0);
+      let binaryStr = code.toString(2).padStart(8, '0');
+      
+      // Represent LSB first
+      let lsbFirstArr = [];
+      for (let b = 0; b < 8; b++) {
+        lsbFirstArr.push((code >> b) & 1);
       }
+      tableHtml += `<tr>
+        <td style="font-weight:bold; color:var(--blue);">${escHtml(char)}</td>
+        <td>${code}</td>
+        <td>${binaryStr}</td>
+        <td>${lsbFirstArr.join(' → ')}</td>
+      </tr>`;
+    }
+    if (text.length > 5) {
+      tableHtml += `<tr><td colspan="4" style="text-align:center; color:var(--muted);">... and ${text.length - 5} more characters</td></tr>`;
+    }
+    tableHtml += `</tbody></table>`;
+    tableContainer.innerHTML = tableHtml;
 
-      let cParity = null;
-      if (parity !== 'none') {
-        const sum = charData.reduce((a, b) => a + b, 0);
-        if (parity === 'even') {
-          cParity = sum % 2 === 0 ? 0 : 1;
-        } else {
-          cParity = sum % 2 === 0 ? 1 : 0;
-        }
-      }
-
-      let cFrame = [0];
-      cFrame.push(...charData);
-      if (cParity !== null) {
-        cFrame.push(cParity);
-      }
-      for (let i = 0; i < stopBits; i++) {
-        cFrame.push(1);
-      }
-
-      // The receiver detects the start edge (TX time = 0.0 for this frame)
-      // and samples at (0.5 + i) * T_rx
-      let rxBits = [];
-      let cSamples = [];
-      for (let i = 0; i < cFrame.length; i++) {
-        const sampleTime = (0.5 + i) * T_rx;
-        const bitIdx = Math.floor(sampleTime / T_tx);
-        let sampledValue = 1; // Default to Idle (1) if sample time exceeds frame boundaries
-        if (bitIdx >= 0 && bitIdx < cFrame.length) {
-          sampledValue = cFrame[bitIdx];
-        }
-        rxBits.push(sampledValue);
-        cSamples.push({ idx: i, time: sampleTime, val: sampledValue, bitIdx });
-      }
-
-      if (charIdx === 0) {
-        samples = cSamples;
-      }
-
-      let rxData = rxBits.slice(1, 9);
-      let rxParity = parity !== 'none' ? rxBits[9] : null;
-      let rxStopStartIdx = parity !== 'none' ? 10 : 9;
-      let rxStopBits = rxBits.slice(rxStopStartIdx, rxStopStartIdx + stopBits);
-
-      // Verify framing error
-      let framingError = false;
-      rxStopBits.forEach(sb => {
-        if (sb !== 1) framingError = true;
-      });
-      if (rxBits[0] !== 0) framingError = true;
-
-      // Verify parity error
-      let parityError = false;
-      if (parity !== 'none' && rxParity !== null) {
-        const rxSum = rxData.reduce((a, b) => a + b, 0);
-        let expectedParity = 0;
-        if (parity === 'even') {
-          expectedParity = rxSum % 2 === 0 ? 0 : 1;
-        } else {
-          expectedParity = rxSum % 2 === 0 ? 1 : 0;
-        }
-        if (rxParity !== expectedParity) parityError = true;
-      }
-
-      if (charIdx === 0) {
-        framingErrorFirstChar = framingError;
-        parityErrorFirstChar = parityError;
-      }
-
-      // Reconstruct character value
-      let rxCharVal = 0;
-      for (let i = 0; i < 8; i++) {
-        if (rxData[i] === 1) rxCharVal |= (1 << i);
-      }
-
-      if (framingError || parityError) {
-        totalErrors++;
-        const origChar = text[charIdx];
-        let displayChar = rxCharVal < 32 || rxCharVal > 126 ? '?' : String.fromCharCode(rxCharVal);
-        if (displayChar === origChar) {
-          displayChar = String.fromCharCode(rxCharVal ^ 0xFF);
-          if (displayChar < 32 || displayChar > 126) displayChar = '';
-        }
-        decodedText += `<span class="text-corrupted" title="Error">${escHtml(displayChar)}</span>`;
-      } else {
-        decodedText += escHtml(String.fromCharCode(rxCharVal));
-      }
+    // Panel 2: Frame layout diagram for the first character
+    const firstCode = text.charCodeAt(0) || 32;
+    let frameBits = [];
+    
+    // Idle prefix
+    frameBits.push({ type: 'idle', label: 'Idle', val: 1 });
+    // Start bit
+    frameBits.push({ type: 'start', label: 'Start', val: 0 });
+    
+    // Data bits
+    let charBits = [];
+    for (let b = 0; b < txDataBits; b++) {
+      const bitVal = (firstCode >> b) & 1;
+      charBits.push(bitVal);
+      frameBits.push({ type: 'data', label: `D${b}`, val: bitVal });
     }
 
-    // Render SVG Waveform & Sampling Points
+    // Parity
+    let txParityBit = null;
+    if (txParity !== 'none') {
+      const bitSum = charBits.reduce((a, b) => a + b, 0);
+      txParityBit = txParity === 'even' ? (bitSum % 2) : (bitSum % 2 === 0 ? 1 : 0);
+      frameBits.push({ type: 'parity', label: 'Parity', val: txParityBit });
+    }
+
+    // Stop bits
+    for (let s = 0; s < txStopBits; s++) {
+      frameBits.push({ type: 'stop', label: `Stop${txStopBits > 1 ? s+1 : ''}`, val: 1 });
+    }
+
+    // Idle suffix
+    frameBits.push({ type: 'idle', label: 'Idle', val: 1 });
+
+    // Render frame layout box elements
+    let boxesHtml = '';
+    frameBits.forEach(b => {
+      let cssClass = '';
+      if (b.type === 'start') cssClass = 'bit-start';
+      else if (b.type === 'stop') cssClass = 'bit-stop';
+      else if (b.type === 'parity') cssClass = 'bit-parity';
+      
+      boxesHtml += `
+        <div class="ec-bit-box ${cssClass}">
+          <div class="bit-label">${b.label}</div>
+          <div class="bit-value" style="color: ${b.val === 0 ? '#EF6868' : '#10B981'};">${b.val}</div>
+        </div>
+      `;
+    });
+    frameLayout.innerHTML = boxesHtml;
+
+    // Panel 3 & 4: Waveform Rendering & Receiver Emulation
+    const T_tx = 1.0;
+    const T_rx = txBaud / rxBaud; // Bit width in TX time units
+
+    // We build the TX timeline array
+    // Let's model the TX waveform for the first character
+    // TX waveform sequence of states:
+    let txStates = [];
+    txStates.push(1); // Idle
+    txStates.push(0); // Start
+    txStates.push(...charBits); // Data
+    if (txParityBit !== null) {
+      txStates.push(txParityBit);
+    }
+    for (let s = 0; s < txStopBits; s++) {
+      txStates.push(1);
+    }
+    txStates.push(1); // Idle trailing
+
+    // Receiver sampling points
+    // RX samples starting from falling edge of start bit at (0.5, 1.5, 2.5, ...) * T_rx
+    let rxSamples = [];
+    const expectedRxCount = 1 + rxDataBits + (rxParity !== 'none' ? 1 : 0) + rxStopBits;
+    
+    for (let i = 0; i < expectedRxCount; i++) {
+      const rxSampleTime = (0.5 + i) * T_rx; // physically relative to Start falling edge (which occurs at physical time = 1.0 bit-units because of the Idle prefix)
+      // Since Start is at index 1, physical offset on TX timeline is:
+      const txPhysicalTime = 1.0 + rxSampleTime;
+      const txBitIdx = Math.floor(txPhysicalTime);
+      let sampledVal = 1;
+      if (txBitIdx >= 0 && txBitIdx < txStates.length) {
+        sampledVal = txStates[txBitIdx];
+      }
+      rxSamples.push({
+        idx: i,
+        sampleTime: rxSampleTime,
+        txPhysicalTime: txPhysicalTime,
+        val: sampledVal,
+        bitLabel: i === 0 ? 'Start' : (i <= rxDataBits ? `D${i-1}` : (i === rxDataBits + 1 && rxParity !== 'none' ? 'Par' : 'Stop'))
+      });
+    }
+
+    // Render SVG
     const svgWidth = 800;
-    const svgHeight = 200;
-    const padding = 40;
-    const chartWidth = svgWidth - 2 * padding;
-    const chartHeight = svgHeight - 2 * padding;
+    const svgHeight = 160;
+    const paddingLeft = 60;
+    const paddingRight = 40;
+    const paddingTop = 30;
+    const paddingBottom = 30;
+    const chartWidth = svgWidth - paddingLeft - paddingRight;
+    const chartHeight = svgHeight - paddingTop - paddingBottom;
+    const bitWidth = chartWidth / txStates.length;
 
-    const bitWidth = chartWidth / totalBits;
-
-    let pathD = `M 0,${padding + 10} L ${padding},${padding + 10}`;
-    for (let i = 0; i < totalBits; i++) {
-      const bitVal = frameBits[i];
-      const y = bitVal === 1 ? padding + 10 : padding + chartHeight - 10;
-      const xStart = padding + i * bitWidth;
-      const xEnd = padding + (i + 1) * bitWidth;
+    // Draw TX voltage waveform path
+    let pathD = `M 0,${paddingTop + 10} L ${paddingLeft},${paddingTop + 10}`;
+    for (let i = 0; i < txStates.length; i++) {
+      const val = txStates[i];
+      const y = val === 1 ? paddingTop + 10 : paddingTop + chartHeight - 10;
+      const xStart = paddingLeft + i * bitWidth;
+      const xEnd = paddingLeft + (i + 1) * bitWidth;
       pathD += ` L ${xStart},${y} L ${xEnd},${y}`;
     }
-    pathD += ` L ${svgWidth},${padding + 10}`;
+    pathD += ` L ${svgWidth},${paddingTop + 10}`;
 
-    let sampleMarks = '';
-    samples.forEach((s, idx) => {
-      const x = padding + s.time * bitWidth;
-      const strokeColor = s.time < totalBits ? '#3B82F6' : '#EF4444';
-      // If sampled outside or mismatch, mark red
-      const inBounds = s.bitIdx >= 0 && s.bitIdx < totalBits;
-      const actualBitVal = inBounds ? frameBits[s.bitIdx] : 1;
-      const isCorrectSample = s.val === actualBitVal;
-      const color = isCorrectSample ? '#3B82F6' : '#EF6868';
-      const dash = isCorrectSample ? '3,3' : '1,1';
+    // Draw sampling marks
+    let sampleMarksHtml = '';
+    rxSamples.forEach(s => {
+      const x = paddingLeft + s.txPhysicalTime * bitWidth;
+      if (x > svgWidth) return;
 
-      sampleMarks += `
-        <line x1="${x}" y1="${padding}" x2="${x}" y2="${padding + chartHeight}" stroke="${color}" stroke-dasharray="${dash}" stroke-width="1.5" />
-        <circle cx="${x}" cy="${padding + chartHeight / 2}" r="3.5" fill="${color}" />
-        <text x="${x}" y="${padding + chartHeight + 15}" fill="${color}" font-family="var(--mono)" font-size="9" text-anchor="middle">S${s.idx}</text>
+      // Color coding of sampling points
+      // Check if it matches TX state at the sample time
+      const txBitIdx = Math.floor(s.txPhysicalTime);
+      const expectedVal = (txBitIdx >= 0 && txBitIdx < txStates.length) ? txStates[txBitIdx] : 1;
+      const isCorrect = s.val === expectedVal;
+      const strokeColor = isCorrect ? '#3B82F6' : '#EF6868';
+      const dashStyle = isCorrect ? '3,3' : '1,1';
+
+      sampleMarksHtml += `
+        <line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${paddingTop + chartHeight}" stroke="${strokeColor}" stroke-dasharray="${dashStyle}" stroke-width="1.5" />
+        <circle cx="${x}" cy="${paddingTop + chartHeight / 2}" r="4.5" fill="${strokeColor}" />
+        <text x="${x}" y="${paddingTop + chartHeight + 15}" fill="${strokeColor}" font-family="var(--mono)" font-size="8" text-anchor="middle">S${s.idx}</text>
       `;
     });
 
-    let gridLines = '';
-    for (let i = 0; i <= totalBits; i++) {
-      const x = padding + i * bitWidth;
+    // Draw grid lines separating TX bit slots
+    let gridLinesHtml = '';
+    for (let i = 0; i <= txStates.length; i++) {
+      const x = paddingLeft + i * bitWidth;
       let label = '';
-      if (i < totalBits) {
-        if (i === 0) label = 'START';
-        else if (i <= 8) label = `D${i-1}`;
-        else if (i === 9 && parity !== 'none') label = 'PAR';
-        else label = `STOP${stopBits > 1 ? i - rxStopStartIdx : ''}`;
+      if (i < txStates.length) {
+        if (i === 0) label = 'IDLE';
+        else if (i === 1) label = 'START';
+        else if (i - 1 <= txDataBits) label = `D${i-2}`;
+        else if (i - 1 === txDataBits + 1 && txParity !== 'none') label = 'PAR';
+        else if (i < txStates.length - 1) label = 'STOP';
+        else label = 'IDLE';
       }
-      gridLines += `
-        <line x1="${x}" y1="${padding}" x2="${x}" y2="${padding + chartHeight}" stroke="var(--border)" stroke-width="1" />
-        ${label ? `<text x="${x + bitWidth / 2}" y="${padding - 8}" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="middle">${label}</text>` : ''}
+      gridLinesHtml += `
+        <line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${paddingTop + chartHeight}" stroke="rgba(148, 163, 184, 0.1)" stroke-width="1" />
+        ${label ? `<text x="${x + bitWidth/2}" y="${paddingTop - 8}" fill="var(--muted)" font-family="var(--mono)" font-size="8" text-anchor="middle">${label}</text>` : ''}
       `;
     }
 
     const svgHtml = `
       <svg viewBox="0 0 ${svgWidth} ${svgHeight}" width="100%">
-        ${gridLines}
-        <text x="${padding - 8}" y="${padding + 15}" fill="var(--muted)" font-family="var(--mono)" font-size="10" text-anchor="end">IDLE/1</text>
-        <text x="${padding - 8}" y="${padding + chartHeight - 5}" fill="var(--muted)" font-family="var(--mono)" font-size="10" text-anchor="end">ACTIVE/0</text>
-        <path d="${pathD}" fill="none" stroke="#FFF" stroke-width="2.5" />
-        ${sampleMarks}
+        ${gridLinesHtml}
+        <text x="${paddingLeft - 8}" y="${paddingTop + 14}" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="end">HIGH (1)</text>
+        <text x="${paddingLeft - 8}" y="${paddingTop + chartHeight - 6}" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="end">LOW (0)</text>
+        <path d="${pathD}" fill="none" stroke="#FFF" stroke-width="2" />
+        ${sampleMarksHtml}
       </svg>
     `;
+    waveformContainer.innerHTML = svgHtml;
 
-    document.getElementById('ec-visual-canvas').innerHTML = svgHtml;
+    // Decode all characters of the input string under current configurations
+    let decodedMessage = '';
+    let hasFramingError = false;
+    let hasParityError = false;
 
-    const statusEl = document.getElementById('ec-status');
-    const outputEl = document.getElementById('ec-output');
+    for (let cIdx = 0; cIdx < text.length; cIdx++) {
+      const charVal = text.charCodeAt(cIdx);
+      
+      // Serialize character according to TX parameters
+      let txCharBits = [];
+      for (let b = 0; b < txDataBits; b++) {
+        txCharBits.push((charVal >> b) & 1);
+      }
+      let txParBit = null;
+      if (txParity !== 'none') {
+        const sum = txCharBits.reduce((a, b) => a + b, 0);
+        txParBit = txParity === 'even' ? (sum % 2) : (sum % 2 === 0 ? 1 : 0);
+      }
 
-    if (totalErrors === 0) {
-      statusEl.innerHTML = `<span class="edgecase-status-badge edgecase-status-ok">Locked &amp; Synchronized</span>`;
-    } else {
-      let errMsgs = [];
-      if (framingErrorFirstChar) errMsgs.push('Framing Error');
-      if (parityErrorFirstChar) errMsgs.push('Parity Mismatch');
-      if (errMsgs.length === 0) errMsgs.push(`Corrupt Data`);
-      statusEl.innerHTML = `<span class="edgecase-status-badge edgecase-status-error">${errMsgs.join(' / ')}</span>`;
+      // Build TX frame array for this specific char
+      let txFrame = [0]; // Start bit
+      txFrame.push(...txCharBits);
+      if (txParBit !== null) txFrame.push(txParBit);
+      for (let s = 0; s < txStopBits; s++) txFrame.push(1);
+
+      // Emulate RX sampling
+      let sampledBits = [];
+      for (let i = 0; i < expectedRxCount; i++) {
+        const rxTime = (0.5 + i) * T_rx;
+        const txIdx = Math.floor(rxTime);
+        let val = 1; // Idle if sampled out of bounds
+        if (txIdx >= 0 && txIdx < txFrame.length) {
+          val = txFrame[txIdx];
+        }
+        sampledBits.push(val);
+      }
+
+      // Parse sampled bits according to RX parameters
+      // Start is at sampledBits[0]
+      const rxStartVal = sampledBits[0];
+      const rxData = sampledBits.slice(1, 1 + rxDataBits);
+      const rxPar = rxParity !== 'none' ? sampledBits[1 + rxDataBits] : null;
+      
+      let rxStopStartIdx = 1 + rxDataBits + (rxParity !== 'none' ? 1 : 0);
+      const rxStop = sampledBits.slice(rxStopStartIdx, rxStopStartIdx + rxStopBits);
+
+      // Check errors
+      let framingErr = false;
+      if (rxStartVal !== 0) framingErr = true;
+      rxStop.forEach(sb => {
+        if (sb !== 1) framingErr = true;
+      });
+
+      let parityErr = false;
+      if (rxParity !== 'none' && rxPar !== null) {
+        const rxSum = rxData.reduce((a, b) => a + b, 0);
+        const expectedPar = rxParity === 'even' ? (rxSum % 2) : (rxSum % 2 === 0 ? 1 : 0);
+        if (rxPar !== expectedPar) parityErr = true;
+      }
+
+      if (framingErr) hasFramingError = true;
+      if (parityErr) hasParityError = true;
+
+      // Reconstruct ASCII character value
+      let recCharVal = 0;
+      for (let b = 0; b < rxDataBits; b++) {
+        if (rxData[b] === 1) {
+          recCharVal |= (1 << b);
+        }
+      }
+
+      // Format character output
+      let charStr = '';
+      if (recCharVal >= 32 && recCharVal <= 126) {
+        charStr = String.fromCharCode(recCharVal);
+      } else {
+        charStr = ''; // replacement character
+      }
+
+      if (framingErr || parityErr) {
+        decodedMessage += `<span class="text-corrupted" title="Error">${escHtml(charStr)}</span>`;
+      } else {
+        decodedMessage += escHtml(charStr);
+      }
     }
 
-    outputEl.innerHTML = decodedText;
+    // Set receiver diagnostic status
+    let statusText = '';
+    if (!hasFramingError && !hasParityError) {
+      statusText = `<span class="edgecase-status-badge edgecase-status-ok">Locked &amp; Decoded</span><br>
+                    <span style="font-size:0.68rem; color:var(--muted); margin-top:0.4rem; display:block;">TX and RX contracts are compatible. Character timings line up perfectly within phase margins.</span>`;
+    } else {
+      let errLabels = [];
+      if (hasFramingError) errLabels.push('Framing Error');
+      if (hasParityError) errLabels.push('Parity Error');
+      statusText = `<span class="edgecase-status-badge edgecase-status-error">${errLabels.join(' / ')}</span><br>
+                    <span style="font-size:0.68rem; color:#EF6868; margin-top:0.4rem; display:block;">Expectations mismatched. The receiver sampled outside of the expected frame boundaries or detected bad parity.</span>`;
+    }
+
+    rxStatusEl.innerHTML = statusText;
+    rxRecoveredEl.innerHTML = decodedMessage;
   }
 }
 

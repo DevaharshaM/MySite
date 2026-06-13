@@ -564,3 +564,161 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   color: #EF6868;
   font-weight: 700;
 }
+
+/* ─── MULTI-PANEL EDGECASE REDESIGN ──────────────────────────────────────── */
+.ec-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.ec-panel-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #FFF;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ec-panel-title::before {
+  content: "⚡";
+  color: var(--blue);
+}
+
+.ec-conversion-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  margin-top: 0.5rem;
+}
+
+.ec-conversion-table th, .ec-conversion-table td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: left;
+}
+
+.ec-conversion-table th {
+  background: rgba(148, 163, 184, 0.05);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.ec-conversion-table td {
+  color: var(--text);
+}
+
+.ec-frame-bits-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.ec-bit-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-width: 45px;
+  background: #0F172A;
+  overflow: hidden;
+  font-family: var(--mono);
+}
+
+.ec-bit-box .bit-label {
+  font-size: 0.55rem;
+  color: var(--muted);
+  padding: 0.2rem 0.3rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  text-align: center;
+}
+
+.ec-bit-box .bit-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem;
+  color: #FFF;
+}
+
+.ec-bit-box.bit-start { border-color: rgba(239, 68, 68, 0.4); }
+.ec-bit-box.bit-start .bit-label { color: #EF6868; }
+.ec-bit-box.bit-stop { border-color: rgba(16, 185, 129, 0.4); }
+.ec-bit-box.bit-stop .bit-label { color: #10B981; }
+.ec-bit-box.bit-parity { border-color: rgba(245, 158, 11, 0.4); }
+.ec-bit-box.bit-parity .bit-label { color: #F59E0B; }
+
+.ec-transmission-wire {
+  position: relative;
+  height: 80px;
+  background: #0F172A;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-top: 0.75rem;
+  overflow: hidden;
+}
+
+.ec-wire-signal {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  transform: translateY(-50%);
+}
+
+.ec-wire-pulse {
+  position: absolute;
+  top: 40%;
+  width: 12px;
+  height: 12px;
+  background: var(--blue);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--blue);
+  transform: translate(-50%, -50%);
+  animation: travelWire 2.5s infinite linear;
+}
+
+@keyframes travelWire {
+  0% { left: 0%; opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+.ec-advanced-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+
+.ec-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+.ec-checkbox-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+}
+
