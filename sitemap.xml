@@ -3,126 +3,86 @@
   <!-- Core Pages -->
   <url>
     <loc>https://prajnaedge.dev/</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-03-21</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?page=about</loc>
     <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?page=journey</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-03-21</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?page=blogs</loc>
     <lastmod>2026-06-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?page=demos</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-05-23</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?page=edgecase</loc>
     <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?page=contact</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <lastmod>2026-03-21</lastmod>
   </url>
 
   <!-- Exploration Articles -->
   <url>
     <loc>https://prajnaedge.dev/?exploration=chemistry-intelligence-part1</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-03-28</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=chemistry-intelligence-part2</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-04-05</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=chemistry-intelligence-part3</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-04-11</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=chemistry-intelligence-part4</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-04-18</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=chemistry-intelligence-part5</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-04-25</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=illusion-of-software</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-05-03</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=the-architecture-of-memory</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-05-28</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=the-hidden-geography-of-firmware</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-06-04</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=the-first-instruction</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-06-07</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=why-systems-need-interfaces</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-05-09</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=the-physical-edge-of-software</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-05-17</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/?exploration=why-embedded-systems-speak-in-protocols</loc>
     <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>
 
   <!-- Demonstration Articles -->
   <url>
     <loc>https://prajnaedge.dev/?demonstration=edge-ai-uno-mpu6050</loc>
-    <lastmod>2026-06-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <lastmod>2026-05-23</lastmod>
   </url>
 </urlset>
