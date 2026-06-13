@@ -1902,7 +1902,7 @@ const blogPosts = [
           text: "The diagram below represents the exact structure of a single UART frame as it progresses over the physical line from left to right:"
         },
         {
-          type: "img",
+          type: "image",
           src: "Images/uart_frame_schematic.png",
           alt: "UART Frame Schematic Layout"
         }
