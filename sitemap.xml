@@ -21,10 +21,7 @@
     <loc>https://prajnaedge.dev/?page=demos</loc>
     <lastmod>2026-05-23</lastmod>
   </url>
-  <url>
-    <loc>https://prajnaedge.dev/?page=edgecase</loc>
-    <lastmod>2026-06-12</lastmod>
-  </url>
+
   <url>
     <loc>https://prajnaedge.dev/?page=contact</loc>
     <lastmod>2026-03-21</lastmod>
@@ -78,6 +75,10 @@
   <url>
     <loc>https://prajnaedge.dev/?exploration=why-embedded-systems-speak-in-protocols</loc>
     <lastmod>2026-06-12</lastmod>
+  </url>
+  <url>
+    <loc>https://prajnaedge.dev/?exploration=uart-structured-asynchronous-communication</loc>
+    <lastmod>2026-06-13</lastmod>
   </url>
 
   <!-- Demonstration Articles -->

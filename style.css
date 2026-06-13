@@ -343,3 +343,224 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
     text-align: center;
   }
 }
+
+/* ─── EDGECASE INTEGRATION STYLES ────────────────────────────────────────── */
+.edgecase-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.edgecase-header {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #FFF;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edgecase-header::before {
+  content: "⬢";
+  color: var(--blue);
+}
+
+.edgecase-subheader {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.edgecase-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.edgecase-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.edgecase-control-group label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.edgecase-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.65rem;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edgecase-input:focus {
+  border-color: var(--blue);
+}
+
+.edgecase-select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.45rem 0.65rem;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.edgecase-select option {
+  background: #1E293B;
+  color: var(--text);
+}
+
+.edgecase-select:focus {
+  border-color: var(--blue);
+}
+
+.edgecase-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edgecase-slider {
+  flex-grow: 1;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+.edgecase-slider-val {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  min-width: 2rem;
+  text-align: right;
+}
+
+.edgecase-button {
+  background: var(--blue-glow);
+  color: var(--blue);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-end;
+  height: max-content;
+}
+
+.edgecase-button:hover {
+  background: var(--blue);
+  color: #FFF;
+  border-color: var(--blue);
+  transform: translateY(-1px);
+}
+
+.edgecase-visual {
+  background: #0F172A;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.edgecase-visual svg {
+  display: block;
+  width: 100%;
+  min-width: 600px;
+}
+
+.edgecase-output-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.edgecase-output-title {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.edgecase-output-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.edgecase-output-box {
+  background: #0F172A;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.edgecase-output-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.edgecase-output-val {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: #FFF;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.edgecase-status-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.edgecase-status-ok {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.edgecase-status-error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF6868;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.text-corrupted {
+  color: #EF6868;
+  font-weight: 700;
+}
