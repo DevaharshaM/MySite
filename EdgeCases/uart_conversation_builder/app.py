@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 
 # Set page config
 st.set_page_config(
@@ -10,9 +11,9 @@ st.set_page_config(
 # Custom Styling aligned with the PrajnaEdge minimal dark-mode theme
 st.markdown("""
 <style>
-    body {
-        background-color: #0F172A;
-        color: #E2E8F0;
+    body, [data-testid="stAppViewContainer"] {
+        background-color: #0F172A !important;
+        color: #E2E8F0 !important;
     }
     .panel-box {
         background-color: #1E293B;
@@ -20,6 +21,7 @@ st.markdown("""
         border-radius: 8px;
         padding: 1.25rem;
         margin-bottom: 1.25rem;
+        transition: all 0.3s ease;
     }
     .panel-title {
         font-family: 'Syne', sans-serif;
@@ -42,8 +44,26 @@ st.markdown("""
         font-size: 0.75rem;
         color: #64748B;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 0.25rem;
+        letter-spacing: 0.12em;
+        margin-bottom: 0.35rem;
+        font-weight: bold;
+    }
+    .code-display {
+        font-family: monospace;
+        background: #0F172A;
+        padding: 0.6rem 1rem;
+        border-radius: 6px;
+        border: 1px solid rgba(148, 163, 184, 0.08);
+        font-size: 1.1rem;
+        color: #A5F3FC;
+    }
+    .code-highlight {
+        color: #FFFFFF;
+        background: rgba(59, 130, 246, 0.3);
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        border-bottom: 2px solid #3B82F6;
+        font-weight: bold;
     }
     .text-corrupted {
         color: #EF6868;
@@ -56,7 +76,7 @@ st.markdown("""
     .agreement-item {
         font-family: monospace;
         font-size: 0.85rem;
-        padding: 0.2rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         margin-bottom: 0.4rem;
         border-radius: 4px;
     }
@@ -69,6 +89,71 @@ st.markdown("""
         background: rgba(239, 68, 68, 0.08);
         color: #EF6868;
         border: 1px solid rgba(239, 68, 68, 0.15);
+    }
+    .fifo-container {
+        display: flex;
+        gap: 0.4rem;
+        margin-top: 0.5rem;
+    }
+    .fifo-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: 1px solid rgba(148, 163, 184, 0.15);
+        border-radius: 4px;
+        background: #0F172A;
+        font-family: monospace;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #94A3B8;
+    }
+    .fifo-active {
+        border-color: #3B82F6;
+        background: rgba(59, 130, 246, 0.1);
+        color: #FFFFFF;
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+    }
+    .fifo-active-rx {
+        border-color: #10B981;
+        background: rgba(16, 185, 129, 0.1);
+        color: #FFFFFF;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+    }
+    .register-container {
+        display: flex;
+        gap: 0.25rem;
+        margin-top: 0.5rem;
+        background: #0F172A;
+        padding: 0.4rem;
+        border-radius: 6px;
+        border: 1px solid rgba(148, 163, 184, 0.08);
+        width: max-content;
+    }
+    .register-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 32px;
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        background: #1E293B;
+        border-radius: 3px;
+        font-family: monospace;
+    }
+    .register-label {
+        font-size: 0.55rem;
+        color: #64748B;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        width: 100%;
+        text-align: center;
+        padding: 0.1rem 0;
+    }
+    .register-val {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #FFF;
+        padding: 0.2rem 0;
     }
     .flow-step {
         display: inline-block;
@@ -84,45 +169,26 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("EdgeCase: Build a UART Conversation")
-st.caption("How does a message transform into electrical signals on a wire, and reconstruct perfectly at the other end?")
+st.title("EdgeCase: The Journey of a Byte")
+st.subheader("What really happens when you send \"Hello\"?")
+st.caption("Walk through the hidden layers of registers, serial frames, electrical signals, and sampling points.")
 
-# ====================================================
-# STEP 1: MESSAGE INPUT & CHARACTER SELECTOR
-# ====================================================
-st.markdown('<div class="pipeline-step">Step 1: Input Message</div>', unsafe_allow_html=True)
-with st.container():
-    st.markdown('<div class="panel-box">', unsafe_allow_html=True)
-    msg_col, char_col = st.columns([2, 1])
-    with msg_col:
-        message = st.text_input("Enter Message", value="Hello", max_chars=12, key="msg_input")
-        if not message:
-            message = " "
-    
-    # Character inspection index
-    char_list = [f"Index {idx}: '{char}'" for idx, char in enumerate(message)]
-    with char_col:
-        selected_option = st.selectbox("Select Character to Inspect", char_list, index=0)
-        selected_idx = int(selected_option.split(":")[0].split(" ")[1])
-        selected_char = message[selected_idx]
-        selected_char_code = ord(selected_char)
-        selected_char_bin = format(selected_char_code, '08b')
-
-    # Display properties
-    st.markdown(f"""
-    <div style="display:flex; gap:2rem; font-family:monospace; margin-top:0.75rem; background:#0f172a; padding:0.6rem 1rem; border-radius:6px; border:1px solid rgba(148,163,184,0.08);">
-        <div><span style="color:#64748B;">CHARACTER:</span> <span style="color:#FFF; font-weight:bold; font-size:1.1rem;">'{selected_char}'</span></div>
-        <div><span style="color:#64748B;">ASCII DECIMAL:</span> <span style="color:#3B82F6; font-weight:bold; font-size:1.1rem;">{selected_char_code}</span></div>
-        <div><span style="color:#64748B;">BINARY BYTE (MSB->LSB):</span> <span style="color:#10B981; font-weight:bold; font-size:1.1rem;">{selected_char_bin}</span></div>
-    </div>
-    """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
+# Initialize Session State
+if "message" not in st.session_state:
+    st.session_state.message = "Hello"
+if "selected_idx" not in st.session_state:
+    st.session_state.selected_idx = 0
+if "animating" not in st.session_state:
+    st.session_state.animating = False
+if "current_stage" not in st.session_state:
+    st.session_state.current_stage = 10
+if "temp_message" not in st.session_state:
+    st.session_state.temp_message = "Hello"
 
 # ====================================================
 # CONFIGURATION SETTINGS (TX & RX ALWAYS VISIBLE)
 # ====================================================
-st.markdown('<div class="pipeline-step">System Agreements</div>', unsafe_allow_html=True)
+st.markdown('<div class="pipeline-step">System Configurations</div>', unsafe_allow_html=True)
 with st.container():
     st.markdown('<div class="panel-box">', unsafe_allow_html=True)
     tx_col, rx_col, agree_col = st.columns([1, 1, 1])
@@ -164,11 +230,197 @@ with st.container():
             
     st.markdown('</div>', unsafe_allow_html=True)
 
+# ====================================================
+# MESSAGE INPUT & SEND BUTTON
+# ====================================================
+st.markdown('<div class="pipeline-step">System Controls</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown('<div class="panel-box">', unsafe_allow_html=True)
+    msg_col, char_col, action_col = st.columns([2, 1, 1])
+    
+    with msg_col:
+        # Tied to st.session_state.temp_message so typing doesn't instantly rerun the pipeline
+        message_input = st.text_input("Enter Message (Press Enter/SEND to Transmit)", value=st.session_state.temp_message, max_chars=12)
+        st.session_state.temp_message = message_input
+        
+    with char_col:
+        # Show dropdown options for already transmitted message
+        char_options = [f"Index {idx}: '{char}'" for idx, char in enumerate(st.session_state.message)]
+        # Clamp index
+        if st.session_state.selected_idx >= len(char_options):
+            st.session_state.selected_idx = 0
+        selected_option = st.selectbox("Inspect Byte Details", char_options, index=st.session_state.selected_idx)
+        selected_idx = int(selected_option.split(":")[0].split(" ")[1])
+        st.session_state.selected_idx = selected_idx
+        
+        selected_char = st.session_state.message[selected_idx]
+        selected_char_code = ord(selected_char)
+
+    with action_col:
+        st.markdown('<div style="height: 28px;"></div>', unsafe_allow_html=True)
+        send_clicked = st.button("SEND MESSAGE", use_container_width=True)
+        
+    if send_clicked:
+        st.session_state.message = st.session_state.temp_message
+        if not st.session_state.message:
+            st.session_state.message = " "
+        st.session_state.selected_idx = 0
+        st.session_state.animating = True
+        st.session_state.current_stage = 1
+        st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Helper function to generate stage badges/glows
+def get_stage_style(stage_num):
+    is_animating = st.session_state.animating
+    curr_stage = st.session_state.current_stage
+    
+    if is_animating:
+        if stage_num < curr_stage:
+            return "", ""
+        elif stage_num == curr_stage:
+            label = '<span style="color:#3B82F6; font-family:monospace; font-size:0.75rem; font-weight:bold; margin-left:1rem; border:1px solid #3B82F6; padding:0.15rem 0.4rem; border-radius:4px; background:rgba(59,130,246,0.1); letter-spacing:0.05em;">PROCESSING...</span>'
+            style = "border-color: #3B82F6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.02);"
+            return label, style
+        else:
+            label = '<span style="color:#64748B; font-family:monospace; font-size:0.75rem; margin-left:1rem;">(WAITING)</span>'
+            style = "opacity: 0.15; filter: grayscale(100%); pointer-events: none;"
+            return label, style
+    else:
+        return "", ""
 
 # ====================================================
-# PIPELINE GENERATOR (FRAME BLOCKS, WAVEFORM, AND RX TICKS)
+# STAGE 1: APPLICATION (SOFTWARE VARIABLE)
 # ====================================================
-st.markdown('<div class="pipeline-step">Steps 2, 3, & 4: Serial Frame, Waveform, and Sampling Timeline</div>', unsafe_allow_html=True)
+label, style = get_stage_style(1)
+st.markdown(f'<div class="pipeline-step">Stage 1: Application (Software variable) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
+    prefix = st.session_state.message[:selected_idx]
+    hl_char = f'<span class="code-highlight">{selected_char}</span>'
+    suffix = st.session_state.message[selected_idx+1:]
+    st.markdown(f'<div class="code-display">uart_write("{prefix}{hl_char}{suffix}");</div>', unsafe_allow_html=True)
+    st.caption("The user application requests data transmission. The highlighted character is currently selected for inspection.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGE 2: UART DRIVER (HANDOFF)
+# ====================================================
+label, style = get_stage_style(2)
+st.markdown(f'<div class="pipeline-step">Stage 2: UART Driver (Handoff) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div style="font-family:monospace; font-size:0.8rem; background:#0f172a; padding:0.6rem 1rem; border-radius:6px; border:1px solid rgba(148,163,184,0.08);">
+        <span style="color:#64748B;">DRIVER STATE:</span> Pushing byte <span style="color:#3B82F6; font-weight:bold;">0x{selected_char_code:02X}</span> to hardware register
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("The device driver intercepts the call, verifies if the peripheral is ready, and copies the data byte into the hardware transmitter port.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGE 3: TX FIFO (QUEUE BUFFER)
+# ====================================================
+label, style = get_stage_style(3)
+st.markdown(f'<div class="pipeline-step">Stage 3: TX FIFO (Queue buffer) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
+    fifo_blocks = []
+    for idx, char in enumerate(st.session_state.message):
+        cls = "fifo-block fifo-active" if idx == selected_idx else "fifo-block"
+        fifo_blocks.append(f'<div class="{cls}">{char}</div>')
+    st.markdown(f"""
+    <div style="font-family:monospace; font-size:0.7rem; color:#64748B; text-transform:uppercase;">Hardware FIFO Buffer:</div>
+    <div class="fifo-container">{"".join(fifo_blocks)}</div>
+    """, unsafe_allow_html=True)
+    st.caption("A hardware memory queue (FIFO) buffers bytes to prevent timing gaps if the CPU is busy with other tasks.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGE 4: SERIALIZATION (ASCII & BINARY MAPPING)
+# ====================================================
+label, style = get_stage_style(4)
+st.markdown(f'<div class="pipeline-step">Stage 4: Serialization (ASCII & Binary Mapping) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
+    char_bin_bits = [int(x) for x in format(selected_char_code, '08b')]
+    lsb_bits = [str((selected_char_code >> b) & 1) for b in range(8)]
+    st.markdown(f"""
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; font-family:monospace;">
+        <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid rgba(148,163,184,0.08);">
+            <span style="color:#64748B; font-size:0.7rem; display:block;">CHARACTER</span>
+            <span style="color:#FFF; font-weight:bold; font-size:1.1rem;">'{selected_char}'</span>
+        </div>
+        <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid rgba(148,163,184,0.08);">
+            <span style="color:#64748B; font-size:0.7rem; display:block;">ASCII DECIMAL</span>
+            <span style="color:#3B82F6; font-weight:bold; font-size:1.1rem;">{selected_char_code}</span>
+        </div>
+        <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid rgba(148,163,184,0.08);">
+            <span style="color:#64748B; font-size:0.7rem; display:block;">BINARY BYTE</span>
+            <span style="color:#10B981; font-weight:bold; font-size:1.1rem;">{"".join(map(str, char_bin_bits))}</span>
+        </div>
+        <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid rgba(148,163,184,0.08);">
+            <span style="color:#64748B; font-size:0.7rem; display:block;">LSB FIRST ORDER</span>
+            <span style="color:#F59E0B; font-weight:bold; font-size:1.1rem;">{" → ".join(lsb_bits)}</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("Software concepts translate into discrete physical values (0s and 1s) ordered LSB-first.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGE 5: SHIFT REGISTER (PARALLEL-IN SERIAL-OUT)
+# ====================================================
+label, style = get_stage_style(5)
+st.markdown(f'<div class="pipeline-step">Stage 5: Shift Register (Parallel-In Serial-Out) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
+    cells_html = []
+    for b in range(tx_data_bits):
+        bit_val = (selected_char_code >> b) & 1
+        cells_html.append(f"""
+        <div class="register-cell">
+            <div class="register-label">D{b}</div>
+            <div class="register-val">{bit_val}</div>
+        </div>
+        """)
+    st.markdown(f"""
+    <div style="font-family:monospace; font-size:0.7rem; color:#64748B; text-transform:uppercase;">Transmitter Shift Register (PISO):</div>
+    <div class="register-container">
+        {"".join(cells_html)}
+        <div style="display:flex; align-items:center; margin-left:0.5rem; color:#3B82F6; font-weight:bold; font-family:monospace; font-size:0.8rem;">➔ serial out</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.caption("Data is loaded in parallel from the buffer, then shifted out bit-by-bit onto the electrical trace.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGES 6 & 7: PROTOCOL FRAME BUILDER & PHYSICAL WIRE (SVG RENDERED)
+# ====================================================
+is_animating = st.session_state.animating
+curr_stage = st.session_state.current_stage
+
+label6 = ""
+label7 = ""
+combined_style = ""
+highlight_frame = False
+highlight_waveform = False
+
+if is_animating:
+    if curr_stage < 6:
+        label6 = '<span style="color:#64748B; font-family:monospace; font-size:0.75rem; margin-left:1rem;">(WAITING)</span>'
+        label7 = '<span style="color:#64748B; font-family:monospace; font-size:0.75rem; margin-left:1rem;">(WAITING)</span>'
+        combined_style = "opacity: 0.15; filter: grayscale(100%); pointer-events: none;"
+    elif curr_stage == 6:
+        label6 = '<span style="color:#3B82F6; font-family:monospace; font-size:0.75rem; font-weight:bold; margin-left:1rem; border:1px solid #3B82F6; padding:0.15rem 0.4rem; border-radius:4px; background:rgba(59,130,246,0.1);">PROCESSING...</span>'
+        label7 = '<span style="color:#64748B; font-family:monospace; font-size:0.75rem; margin-left:1rem;">(WAITING)</span>'
+        combined_style = "border-color: #3B82F6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.02);"
+        highlight_frame = True
+    elif curr_stage == 7:
+        label7 = '<span style="color:#3B82F6; font-family:monospace; font-size:0.75rem; font-weight:bold; margin-left:1rem; border:1px solid #3B82F6; padding:0.15rem 0.4rem; border-radius:4px; background:rgba(59,130,246,0.1);">PROCESSING...</span>'
+        combined_style = "border-color: #3B82F6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.02);"
+        highlight_waveform = True
 
 # Build TX frame bits info
 char_bits = []
@@ -217,20 +469,16 @@ for i in range(rx_sample_count):
     if tx_idx >= len(tx_states):
         correct = False # outside boundary
     else:
-        # Match types
-        # S0 should sample Start (value 0)
         if i == 0 and sampled_val != 0:
             correct = False
-        # Data bits should match actual char code bits
         elif 1 <= i <= rx_data_bits:
             tx_bit_pos = i - 1
             if tx_bit_pos < tx_data_bits:
                 expected_tx_val = char_bits[tx_bit_pos]
             else:
-                expected_tx_val = 1 # mismatch, overflow
+                expected_tx_val = 1
             if sampled_val != expected_tx_val:
                 correct = False
-        # Stop bit should check for 1
         elif i >= 1 + rx_data_bits + (1 if rx_parity != "None" else 0):
             if sampled_val != 1:
                 correct = False
@@ -251,7 +499,6 @@ disp_w = svg_w - pad_left - pad_right
 n_slots = len(tx_states)
 dx = disp_w / n_slots
 
-# Colors
 colors = {
     "idle": "#475569",
     "start": "#EF4444",
@@ -261,17 +508,24 @@ colors = {
 }
 
 svg_blocks = []
+blocks_opacity = "0.3" if highlight_waveform else "1.0"
+waveform_opacity = "0.3" if highlight_frame else "1.0"
+waveform_stroke_width = "4" if highlight_waveform else "2"
+waveform_stroke_color = "#3B82F6" if highlight_waveform else "#FFFFFF"
+
 # 1. Draw Frame Blocks
 for i, b in enumerate(tx_frame_bits):
     x = pad_left + i * dx
     c = colors[b["type"]]
+    stroke_w = "2.5" if (highlight_frame and b["type"] != "idle") else "1.5"
+    fill_opacity = "0.15" if highlight_frame else "0.08"
     svg_blocks.append(f"""
     <!-- Block {b["label"]} -->
-    <rect x="{x + 2}" y="15" width="{dx - 4}" height="70" rx="4" fill="none" stroke="{c}" stroke-width="1.5" />
-    <rect x="{x + 2}" y="15" width="{dx - 4}" height="70" rx="4" fill="{c}" opacity="0.08" />
-    <text x="{x + dx/2}" y="32" fill="#94A3B8" font-family="monospace" font-size="8" text-anchor="middle" font-weight="bold">{b["label"]}</text>
-    <text x="{x + dx/2}" y="56" fill="{ '#EF6868' if b["val"]==0 else '#10B981' }" font-family="monospace" font-size="18" text-anchor="middle" font-weight="bold">{b["val"]}</text>
-    <text x="{x + dx/2}" y="76" fill="#64748B" font-family="monospace" font-size="6.5" text-anchor="middle">{b["desc"]}</text>
+    <rect x="{x + 2}" y="15" width="{dx - 4}" height="70" rx="4" fill="none" stroke="{c}" stroke-width="{stroke_w}" opacity="{blocks_opacity}" />
+    <rect x="{x + 2}" y="15" width="{dx - 4}" height="70" rx="4" fill="{c}" opacity="{fill_opacity if blocks_opacity == "1.0" else "0.02"}" />
+    <text x="{x + dx/2}" y="32" fill="#94A3B8" font-family="monospace" font-size="8" text-anchor="middle" font-weight="bold" opacity="{blocks_opacity}">{b["label"]}</text>
+    <text x="{x + dx/2}" y="56" fill="{ '#EF6868' if b["val"]==0 else '#10B981' }" font-family="monospace" font-size="18" text-anchor="middle" font-weight="bold" opacity="{blocks_opacity}">{b["val"]}</text>
+    <text x="{x + dx/2}" y="76" fill="#64748B" font-family="monospace" font-size="6.5" text-anchor="middle" opacity="{blocks_opacity}">{b["desc"]}</text>
     """)
 
 # 2. Draw Waveform Step Line
@@ -290,9 +544,9 @@ path_d += f" L {svg_w},135"
 
 svg_blocks.append(f"""
 <!-- Waveform Signal -->
-<path d="{path_d}" fill="none" stroke="#FFFFFF" stroke-width="2" />
-<text x="{pad_left - 8}" y="139" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">HIGH (3.3V)</text>
-<text x="{pad_left - 8}" y="179" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">LOW (0V)</text>
+<path d="{path_d}" fill="none" stroke="{waveform_stroke_color}" stroke-width="{waveform_stroke_width}" opacity="{waveform_opacity}" />
+<text x="{pad_left - 8}" y="139" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end" opacity="{waveform_opacity}">HIGH (3.3V)</text>
+<text x="{pad_left - 8}" y="179" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end" opacity="{waveform_opacity}">LOW (0V)</text>
 """)
 
 # Draw Slot Dividers & Grid lines
@@ -300,30 +554,33 @@ for i in range(n_slots + 1):
     x = pad_left + i * dx
     svg_blocks.append(f'<line x1="{x}" y1="15" x2="{x}" y2="195" stroke="#334155" stroke-dasharray="1,4" stroke-width="0.75" />')
 
-# 3. Draw RX Sampling Timeline
-svg_blocks.append(f"""
-<!-- RX Axis line -->
-<line x1="{pad_left}" y1="235" x2="{svg_w - pad_right}" y2="235" stroke="#475569" stroke-width="1" />
-<text x="{pad_left - 8}" y="238" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">RX SAMPLES</text>
-""")
+# 3. Draw RX Sampling Timeline (only visible at Stage 8 or higher)
+rx_visible = not (is_animating and curr_stage < 8)
 
-for s in rx_samples_info:
-    x_sample = pad_left + s["tx_time"] * dx
-    if x_sample > (svg_w - pad_right):
-        continue
-    
-    y_wave = 135 if s["val"] == 1 else 175
-    color = "#3B82F6" if s["correct"] else "#EF6868"
-    dash = "2,3" if s["correct"] else "1,1"
-    
+if rx_visible:
     svg_blocks.append(f"""
-    <!-- Sample S{s["idx"]} -->
-    <line x1="{x_sample}" y1="120" x2="{x_sample}" y2="235" stroke="{color}" stroke-dasharray="{dash}" stroke-width="1" />
-    <circle cx="{x_sample}" cy="{y_wave}" r="4" fill="{color}" stroke="#0F172A" stroke-width="1" />
-    <circle cx="{x_sample}" cy="235" r="3" fill="{color}" />
-    <text x="{x_sample}" y="252" fill="{color}" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">S{s["idx"]}</text>
-    <text x="{x_sample}" y="266" fill="#FFF" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">({s["val"]})</text>
+    <!-- RX Axis line -->
+    <line x1="{pad_left}" y1="235" x2="{svg_w - pad_right}" y2="235" stroke="#475569" stroke-width="1" />
+    <text x="{pad_left - 8}" y="238" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">RX SAMPLES</text>
     """)
+
+    for s in rx_samples_info:
+        x_sample = pad_left + s["tx_time"] * dx
+        if x_sample > (svg_w - pad_right):
+            continue
+        
+        y_wave = 135 if s["val"] == 1 else 175
+        color = "#3B82F6" if s["correct"] else "#EF6868"
+        dash = "2,3" if s["correct"] else "1,1"
+        
+        svg_blocks.append(f"""
+        <!-- Sample S{s["idx"]} -->
+        <line x1="{x_sample}" y1="120" x2="{x_sample}" y2="235" stroke="{color}" stroke-dasharray="{dash}" stroke-width="1" />
+        <circle cx="{x_sample}" cy="{y_wave}" r="4" fill="{color}" stroke="#0F172A" stroke-width="1" />
+        <circle cx="{x_sample}" cy="235" r="3" fill="{color}" />
+        <text x="{x_sample}" y="252" fill="{color}" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">S{s["idx"]}</text>
+        <text x="{x_sample}" y="266" fill="#FFF" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">({s["val"]})</text>
+        """)
 
 # Combine SVG
 svg_content = f"""
@@ -332,15 +589,22 @@ svg_content = f"""
 </svg>
 """
 
-st.markdown(f'<div class="panel-box" style="background:#0F172A; padding:0;">{svg_content}</div>', unsafe_allow_html=True)
-
-
-# ====================================================
-# STEP 5: RECEIVER STATE MACHINE FLOW
-# ====================================================
-st.markdown('<div class="pipeline-step">Step 5: Receiver State Transition</div>', unsafe_allow_html=True)
+# Render combined stage container
+st.markdown(f'<div class="pipeline-step">Stage 6: UART Frame Builder (TX Pin state) {label6}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="pipeline-step">Stage 7: Physical Wire (Waveform) {label7}</div>', unsafe_allow_html=True)
 with st.container():
-    st.markdown('<div class="panel-box">', unsafe_allow_html=True)
+    st.markdown(f'<div class="panel-box" style="{combined_style}">', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:#0F172A; padding:0; overflow-x:auto;">{svg_content}</div>', unsafe_allow_html=True)
+    st.caption("Voltage values on the physical trace directly echo the UART frame contract. Dashed lines illustrate receiver sampling offsets.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGE 8: RX PIN & RECEIVER (SAMPLING & DEMODULATION)
+# ====================================================
+label, style = get_stage_style(8)
+st.markdown(f'<div class="pipeline-step">Stage 8: RX Pin & Receiver (Sampling & Demodulation) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
     st.markdown('<div class="panel-title">Receiver Processing Flow (First Frame Byte)</div>', unsafe_allow_html=True)
     
     # State sequence strings
@@ -370,7 +634,7 @@ with st.container():
         else:
             flow_steps.append(f'<span class="flow-step" style="color:#EF6868;">✗ Parity Error (Sampled {rx_parity_val}, expected {expected_rx_par})</span>')
 
-    # Stop bits check
+# Stop bits check
     rx_stop_start_idx = 1 + rx_data_bits + (1 if rx_parity != "None" else 0)
     rx_stop_vals = [s["val"] for s in rx_samples_info[rx_stop_start_idx:rx_stop_start_idx+rx_stop_bits]]
     stops_valid = all(v == 1 for v in rx_stop_vals)
@@ -388,24 +652,26 @@ with st.container():
     if (not parity_ok) or (not bits_ok) or (not stops_valid) or (rx_start_val != 0):
         flow_steps.append(f'<span class="flow-step" style="background:#EF6868; color:#FFF; font-weight:bold;">➔ Character Corrupted: \'?\'</span>')
     else:
-        flow_steps.append(f'<span class="flow-step" style="background:#10B981; color:#0F172A; font-weight:bold;">➔ Character Recovered: \'{chr(reconstructed_code)}\'</span>')
+        char_out = chr(reconstructed_code) if 32 <= reconstructed_code <= 126 else '?'
+        flow_steps.append(f'<span class="flow-step" style="background:#10B981; color:#0F172A; font-weight:bold;">➔ Character Recovered: \'{char_out}\'</span>')
 
     st.markdown(" ".join(flow_steps), unsafe_allow_html=True)
+    st.caption("The receiver checks timing offsets, decodes the voltage transitions, and validates the parity/stop framing.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-
 # ====================================================
-# STEP 6: DECODED OUTPUT & ERROR RECONSTRUCTION
+# STAGE 9: RX FIFO (HARDWARE INPUT BUFFER)
 # ====================================================
-st.markdown('<div class="pipeline-step">Step 6: Recovered Message Output</div>', unsafe_allow_html=True)
+label, style = get_stage_style(9)
+st.markdown(f'<div class="pipeline-step">Stage 9: RX FIFO (Hardware Input buffer) {label}</div>', unsafe_allow_html=True)
 with st.container():
-    st.markdown('<div class="panel-box">', unsafe_allow_html=True)
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
     
     # Run full message decoding loop
     recovered_chars = []
     has_any_error = False
 
-    for char in message:
+    for char in st.session_state.message:
         val = ord(char)
         # Serialize under TX parameters
         tx_c_bits = [(val >> b) & 1 for b in range(tx_data_bits)]
@@ -455,7 +721,7 @@ with st.container():
 
         if f_err or p_err:
             has_any_error = True
-            recovered_chars.append('<span class="text-corrupted">?</span>')
+            recovered_chars.append('?')
         else:
             # Reconstruct byte value
             rec_val = 0
@@ -465,19 +731,50 @@ with st.container():
             char_out = chr(rec_val) if 32 <= rec_val <= 126 else '?'
             recovered_chars.append(char_out)
 
-    recovered_msg_html = "".join(recovered_chars)
+    # Draw RX FIFO queue blocks
+    rx_fifo_blocks = []
+    for idx, char in enumerate(recovered_chars):
+        cls = "fifo-block fifo-active-rx" if idx == selected_idx else "fifo-block"
+        if char == '?':
+            rx_fifo_blocks.append(f'<div class="{cls}" style="border-color:#EF6868; color:#EF6868; background:rgba(239,68,68,0.08);">?</div>')
+        else:
+            rx_fifo_blocks.append(f'<div class="{cls}">{char}</div>')
+
+    st.markdown(f"""
+    <div style="font-family:monospace; font-size:0.7rem; color:#64748B; text-transform:uppercase;">Receiver FIFO Queue buffer:</div>
+    <div class="fifo-container">{"".join(rx_fifo_blocks)}</div>
+    """, unsafe_allow_html=True)
+    st.caption("Decoded bytes are queued into the receiver FIFO buffer, waiting to be read by the system's driver.")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ====================================================
+# STAGE 10: APPLICATION (RECONSTRUCTED OUTPUT)
+# ====================================================
+label, style = get_stage_style(10)
+st.markdown(f'<div class="pipeline-step">Stage 10: Application (Reconstructed Output) {label}</div>', unsafe_allow_html=True)
+with st.container():
+    st.markdown(f'<div class="panel-box" style="{style}">', unsafe_allow_html=True)
     
+    # Highlight corrupted character indexes
+    reconstructed_msg_chars = []
+    for idx, char in enumerate(recovered_chars):
+        if char == '?':
+            reconstructed_msg_chars.append('<span class="text-corrupted">?</span>')
+        else:
+            reconstructed_msg_chars.append(char)
+    reconstructed_message_str = "".join(reconstructed_msg_chars)
+
     out_col1, out_col2 = st.columns(2)
     with out_col1:
         st.markdown(f'<div style="font-family:monospace; font-size:0.75rem; color:#64748B;">TRANSMITTED MESSAGE:</div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="font-size:1.5rem; font-family:monospace; background:#0F172A; padding:0.6rem; border-radius:6px; border:1px solid rgba(148,163,184,0.1); font-weight:bold;">{message}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="font-size:1.5rem; font-family:monospace; background:#0F172A; padding:0.6rem; border-radius:6px; border:1px solid rgba(148,163,184,0.1); font-weight:bold;">{st.session_state.message}</div>', unsafe_allow_html=True)
     
     with out_col2:
         st.markdown(f'<div style="font-family:monospace; font-size:0.75rem; color:#64748B;">RECOVERED MESSAGE:</div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="font-size:1.5rem; font-family:monospace; background:#0F172A; padding:0.6rem; border-radius:6px; border:1px solid rgba(148,163,184,0.1); font-weight:bold;">{recovered_msg_html}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="font-size:1.5rem; font-family:monospace; background:#0F172A; padding:0.6rem; border-radius:6px; border:1px solid rgba(148,163,184,0.1); font-weight:bold;">{reconstructed_message_str}</div>', unsafe_allow_html=True)
         
+    st.caption("The software application reads the byte queue, completing the communication loop.")
     st.markdown('</div>', unsafe_allow_html=True)
-
 
 # ====================================================
 # CORE EDUCATIONAL MESSAGE
@@ -488,3 +785,15 @@ st.info("""
 * The transmitter and receiver can run at completely independent CPU clock frequencies (e.g. 16 MHz vs 1 GHz).
 * As long as they agree on the baud rate, parity, data bits, and stop bits contract, they coordinate timing and reconstruct the serial stream successfully.
 """)
+
+# ====================================================
+# ANIMATION LOOP DRIVER
+# ====================================================
+if st.session_state.animating:
+    if st.session_state.current_stage < 10:
+        time.sleep(0.6)
+        st.session_state.current_stage += 1
+        st.rerun()
+    else:
+        st.session_state.animating = False
+        st.rerun()

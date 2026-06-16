@@ -2497,528 +2497,755 @@ function renderUartConversationBuilder() {
   if (!container) return;
 
   container.className = 'edgecase-wrapper';
+  
+  // HTML layout
   container.innerHTML = `
-    <div class="edgecase-header">EdgeCase: Build a UART Conversation</div>
-    <div class="edgecase-subheader">Watch a message transform from human-readable text into electrical pulses and back again.</div>
-
-    <!-- PANEL 1: Message Input & Conversion -->
-    <div class="ec-panel">
-      <div class="ec-panel-title">Panel 1: Message Input &amp; Serialization</div>
-      <div class="edgecase-control-group" style="margin-bottom:1rem;">
-        <label for="ec-text">Text to Transmit</label>
-        <div style="display:flex; gap:0.75rem; align-items:center;">
-          <input type="text" id="ec-text" class="edgecase-input" value="Hello" maxlength="12" style="max-width:300px;">
-          <button id="ec-tx-btn" class="edgecase-button" style="margin:0;">Transmit &amp; Decode</button>
-        </div>
-      </div>
-      <div>
-        <label style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:0.4rem;">Character to Bitstream Mapping</label>
-        <div id="ec-serialization-table-container"></div>
-      </div>
+    <div class="edgecase-header">EdgeCase: The Journey of a Byte</div>
+    <div class="edgecase-subheader">What really happens when you send "Hello"?</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Walk through the hidden layers of registers, serial frames, electrical signals, and sampling points.
     </div>
 
-    <!-- PANEL 2: UART Frame Builder -->
-    <div class="ec-panel">
-      <div class="ec-panel-title">Panel 2: UART Frame Builder (TX Contract)</div>
-      
-      <div class="edgecase-controls">
-        <div class="edgecase-control-group">
-          <label for="ec-tx-baud">Baud Rate</label>
-          <select id="ec-tx-baud" class="edgecase-select">
-            <option value="9600" selected>9600 bps</option>
-            <option value="19200">19200 bps</option>
-            <option value="115200">115200 bps</option>
-          </select>
-        </div>
-        <div class="edgecase-control-group">
-          <label for="ec-tx-databits">Data Bits</label>
-          <select id="ec-tx-databits" class="edgecase-select">
-            <option value="5">5 Bits</option>
-            <option value="6">6 Bits</option>
-            <option value="7">7 Bits</option>
-            <option value="8" selected>8 Bits</option>
-          </select>
-        </div>
-        <div class="edgecase-control-group">
-          <label for="ec-tx-parity">Parity</label>
-          <select id="ec-tx-parity" class="edgecase-select">
-            <option value="none" selected>None</option>
-            <option value="even">Even</option>
-            <option value="odd">Odd</option>
-          </select>
-        </div>
-        <div class="edgecase-control-group">
-          <label for="ec-tx-stopbits">Stop Bits</label>
-          <select id="ec-tx-stopbits" class="edgecase-select">
-            <option value="1" selected>1 Bit</option>
-            <option value="2">2 Bits</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="margin-top:1rem;">
-        <label style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:0.4rem;">Constructed UART Frame (First Character)</label>
-        <div id="ec-frame-layout" class="ec-frame-bits-container"></div>
-      </div>
-    </div>
-
-    <!-- PANEL 3: Transmission Waveform -->
-    <div class="ec-panel">
-      <div class="ec-panel-title">Panel 3: Electrical Waveform (Physical Wire)</div>
-      <div class="ec-transmission-wire">
-        <div class="ec-wire-signal"></div>
-        <div id="ec-wire-pulse" class="ec-wire-pulse"></div>
-      </div>
-      <div class="edgecase-visual" id="ec-waveform-container" style="margin-top:1rem; margin-bottom:0;"></div>
-    </div>
-
-    <!-- PANEL 4: Receiver & Reconstruction -->
-    <div class="ec-panel">
-      <div class="ec-panel-title">Panel 4: Receiver &amp; Reconstruction</div>
-      <div class="edgecase-output-panel" style="background:#0F172A; border-color:var(--border);">
-        <div class="edgecase-output-grid">
-          <div class="edgecase-output-box">
-            <div class="edgecase-output-label">Receiver Status</div>
-            <div class="edgecase-output-val" id="ec-rx-status" style="font-size:0.8rem;">-</div>
+    <!-- CONFIGURATION SETTINGS (TX & RX ALWAYS VISIBLE SIDE-BY-SIDE WITH AGREEMENT) -->
+    <div class="pipeline-step">System Configurations</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
+        <!-- TX Column -->
+        <div>
+          <div class="panel-title" style="color:var(--blue); font-size:0.85rem; margin-bottom:0.75rem;">Transmitter (TX Contract)</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-tx-baud" style="font-size:0.7rem;">TX Baud Rate</label>
+            <select id="ec-tx-baud" class="edgecase-select">
+              <option value="9600" selected>9600 bps</option>
+              <option value="19200">19200 bps</option>
+              <option value="115200">115200 bps</option>
+            </select>
           </div>
-          <div class="edgecase-output-box">
-            <div class="edgecase-output-label">Recovered Message</div>
-            <div class="edgecase-output-val" id="ec-rx-recovered" style="font-size:1.1rem; font-weight:600; color:#10B981;">-</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-tx-databits" style="font-size:0.7rem;">TX Data Bits</label>
+            <select id="ec-tx-databits" class="edgecase-select">
+              <option value="5">5 Bits</option>
+              <option value="6">6 Bits</option>
+              <option value="7">7 Bits</option>
+              <option value="8" selected>8 Bits</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-tx-parity" style="font-size:0.7rem;">TX Parity</label>
+            <select id="ec-tx-parity" class="edgecase-select">
+              <option value="None" selected>None</option>
+              <option value="Even">Even</option>
+              <option value="Odd">Odd</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-tx-stopbits" style="font-size:0.7rem;">TX Stop Bits</label>
+            <select id="ec-tx-stopbits" class="edgecase-select">
+              <option value="1" selected>1 Bit</option>
+              <option value="2">2 Bits</option>
+            </select>
           </div>
         </div>
+
+        <!-- RX Column -->
+        <div>
+          <div class="panel-title" style="color:#E2E8F0; font-size:0.85rem; margin-bottom:0.75rem;">Receiver (RX Contract)</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-rx-baud" style="font-size:0.7rem;">RX Baud Rate</label>
+            <select id="ec-rx-baud" class="edgecase-select">
+              <option value="4800">4800 bps</option>
+              <option value="9600" selected>9600 bps</option>
+              <option value="14400">14400 bps</option>
+              <option value="19200">19200 bps</option>
+              <option value="115200">115200 bps</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-rx-databits" style="font-size:0.7rem;">RX Data Bits</label>
+            <select id="ec-rx-databits" class="edgecase-select">
+              <option value="5">5 Bits</option>
+              <option value="6">6 Bits</option>
+              <option value="7">7 Bits</option>
+              <option value="8" selected>8 Bits</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-rx-parity" style="font-size:0.7rem;">RX Parity</label>
+            <select id="ec-rx-parity" class="edgecase-select">
+              <option value="None" selected>None</option>
+              <option value="Even">Even</option>
+              <option value="Odd">Odd</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-rx-stopbits" style="font-size:0.7rem;">RX Stop Bits</label>
+            <select id="ec-rx-stopbits" class="edgecase-select">
+              <option value="1" selected>1 Bit</option>
+              <option value="2">2 Bits</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Agreement Column -->
+        <div>
+          <div class="panel-title" style="color:#10B981; font-size:0.85rem; margin-bottom:0.75rem;">Agreement Verification</div>
+          <div id="ec-agreement-container"></div>
+        </div>
       </div>
     </div>
 
-    <!-- ADVANCED MODE toggle -->
-    <div class="ec-advanced-toggle-container">
-      <input type="checkbox" id="ec-adv-toggle" class="ec-checkbox">
-      <label for="ec-adv-toggle" class="ec-checkbox-label">Advanced Mode: Unlock Receiver Mismatch Experiment</label>
-    </div>
-
-    <!-- ADVANCED PANEL -->
-    <div id="ec-advanced-panel" class="ec-panel" style="display:none; margin-top:1.25rem; border-color:rgba(239,68,68,0.3);">
-      <div class="ec-panel-title" style="color:#EF6868; font-size:0.8rem;">Advanced: Mismatched Receiver Settings (RX Contract)</div>
-      <div class="edgecase-controls">
-        <div class="edgecase-control-group">
-          <label for="ec-rx-baud">RX Baud Rate</label>
-          <select id="ec-rx-baud" class="edgecase-select">
-            <option value="4800">4800 bps</option>
-            <option value="9600" selected>9600 bps</option>
-            <option value="14400">14400 bps</option>
-            <option value="19200">19200 bps</option>
-            <option value="115200">115200 bps</option>
-          </select>
+    <!-- CONTROLS -->
+    <div class="pipeline-step">System Controls</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:1rem; align-items:end;">
+        <div class="edgecase-control-group" style="margin:0;">
+          <label for="ec-text" style="font-size:0.7rem;">Enter Message (Press SEND to Transmit)</label>
+          <input type="text" id="ec-text" class="edgecase-input" value="Hello" maxlength="12" style="width:100%;">
         </div>
-        <div class="edgecase-control-group">
-          <label for="ec-rx-databits">RX Data Bits</label>
-          <select id="ec-rx-databits" class="edgecase-select">
-            <option value="5">5 Bits</option>
-            <option value="6">6 Bits</option>
-            <option value="7">7 Bits</option>
-            <option value="8" selected>8 Bits</option>
-          </select>
+        <div class="edgecase-control-group" style="margin:0;">
+          <label for="ec-char-select" style="font-size:0.7rem;">Inspect Byte Details</label>
+          <select id="ec-char-select" class="edgecase-select" style="width:100%;"></select>
         </div>
-        <div class="edgecase-control-group">
-          <label for="ec-rx-parity">RX Parity</label>
-          <select id="ec-rx-parity" class="edgecase-select">
-            <option value="none" selected>None</option>
-            <option value="even">Even</option>
-            <option value="odd">Odd</option>
-          </select>
-        </div>
-        <div class="edgecase-control-group">
-          <label for="ec-rx-stopbits">RX Stop Bits</label>
-          <select id="ec-rx-stopbits" class="edgecase-select">
-            <option value="1" selected>1 Bit</option>
-            <option value="2">2 Bits</option>
-          </select>
-        </div>
+        <button id="ec-send-btn" class="edgecase-button" style="margin:0; width:100%; height:38px;">SEND MESSAGE</button>
       </div>
     </div>
+
+    <!-- PIPELINE CONTAINERS -->
+    <div id="ec-pipeline-container"></div>
   `;
 
   // Get DOM elements
-  const textInput = document.getElementById('ec-text');
-  const txBtn = document.getElementById('ec-tx-btn');
-  const tableContainer = document.getElementById('ec-serialization-table-container');
-  const frameLayout = document.getElementById('ec-frame-layout');
-  const waveformContainer = document.getElementById('ec-waveform-container');
-  const rxStatusEl = document.getElementById('ec-rx-status');
-  const rxRecoveredEl = document.getElementById('ec-rx-recovered');
-  const advToggle = document.getElementById('ec-adv-toggle');
-  const advPanel = document.getElementById('ec-advanced-panel');
-  const pulseEl = document.getElementById('ec-wire-pulse');
-
-  // TX elements
   const txBaudSel = document.getElementById('ec-tx-baud');
   const txDataBitsSel = document.getElementById('ec-tx-databits');
   const txParitySel = document.getElementById('ec-tx-parity');
   const txStopBitsSel = document.getElementById('ec-tx-stopbits');
 
-  // RX elements
   const rxBaudSel = document.getElementById('ec-rx-baud');
   const rxDataBitsSel = document.getElementById('ec-rx-databits');
   const rxParitySel = document.getElementById('ec-rx-parity');
   const rxStopBitsSel = document.getElementById('ec-rx-stopbits');
 
-  // Add event listeners
-  advToggle.addEventListener('change', () => {
-    if (advToggle.checked) {
-      advPanel.style.display = 'block';
-    } else {
-      advPanel.style.display = 'none';
-      // Reset RX values to match TX
-      rxBaudSel.value = txBaudSel.value;
-      rxDataBitsSel.value = txDataBitsSel.value;
-      rxParitySel.value = txParitySel.value;
-      rxStopBitsSel.value = txStopBitsSel.value;
+  const textInput = document.getElementById('ec-text');
+  const charSelect = document.getElementById('ec-char-select');
+  const sendBtn = document.getElementById('ec-send-btn');
+  const agreementContainer = document.getElementById('ec-agreement-container');
+  const pipelineContainer = document.getElementById('ec-pipeline-container');
+
+  // Simulation State
+  let message = "Hello";
+  let tempMessage = "Hello";
+  let selectedIdx = 0;
+  let animating = false;
+  let currentStage = 10; // 10 = static completed state
+
+  // Initialize character selector options
+  function updateCharSelectOptions() {
+    charSelect.innerHTML = "";
+    for (let i = 0; i < message.length; i++) {
+      const option = document.createElement('option');
+      option.value = i;
+      option.textContent = `Index ${i}: '${message[i]}'`;
+      charSelect.appendChild(option);
     }
+    // Restore or clamp index
+    if (selectedIdx >= message.length) {
+      selectedIdx = 0;
+    }
+    charSelect.value = selectedIdx;
+  }
+
+  // Event Listeners
+  textInput.addEventListener('input', () => {
+    tempMessage = textInput.value;
+  });
+
+  textInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      sendBtn.click();
+    }
+  });
+
+  sendBtn.addEventListener('click', async () => {
+    if (animating) return;
+    
+    message = tempMessage || " ";
+    selectedIdx = 0;
+    updateCharSelectOptions();
+    
+    // Start animation
+    animating = true;
+    currentStage = 1;
+    
+    runSimulation();
+    
+    // Animation loop using async sleep
+    for (let stage = 1; stage <= 10; stage++) {
+      currentStage = stage;
+      runSimulation();
+      await new Promise(resolve => setTimeout(resolve, 600));
+    }
+    
+    animating = false;
+    currentStage = 10;
     runSimulation();
   });
 
-  const allControls = [
-    textInput, txBaudSel, txDataBitsSel, txParitySel, txStopBitsSel,
+  charSelect.addEventListener('change', () => {
+    selectedIdx = parseInt(charSelect.value) || 0;
+    runSimulation();
+  });
+
+  const configSelectors = [
+    txBaudSel, txDataBitsSel, txParitySel, txStopBitsSel,
     rxBaudSel, rxDataBitsSel, rxParitySel, rxStopBitsSel
   ];
-  allControls.forEach(ctrl => {
-    ctrl.addEventListener('change', runSimulation);
-  });
-  textInput.addEventListener('input', runSimulation);
-
-  txBtn.addEventListener('click', () => {
-    // Re-trigger pulse animation by removing and adding class
-    pulseEl.style.animation = 'none';
-    pulseEl.offsetHeight; // trigger reflow
-    pulseEl.style.animation = 'travelWire 1.5s infinite linear';
-    runSimulation();
+  configSelectors.forEach(sel => {
+    sel.addEventListener('change', () => {
+      runSimulation();
+    });
   });
 
-  // Run initial simulation
+  // Init
+  updateCharSelectOptions();
   runSimulation();
 
   function runSimulation() {
-    const text = textInput.value || " ";
+    // Read current settings
     const txBaud = parseInt(txBaudSel.value);
     const txDataBits = parseInt(txDataBitsSel.value);
     const txParity = txParitySel.value;
     const txStopBits = parseInt(txStopBitsSel.value);
-
-    // If advanced mode is disabled, sync RX to TX
-    if (!advToggle.checked) {
-      rxBaudSel.value = txBaudSel.value;
-      rxDataBitsSel.value = txDataBitsSel.value;
-      rxParitySel.value = txParitySel.value;
-      rxStopBitsSel.value = txStopBitsSel.value;
-    }
 
     const rxBaud = parseInt(rxBaudSel.value);
     const rxDataBits = parseInt(rxDataBitsSel.value);
     const rxParity = rxParitySel.value;
     const rxStopBits = parseInt(rxStopBitsSel.value);
 
-    // Panel 1: ASCII & Binary mapping table
-    let tableHtml = `<table class="ec-conversion-table">
-      <thead>
-        <tr>
-          <th>Character</th>
-          <th>ASCII Decimal</th>
-          <th>Binary Byte (MSB -> LSB)</th>
-          <th>Serialization Order (LSB First)</th>
-        </tr>
-      </thead>
-      <tbody>`;
-    
-    // Show conversion for up to 5 characters for visual clean layout
-    const charsToShow = text.slice(0, 5);
-    for (let i = 0; i < charsToShow.length; i++) {
-      const char = charsToShow[i];
-      const code = char.charCodeAt(0);
-      let binaryStr = code.toString(2).padStart(8, '0');
-      
-      // Represent LSB first
-      let lsbFirstArr = [];
-      for (let b = 0; b < 8; b++) {
-        lsbFirstArr.push((code >> b) & 1);
+    // 1. Agreement Verification Panel
+    const baudOk = (txBaud === rxBaud);
+    const bitsOk = (txDataBits === rxDataBits);
+    const parityOk = (txParity === rxParity);
+    const stopsOk = (txStopBits === rxStopBits);
+
+    const verifyItems = [
+      ["Baud Rate", baudOk, `${txBaud} vs ${rxBaud} bps`],
+      ["Data Bits", bitsOk, `${txDataBits} vs ${rxDataBits} bits`],
+      ["Parity Check", parityOk, `${txParity} vs ${rxParity}`],
+      ["Stop Bits", stopsOk, `${txStopBits} vs ${rxStopBits}`]
+    ];
+
+    let agreementHtml = "";
+    verifyItems.forEach(([name, ok, desc]) => {
+      const icon = ok ? "✓" : "✗";
+      const cls = ok ? "agreement-ok" : "agreement-fail";
+      agreementHtml += `<div class="agreement-item ${cls}">${icon} ${name}: ${desc}</div>`;
+    });
+    agreementContainer.innerHTML = agreementHtml;
+
+    // Get current inspected byte details
+    const selectedChar = message[selectedIdx] || " ";
+    const selectedCharCode = selectedChar.charCodeAt(0);
+    const selectedCharBin = selectedCharCode.toString(2).padStart(8, '0');
+
+    // Helper to get stage style
+    function getStageStyle(stageNum) {
+      if (animating) {
+        if (stageNum < currentStage) {
+          return { label: "", style: "" };
+        } else if (stageNum === currentStage) {
+          return {
+            label: '<span style="color:#3B82F6; font-family:var(--mono); font-size:0.7rem; font-weight:bold; margin-left:1rem; border:1px solid #3B82F6; padding:0.15rem 0.4rem; border-radius:4px; background:rgba(59,130,246,0.1); letter-spacing:0.05em;">PROCESSING...</span>',
+            style: "border-color: #3B82F6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.02);"
+          };
+        } else {
+          return {
+            label: '<span style="color:var(--muted); font-family:var(--mono); font-size:0.7rem; margin-left:1rem;">(WAITING)</span>',
+            style: "opacity: 0.15; filter: grayscale(100%); pointer-events: none;"
+          };
+        }
+      } else {
+        return { label: "", style: "" };
       }
-      tableHtml += `<tr>
-        <td style="font-weight:bold; color:var(--blue);">${escHtml(char)}</td>
-        <td>${code}</td>
-        <td>${binaryStr}</td>
-        <td>${lsbFirstArr.join(' → ')}</td>
-      </tr>`;
     }
-    if (text.length > 5) {
-      tableHtml += `<tr><td colspan="4" style="text-align:center; color:var(--muted);">... and ${text.length - 5} more characters</td></tr>`;
-    }
-    tableHtml += `</tbody></table>`;
-    tableContainer.innerHTML = tableHtml;
 
-    // Panel 2: Frame layout diagram for the first character
-    const firstCode = text.charCodeAt(0) || 32;
-    let frameBits = [];
-    
-    // Idle prefix
-    frameBits.push({ type: 'idle', label: 'Idle', val: 1 });
-    // Start bit
-    frameBits.push({ type: 'start', label: 'Start', val: 0 });
-    
-    // Data bits
-    let charBits = [];
+    // Pipeline generation
+    let pipelineHtml = "";
+
+    // Stage 1: Application (Software Variable)
+    const st1 = getStageStyle(1);
+    const prefix = message.slice(0, selectedIdx);
+    const hlChar = `<span class="code-highlight">${escHtml(selectedChar)}</span>`;
+    const suffix = message.slice(selectedIdx + 1);
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 1: Application (Software variable) ${st1.label}</div>
+      <div class="panel-box" style="${st1.style}">
+        <div class="code-display">uart_write("${escHtml(prefix)}${hlChar}${escHtml(suffix)}");</div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">The user application requests data transmission. The highlighted character is currently selected for inspection.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
+
+    // Stage 2: UART Driver (Handoff)
+    const st2 = getStageStyle(2);
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 2: UART Driver (Handoff) ${st2.label}</div>
+      <div class="panel-box" style="${st2.style}">
+        <div style="font-family:var(--mono); font-size:0.8rem; background:#0f172a; padding:0.6rem 1rem; border-radius:6px; border:1px solid var(--border);">
+          <span style="color:var(--muted);">DRIVER STATE:</span> Pushing byte <span style="color:var(--blue); font-weight:bold;">0x${selectedCharCode.toString(16).toUpperCase().padStart(2, '0')}</span> to hardware register
+        </div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">The device driver intercepts the call, verifies if the peripheral is ready, and copies the data byte into the hardware transmitter port.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
+
+    // Stage 3: TX FIFO (Queue buffer)
+    const st3 = getStageStyle(3);
+    let txFifoHtml = "";
+    for (let idx = 0; idx < message.length; idx++) {
+      const cls = idx === selectedIdx ? "fifo-block fifo-active" : "fifo-block";
+      txFifoHtml += `<div class="${cls}">${escHtml(message[idx])}</div>`;
+    }
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 3: TX FIFO (Queue buffer) ${st3.label}</div>
+      <div class="panel-box" style="${st3.style}">
+        <div style="font-family:var(--mono); font-size:0.7rem; color:var(--muted); text-transform:uppercase;">Hardware FIFO Buffer:</div>
+        <div class="fifo-container">${txFifoHtml}</div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">A hardware memory queue (FIFO) buffers bytes to prevent timing gaps if the CPU is busy with other tasks.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
+
+    // Stage 4: Serialization (ASCII & Binary Mapping)
+    const st4 = getStageStyle(4);
+    let lsbFirstArr = [];
+    for (let b = 0; b < 8; b++) {
+      lsbFirstArr.push((selectedCharCode >> b) & 1);
+    }
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 4: Serialization (ASCII & Binary Mapping) ${st4.label}</div>
+      <div class="panel-box" style="${st4.style}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem; font-family:var(--mono);">
+          <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid var(--border);">
+            <span style="color:var(--muted); font-size:0.7rem; display:block;">CHARACTER</span>
+            <span style="color:#FFF; font-weight:bold; font-size:1.1rem;">'${escHtml(selectedChar)}'</span>
+          </div>
+          <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid var(--border);">
+            <span style="color:var(--muted); font-size:0.7rem; display:block;">ASCII DECIMAL</span>
+            <span style="color:var(--blue); font-weight:bold; font-size:1.1rem;">${selectedCharCode}</span>
+          </div>
+          <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid var(--border);">
+            <span style="color:var(--muted); font-size:0.7rem; display:block;">BINARY BYTE</span>
+            <span style="color:#10B981; font-weight:bold; font-size:1.1rem;">${selectedCharBin}</span>
+          </div>
+          <div style="background:#0F172A; padding:0.5rem; border-radius:4px; border:1px solid var(--border);">
+            <span style="color:var(--muted); font-size:0.7rem; display:block;">LSB FIRST ORDER</span>
+            <span style="color:var(--blue); font-weight:bold; font-size:1.1rem;">${lsbFirstArr.join(' → ')}</span>
+          </div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">Software concepts translate into discrete physical values (0s and 1s) ordered LSB-first.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
+
+    // Stage 5: Shift Register (Parallel-In Serial-Out)
+    const st5 = getStageStyle(5);
+    let pisoCellsHtml = "";
     for (let b = 0; b < txDataBits; b++) {
-      const bitVal = (firstCode >> b) & 1;
-      charBits.push(bitVal);
-      frameBits.push({ type: 'data', label: `D${b}`, val: bitVal });
-    }
-
-    // Parity
-    let txParityBit = null;
-    if (txParity !== 'none') {
-      const bitSum = charBits.reduce((a, b) => a + b, 0);
-      txParityBit = txParity === 'even' ? (bitSum % 2) : (bitSum % 2 === 0 ? 1 : 0);
-      frameBits.push({ type: 'parity', label: 'Parity', val: txParityBit });
-    }
-
-    // Stop bits
-    for (let s = 0; s < txStopBits; s++) {
-      frameBits.push({ type: 'stop', label: `Stop${txStopBits > 1 ? s+1 : ''}`, val: 1 });
-    }
-
-    // Idle suffix
-    frameBits.push({ type: 'idle', label: 'Idle', val: 1 });
-
-    // Render frame layout box elements
-    let boxesHtml = '';
-    frameBits.forEach(b => {
-      let cssClass = '';
-      if (b.type === 'start') cssClass = 'bit-start';
-      else if (b.type === 'stop') cssClass = 'bit-stop';
-      else if (b.type === 'parity') cssClass = 'bit-parity';
-      
-      boxesHtml += `
-        <div class="ec-bit-box ${cssClass}">
-          <div class="bit-label">${b.label}</div>
-          <div class="bit-value" style="color: ${b.val === 0 ? '#EF6868' : '#10B981'};">${b.val}</div>
+      const bitVal = (selectedCharCode >> b) & 1;
+      pisoCellsHtml += `
+        <div class="register-cell">
+          <div class="register-label">D${b}</div>
+          <div class="register-val">${bitVal}</div>
         </div>
       `;
-    });
-    frameLayout.innerHTML = boxesHtml;
+    }
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 5: Shift Register (Parallel-In Serial-Out) ${st5.label}</div>
+      <div class="panel-box" style="${st5.style}">
+        <div style="font-family:var(--mono); font-size:0.7rem; color:var(--muted); text-transform:uppercase;">Transmitter Shift Register (PISO):</div>
+        <div class="register-container">
+          ${pisoCellsHtml}
+          <div style="display:flex; align-items:center; margin-left:0.5rem; color:var(--blue); font-weight:bold; font-family:var(--mono); font-size:0.8rem;">➔ serial out</div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">Data is loaded in parallel from the buffer, then shifted out bit-by-bit onto the electrical trace.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
 
-    // Panel 3 & 4: Waveform Rendering & Receiver Emulation
-    const T_tx = 1.0;
-    const T_rx = txBaud / rxBaud; // Bit width in TX time units
+    // Stages 6 & 7: Frame & Waveform (SVG)
+    let label6 = "";
+    let label7 = "";
+    let combStyle = "";
+    let highlightFrame = false;
+    let highlightWaveform = false;
 
-    // We build the TX timeline array
-    // Let's model the TX waveform for the first character
-    // TX waveform sequence of states:
-    let txStates = [];
-    txStates.push(1); // Idle
-    txStates.push(0); // Start
-    txStates.push(...charBits); // Data
+    if (animating) {
+      if (currentStage < 6) {
+        label6 = '<span style="color:var(--muted); font-family:var(--mono); font-size:0.7rem; margin-left:1rem;">(WAITING)</span>';
+        label7 = '<span style="color:var(--muted); font-family:var(--mono); font-size:0.7rem; margin-left:1rem;">(WAITING)</span>';
+        combStyle = "opacity: 0.15; filter: grayscale(100%); pointer-events: none;";
+      } else if (currentStage === 6) {
+        label6 = '<span style="color:#3B82F6; font-family:var(--mono); font-size:0.7rem; font-weight:bold; margin-left:1rem; border:1px solid #3B82F6; padding:0.15rem 0.4rem; border-radius:4px; background:rgba(59,130,246,0.1); letter-spacing:0.05em;">PROCESSING...</span>';
+        label7 = '<span style="color:var(--muted); font-family:var(--mono); font-size:0.7rem; margin-left:1rem;">(WAITING)</span>';
+        combStyle = "border-color: #3B82F6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.02);";
+        highlightFrame = true;
+      } else if (currentStage === 7) {
+        label7 = '<span style="color:#3B82F6; font-family:var(--mono); font-size:0.7rem; font-weight:bold; margin-left:1rem; border:1px solid #3B82F6; padding:0.15rem 0.4rem; border-radius:4px; background:rgba(59,130,246,0.1); letter-spacing:0.05em;">PROCESSING...</span>';
+        combStyle = "border-color: #3B82F6; box-shadow: 0 0 15px rgba(59, 130, 246, 0.35); background: rgba(59, 130, 246, 0.02);";
+        highlightWaveform = true;
+      }
+    }
+
+    // Build SVG components
+    let txCharBits = [];
+    for (let b = 0; b < txDataBits; b++) {
+      txCharBits.push((selectedCharCode >> b) & 1);
+    }
+    let txParityBit = null;
+    if (txParity !== "None") {
+      const bitSum = txCharBits.reduce((a,b)=>a+b, 0);
+      txParityBit = txParity === "Even" ? (bitSum % 2) : (bitSum % 2 === 0 ? 1 : 0);
+    }
+
+    let txFrameBits = [];
+    txFrameBits.push({ type: "idle", label: "IDLE", val: 1, desc: "Line free" });
+    txFrameBits.push({ type: "start", label: "START", val: 0, desc: "Frame Alert" });
+    for (let b = 0; b < txDataBits; b++) {
+      txFrameBits.push({ type: "data", label: `D${b}`, val: txCharBits[b], desc: b===0 ? "Payload LSB" : (b===txDataBits-1 ? "Payload MSB" : "Payload bit") });
+    }
     if (txParityBit !== null) {
-      txStates.push(txParityBit);
+      txFrameBits.push({ type: "parity", label: "PARITY", val: txParityBit, desc: "Error Check" });
     }
     for (let s = 0; s < txStopBits; s++) {
-      txStates.push(1);
+      txFrameBits.push({ type: "stop", label: "STOP", val: 1, desc: "Frame End" });
     }
-    txStates.push(1); // Idle trailing
+    txFrameBits.push({ type: "idle", label: "IDLE", val: 1, desc: "Line free" });
 
-    // Receiver sampling points
-    // RX samples starting from falling edge of start bit at (0.5, 1.5, 2.5, ...) * T_rx
-    let rxSamples = [];
-    const expectedRxCount = 1 + rxDataBits + (rxParity !== 'none' ? 1 : 0) + rxStopBits;
-    
-    for (let i = 0; i < expectedRxCount; i++) {
-      const rxSampleTime = (0.5 + i) * T_rx; // physically relative to Start falling edge (which occurs at physical time = 1.0 bit-units because of the Idle prefix)
-      // Since Start is at index 1, physical offset on TX timeline is:
-      const txPhysicalTime = 1.0 + rxSampleTime;
-      const txBitIdx = Math.floor(txPhysicalTime);
+    const txStates = txFrameBits.map(b => b.val);
+
+    const T_tx = 1.0;
+    const T_rx = txBaud / rxBaud;
+    const rxSampleCount = 1 + rxDataBits + (rxParity !== "None" ? 1 : 0) + rxStopBits;
+    let rxSamplesInfo = [];
+
+    for (let i = 0; i < rxSampleCount; i++) {
+      const rxTime = (0.5 + i) * T_rx;
+      const txTime = 1.0 + rxTime;
+      const txIdx = Math.floor(txTime);
       let sampledVal = 1;
-      if (txBitIdx >= 0 && txBitIdx < txStates.length) {
-        sampledVal = txStates[txBitIdx];
+      if (txIdx >= 0 && txIdx < txStates.length) {
+        sampledVal = txStates[txIdx];
       }
-      rxSamples.push({
+
+      let correct = true;
+      if (txIdx >= txStates.length) {
+        correct = false;
+      } else {
+        if (i === 0 && sampledVal !== 0) {
+          correct = false;
+        } else if (i >= 1 && i <= rxDataBits) {
+          const txBitPos = i - 1;
+          const expected = txBitPos < txDataBits ? txCharBits[txBitPos] : 1;
+          if (sampledVal !== expected) correct = false;
+        } else if (i >= 1 + rxDataBits + (rxParity !== "None" ? 1 : 0)) {
+          if (sampledVal !== 1) correct = false;
+        }
+      }
+
+      rxSamplesInfo.push({
         idx: i,
-        sampleTime: rxSampleTime,
-        txPhysicalTime: txPhysicalTime,
+        txTime: txTime,
         val: sampledVal,
-        bitLabel: i === 0 ? 'Start' : (i <= rxDataBits ? `D${i-1}` : (i === rxDataBits + 1 && rxParity !== 'none' ? 'Par' : 'Stop'))
+        correct: correct
       });
     }
 
-    // Render SVG
-    const svgWidth = 800;
-    const svgHeight = 160;
-    const paddingLeft = 60;
-    const paddingRight = 40;
-    const paddingTop = 30;
-    const paddingBottom = 30;
-    const chartWidth = svgWidth - paddingLeft - paddingRight;
-    const chartHeight = svgHeight - paddingTop - paddingBottom;
-    const bitWidth = chartWidth / txStates.length;
+    const svgW = 900;
+    const svgH = 320;
+    const padLeft = 70;
+    const padRight = 30;
+    const dispW = svgW - padLeft - padRight;
+    const nSlots = txStates.length;
+    const dx = dispW / nSlots;
 
-    // Draw TX voltage waveform path
-    let pathD = `M 0,${paddingTop + 10} L ${paddingLeft},${paddingTop + 10}`;
-    for (let i = 0; i < txStates.length; i++) {
-      const val = txStates[i];
-      const y = val === 1 ? paddingTop + 10 : paddingTop + chartHeight - 10;
-      const xStart = paddingLeft + i * bitWidth;
-      const xEnd = paddingLeft + (i + 1) * bitWidth;
-      pathD += ` L ${xStart},${y} L ${xEnd},${y}`;
+    const colors = {
+      idle: "#475569",
+      start: "#EF4444",
+      data: "#3B82F6",
+      parity: "#F59E0B",
+      stop: "#10B981"
+    };
+
+    let svgBlocks = [];
+    const blocksOpacity = highlightWaveform ? "0.3" : "1.0";
+    const waveformOpacity = highlightFrame ? "0.3" : "1.0";
+    const waveformStrokeWidth = highlightWaveform ? "4" : "2";
+    const waveformStrokeColor = highlightWaveform ? "#3B82F6" : "#FFFFFF";
+
+    // 1. Draw Frame Blocks
+    for (let i = 0; i < txFrameBits.length; i++) {
+      const b = txFrameBits[i];
+      const x = padLeft + i * dx;
+      const c = colors[b.type];
+      const strokeW = (highlightFrame && b.type !== "idle") ? "2.5" : "1.5";
+      const fillOpacity = highlightFrame ? "0.15" : "0.08";
+      svgBlocks.push(`
+        <!-- Block ${b.label} -->
+        <rect x="${x + 2}" y="15" width="${dx - 4}" height="70" rx="4" fill="none" stroke="${c}" stroke-width="${strokeW}" opacity="${blocksOpacity}" />
+        <rect x="${x + 2}" y="15" width="${dx - 4}" height="70" rx="4" fill="${c}" opacity="${blocksOpacity === "1.0" ? fillOpacity : "0.02"}" />
+        <text x="${x + dx/2}" y="32" fill="#94A3B8" font-family="monospace" font-size="8" text-anchor="middle" font-weight="bold" opacity="${blocksOpacity}">${b.label}</text>
+        <text x="${x + dx/2}" y="56" fill="${b.val === 0 ? '#EF6868' : '#10B981'}" font-family="monospace" font-size="18" text-anchor="middle" font-weight="bold" opacity="${blocksOpacity}">${b.val}</text>
+        <text x="${x + dx/2}" y="76" fill="#64748B" font-family="monospace" font-size="6.5" text-anchor="middle" opacity="${blocksOpacity}">${b.desc}</text>
+      `);
     }
-    pathD += ` L ${svgWidth},${paddingTop + 10}`;
 
-    // Draw sampling marks
-    let sampleMarksHtml = '';
-    rxSamples.forEach(s => {
-      const x = paddingLeft + s.txPhysicalTime * bitWidth;
-      if (x > svgWidth) return;
-
-      // Color coding of sampling points
-      // Check if it matches TX state at the sample time
-      const txBitIdx = Math.floor(s.txPhysicalTime);
-      const expectedVal = (txBitIdx >= 0 && txBitIdx < txStates.length) ? txStates[txBitIdx] : 1;
-      const isCorrect = s.val === expectedVal;
-      const strokeColor = isCorrect ? '#3B82F6' : '#EF6868';
-      const dashStyle = isCorrect ? '3,3' : '1,1';
-
-      sampleMarksHtml += `
-        <line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${paddingTop + chartHeight}" stroke="${strokeColor}" stroke-dasharray="${dashStyle}" stroke-width="1.5" />
-        <circle cx="${x}" cy="${paddingTop + chartHeight / 2}" r="4.5" fill="${strokeColor}" />
-        <text x="${x}" y="${paddingTop + chartHeight + 15}" fill="${strokeColor}" font-family="var(--mono)" font-size="8" text-anchor="middle">S${s.idx}</text>
-      `;
-    });
-
-    // Draw grid lines separating TX bit slots
-    let gridLinesHtml = '';
-    for (let i = 0; i <= txStates.length; i++) {
-      const x = paddingLeft + i * bitWidth;
-      let label = '';
-      if (i < txStates.length) {
-        if (i === 0) label = 'IDLE';
-        else if (i === 1) label = 'START';
-        else if (i - 1 <= txDataBits) label = `D${i-2}`;
-        else if (i - 1 === txDataBits + 1 && txParity !== 'none') label = 'PAR';
-        else if (i < txStates.length - 1) label = 'STOP';
-        else label = 'IDLE';
+    // 2. Draw Waveform Step Line
+    let pathD = `M 0,135 L ${padLeft},135`;
+    for (let i = 0; i < nSlots; i++) {
+      const val = txStates[i];
+      const prevVal = i > 0 ? txStates[i-1] : 1;
+      const y = val === 1 ? 135 : 175;
+      const xStart = padLeft + i * dx;
+      const xEnd = padLeft + (i + 1) * dx;
+      if (val !== prevVal) {
+        const yPrev = prevVal === 1 ? 135 : 175;
+        pathD += ` L ${xStart},${yPrev} L ${xStart},${y}`;
       }
-      gridLinesHtml += `
-        <line x1="${x}" y1="${paddingTop}" x2="${x}" y2="${paddingTop + chartHeight}" stroke="rgba(148, 163, 184, 0.1)" stroke-width="1" />
-        ${label ? `<text x="${x + bitWidth/2}" y="${paddingTop - 8}" fill="var(--muted)" font-family="var(--mono)" font-size="8" text-anchor="middle">${label}</text>` : ''}
-      `;
+      pathD += ` L ${xEnd},${y}`;
+    }
+    pathD += ` L ${svgW},135`;
+
+    svgBlocks.push(`
+      <!-- Waveform Signal -->
+      <path d="${pathD}" fill="none" stroke="${waveformStrokeColor}" stroke-width="${waveformStrokeWidth}" opacity="${waveformOpacity}" />
+      <text x="${padLeft - 8}" y="139" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end" opacity="${waveformOpacity}">HIGH (3.3V)</text>
+      <text x="${padLeft - 8}" y="179" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end" opacity="${waveformOpacity}">LOW (0V)</text>
+    `);
+
+    // Draw grid lines
+    for (let i = 0; i <= nSlots; i++) {
+      const x = padLeft + i * dx;
+      svgBlocks.push(`<line x1="${x}" y1="15" x2="${x}" y2="195" stroke="#334155" stroke-dasharray="1,4" stroke-width="0.75" />`);
+    }
+
+    // 3. Draw RX Sampling Timeline (hidden during initial TX stages)
+    const rxVisible = !(animating && currentStage < 8);
+    if (rxVisible) {
+      svgBlocks.push(`
+        <!-- RX Axis line -->
+        <line x1="${padLeft}" y1="235" x2="${svgW - padRight}" y2="235" stroke="#475569" stroke-width="1" />
+        <text x="${padLeft - 8}" y="238" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">RX SAMPLES</text>
+      `);
+
+      rxSamplesInfo.forEach(s => {
+        const xSample = padLeft + s.txTime * dx;
+        if (xSample > (svgW - padRight)) return;
+
+        const yWave = s.val === 1 ? 135 : 175;
+        const color = s.correct ? "#3B82F6" : "#EF6868";
+        const dash = s.correct ? "2,3" : "1,1";
+
+        svgBlocks.push(`
+          <!-- Sample S${s.idx} -->
+          <line x1="${xSample}" y1="120" x2="${xSample}" y2="235" stroke="${color}" stroke-dasharray="${dash}" stroke-width="1" />
+          <circle cx="${xSample}" cy="${yWave}" r="4" fill="${color}" stroke="#0F172A" stroke-width="1" />
+          <circle cx="${xSample}" cy="235" r="3" fill="${color}" />
+          <text x="${xSample}" y="252" fill="${color}" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">S${s.idx}</text>
+          <text x="${xSample}" y="266" fill="#FFF" font-family="monospace" font-size="9" text-anchor="middle" font-weight="bold">(${s.val})</text>
+        `);
+      });
     }
 
     const svgHtml = `
-      <svg viewBox="0 0 ${svgWidth} ${svgHeight}" width="100%">
-        ${gridLinesHtml}
-        <text x="${paddingLeft - 8}" y="${paddingTop + 14}" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="end">HIGH (1)</text>
-        <text x="${paddingLeft - 8}" y="${paddingTop + chartHeight - 6}" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="end">LOW (0)</text>
-        <path d="${pathD}" fill="none" stroke="#FFF" stroke-width="2" />
-        ${sampleMarksHtml}
+      <svg viewBox="0 0 ${svgW} ${svgH}" width="100%">
+        ${svgBlocks.join('')}
       </svg>
     `;
-    waveformContainer.innerHTML = svgHtml;
 
-    // Decode all characters of the input string under current configurations
-    let decodedMessage = '';
-    let hasFramingError = false;
-    let hasParityError = false;
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 6: UART Frame Builder (TX Pin state) ${label6}</div>
+      <div class="pipeline-step">Stage 7: Physical Wire (Waveform) ${label7}</div>
+      <div class="panel-box" style="${combStyle}">
+        <div style="background:#0F172A; padding:0; overflow-x:auto;">${svgHtml}</div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">Voltage values on the physical trace directly echo the UART frame contract. Dashed lines illustrate receiver sampling offsets.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
 
-    for (let cIdx = 0; cIdx < text.length; cIdx++) {
-      const charVal = text.charCodeAt(cIdx);
-      
-      // Serialize character according to TX parameters
-      let txCharBits = [];
-      for (let b = 0; b < txDataBits; b++) {
-        txCharBits.push((charVal >> b) & 1);
-      }
-      let txParBit = null;
-      if (txParity !== 'none') {
-        const sum = txCharBits.reduce((a, b) => a + b, 0);
-        txParBit = txParity === 'even' ? (sum % 2) : (sum % 2 === 0 ? 1 : 0);
-      }
+    // Stage 8: RX Pin & Receiver (Sampling & Demodulation)
+    const st8 = getStageStyle(8);
+    const rxStartVal = rxSamplesInfo[0].val;
+    let flowSteps = [];
 
-      // Build TX frame array for this specific char
-      let txFrame = [0]; // Start bit
-      txFrame.push(...txCharBits);
-      if (txParBit !== null) txFrame.push(txParBit);
-      for (let s = 0; s < txStopBits; s++) txFrame.push(1);
-
-      // Emulate RX sampling
-      let sampledBits = [];
-      for (let i = 0; i < expectedRxCount; i++) {
-        const rxTime = (0.5 + i) * T_rx;
-        const txIdx = Math.floor(rxTime);
-        let val = 1; // Idle if sampled out of bounds
-        if (txIdx >= 0 && txIdx < txFrame.length) {
-          val = txFrame[txIdx];
-        }
-        sampledBits.push(val);
-      }
-
-      // Parse sampled bits according to RX parameters
-      // Start is at sampledBits[0]
-      const rxStartVal = sampledBits[0];
-      const rxData = sampledBits.slice(1, 1 + rxDataBits);
-      const rxPar = rxParity !== 'none' ? sampledBits[1 + rxDataBits] : null;
-      
-      let rxStopStartIdx = 1 + rxDataBits + (rxParity !== 'none' ? 1 : 0);
-      const rxStop = sampledBits.slice(rxStopStartIdx, rxStopStartIdx + rxStopBits);
-
-      // Check errors
-      let framingErr = false;
-      if (rxStartVal !== 0) framingErr = true;
-      rxStop.forEach(sb => {
-        if (sb !== 1) framingErr = true;
-      });
-
-      let parityErr = false;
-      if (rxParity !== 'none' && rxPar !== null) {
-        const rxSum = rxData.reduce((a, b) => a + b, 0);
-        const expectedPar = rxParity === 'even' ? (rxSum % 2) : (rxSum % 2 === 0 ? 1 : 0);
-        if (rxPar !== expectedPar) parityErr = true;
-      }
-
-      if (framingErr) hasFramingError = true;
-      if (parityErr) hasParityError = true;
-
-      // Reconstruct ASCII character value
-      let recCharVal = 0;
-      for (let b = 0; b < rxDataBits; b++) {
-        if (rxData[b] === 1) {
-          recCharVal |= (1 << b);
-        }
-      }
-
-      // Format character output
-      let charStr = '';
-      if (recCharVal >= 32 && recCharVal <= 126) {
-        charStr = String.fromCharCode(recCharVal);
-      } else {
-        charStr = ''; // replacement character
-      }
-
-      if (framingErr || parityErr) {
-        decodedMessage += `<span class="text-corrupted" title="Error">${escHtml(charStr)}</span>`;
-      } else {
-        decodedMessage += escHtml(charStr);
-      }
-    }
-
-    // Set receiver diagnostic status
-    let statusText = '';
-    if (!hasFramingError && !hasParityError) {
-      statusText = `<span class="edgecase-status-badge edgecase-status-ok">Locked &amp; Decoded</span><br>
-                    <span style="font-size:0.68rem; color:var(--muted); margin-top:0.4rem; display:block;">TX and RX contracts are compatible. Character timings line up perfectly within phase margins.</span>`;
+    if (rxStartVal === 0) {
+      flowSteps.push('<span class="flow-step" style="color:#10B981;">✓ Waiting: Idle line HIGH</span>');
+      flowSteps.push('<span class="flow-step" style="color:#10B981;">✓ Start Bit Detected (LOW)</span>');
     } else {
-      let errLabels = [];
-      if (hasFramingError) errLabels.push('Framing Error');
-      if (hasParityError) errLabels.push('Parity Error');
-      statusText = `<span class="edgecase-status-badge edgecase-status-error">${errLabels.join(' / ')}</span><br>
-                    <span style="font-size:0.68rem; color:#EF6868; margin-top:0.4rem; display:block;">Expectations mismatched. The receiver sampled outside of the expected frame boundaries or detected bad parity.</span>`;
+      flowSteps.push('<span class="flow-step" style="color:#EF6868;">✗ Waiting: Idle Mismatch</span>');
+      flowSteps.push('<span class="flow-step" style="color:#EF6868;">✗ Start Bit Error (HIGH)</span>');
     }
 
-    rxStatusEl.innerHTML = statusText;
-    rxRecoveredEl.innerHTML = decodedMessage;
+    const rxDataBitsVals = rxSamplesInfo.slice(1, 1 + rxDataBits).map(s => s.val);
+    flowSteps.push(`<span class="flow-step" style="color:#3B82F6;">➔ Sampling ${rxDataBits} Payload Bits: [${rxDataBitsVals.join(',')}]</span>`);
+
+    if (rxParity !== "None") {
+      const rxParIdx = 1 + rxDataBits;
+      const rxParityVal = rxParIdx < rxSamplesInfo.length ? rxSamplesInfo[rxParIdx].val : 1;
+      const rxSum = rxDataBitsVals.reduce((a,b)=>a+b, 0);
+      const expectedPar = rxParity === "Even" ? (rxSum % 2) : (rxSum % 2 === 0 ? 1 : 0);
+      if (rxParityVal === expectedPar) {
+        flowSteps.push(`<span class="flow-step" style="color:#10B981;">✓ Parity Matched (${rxParity} = ${rxParityVal})</span>`);
+      } else {
+        flowSteps.push(`<span class="flow-step" style="color:#EF6868;">✗ Parity Error (Sampled ${rxParityVal}, expected ${expectedPar})</span>`);
+      }
+    }
+
+    const rxStopStartIdx = 1 + rxDataBits + (rxParity !== "None" ? 1 : 0);
+    const rxStopVals = rxSamplesInfo.slice(rxStopStartIdx, rxStopStartIdx + rxStopBits).map(s => s.val);
+    const stopsValid = rxStopVals.every(v => v === 1);
+    if (stopsValid) {
+      flowSteps.push('<span class="flow-step" style="color:#10B981;">✓ Stop Bit(s) Verified (HIGH)</span>');
+    } else {
+      flowSteps.push('<span class="flow-step" style="color:#EF6868;">✗ Framing Error (Stop bit LOW)</span>');
+    }
+
+    let reconstructedCode = 0;
+    for (let b = 0; b < rxDataBits; b++) {
+      if (b < rxDataBitsVals.length && rxDataBitsVals[b] === 1) {
+        reconstructedCode |= (1 << b);
+      }
+    }
+
+    const byteValid = (rxStartVal === 0) && stopsValid && (rxParity === "None" || (txParity === rxParity));
+    const recoveredChar = (byteValid && reconstructedCode >= 32 && reconstructedCode <= 126) ? String.fromCharCode(reconstructedCode) : "?";
+
+    if (byteValid) {
+      flowSteps.push(`<span class="flow-step" style="background:#10B981; color:#0F172A; font-weight:bold;">➔ Character Recovered: '${escHtml(recoveredChar)}'</span>`);
+    } else {
+      flowSteps.push('<span class="flow-step" style="background:#EF6868; color:#FFF; font-weight:bold;">➔ Character Corrupted: \'?\'</span>');
+    }
+
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 8: RX Pin & Receiver (Sampling & Demodulation) ${st8.label}</div>
+      <div class="panel-box" style="${st8.style}">
+        <div class="panel-title">Receiver Processing Flow (First Frame Byte)</div>
+        <div style="margin-top:0.5rem; margin-bottom:0.5rem;">${flowSteps.join(' ')}</div>
+        <div style="font-size:0.7rem; color:var(--muted);">The receiver checks timing offsets, decodes the voltage transitions, and validates the parity/stop framing.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
+
+    // Stage 9: RX FIFO (Hardware Input buffer)
+    const st9 = getStageStyle(9);
+    let recoveredChars = [];
+    
+    // Process all characters for full string recovery
+    for (let char of message) {
+      const val = char.charCodeAt(0);
+      let tBits = [];
+      for (let b = 0; b < txDataBits; b++) {
+        tBits.push((val >> b) & 1);
+      }
+      let tPar = null;
+      if (txParity !== "None") {
+        const sum = tBits.reduce((a,b)=>a+b, 0);
+        tPar = txParity === "Even" ? (sum % 2) : (sum % 2 === 0 ? 1 : 0);
+      }
+
+      let tFrame = [0].concat(tBits);
+      if (tPar !== null) tFrame.push(tPar);
+      for (let s = 0; s < txStopBits; s++) tFrame.push(1);
+      let tFull = [1].concat(tFrame).concat([1]);
+
+      let rSampled = [];
+      for (let i = 0; i < rxSampleCount; i++) {
+        const rTime = (0.5 + i) * T_rx;
+        const txIdx = Math.floor(1.0 + rTime);
+        let sVal = 1;
+        if (txIdx >= 0 && txIdx < tFull.length) {
+          sVal = tFull[txIdx];
+        }
+        rSampled.push(sVal);
+      }
+
+      const rStart = rSampled[0];
+      const rData = rSampled.slice(1, 1 + rxDataBits);
+      const rParVal = rxParity !== "None" ? rSampled[1 + rxDataBits] : null;
+      const rStopStart = 1 + rxDataBits + (rxParity !== "None" ? 1 : 0);
+      const rStops = rSampled.slice(rStopStart, rStopStart + rxStopBits);
+
+      const fErr = (rStart !== 0) || rStops.some(v => v !== 1);
+      let pErr = false;
+      if (rxParity !== "None" && rParVal !== null) {
+        const rxSum = rData.reduce((a,b)=>a+b, 0);
+        const expectedP = rxParity === "Even" ? (rxSum % 2) : (rxSum % 2 === 0 ? 1 : 0);
+        if (rParVal !== expectedP) pErr = true;
+      }
+
+      if (fErr || pErr) {
+        recoveredChars.push("?");
+      } else {
+        let recVal = 0;
+        for (let b = 0; b < rxDataBits; b++) {
+          if (b < rData.length && rData[b] === 1) {
+            recVal |= (1 << b);
+          }
+        }
+        recoveredChars.push((recVal >= 32 && recVal <= 126) ? String.fromCharCode(recVal) : "?");
+      }
+    }
+
+    let rxFifoBlocks = "";
+    for (let idx = 0; idx < recoveredChars.length; idx++) {
+      const char = recoveredChars[idx];
+      const cls = idx === selectedIdx ? "fifo-block fifo-active-rx" : "fifo-block";
+      if (char === "?") {
+        rxFifoBlocks += `<div class="${cls}" style="border-color:#EF6868; color:#EF6868; background:rgba(239,68,68,0.08);">?</div>`;
+      } else {
+        rxFifoBlocks += `<div class="${cls}">${escHtml(char)}</div>`;
+      }
+    }
+
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 9: RX FIFO (Hardware Input buffer) ${st9.label}</div>
+      <div class="panel-box" style="${st9.style}">
+        <div style="font-family:var(--mono); font-size:0.7rem; color:var(--muted); text-transform:uppercase;">Receiver FIFO Queue buffer:</div>
+        <div class="fifo-container">${rxFifoBlocks}</div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">Decoded bytes are queued into the receiver FIFO buffer, waiting to be read by the system's driver.</div>
+      </div>
+      <div class="arrow-divider">↓</div>
+    `;
+
+    // Stage 10: Application (Reconstructed Output)
+    const st10 = getStageStyle(10);
+    let recoveredMsgHtml = "";
+    recoveredChars.forEach(c => {
+      if (c === "?") {
+        recoveredMsgHtml += `<span class="text-corrupted">?</span>`;
+      } else {
+        recoveredMsgHtml += escHtml(c);
+      }
+    });
+
+    pipelineHtml += `
+      <div class="pipeline-step">Stage 10: Application (Reconstructed Output) ${st10.label}</div>
+      <div class="panel-box" style="${st10.style}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1.25rem; font-family:var(--mono);">
+          <div style="background:#0F172A; padding:0.6rem; border-radius:6px; border:1px solid rgba(148,163,184,0.1);">
+            <span style="color:var(--muted); font-size:0.75rem; display:block;">TRANSMITTED MESSAGE</span>
+            <span style="color:#FFF; font-weight:bold; font-size:1.4rem;">${escHtml(message)}</span>
+          </div>
+          <div style="background:#0F172A; padding:0.6rem; border-radius:6px; border:1px solid rgba(148,163,184,0.1);">
+            <span style="color:var(--muted); font-size:0.75rem; display:block;">RECOVERED MESSAGE</span>
+            <span style="color:#10B981; font-weight:bold; font-size:1.4rem;">${recoveredMsgHtml}</span>
+          </div>
+        </div>
+        <div style="font-size:0.7rem; color:var(--muted); margin-top:0.4rem;">The software application reads the byte queue, completing the communication loop.</div>
+      </div>
+    `;
+
+    pipelineContainer.innerHTML = pipelineHtml;
   }
 }
 
