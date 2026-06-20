@@ -2189,7 +2189,7 @@ const blogPosts = [
   part: 3,
   title: "I2C: The Shared Conversation",
   subtitle: "How open-drain logic and addressing solved the pin inflation crisis of SPI.",
-  date: "20th June, 2026",
+  date: "2026-06-20",
   tags: ["I2C", "Serial Protocols", "Open Drain", "Arbitration", "Embedded Systems"],
   sections: [
     {
