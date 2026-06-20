@@ -84,6 +84,7 @@ const systemsTreeNodes = {
       { id: "why-embedded-systems-speak-in-protocols", title: "Why Embedded Systems Speak in Protocols" },
       { id: "uart-structured-asynchronous-communication", title: "UART: Structured Asynchronous Communication" },
       { id: "spi-shared-rhythm-of-machines", title: "SPI: The Shared Rhythm of Machines" },
+      { id: "i2c-the-shared-conversation", title: "I2C: The Shared Conversation" },
       { id: null, title: "Coming Soon" }
     ]
   },
@@ -2180,6 +2181,127 @@ const blogPosts = [
     quote: "A shared clock is a shared heartbeat. When systems beat to the same rhythm, they no longer need to discuss when to speak."
   },
   footer: "Reflections on synchronous SPI communication - PrajnaEdge.dev"
+},
+{
+  id: "i2c-the-shared-conversation",
+  category: "Interaction",
+  series: "System Explorations",
+  part: 3,
+  title: "I2C: The Shared Conversation",
+  subtitle: "How open-drain logic and addressing solved the pin inflation crisis of SPI.",
+  date: "2026-06-20",
+  tags: ["I2C", "Serial Protocols", "Open Drain", "Arbitration", "Embedded Systems"],
+  sections: [
+    {
+      heading: "1. The SPI Pin Crisis",
+      content: [
+        {
+          type: "p",
+          text: "SPI unlocked extreme communication speeds by sharing a clock, but it introduced a severe hardware bottleneck: pin inflation. Because SPI has no addressing system, the master must use a dedicated Chip Select (CS) pin for every single peripheral on the bus. If you connect five sensors, you need five separate CS pins. If you scale to ten devices, your microcontroller's GPIO lines are consumed entirely by chip selection.\n\nThis physical routing nightmare forced engineers to re-evaluate the bus architecture. They needed a protocol that preserved the benefits of a synchronous clock but allowed dozens of devices to share the exact same physical wires without a forest of chip select lines. The solution was the Inter-Integrated Circuit (I2C) protocol."
+        }
+      ]
+    },
+    {
+      heading: "2. Shared Wires: The Two-Line Compromise",
+      content: [
+        {
+          type: "p",
+          text: "I2C makes a radical design trade-off. It discards the four-wire, point-to-point architecture of SPI in favor of a strictly shared, two-wire bus: SDA (Serial Data) and SCL (Serial Clock). Every device on the bus connects to these same two traces.\n\nBy shrinking the bus to two wires, I2C eliminates the physical pin bottleneck. A master can communicate with over a hundred devices using the exact same two pins. However, this simplicity introduces a complex electrical challenge: if multiple devices share the same data and clock lines, how do we prevent them from colliding and burning out their output drivers when one tries to transmit a 1 while another transmits a 0?"
+        },
+        {
+          type: "image",
+          src: "Images/i2c_bus_topology.png",
+          alt: "I2C Shared Bus Topology showing Pull-up resistors and multiple slaves"
+        }
+      ]
+    },
+    {
+      heading: "3. The Physics of Open-Drain Buses",
+      content: [
+        {
+          type: "p",
+          text: "In standard push-pull output stages (used in UART and SPI), a device actively drives the line HIGH (connecting it to VCC) or actively drives it LOW (connecting it to GND). If Device A drives HIGH while Device B drives LOW on a shared wire, a low-resistance path is created directly from VCC to GND. This causes a short circuit, excessive current draw, heating, and physical damage to the silicon.\n\nTo prevent this, I2C uses open-drain (or open-collector) output buffers combined with physical pull-up resistors on both SCL and SDA. In an open-drain buffer, a device can only actively pull the line LOW (turning on an internal NMOS transistor connected to GND). It cannot actively drive the line HIGH; instead, to send a 1, it simply turns off the transistor and lets the line float. The external pull-up resistor then pulls the line HIGH.\n\nThis creates a 'wired-AND' logic bus. If any single device pulls the line LOW, the entire line goes LOW. The line only returns HIGH when every single device releases it. Electrical collisions are resolved safely: if two devices write conflicting states, the line simply resolves to LOW, drawing only a safe, limited current through the pull-up resistor."
+        },
+        {
+          type: "image",
+          src: "Images/i2c_open_drain.png",
+          alt: "I2C Open-Drain Transistor Circuit Schematic"
+        }
+      ]
+    },
+    {
+      heading: "4. The Syntax of a Shared Wire",
+      content: [
+        {
+          type: "p",
+          text: "Because I2C lacks physical Chip Select lines, the protocol must establish starting boundaries and address routing directly within the two-wire interface. Under normal operation, the SDA line is only allowed to change state when the SCL clock line is LOW. When SCL is HIGH, the data on SDA must remain stable to be sampled.\n\nI2C exploits this stability rule to define START and STOP conditions. A START condition is signaled when SDA transitions from HIGH to LOW while SCL is HIGH. A STOP condition is signaled when SDA transitions from LOW to HIGH while SCL is HIGH. These transitions act as start-of-frame and end-of-frame markers that every peripheral monitors on the bus, resetting their internal receivers to listen for addressing."
+        },
+        {
+          type: "image",
+          src: "Images/i2c_start_stop.png",
+          alt: "I2C START and STOP Condition Waveforms"
+        }
+      ]
+    },
+    {
+      heading: "5. Software Addressing and Handshaking",
+      content: [
+        {
+          type: "p",
+          text: "Immediately following a START condition, the master transmits a 9-bit address frame. The first 7 bits represent the unique target address of the slave. The 8th bit indicates the transaction direction: Write (0) or Read (1).\n\nThe 9th clock cycle is reserved for a hardware handshake: the Acknowledge (ACK) bit. During the 9th clock tick, the master releases the SDA line (letting it float HIGH). The slave device matching the address must actively pull the SDA line LOW. If the slave pulls SDA LOW, it is an ACK—the transaction continues. If the slave is missing, busy, or has crashed, the line remains HIGH (a Not-Acknowledge, or NACK), signaling the master to stop."
+        },
+        {
+          type: "edgecase",
+          id: "i2c-shared-bus"
+        }
+      ]
+    },
+    {
+      heading: "6. Slowing the Master: Clock Stretching",
+      content: [
+        {
+          type: "p",
+          text: "SPI is a 'blind' protocol: the master drives SCLK regardless of whether the slave has processed the data. If the slave lags behind, data is lost. I2C solves this flow-control problem using clock stretching.\n\nAlthough the master normally controls SCL, the open-drain architecture allows a slave to take control. If a slave needs more time to process a byte or fetch sensor readings, it can actively hold the SCL line LOW after the master releases it. The master monitors the SCL line: as long as it senses SCL is LOW, its internal clock generator pauses, freezing the transaction. Only when the slave releases SCL does it float HIGH and the master continues."
+        }
+      ]
+    },
+    {
+      heading: "7. Polite Arguments: Multi-Master Arbitration",
+      content: [
+        {
+          type: "p",
+          text: "In complex systems, multiple master devices may share the same bus. If two masters assert a START condition simultaneously, I2C uses bus arbitration to resolve conflicts without corrupting data or causing electrical shorts.\n\nBecause of the open-drain wired-AND structure, both masters can drive SCL and SDA. As they transmit data bits, each master monitors the actual state of the SDA line. As long as the bus matches the bits they write, they proceed. However, if Master A writes a 1 (releasing SDA) but Master B writes a 0 (pulling SDA LOW), the bus resolves to LOW. Master A, sensing a LOW when it expected a HIGH, realizes another master is active, immediately halts its transmission, releases the bus, and falls back to receiver mode. Master B continues its transaction completely uninterrupted, unaware of the silent victory."
+        },
+        {
+          type: "image",
+          src: "Images/i2c_arbitration.png",
+          alt: "I2C Multi-Master Arbitration Timing Diagram"
+        }
+      ]
+    },
+    {
+      heading: "8. The Threshold of Complexity",
+      content: [
+        {
+          type: "p",
+          text: "Let's review the journey: UART taught us to align clock phases through a timing contract between two nodes. SPI showed us that sharing a physical clock yields speeds orders of magnitude higher at the cost of dedicated wiring. I2C showed us that by using addressing and open-drain physics, we can share the clock and data wires completely, scaling to dozens of devices using only two pins.\n\nYet I2C has limits. The pull-up resistors create an RC time constant with the parasitic capacitance of the wires: as the bus gets longer or more devices are added, the rising edge of SCL/SDA becomes slow and rounded, limiting speeds (typically 400 kHz to 3.4 MHz) and distances to a few meters. Furthermore, in high-noise environments like automotive engines or industrial floors, common-mode noise can easily flip single-ended logic levels.\n\nWhen we need to scale to longer distances, high noise immunity, and multi-master robustness without master-slave dependencies, we must look beyond single-ended voltage sharing to differential, arbitrated networks—leading us to the design of the Controller Area Network (CAN)."
+        },
+        {
+          type: "edgecase",
+          id: "i2c-bus-arbitration"
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Cooperative Bus",
+    paragraphs: [
+      "I2C stands as a monument to cooperation in hardware. By shifting the selection burden from dedicated copper wires (SPI's CS) to software protocol syntax and open-drain physics, it enables complex inter-chip ecosystems using minimum resources.",
+      "It reminds us that communication is not just about driving voltages, but agreeing on when to listen and when to step aside."
+    ],
+    quote: "On a shared wire, silence is as critical as speech. It is the pull-up resistor that lifts the bus when all devices learn to let go."
+  },
+  footer: "Reflections on cooperative I2C communication - PrajnaEdge.dev"
 }
 ];
 
@@ -2725,6 +2847,10 @@ function initEdgeCase(containerId) {
     renderSpiSharedRhythm();
   } else if (containerId === 'spi-silent-conversation') {
     renderSpiSilentConversation();
+  } else if (containerId === 'i2c-shared-bus') {
+    renderI2cSharedBus();
+  } else if (containerId === 'i2c-bus-arbitration') {
+    renderI2cBusArbitration();
   }
 }
 
@@ -4263,6 +4389,699 @@ function renderSpiSilentConversation() {
         <div style="font-family:var(--mono); font-size:0.7rem; color:#EF6868; line-height:1.4;">Current consumption: &gt; 48.5mA (EXCESSIVE HEAT)<br>Recovered Byte: ERROR / GARBAGE</div>
       `;
     }
+  }
+}
+
+function renderI2cSharedBus() {
+  const container = document.getElementById('i2c-shared-bus');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Shared Bus</div>
+    <div class="edgecase-subheader">Watch an I2C conversation unfold.</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Select a peripheral transaction and toggle device responsiveness to see how addressing, START/STOP conditions, and ACK/NACK signaling operate.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Transaction Selector</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
+        <!-- Option Column -->
+        <div>
+          <div class="panel-title" style="color:var(--blue); font-size:0.85rem; margin-bottom:0.75rem;">Transaction Select</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-i2c-op" style="font-size:0.7rem;">Target Peripheral Operation</label>
+            <select id="ec-i2c-op" class="edgecase-select">
+              <option value="temp" selected>Read Temp Sensor (Address 0x48)</option>
+              <option value="eeprom">Write EEPROM (Address 0x50, Data 0x3F)</option>
+              <option value="oled">Write OLED Display (Address 0x3C, Cmd 0xAF)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Responsiveness Column -->
+        <div>
+          <div class="panel-title" style="color:#E2E8F0; font-size:0.85rem; margin-bottom:0.75rem;">Device Presence</div>
+          <div style="display:flex; align-items:center; gap:0.4rem; height:45px;">
+            <input type="checkbox" id="ec-i2c-ack" class="edgecase-checkbox" checked style="cursor:pointer;">
+            <label for="ec-i2c-ack" style="font-family:var(--mono); font-size:0.75rem; color:var(--text); cursor:pointer;">Target Device Responding (ACK)</label>
+          </div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.25rem; font-family:var(--mono);">Uncheck to simulate NACK error.</div>
+        </div>
+
+        <!-- Agreement Column -->
+        <div>
+          <div class="panel-title" style="color:#10B981; font-size:0.85rem; margin-bottom:0.75rem;">Physical Bus Mode</div>
+          <div id="ec-i2c-mode-status"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="pipeline-step">System Controls</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: 3fr 1fr; gap:1rem; align-items:center;">
+        <div style="font-size:0.75rem; color:var(--text); font-family:var(--mono);" id="ec-i2c-instruction-preview"></div>
+        <button id="ec-i2c-transmit-btn" class="edgecase-button" style="margin:0; width:100%; height:38px;">TRANSMIT</button>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Physical Waveform Trace (Shared SDA / SCL Lines)</div>
+    <div class="edgecase-visual" id="ec-i2c-waveform-container" style="background:#0F172A; min-height:190px; position:relative;"></div>
+
+    <!-- OUTPUT PANELS -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1.5rem;">
+      <div>
+        <div class="pipeline-step">Protocol Transaction Log</div>
+        <div id="ec-i2c-log" class="terminal-box"></div>
+      </div>
+      <div>
+        <div class="pipeline-step">Data Recovery Outcome</div>
+        <div class="panel-box" style="height:200px; display:flex; flex-direction:column; justify-content:center; gap:0.5rem; box-sizing:border-box;">
+          <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase;">Shift Register (Input Buffer):</div>
+          <div id="ec-i2c-rx-register" class="register-container" style="margin:0;"></div>
+          <div id="ec-i2c-outcome" style="margin-top:0.4rem;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // DOM elements
+  const opSel = document.getElementById('ec-i2c-op');
+  const ackCb = document.getElementById('ec-i2c-ack');
+  const transmitBtn = document.getElementById('ec-i2c-transmit-btn');
+
+  const modeStatus = document.getElementById('ec-i2c-mode-status');
+  const instructionPreview = document.getElementById('ec-i2c-instruction-preview');
+  const waveformContainer = document.getElementById('ec-i2c-waveform-container');
+  const logContainer = document.getElementById('ec-i2c-log');
+  const rxRegisterContainer = document.getElementById('ec-i2c-rx-register');
+  const outcomeContainer = document.getElementById('ec-i2c-outcome');
+
+  let animating = false;
+  let animStep = 22;
+
+  opSel.addEventListener('change', () => {
+    updateUi();
+  });
+
+  ackCb.addEventListener('change', () => {
+    updateUi();
+  });
+
+  transmitBtn.addEventListener('click', async () => {
+    if (animating) return;
+    animating = true;
+    animStep = 0;
+
+    const op = opSel.value;
+    const isResponding = ackCb.checked;
+    
+    // Total steps to run: 
+    // If NACKed on address: 12 steps (START + 8 address/RW bits + 1 NACK bit + 2 STOP steps)
+    // If ACKed: 22 steps (START + 8 address/RW bits + 1 ACK bit + 8 data bits + 1 Master ACK bit + 3 STOP steps)
+    const maxSteps = isResponding ? 22 : 12;
+
+    for (let step = 0; step <= maxSteps; step++) {
+      animStep = step;
+      updateUi();
+      await new Promise(resolve => setTimeout(resolve, 140));
+    }
+
+    animating = false;
+    animStep = 22;
+    updateUi();
+  });
+
+  updateUi();
+
+  function updateUi() {
+    const op = opSel.value;
+    const isResponding = ackCb.checked;
+
+    // Address & parameters
+    let addr = 0x48;
+    let rwb = 1; // Read
+    let dataByte = 0x2C; // 28 degC
+    let desc = "";
+
+    if (op === "temp") {
+      addr = 0x48;
+      rwb = 1;
+      dataByte = 0x2C;
+      desc = "Instruction: i2c_read(0x48) -> Read temperature register (expect 0x2C)";
+    } else if (op === "eeprom") {
+      addr = 0x50;
+      rwb = 0;
+      dataByte = 0x3F;
+      desc = "Instruction: i2c_write(0x50, 0x3F) -> Write data byte 0x3F to EEPROM memory address";
+    } else if (op === "oled") {
+      addr = 0x3C;
+      rwb = 0;
+      dataByte = 0xAF;
+      desc = "Instruction: i2c_write(0x3C, 0xAF) -> Write command byte 0xAF to OLED graphics controller";
+    }
+
+    instructionPreview.innerText = desc;
+
+    modeStatus.innerHTML = `
+      <div class="agreement-item agreement-ok" style="font-weight:bold;text-align:center;margin:0;">
+        Wired-AND Open-Drain Bus Active
+      </div>
+    `;
+
+    // Parse bits
+    // 7 address bits
+    const addrBits = [];
+    for (let b = 6; b >= 0; b--) {
+      addrBits.push((addr >> b) & 1);
+    }
+    const rwBit = rwb;
+    const slaveAckBit = isResponding ? 0 : 1; // Active low ACK
+
+    // 8 data bits
+    const dataBits = [];
+    for (let b = 7; b >= 0; b--) {
+      dataBits.push((dataByte >> b) & 1);
+    }
+    const masterAckBit = 0; // Master ACKs read, or slave ACKs write (always 0 for clean simulation)
+
+    // Waveform rendering
+    const svgW = 920;
+    const svgH = 180;
+    const padLeft = 80;
+    const sclYHigh = 45;
+    const sclYLow = 65;
+    const sdaYHigh = 105;
+    const sdaYLow = 125;
+
+    const svgBlocks = [];
+
+    // Calculate SCL clock pulses
+    const totalPulses = isResponding ? 18 : 9;
+    const xEdges = [];
+    for (let p = 0; p < totalPulses; p++) {
+      xEdges.push(120 + p * 35);
+    }
+
+    // 1. SCL Line
+    let sclPath = `M 0,${sclYHigh} L 100,${sclYHigh}`;
+    if (animStep > 0) {
+      sclPath += ` L 120,${sclYHigh}`;
+      for (let p = 0; p < totalPulses; p++) {
+        const xs = xEdges[p];
+        const xm = xs + 17.5;
+        const xe = xs + 35;
+        sclPath += ` L ${xs},${sclYLow} L ${xm},${sclYLow} L ${xm},${sclYHigh} L ${xe},${sclYHigh}`;
+      }
+      sclPath += ` L ${svgW},${sclYHigh}`;
+    } else {
+      sclPath += ` L ${svgW},${sclYHigh}`;
+    }
+    svgBlocks.push(`<path d="${sclPath}" fill="none" stroke="#3B82F6" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${sclYLow - 2}" fill="#3B82F6" font-family="var(--mono)" font-size="8" text-anchor="end">SCL (Clock)</text>`);
+
+    // 2. SDA Line
+    let sdaPath = `M 0,${sdaYHigh}`;
+    if (animStep > 0) {
+      // START transition
+      sdaPath += ` L 100,${sdaYHigh} L 100,${sdaYLow} L 120,${sdaYLow}`;
+      
+      let currentSdaVal = 0;
+      for (let p = 0; p < totalPulses; p++) {
+        const xs = xEdges[p];
+        const xe = xs + 35;
+        
+        let val = 1;
+        if (p < 7) {
+          val = addrBits[p];
+        } else if (p === 7) {
+          val = rwBit;
+        } else if (p === 8) {
+          val = slaveAckBit;
+        } else if (p < 17) {
+          val = dataBits[p - 9];
+        } else if (p === 17) {
+          val = masterAckBit;
+        }
+        
+        const yVal = val === 1 ? sdaYHigh : sdaYLow;
+        sdaPath += ` L ${xs},${yVal} L ${xe},${yVal}`;
+        currentSdaVal = val;
+      }
+      
+      // STOP transition
+      const stopXStart = 120 + totalPulses * 35 + 10;
+      const stopXEnd = stopXStart + 15;
+      const stopYVal = currentSdaVal === 1 ? sdaYHigh : sdaYLow;
+      sdaPath += ` L ${stopXStart},${stopYVal} L ${stopXStart},${sdaYLow} L ${stopXEnd},${sdaYHigh} L ${svgW},${sdaYHigh}`;
+    } else {
+      sdaPath += ` L ${svgW},${sdaYHigh}`;
+    }
+    svgBlocks.push(`<path d="${sdaPath}" fill="none" stroke="#10B981" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${sdaYLow - 2}" fill="#10B981" font-family="var(--mono)" font-size="8" text-anchor="end">SDA (Data)</text>`);
+
+    // 3. Sampling markers and text
+    // Draw vertical sampling ticks on SCL rising edges
+    for (let p = 0; p < totalPulses; p++) {
+      if (animStep >= p + 2) {
+        const xs = xEdges[p] + 17.5; // rising edge is in the middle of pulse period
+        let val = 1;
+        if (p < 7) {
+          val = addrBits[p];
+        } else if (p === 7) {
+          val = rwBit;
+        } else if (p === 8) {
+          val = slaveAckBit;
+        } else if (p < 17) {
+          val = dataBits[p - 9];
+        } else if (p === 17) {
+          val = masterAckBit;
+        }
+
+        const color = (p === 8 && !isResponding) ? "#EF6868" : "#E2E8F0";
+        svgBlocks.push(`<line x1="${xs}" y1="35" x2="${xs}" y2="145" stroke="${color}" stroke-dasharray="2,2" stroke-width="0.8" />`);
+        svgBlocks.push(`<circle cx="${xs}" cy="${sclYHigh}" r="2.5" fill="#3B82F6" />`);
+        svgBlocks.push(`<circle cx="${xs}" cy="${val === 1 ? sdaYHigh : sdaYLow}" r="3" fill="${color}" stroke="#0F172A" />`);
+        
+        let label = val;
+        if (p === 8) label = val === 0 ? "ACK" : "NACK";
+        if (p === 17) label = "ACK";
+        svgBlocks.push(`<text x="${xs}" y="156" fill="${color}" font-family="var(--mono)" font-size="7" text-anchor="middle" font-weight="bold">${label}</text>`);
+      }
+    }
+
+    // Cursor
+    if (animating && animStep <= totalPulses + 2) {
+      let cursorX = 100;
+      if (animStep === 1) cursorX = 100;
+      else if (animStep >= 2 && animStep <= totalPulses + 1) {
+        cursorX = xEdges[animStep - 2] + 17.5;
+      } else {
+        cursorX = 120 + totalPulses * 35 + 15;
+      }
+      svgBlocks.push(`<line x1="${cursorX}" y1="15" x2="${cursorX}" y2="155" stroke="#3B82F6" stroke-width="1.5" />`);
+    }
+
+    waveformContainer.innerHTML = `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%">${svgBlocks.join('')}</svg>`;
+
+    // Shift Register Preview
+    const rxRegisterBits = ["_", "_", "_", "_", "_", "_", "_", "_"];
+    if (animStep >= 2) {
+      if (animStep <= 9) {
+        for (let idx = 0; idx < animStep - 1; idx++) {
+          rxRegisterBits[idx] = String(addrBits[idx]);
+        }
+      } else if (animStep === 10) {
+        for (let idx = 0; idx < 7; idx++) rxRegisterBits[idx] = String(addrBits[idx]);
+        rxRegisterBits[7] = String(rwBit);
+      } else if (animStep >= 11 && animStep <= 19) {
+        // Data bits shifting
+        for (let idx = 0; idx < animStep - 11; idx++) {
+          rxRegisterBits[idx] = String(dataBits[idx]);
+        }
+      } else {
+        for (let idx = 0; idx < 8; idx++) rxRegisterBits[idx] = String(dataBits[idx]);
+      }
+    }
+
+    let cellsHtml = "";
+    rxRegisterBits.forEach((bit, idx) => {
+      let cls = "register-cell";
+      if (bit !== "_") {
+        cls += isResponding ? " fifo-active-rx" : " fifo-active";
+      }
+      cellsHtml += `
+        <div class="${cls}" style="display:inline-block; margin-right:0.25rem;">
+          <div class="register-label">D${7 - idx}</div>
+          <div class="register-val">${bit}</div>
+        </div>
+      `;
+    });
+    rxRegisterContainer.innerHTML = cellsHtml;
+
+    // Logs
+    const logs = ["[0.0ms] Bus Idle. SDA and SCL pulled HIGH via resistors."];
+    if (animStep >= 1) {
+      logs.push("[0.2ms] START Condition: SDA pulled LOW while SCL is HIGH.");
+    }
+    for (let p = 0; p < totalPulses; p++) {
+      if (animStep >= p + 2) {
+        if (p < 7) {
+          logs.push(`[Address Bit ${6 - p}] Master writes address bit -> SDA = ${addrBits[p]}. sampled on SCL rise.`);
+        } else if (p === 7) {
+          logs.push(`[Read/Write] Master writes direction bit -> SDA = ${rwBit} (${rwBit === 1 ? 'Read' : 'Write'}).`);
+        } else if (p === 8) {
+          if (isResponding) {
+            logs.push("[9th Clock] Handshake: Target slave pulls SDA LOW (ACK). Address verified.");
+          } else {
+            logs.push("[9th Clock] Handshake: SDA remains HIGH (NACK). No responding slave detected at address!");
+          }
+        } else if (p < 17) {
+          const bitIdx = p - 9;
+          const sender = rwb === 1 ? "Slave" : "Master";
+          logs.push(`[Data Bit ${7 - bitIdx}] ${sender} drives SDA = ${dataBits[bitIdx]}. sampled on SCL rise.`);
+        } else if (p === 17) {
+          const receiver = rwb === 1 ? "Master" : "Slave";
+          logs.push(`[Data Handshake] ${receiver} pulls SDA LOW (ACK) to confirm byte receipt.`);
+        }
+      }
+    }
+    if (animStep >= 20 || (animStep >= 11 && !isResponding)) {
+      if (!isResponding) {
+        logs.push("[2.2ms] Aborting transaction due to NACK.");
+      }
+      logs.push("[STOP Condition] SDA pulled LOW->HIGH while SCL is HIGH. Bus released.");
+    }
+
+    logContainer.innerHTML = logs.join('<br>');
+    logContainer.scrollTop = logContainer.scrollHeight;
+
+    // Outcome
+    let recoveredStr = "";
+    if (animStep >= 20) {
+      recoveredStr = `Address Match! Target responding. Recovered status: Success.`;
+    } else if (animStep >= 11 && !isResponding) {
+      recoveredStr = `ERROR: Not Acknowledged (NACK). Address 0x${addr.toString(16).toUpperCase()} is non-existent.`;
+    } else {
+      recoveredStr = "...";
+    }
+
+    outcomeContainer.innerHTML = `
+      <div style="font-family:var(--mono); margin-top:0.4rem; font-size:0.75rem;">
+        <div>
+          <span style="color:var(--muted); font-size:0.65rem; display:block;">TARGET ADDRESS</span>
+          <span style="font-weight:bold; font-size:1.0rem; color:#FFF;">0x${addr.toString(16).toUpperCase()} (${rwb === 1 ? 'READ' : 'WRITE'})</span>
+        </div>
+        <div style="margin-top:0.4rem;">
+          <span style="color:var(--muted); font-size:0.65rem; display:block;">TRANSACTION STATUS</span>
+          <span style="font-weight:bold; font-size:0.9rem; color:${isResponding ? '#10B981' : '#EF6868'};">${recoveredStr}</span>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderI2cBusArbitration() {
+  const container = document.getElementById('i2c-bus-arbitration');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Polite Argument</div>
+    <div class="edgecase-subheader">Multi-Master Arbitration Simulator</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      See how I2C open-drain physics enables two masters to start transmitting at the same time and resolve their conflict gracefully.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Arbitration Settings</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
+        <!-- Master A Column -->
+        <div>
+          <div class="panel-title" style="color:var(--blue); font-size:0.85rem; margin-bottom:0.75rem;">Master A Output</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-arb-a" style="font-size:0.7rem;">Byte to Transmit</label>
+            <select id="ec-arb-a" class="edgecase-select">
+              <option value="0x5A" selected>0x5A (01011010)</option>
+              <option value="0x6C">0x6C (01101100)</option>
+              <option value="0x7F">0x7F (01111111)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Master B Column -->
+        <div>
+          <div class="panel-title" style="color:#EC4899; font-size:0.85rem; margin-bottom:0.75rem;">Master B Output</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-arb-b" style="font-size:0.7rem;">Byte to Transmit</label>
+            <select id="ec-arb-b" class="edgecase-select">
+              <option value="0x5A">0x5A (01011010)</option>
+              <option value="0x6C" selected>0x6C (01101100)</option>
+              <option value="0x3C">0x3C (00111100)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Status Column -->
+        <div>
+          <div class="panel-title" style="color:#10B981; font-size:0.85rem; margin-bottom:0.75rem;">Conflict Resolver</div>
+          <div id="ec-arb-status" class="agreement-item" style="margin:0; text-align:center; font-weight:bold; font-size:0.8rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM CONTROLS -->
+    <div class="pipeline-step">System Controls</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: 3fr 1fr; gap:1rem; align-items:center;">
+        <div style="font-size:0.75rem; color:var(--text); font-family:var(--mono);">
+          Both masters will start transmitting simultaneously on the shared open-drain bus.
+        </div>
+        <button id="ec-arb-transmit-btn" class="edgecase-button" style="margin:0; width:100%; height:38px;">START ARBITRATION</button>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Physical Waveform Arbitration Trace (Shared Open-Drain Bus)</div>
+    <div class="edgecase-visual" id="ec-arb-waveform-container" style="background:#0F172A; min-height:240px; position:relative;"></div>
+
+    <!-- OUTPUT PANELS -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1.5rem;">
+      <div>
+        <div class="pipeline-step">Bus Logging Terminal</div>
+        <div id="ec-arb-log" class="terminal-box"></div>
+      </div>
+      <div>
+        <div class="pipeline-step">Arbitration States</div>
+        <div class="panel-box" id="ec-arb-summary" style="height:200px; display:flex; flex-direction:column; justify-content:center; gap:0.5rem; box-sizing:border-box;"></div>
+      </div>
+    </div>
+  `;
+
+  // DOM elements
+  const aSel = document.getElementById('ec-arb-a');
+  const bSel = document.getElementById('ec-arb-b');
+  const transmitBtn = document.getElementById('ec-arb-transmit-btn');
+
+  const statusBox = document.getElementById('ec-arb-status');
+  const waveformContainer = document.getElementById('ec-arb-waveform-container');
+  const logContainer = document.getElementById('ec-arb-log');
+  const summaryContainer = document.getElementById('ec-arb-summary');
+
+  let animating = false;
+  let animStep = 20;
+
+  aSel.addEventListener('change', () => {
+    updateUi();
+  });
+
+  bSel.addEventListener('change', () => {
+    updateUi();
+  });
+
+  transmitBtn.addEventListener('click', async () => {
+    if (animating) return;
+    animating = true;
+    animStep = 0;
+
+    for (let step = 0; step <= 11; step++) {
+      animStep = step;
+      updateUi();
+      await new Promise(resolve => setTimeout(resolve, 150));
+    }
+
+    animating = false;
+    animStep = 20;
+    updateUi();
+  });
+
+  updateUi();
+
+  function updateUi() {
+    const valA = parseInt(aSel.value);
+    const valB = parseInt(bSel.value);
+
+    // Convert to bit arrays
+    const bitsA = [];
+    const bitsB = [];
+    for (let i = 7; i >= 0; i--) {
+      bitsA.push((valA >> i) & 1);
+      bitsB.push((valB >> i) & 1);
+    }
+
+    // Calculate arbitration dropout
+    let activeA = true;
+    let activeB = true;
+    let lostStepA = -1;
+    let lostStepB = -1;
+
+    const actualSdaBits = [];
+    for (let i = 0; i < 8; i++) {
+      const bitA = activeA ? bitsA[i] : 1;
+      const bitB = activeB ? bitsB[i] : 1;
+      const sharedBit = bitA & bitB;
+      actualSdaBits.push(sharedBit);
+
+      if (activeA && bitA === 1 && sharedBit === 0) {
+        activeA = false;
+        lostStepA = i;
+      }
+      if (activeB && bitB === 1 && sharedBit === 0) {
+        activeB = false;
+        lostStepB = i;
+      }
+    }
+
+    // Update status badge
+    if (lostStepA === -1 && lostStepB === -1) {
+      statusBox.className = "agreement-item agreement-ok";
+      statusBox.innerHTML = "✓ Transactions Identical. No Collision.";
+    } else if (lostStepA !== -1) {
+      statusBox.className = "agreement-item agreement-warning";
+      statusBox.innerHTML = "✓ Master B Victorious. A backed off.";
+    } else {
+      statusBox.className = "agreement-item agreement-warning";
+      statusBox.innerHTML = "✓ Master A Victorious. B backed off.";
+    }
+
+    // Render Waveforms SVG
+    const svgW = 950;
+    const svgH = 240;
+    const padLeft = 110;
+    const yAHigh = 25, yALow = 40;
+    const yBHigh = 70, yBLow = 85;
+    const ySharedHigh = 115, ySharedLow = 130;
+    const ySclHigh = 160, ySclLow = 175;
+
+    const xEdges = [];
+    for (let i = 0; i < 9; i++) {
+      xEdges.push(padLeft + 45 + i * 70);
+    }
+
+    const svgBlocks = [];
+
+    // Master A SDA
+    let pathA = `M 0,${yAHigh} L ${xEdges[0]},${yAHigh}`;
+    let actA = true;
+    for (let i = 0; i < 8; i++) {
+      const startX = xEdges[i];
+      const endX = xEdges[i+1];
+      const bit = actA ? bitsA[i] : 1;
+      const yVal = bit === 1 ? yAHigh : yALow;
+      pathA += ` L ${startX},${yVal} L ${endX},${yVal}`;
+      if (actA && lostStepA === i) actA = false;
+    }
+    pathA += ` L ${svgW},${yAHigh}`;
+    svgBlocks.push(`<path d="${pathA}" fill="none" stroke="#3B82F6" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${yALow}" fill="#3B82F6" font-family="var(--mono)" font-size="8" text-anchor="end">Master A SDA</text>`);
+
+    // Master B SDA
+    let pathB = `M 0,${yBHigh} L ${xEdges[0]},${yBHigh}`;
+    let actB = true;
+    for (let i = 0; i < 8; i++) {
+      const startX = xEdges[i];
+      const endX = xEdges[i+1];
+      const bit = actB ? bitsB[i] : 1;
+      const yVal = bit === 1 ? yBHigh : yBLow;
+      pathB += ` L ${startX},${yVal} L ${endX},${yVal}`;
+      if (actB && lostStepB === i) actB = false;
+    }
+    pathB += ` L ${svgW},${yBHigh}`;
+    svgBlocks.push(`<path d="${pathB}" fill="none" stroke="#EC4899" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${yBLow}" fill="#EC4899" font-family="var(--mono)" font-size="8" text-anchor="end">Master B SDA</text>`);
+
+    // Shared SDA Line
+    let pathShared = `M 0,${ySharedHigh} L ${xEdges[0]},${ySharedHigh}`;
+    for (let i = 0; i < 8; i++) {
+      const startX = xEdges[i];
+      const endX = xEdges[i+1];
+      const bit = actualSdaBits[i];
+      const yVal = bit === 1 ? ySharedHigh : ySharedLow;
+      pathShared += ` L ${startX},${yVal} L ${endX},${yVal}`;
+    }
+    pathShared += ` L ${svgW},${ySharedHigh}`;
+    svgBlocks.push(`<path d="${pathShared}" fill="none" stroke="#10B981" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${ySharedLow}" fill="#10B981" font-family="var(--mono)" font-size="8" text-anchor="end">Shared SDA Bus</text>`);
+
+    // Shared SCL Line
+    let pathScl = `M 0,${ySclHigh} L ${xEdges[0]},${ySclHigh}`;
+    for (let i = 0; i < 8; i++) {
+      const startX = xEdges[i];
+      const midX = startX + 35;
+      const endX = xEdges[i+1];
+      pathScl += ` L ${startX},${ySclLow} L ${midX},${ySclLow} L ${midX},${ySclHigh} L ${endX},${ySclHigh}`;
+    }
+    pathScl += ` L ${svgW},${ySclHigh}`;
+    svgBlocks.push(`<path d="${pathScl}" fill="none" stroke="#6366F1" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${ySclLow}" fill="#6366F1" font-family="var(--mono)" font-size="8" text-anchor="end">SCL (Clock)</text>`);
+
+    // Highlight Dropout Step
+    if (lostStepA !== -1) {
+      const xDropout = xEdges[lostStepA] + 35; // SCL rising edge/sample point
+      svgBlocks.push(`<line x1="${xDropout}" y1="10" x2="${xDropout}" y2="190" stroke="#EF6868" stroke-dasharray="2,2" stroke-width="1" />`);
+      svgBlocks.push(`<text x="${xDropout}" y="15" fill="#EF6868" font-family="var(--mono)" font-size="7" font-weight="bold" text-anchor="middle">A BACKED OFF</text>`);
+    }
+    if (lostStepB !== -1) {
+      const xDropout = xEdges[lostStepB] + 35;
+      svgBlocks.push(`<line x1="${xDropout}" y1="10" x2="${xDropout}" y2="190" stroke="#EF6868" stroke-dasharray="2,2" stroke-width="1" />`);
+      svgBlocks.push(`<text x="${xDropout}" y="15" fill="#EF6868" font-family="var(--mono)" font-size="7" font-weight="bold" text-anchor="middle">B BACKED OFF</text>`);
+    }
+
+    // Cursor
+    if (animating && animStep <= 9) {
+      const cursorX = xEdges[0] + animStep * 70 + 35;
+      svgBlocks.push(`<line x1="${cursorX}" y1="10" x2="${cursorX}" y2="190" stroke="#3B82F6" stroke-width="1.5" />`);
+    }
+
+    waveformContainer.innerHTML = `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%">${svgBlocks.join('')}</svg>`;
+
+    // Logs
+    const logs = ["[0.0ms] Multi-Master Sync: Both Master A and Master B pull SDA LOW simultaneously."];
+    logs.push("[0.1ms] Both clock generators sync up on the shared SCL line.");
+    
+    let curA = true;
+    let curB = true;
+    for (let i = 0; i < 8; i++) {
+      if (animStep >= i + 1) {
+        const bitA = curA ? bitsA[i] : 1;
+        const bitB = curB ? bitsB[i] : 1;
+        const shared = actualSdaBits[i];
+        
+        logs.push(`[Bit ${7-i}] A drives ${bitA}, B drives ${bitB}. Shared SDA Bus resolves to ${shared}.`);
+        
+        if (curA && lostStepA === i) {
+          logs.push(`[COLLISION] Master A wrote 1 but sensed LOW on SDA. Master A lost arbitration and backed off.`);
+          curA = false;
+        }
+        if (curB && lostStepB === i) {
+          logs.push(`[COLLISION] Master B wrote 1 but sensed LOW on SDA. Master B lost arbitration and backed off.`);
+          curB = false;
+        }
+      }
+    }
+    if (animStep >= 9) {
+      logs.push("[SUCCESS] Arbitration phase complete. Single active master owns the bus trace.");
+    }
+    logContainer.innerHTML = logs.join('<br>');
+    logContainer.scrollTop = logContainer.scrollHeight;
+
+    // Summary panel
+    const statusA = lostStepA === -1 ? `<span style="color:#10B981;font-weight:bold;">Active / Won</span>` : `<span style="color:#EF6868;">Lost (Backed off at Bit ${7-lostStepA})</span>`;
+    const statusB = lostStepB === -1 ? `<span style="color:#10B981;font-weight:bold;">Active / Won</span>` : `<span style="color:#EF6868;">Lost (Backed off at Bit ${7-lostStepB})</span>`;
+
+    summaryContainer.innerHTML = `
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Master A State:</div>
+      <div style="font-family:var(--mono); font-size:0.95rem; color:#FFF; margin-bottom:0.6rem;">${statusA}</div>
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Master B State:</div>
+      <div style="font-family:var(--mono); font-size:0.95rem; color:#FFF;">${statusB}</div>
+    `;
   }
 }
 
