@@ -894,3 +894,45 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   opacity: 0.6;
 }
 
+/* SPI EdgeCases Custom Styling */
+.terminal-box {
+  background: #0F172A;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  height: 200px;
+  overflow-y: auto;
+  line-height: 1.5;
+  color: #A5F3FC;
+  box-sizing: border-box;
+}
+
+.agreement-item {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.agreement-ok {
+  background: rgba(16, 185, 129, 0.08);
+  color: #10B981;
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.agreement-warning {
+  background: rgba(245, 158, 11, 0.08);
+  color: #F59E0B;
+  border-color: rgba(245, 158, 11, 0.15);
+}
+
+.agreement-fail {
+  background: rgba(239, 68, 68, 0.08);
+  color: #EF6868;
+  border-color: rgba(239, 68, 68, 0.15);
+}
+

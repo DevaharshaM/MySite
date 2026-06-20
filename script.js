@@ -83,6 +83,7 @@ const systemsTreeNodes = {
       { id: "the-physical-edge-of-software", title: "The Physical Edge of Software" },
       { id: "why-embedded-systems-speak-in-protocols", title: "Why Embedded Systems Speak in Protocols" },
       { id: "uart-structured-asynchronous-communication", title: "UART: Structured Asynchronous Communication" },
+      { id: "spi-shared-rhythm-of-machines", title: "SPI: The Shared Rhythm of Machines" },
       { id: null, title: "Coming Soon" }
     ]
   },
@@ -1948,6 +1949,237 @@ const blogPosts = [
     quote: "Time is the invisible wire in asynchronous communication. When we agree on time, we only need a single wire for the conversation."
   },
   footer: "Reflections on asynchronous serialization - PrajnaEdge.dev"
+},
+{
+  id: "spi-shared-rhythm-of-machines",
+  category: "Interaction",
+  series: "System Explorations",
+  title: "SPI: The Shared Rhythm of Machines",
+  subtitle: "Why timing agreement wasn't enough, and why engineers chose to share a clock.",
+  date: "16th June, 2026",
+  tags: ["SPI", "Serial Protocols", "Synchronous", "Clock Phase", "Shift Register", "Embedded Systems"],
+  sections: [
+    {
+      heading: "1. The Limits of Asynchronous Agreement",
+      content: [
+        {
+          type: "p",
+          text: "In the exploration of UART, we observed how two independent microprocessors, each operating in their own private temporal domain, can exchange data using a single wire and a shared agreement. By setting a predetermined baud rate, the receiver can reconstruct bit boundaries simply by counting local oscillator cycles relative to the falling edge of the Start Bit. It is an elegant, minimal approach to interaction—yet it is built upon a delicate physical compromise."
+        },
+        {
+          type: "p",
+          text: "This compromise becomes a bottleneck as system throughput requirements escalate. Because the asynchronous receiver relies entirely on its local clock, any physical discrepancy between the transmitter's oscillator and the receiver's oscillator accumulates over the frame. At 9600 baud, a 2% timing mismatch is inconsequential; the sample point drifts only slightly away from the bit's center. But if we attempt to scale the transfer rate to 10 Mbps or 20 Mbps, a fraction of a microsecond of phase drift translates into multiple bit periods of misalignment, causing catastrophic corruption."
+        },
+        {
+          type: "p",
+          text: "To combat this drift, asynchronous frames must remain short—typically restricted to 8 payload bits. Consequently, a substantial portion of the bandwidth is consumed by non-data overhead: start bits, stop bits, and idle gaps. For every byte sent, at least two framing bits must be transmitted, yielding an automatic 20% protocol tax. When a system needs to transfer megabytes of image data to a display, or pull raw high-frequency sensor readings, this framing overhead and timing sensitivity make the asynchronous model physically untenable."
+        }
+      ]
+    },
+    {
+      heading: "2. Shifting the Burden: The Shared Clock",
+      content: [
+        {
+          type: "p",
+          text: "To break past the speed limits of asynchronous protocols, embedded engineers had to rethink the nature of time itself. Instead of requiring the receiver to reconstruct time, why not transmit time directly along with the data?"
+        },
+        {
+          type: "p",
+          text: "This shift in thinking is the core of Synchronous communication, and it is the foundation of the Serial Peripheral Interface (SPI). By adding a dedicated physical line—the Serial Clock (SCLK)—the transmitter takes on the responsibility of orchestrating the timing of the entire bus. The receiver no longer needs to guess where a bit begins or ends, nor does it need to count local clock ticks. It simply watches the SCLK wire: when the clock line transitions, the receiver samples the data line. When the clock line is idle, the system waits."
+        },
+        {
+          type: "p",
+          text: "This physical synchrony immediately eliminates the threat of oscillator drift. Because the clock line dictates the timing of the data transitions, the bus speed can scale from zero to tens of megahertz without phase misalignment. If the master processor pauses mid-transmission to handle an interrupt, the clock simply stops, the state of the bus freezes in place, and the transfer resumes later without a single bit of corrupted data. Time becomes a physical signal, not an expectation."
+        }
+      ]
+    },
+    {
+      heading: "3. The Four Wires of the Bus",
+      content: [
+        {
+          type: "p",
+          text: "To achieve this high-speed, synchronous coordination, SPI establishes a strict Master-Slave hierarchy. Unlike UART's symmetric point-to-point architecture, an SPI bus always operates under the absolute control of a single Master device. The master generates the clock signal and drives the conversation. The Slave devices are passive, reacting only to the clock and signal boundaries initiated by the master."
+        },
+        {
+          type: "p",
+          text: "The physical interface consists of four dedicated lines, each serving a distinct architectural role:"
+        },
+        {
+          type: "p",
+          text: "• SCLK (Serial Clock): Driven exclusively by the master, this line carries the pulse train that synchronizes data shifts and samples across all connected devices."
+        },
+        {
+          type: "p",
+          text: "• MOSI (Master Out Slave In): The data line driven by the master to transmit payload bits to the slave."
+        },
+        {
+          type: "p",
+          text: "• MISO (Master In Slave Out): The data line driven by the slave to transmit payload bits back to the master."
+        },
+        {
+          type: "p",
+          text: "• CS / SS (Chip Select / Slave Select): An active-low control line used by the master to address and enable individual slaves. Holding the CS line low selects the target slave and wakes its interface logic; pulling it high disconnects the slave's MISO driver into a high-impedance (tri-state) mode, isolating it from the shared bus."
+        },
+        {
+          type: "p",
+          text: "The schematic below illustrates how these four lines form the baseline interface between a master and a single slave device:"
+        },
+        {
+          type: "image",
+          src: "Images/spi_bus_topology.png",
+          alt: "SPI Master-Slave Bus Interface Topology"
+        }
+      ]
+    },
+    {
+      heading: "4. The Shift Register Loop: Continuous Exchange",
+      content: [
+        {
+          type: "p",
+          text: "In many protocols, write operations and read operations are separate events, separated by direction changes and state handshakes. SPI, however, approaches data exchange with a unique hardware-level elegance. At its silicon core, an SPI transaction is not a separate write and read; it is a simultaneous circular swap."
+        },
+        {
+          type: "p",
+          text: "Both the master and slave contain an internal shift register—typically 8 bits wide. When the master initiates a transaction, these two registers are physically connected in a closed circular loop via the MOSI and MISO lines. As SCLK toggles, the master shifts its most significant bit (MSB) out of its register onto the MOSI line, where it is shifted into the least significant bit (LSB) of the slave's register. Simultaneously, the slave shifts its MSB out onto the MISO line, where it enters the master's LSB."
+        },
+        {
+          type: "p",
+          text: "After exactly 8 clock pulses, the two bytes have completely swapped places. What was in the master is now in the slave, and what was in the slave is now in the master. Every SPI write is also a read, and every SPI read requires a write. If the master only wants to read a byte from an external flash memory, it must shift out a dummy byte to generate the clock cycles required to pull the slave's data in."
+        },
+        {
+          type: "p",
+          text: "This circular data loop is illustrated below, showcasing the hardware shift register interaction during a transfer:"
+        },
+        {
+          type: "image",
+          src: "Images/spi_shift_registers.png",
+          alt: "SPI Full-Duplex Shift Register Loop"
+        }
+      ]
+    },
+    {
+      heading: "5. CPOL and CPHA: The Choreography of Sampling",
+      content: [
+        {
+          type: "p",
+          text: "Because SPI is a raw hardware-level interface without a predefined standard, different slave devices require different timing alignments. Some chips expect data to change when the clock rises and be sampled when the clock falls. Others require the exact opposite. To accommodate these differences, SPI defines two configurable parameters that dictate the clock's timing behavior: Clock Polarity (CPOL) and Clock Phase (CPHA)."
+        },
+        {
+          type: "p",
+          text: "CPOL defines the idle state of the clock line when no communication is active:"
+        },
+        {
+          type: "p",
+          text: "• CPOL = 0: SCLK idles at Low (0V). The active phase of the clock consists of rising edges, and the trailing phase consists of falling edges."
+        },
+        {
+          type: "p",
+          text: "• CPOL = 1: SCLK idles at High (3.3V/VCC). The active phase of the clock consists of falling edges, and the trailing phase consists of rising edges."
+        },
+        {
+          type: "p",
+          text: "CPHA defines which clock transition is used to shift data vs. which edge is used to sample it:"
+        },
+        {
+          type: "p",
+          text: "• CPHA = 0: Data is sampled on the first (leading) edge of SCLK, and shifted out onto the line on the second (trailing) edge. This mode requires that the transmitter places the first data bit on the line the moment CS is pulled low, before the first clock edge even occurs."
+        },
+        {
+          type: "p",
+          text: "• CPHA = 1: Data is shifted onto the line on the first (leading) edge of SCLK, and sampled on the second (trailing) edge."
+        },
+        {
+          type: "p",
+          text: "By combining these two parameters, engineers can configure the interface in one of four distinct SPI Modes (0, 1, 2, or 3). The timing diagram below demonstrates how these configurations adjust the relationship between SCLK transitions and the MOSI/MISO data windows:"
+        },
+        {
+          type: "image",
+          src: "Images/spi_clock_modes.png",
+          alt: "SPI Timing Diagram illustrating CPOL and CPHA configuration modes"
+        },
+        {
+          type: "edgecase",
+          id: "spi-shared-rhythm"
+        }
+      ]
+    },
+    {
+      heading: "6. Bus Expansion and the Chip Select Problem",
+      content: [
+        {
+          type: "p",
+          text: "Unlike network protocols that use digital addresses embedded inside data packets, SPI addresses devices physically. If a master wishes to communicate with multiple slave devices on a shared bus, it can do so in one of two configurations: independent slave routing or daisy-chaining."
+        },
+        {
+          type: "p",
+          text: "In the independent configuration, the master shares the SCLK, MOSI, and MISO lines across all slaves, but routes a dedicated, individual Chip Select (CS) line to each chip. To speak to Slave A, the master pulls CS_A low while keeping CS_B high. This isolates Slave B's MISO pin, preventing it from driving the shared trace and causing bus contention. While this configuration is incredibly fast and simple to route, it suffers from severe pin inflation: adding a fourth slave requires adding a fourth IO pin to the master."
+        },
+        {
+          type: "p",
+          text: "In the daisy-chain configuration, the master routes a single CS and SCLK to all slaves, but loops the MISO of one slave into the MOSI of the next, forming one giant, multi-byte shift register loop. While this saves IO pins, it introduces timing delays, as the master must shift data through every single slave in the chain to update a single register, and requires that all slaves support daisy-chain formatting in their silicon."
+        },
+        {
+          type: "p",
+          text: "Physical addressing introduces silent bugs. If a glitch or transient voltage spike pulls a CS line low when it should remain high, multiple slaves will attempt to drive the MISO trace simultaneously. This results in bus contention, creating excessive current draw, heating, and corrupted data—a silent failure state that cannot be detected by the protocol itself since SPI lacks any built-in error detection or flow control."
+        },
+        {
+          type: "edgecase",
+          id: "spi-silent-conversation"
+        }
+      ]
+    },
+    {
+      heading: "7. The Trade-Offs of Raw Speed",
+      content: [
+        {
+          type: "p",
+          text: "SPI's dominance in high-speed, low-level embedded interfaces stems from its simplicity. Because it is synchronous, it has no start or stop bits, yielding 100% data throughput efficiency. Because it has dedicated TX and RX pins, it supports true full-duplex communication. There is no addressing overhead, no arbitration delays, and no complex state machines in silicon, allowing SPI peripherals to be incredibly small, cheap, and fast."
+        },
+        {
+          type: "p",
+          text: "However, this simplicity comes at a cost:"
+        },
+        {
+          type: "p",
+          text: "• Pin Inflation: Every additional slave requires a dedicated CS pin in independent mode. A bus with six sensors quickly consumes nine microcontroller pins, cluttering the PCB layout and exhausting register space."
+        },
+        {
+          type: "p",
+          text: "• No Flow Control: SPI is a 'blind' protocol. The master drives SCLK regardless of whether the slave is ready, busy, or has crashed. If the slave cannot process incoming bits fast enough, data is silently overwritten in its shift register."
+        },
+        {
+          type: "p",
+          text: "• No Error Checking: Unlike UART, which supports optional parity bits, or CAN, which uses CRC checksums, SPI contains no built-in mechanism to verify data integrity. If electrical noise distorts a bit on the wire, the receiver registers the wrong value without warning."
+        }
+      ]
+    },
+    {
+      heading: "8. The Coexistence of Two Worlds",
+      content: [
+        {
+          type: "p",
+          text: "Despite these limitations, SPI remains the undisputed standard for high-bandwidth embedded peripherals. When a microcontroller needs to write thousands of pixels to a color LCD, pull megabytes of firmware from a Serial Flash memory chip, or stream high-fidelity audio samples, SPI's raw speed—often exceeding 50 MHz—is essential."
+        },
+        {
+          type: "p",
+          text: "UART taught us that two independent nodes can communicate through a mutual agreement on time. SPI showed us that by sharing a clock physically, we can discard the timing contract and unlock speeds orders of magnitude higher. But as embedded systems grew more complex, containing dozens of small sensors, displays, and controllers on a single board, the pin inflation of SPI's multi-wire bus became an intolerable physical constraint."
+        },
+        {
+          type: "p",
+          text: "Engineers were faced with a new design challenge: How do we retain the speed benefits of a shared clock, but route the entire system using only two wires, regardless of how many devices are connected? This design tension would eventually drive the creation of I2C—a protocol that trade-offs raw speed to achieve absolute pin efficiency."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Synchronization Rhythm",
+    paragraphs: [
+      "In the design of digital interfaces, speed is a function of synchrony. When we share a clock, we share a pulse, allowing data to flow at the speed of silicon state transitions.",
+      "SPI survives because it is the ultimate expression of raw hardware-level communication: fast, simple, and unburdened by protocol overhead."
+    ],
+    quote: "A shared clock is a shared heartbeat. When systems beat to the same rhythm, they no longer need to discuss when to speak."
+  },
+  footer: "Reflections on synchronous SPI communication - PrajnaEdge.dev"
 }
 ];
 
@@ -2489,6 +2721,10 @@ function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&
 function initEdgeCase(containerId) {
   if (containerId === 'uart-conversation-builder') {
     renderUartConversationBuilder();
+  } else if (containerId === 'spi-shared-rhythm') {
+    renderSpiSharedRhythm();
+  } else if (containerId === 'spi-silent-conversation') {
+    renderSpiSilentConversation();
   }
 }
 
@@ -3246,6 +3482,787 @@ function renderUartConversationBuilder() {
     `;
 
     pipelineContainer.innerHTML = pipelineHtml;
+  }
+}
+
+function renderSpiSharedRhythm() {
+  const container = document.getElementById('spi-shared-rhythm');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+  
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Shared Rhythm</div>
+    <div class="edgecase-subheader">CPOL and CPHA Configuration Mismatch</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust Clock Polarity (CPOL) and Clock Phase (CPHA) to simulate how SPI devices align sampling windows and detect timing-induced data corruption.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Timing Configuration</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem;">
+        <!-- Master Column -->
+        <div>
+          <div class="panel-title" style="color:var(--blue); font-size:0.85rem; margin-bottom:0.75rem;">Master Timing Registers</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-m-cpol" style="font-size:0.7rem;">Master CPOL</label>
+            <select id="ec-m-cpol" class="edgecase-select">
+              <option value="0" selected>CPOL = 0 (Idle Low)</option>
+              <option value="1">CPOL = 1 (Idle High)</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-m-cpha" style="font-size:0.7rem;">Master CPHA</label>
+            <select id="ec-m-cpha" class="edgecase-select">
+              <option value="0" selected>CPHA = 0 (Sample Leading Edge)</option>
+              <option value="1">CPHA = 1 (Sample Trailing Edge)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Slave Column -->
+        <div>
+          <div class="panel-title" style="color:#E2E8F0; font-size:0.85rem; margin-bottom:0.75rem;">Slave Timing Registers</div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-s-cpol" style="font-size:0.7rem;">Slave CPOL</label>
+            <select id="ec-s-cpol" class="edgecase-select">
+              <option value="0" selected>CPOL = 0 (Idle Low)</option>
+              <option value="1">CPOL = 1 (Idle High)</option>
+            </select>
+          </div>
+          <div class="edgecase-control-group" style="margin-bottom:0.6rem;">
+            <label for="ec-s-cpha" style="font-size:0.7rem;">Slave CPHA</label>
+            <select id="ec-s-cpha" class="edgecase-select">
+              <option value="0" selected>CPHA = 0 (Sample Leading Edge)</option>
+              <option value="1">CPHA = 1 (Sample Trailing Edge)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Agreement Column -->
+        <div>
+          <div class="panel-title" style="color:#10B981; font-size:0.85rem; margin-bottom:0.75rem;">Mode Agreement</div>
+          <div id="ec-spi-agreement-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="pipeline-step">System Controls</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: 3fr 1fr; gap:1rem; align-items:end;">
+        <div class="edgecase-control-group" style="margin:0;">
+          <label for="ec-spi-text" style="font-size:0.7rem;">Enter Message (Max 12 chars)</label>
+          <input type="text" id="ec-spi-text" class="edgecase-input" value="Hello" maxlength="12" style="width:100%;">
+        </div>
+        <button id="ec-spi-transmit-btn" class="edgecase-button" style="margin:0; width:100%; height:38px;">TRANSMIT</button>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Physical Waveform Timing Trace (Inspecting First Character)</div>
+    <div class="edgecase-visual" id="ec-spi-waveform-container" style="background:#0F172A; min-height:230px; position:relative;"></div>
+
+    <!-- OUTPUT PANELS -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1.5rem;">
+      <div>
+        <div class="pipeline-step">Protocol Transaction Log</div>
+        <div id="ec-spi-log" class="terminal-box"></div>
+      </div>
+      <div>
+        <div class="pipeline-step">Data Recovery Outcome</div>
+        <div class="panel-box" style="height:200px; display:flex; flex-direction:column; justify-content:center; gap:0.5rem; box-sizing:border-box;">
+          <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase;">Slave Shift Register (Input Buffer):</div>
+          <div id="ec-spi-rx-register" class="register-container" style="margin:0;"></div>
+          <div id="ec-spi-outcome" style="margin-top:0.4rem;"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Get DOM elements
+  const mCpolSel = document.getElementById('ec-m-cpol');
+  const mCphaSel = document.getElementById('ec-m-cpha');
+  const sCpolSel = document.getElementById('ec-s-cpol');
+  const sCphaSel = document.getElementById('ec-s-cpha');
+  
+  const textInput = document.getElementById('ec-spi-text');
+  const transmitBtn = document.getElementById('ec-spi-transmit-btn');
+  
+  const agreementContainer = document.getElementById('ec-spi-agreement-container');
+  const waveformContainer = document.getElementById('ec-spi-waveform-container');
+  const logContainer = document.getElementById('ec-spi-log');
+  const rxRegisterContainer = document.getElementById('ec-spi-rx-register');
+  const outcomeContainer = document.getElementById('ec-spi-outcome');
+
+  let message = "Hello";
+  let tempMessage = "Hello";
+  let animating = false;
+  let animStep = 20;
+
+  textInput.addEventListener('input', () => {
+    tempMessage = textInput.value;
+  });
+
+  textInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      transmitBtn.click();
+    }
+  });
+
+  transmitBtn.addEventListener('click', async () => {
+    if (animating) return;
+    message = tempMessage || " ";
+    animating = true;
+    animStep = 0;
+    
+    for (let step = 0; step <= 17; step++) {
+      animStep = step;
+      updateUi();
+      await new Promise(resolve => setTimeout(resolve, 150));
+    }
+    
+    animating = false;
+    animStep = 20;
+    updateUi();
+  });
+
+  const selectInputs = [mCpolSel, mCphaSel, sCpolSel, sCphaSel];
+  selectInputs.forEach(sel => {
+    sel.addEventListener('change', () => {
+      updateUi();
+    });
+  });
+
+  updateUi();
+
+  function updateUi() {
+    const mCpol = parseInt(mCpolSel.value);
+    const mCpha = parseInt(mCphaSel.value);
+    const sCpol = parseInt(sCpolSel.value);
+    const sCpha = parseInt(sCphaSel.value);
+
+    const cpolOk = (mCpol === sCpol);
+    const cphaOk = (mCpha === sCpha);
+    const agreementOk = cpolOk && cphaOk;
+
+    const cpolIcon = cpolOk ? "✓" : "✗";
+    const cpolClass = cpolOk ? "agreement-ok" : "agreement-fail";
+    const cphaIcon = cphaOk ? "✓" : "✗";
+    const cphaClass = cphaOk ? "agreement-ok" : "agreement-fail";
+
+    agreementContainer.innerHTML = `
+      <div class="agreement-item ${cpolClass}">${cpolIcon} Clock Polarity: Master=${mCpol} vs Slave=${sCpol}</div>
+      <div class="agreement-item ${cphaClass}">${cphaIcon} Clock Phase: Master=${mCpha} vs Slave=${sCpha}</div>
+      ${agreementOk ? 
+        `<div class="agreement-item agreement-ok" style="font-weight:bold;text-align:center;">✓ Bus Synchronized (Mode ${(mCpol << 1) | mCpha})</div>` : 
+        `<div class="agreement-item agreement-fail" style="font-weight:bold;text-align:center;">✗ Phase Mismatch Detected!</div>`}
+    `;
+
+    const activeChar = message.length > 0 ? message[0] : ' ';
+    const charCode = activeChar.charCodeAt(0);
+    const txBits = [];
+    for (let b = 0; b < 8; b++) {
+      txBits.push((charCode >> (7 - b)) & 1);
+    }
+
+    const x_edges = [];
+    for (let i = 0; i < 16; i++) {
+      x_edges.push(135 + i * 35);
+    }
+
+    const slaveSampleXs = [];
+    if (sCpha === 0) {
+      for (let i = 0; i < 16; i += 2) {
+        slaveSampleXs.push(x_edges[i]);
+      }
+    } else {
+      for (let i = 1; i < 16; i += 2) {
+        slaveSampleXs.push(x_edges[i]);
+      }
+    }
+
+    const svgW = 900;
+    const svgH = 230;
+    const padLeft = 80;
+    const svgBlocks = [];
+
+    // CS Line
+    const csYHigh = 30;
+    const csYLow = 45;
+    const csPath = `M 0,${csYHigh} L 100,${csYHigh} L 100,${csYLow} L 695,${csYLow} L 695,${csYHigh} L ${svgW},${csYHigh}`;
+    svgBlocks.push(`<path d="${csPath}" fill="none" stroke="#F59E0B" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${csYLow - 2}" fill="#F59E0B" font-family="var(--mono)" font-size="8" text-anchor="end">CS</text>`);
+
+    // SCLK Line
+    const sclkYHigh = 70;
+    const sclkYLow = 90;
+    const sclkIdle = mCpol === 1 ? sclkYHigh : sclkYLow;
+    const sclkActive = mCpol === 1 ? sclkYLow : sclkYHigh;
+
+    let sclkPath = `M 0,${sclkIdle} L 135,${sclkIdle}`;
+    let currY = sclkIdle;
+    x_edges.forEach(x => {
+      const nextY = currY === sclkIdle ? sclkActive : sclkIdle;
+      sclkPath += ` L ${x},${currY} L ${x},${nextY}`;
+      currY = nextY;
+    });
+    sclkPath += ` L ${svgW},${sclkIdle}`;
+    svgBlocks.push(`<path d="${sclkPath}" fill="none" stroke="#3B82F6" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${sclkYLow - 2}" fill="#3B82F6" font-family="var(--mono)" font-size="8" text-anchor="end">SCLK</text>`);
+
+    // MOSI Waveform
+    const mosiYHigh = 115;
+    const mosiYLow = 135;
+    let mosiPath = `M 0,${mosiYHigh} L 100,${mosiYHigh}`;
+    const mosiSegments = [];
+    if (mCpha === 0) {
+      mosiSegments.push([100, 170, txBits[0]]);
+      for (let b = 1; b < 8; b++) {
+        mosiSegments.push([170 + (b - 1) * 70, 170 + b * 70, txBits[b]]);
+      }
+      mosiSegments.push([660, svgW, 1]);
+    } else {
+      mosiSegments.push([100, 135, 1]);
+      for (let b = 0; b < 8; b++) {
+        mosiSegments.push([135 + b * 70, 135 + (b + 1) * 70, txBits[b]]);
+      }
+      mosiSegments.push([695, svgW, 1]);
+    }
+
+    mosiSegments.forEach(([start_x, end_x, val]) => {
+      const yVal = val === 1 ? mosiYHigh : mosiYLow;
+      mosiPath += ` L ${start_x},${yVal} L ${end_x},${yVal}`;
+    });
+    svgBlocks.push(`<path d="${mosiPath}" fill="none" stroke="#FFFFFF" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${mosiYLow - 2}" fill="#FFFFFF" font-family="var(--mono)" font-size="8" text-anchor="end">MOSI</text>`);
+
+    // MISO Waveform
+    const misoBits = [0, 1, 0, 1, 1, 0, 1, 0];
+    const misoYHigh = 160;
+    const misoYLow = 180;
+    let misoPath = `M 0,${misoYHigh} L 100,${misoYHigh}`;
+    const misoSegments = [];
+    if (mCpha === 0) {
+      misoSegments.push([100, 170, misoBits[0]]);
+      for (let b = 1; b < 8; b++) {
+        misoSegments.push([170 + (b - 1) * 70, 170 + b * 70, misoBits[b]]);
+      }
+      misoSegments.push([660, svgW, 1]);
+    } else {
+      misoSegments.push([100, 135, 1]);
+      for (let b = 0; b < 8; b++) {
+        misoSegments.push([135 + b * 70, 135 + (b + 1) * 70, misoBits[b]]);
+      }
+      misoSegments.push([695, svgW, 1]);
+    }
+
+    misoSegments.forEach(([start_x, end_x, val]) => {
+      const yVal = val === 1 ? misoYHigh : misoYLow;
+      misoPath += ` L ${start_x},${yVal} L ${end_x},${yVal}`;
+    });
+    svgBlocks.push(`<path d="${misoPath}" fill="none" stroke="#10B981" stroke-width="2" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${misoYLow - 2}" fill="#10B981" font-family="var(--mono)" font-size="8" text-anchor="end">MISO</text>`);
+
+    // Draw Slave Sampling Ticks
+    slaveSampleXs.forEach((xs, idx) => {
+      if (animStep >= idx * 2 + 1) {
+        const color = agreementOk ? "#10B981" : "#EF6868";
+        const dash = agreementOk ? "2,2" : "1,2";
+        let sampledVal = 1;
+        for (let s = 0; s < mosiSegments.length; s++) {
+          const [start_x, end_x, val] = mosiSegments[s];
+          if (xs >= start_x && xs <= end_x) {
+            sampledVal = val;
+            break;
+          }
+        }
+        svgBlocks.push(`<line x1="${xs}" y1="50" x2="${xs}" y2="200" stroke="${color}" stroke-dasharray="${dash}" stroke-width="1" />`);
+        svgBlocks.push(`<circle cx="${xs}" cy="${sCpol === 1 ? sclkYHigh : sclkYLow}" r="3" fill="${color}" />`);
+        svgBlocks.push(`<circle cx="${xs}" cy="${sampledVal === 1 ? mosiYHigh : mosiYLow}" r="3.5" fill="${color}" stroke="#0F172A" />`);
+        svgBlocks.push(`<text x="${xs}" y="215" fill="${color}" font-family="var(--mono)" font-size="8" text-anchor="middle" font-weight="bold">S${idx}(${sampledVal})</text>`);
+      }
+    });
+
+    // Time Sweep Cursor
+    if (animating && animStep < 18) {
+      const cursorX = 100 + animStep * 35;
+      svgBlocks.push(`<line x1="${cursorX}" y1="15" x2="${cursorX}" y2="200" stroke="#3B82F6" stroke-width="1.5" />`);
+    }
+
+    waveformContainer.innerHTML = `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%">${svgBlocks.join('')}</svg>`;
+
+    // Compute Slave RX Register Bits
+    const rxRegisterBits = ["_", "_", "_", "_", "_", "_", "_", "_"];
+    for (let idx = 0; idx < 8; idx++) {
+      if (animStep >= idx * 2 + 1) {
+        const xs = slaveSampleXs[idx];
+        let sampledVal = 0;
+        for (let s = 0; s < mosiSegments.length; s++) {
+          const [start_x, end_x, val] = mosiSegments[s];
+          if (xs >= start_x && xs <= end_x) {
+            sampledVal = val;
+            break;
+          }
+        }
+        rxRegisterBits[idx] = String(sampledVal);
+      }
+    }
+
+    let cellsHtml = "";
+    rxRegisterBits.forEach((bit, idx) => {
+      let cls = "register-cell";
+      if (bit !== "_") {
+        cls += agreementOk ? " fifo-active-rx" : " fifo-active";
+      }
+      cellsHtml += `
+        <div class="${cls}" style="display:inline-block; margin-right:0.25rem;">
+          <div class="register-label">D${7 - idx}</div>
+          <div class="register-val">${bit}</div>
+        </div>
+      `;
+    });
+    rxRegisterContainer.innerHTML = cellsHtml;
+
+    // Logs
+    const logs = ["[0.0ms] Master asserts CS low... Starting SPI transaction."];
+    if (animStep >= 1) {
+      logs.push(`[0.2ms] SCLK active. Polarity Idle=${mCpol === 1 ? 'High' : 'Low'}. Phase CPHA=${mCpha}.`);
+    }
+    for (let idx = 0; idx < 8; idx++) {
+      if (animStep >= idx * 2 + 1) {
+        const xs = slaveSampleXs[idx];
+        let val = 0;
+        for (let s = 0; s < mosiSegments.length; s++) {
+          const [start_x, end_x, v] = mosiSegments[s];
+          if (xs >= start_x && xs <= end_x) {
+            val = v;
+            break;
+          }
+        }
+        const edgeType = (idx % 2 === 0) ? (sCpha === 0 ? "leading" : "trailing") : (sCpha === 0 ? "trailing" : "leading");
+        const edgeDirection = (mCpol === 0) ? (edgeType === "leading" ? "rising" : "falling") : (edgeType === "leading" ? "falling" : "rising");
+        
+        logs.push(`[Bit ${7 - idx}] Slave samples MOSI on ${edgeDirection} edge -> Read ${val}.`);
+        if (!agreementOk) {
+          logs.push(`[WARNING] Timing mismatch! Slave sampled on unstable boundary.`);
+        }
+      }
+    }
+    if (animStep >= 16) {
+      logs.push("[2.8ms] SCLK clock train finishes.");
+      logs.push("[3.0ms] Master deasserts CS High... Transaction closed.");
+      if (agreementOk) {
+        logs.push("[SUCCESS] Bus alignment clean. Data verified.");
+      } else {
+        logs.push("[FAIL] Phase mismatch. Slave sampled transitions. Bits corrupted.");
+      }
+    }
+    logContainer.innerHTML = logs.join('<br>');
+    logContainer.scrollTop = logContainer.scrollHeight;
+
+    // Outcome
+    let recoveredStr = "";
+    if (animStep >= 16) {
+      if (agreementOk) {
+        recoveredStr = message;
+      } else {
+        for (let i = 0; i < message.length; i++) {
+          const val = message.charCodeAt(i);
+          let recVal = val;
+          if (mCpha !== sCpha && mCpol === sCpol) {
+            recVal = (val << 1) & 0xFF;
+          } else if (mCpol !== sCpol && mCpha === sCpha) {
+            recVal = (val >> 1) & 0xFF;
+          } else {
+            recVal = (~val) & 0xFF;
+          }
+          recoveredStr += (recVal >= 32 && recVal <= 126) ? String.fromCharCode(recVal) : "?";
+        }
+      }
+    } else {
+      recoveredStr = "...";
+    }
+
+    outcomeContainer.innerHTML = `
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:var(--mono); margin-top:0.4rem;">
+        <div>
+          <span style="color:var(--muted); font-size:0.65rem; display:block;">TX DATA</span>
+          <span style="font-weight:bold; font-size:1.1rem; color:#FFF;">${escHtml(message)}</span>
+        </div>
+        <div>
+          <span style="color:var(--muted); font-size:0.65rem; display:block;">RX RECOVERED</span>
+          <span style="font-weight:bold; font-size:1.1rem; color:${agreementOk ? '#10B981' : '#EF6868'};">${escHtml(recoveredStr)}</span>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function renderSpiSilentConversation() {
+  const container = document.getElementById('spi-silent-conversation');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Silent Conversation</div>
+    <div class="edgecase-subheader">Chip Select Contention & Tri-State Collisions</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Toggle individual Chip Select lines to observe normal addressing, floating high lines, and physical electrical contention on the shared MISO bus.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Bus Selection Control</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:1rem;">
+        <div>
+          <div class="panel-title" style="color:#10B981; font-size:0.8rem; margin-bottom:0.4rem;">Flash Memory</div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <input type="checkbox" id="ec-sc-flash" class="edgecase-checkbox" style="cursor:pointer;">
+            <label for="ec-sc-flash" style="font-family:var(--mono); font-size:0.7rem; color:var(--text); cursor:pointer;">Assert CS0</label>
+          </div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.25rem; font-family:var(--mono);">Responds: 0xA5 (10100101)</div>
+        </div>
+        <div>
+          <div class="panel-title" style="color:#3B82F6; font-size:0.8rem; margin-bottom:0.4rem;">Temp Sensor</div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <input type="checkbox" id="ec-sc-sensor" class="edgecase-checkbox" style="cursor:pointer;">
+            <label for="ec-sc-sensor" style="font-family:var(--mono); font-size:0.7rem; color:var(--text); cursor:pointer;">Assert CS1</label>
+          </div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.25rem; font-family:var(--mono);">Responds: 0x3C (00111100)</div>
+        </div>
+        <div>
+          <div class="panel-title" style="color:#F59E0B; font-size:0.8rem; margin-bottom:0.4rem;">ADC Converter</div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <input type="checkbox" id="ec-sc-adc" class="edgecase-checkbox" style="cursor:pointer;">
+            <label for="ec-sc-adc" style="font-family:var(--mono); font-size:0.7rem; color:var(--text); cursor:pointer;">Assert CS2</label>
+          </div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.25rem; font-family:var(--mono);">Responds: 0x5A (01011010)</div>
+        </div>
+        <div>
+          <div class="panel-title" style="color:#EC4899; font-size:0.8rem; margin-bottom:0.4rem;">OLED Display</div>
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <input type="checkbox" id="ec-sc-display" class="edgecase-checkbox" style="cursor:pointer;">
+            <label for="ec-sc-display" style="font-family:var(--mono); font-size:0.7rem; color:var(--text); cursor:pointer;">Assert CS3</label>
+          </div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.25rem; font-family:var(--mono);">Responds: 0xF0 (11110000)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM STATUS -->
+    <div class="pipeline-step">System Status</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: 3fr 1fr; gap:1rem; align-items:center;">
+        <div id="ec-sc-status-container"></div>
+        <button id="ec-sc-transmit-btn" class="edgecase-button" style="margin:0; width:100%; height:38px;">RUN SIMULATION</button>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Physical Waveform Trace (Shared Bus State)</div>
+    <div class="edgecase-visual" id="ec-sc-waveform-container" style="background:#0F172A; min-height:240px; position:relative;"></div>
+
+    <!-- OUTPUT PANELS -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1.5rem;">
+      <div>
+        <div class="pipeline-step">Bus Logging Terminal</div>
+        <div id="ec-sc-log" class="terminal-box"></div>
+      </div>
+      <div>
+        <div class="pipeline-step">Electrical Bus Status</div>
+        <div class="panel-box" id="ec-sc-electrical-status" style="height:200px; display:flex; flex-direction:column; justify-content:center; gap:0.5rem; box-sizing:border-box;"></div>
+      </div>
+    </div>
+  `;
+
+  // DOM elements
+  const flashCb = document.getElementById('ec-sc-flash');
+  const sensorCb = document.getElementById('ec-sc-sensor');
+  const adcCb = document.getElementById('ec-sc-adc');
+  const displayCb = document.getElementById('ec-sc-display');
+  const transmitBtn = document.getElementById('ec-sc-transmit-btn');
+
+  const statusContainer = document.getElementById('ec-sc-status-container');
+  const waveformContainer = document.getElementById('ec-sc-waveform-container');
+  const logContainer = document.getElementById('ec-sc-log');
+  const electricalStatus = document.getElementById('ec-sc-electrical-status');
+
+  let animating = false;
+  let animStep = 20;
+
+  const checkboxes = [flashCb, sensorCb, adcCb, displayCb];
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      updateUi();
+    });
+  });
+
+  transmitBtn.addEventListener('click', async () => {
+    if (animating) return;
+    animating = true;
+    animStep = 0;
+    for (let step = 0; step <= 16; step++) {
+      animStep = step;
+      updateUi();
+      await new Promise(resolve => setTimeout(resolve, 120));
+    }
+    animating = false;
+    animStep = 20;
+    updateUi();
+  });
+
+  updateUi();
+
+  function updateUi() {
+    const flashActive = flashCb.checked;
+    const sensorActive = sensorCb.checked;
+    const adcActive = adcCb.checked;
+    const displayActive = displayCb.checked;
+
+    const assertedDevices = [];
+    if (flashActive) assertedDevices.push("Flash");
+    if (sensorActive) assertedDevices.push("Sensor");
+    if (adcActive) assertedDevices.push("ADC");
+    if (displayActive) assertedDevices.push("Display");
+
+    const numAsserted = assertedDevices.length;
+
+    // Render Status
+    if (numAsserted === 0) {
+      statusContainer.innerHTML = `<div class="agreement-item agreement-warning" style="font-weight:bold;text-align:center;font-size:0.9rem;margin:0;">⚠️ Bus Idle (Floating Tri-State). MISO Reads 0xFF (Pull-up).</div>`;
+    } else if (numAsserted === 1) {
+      statusContainer.innerHTML = `<div class="agreement-item agreement-ok" style="font-weight:bold;text-align:center;font-size:0.9rem;margin:0;">✓ Active Slave: ${assertedDevices[0]} (Single Device Driving MISO)</div>`;
+    } else {
+      statusContainer.innerHTML = `<div class="agreement-item agreement-fail" style="font-weight:bold;text-align:center;font-size:0.9rem;margin:0;">💥 CRITICAL: BUS CONTENTION! Multiple Slaves driving MISO: ${assertedDevices.join(' & ')}</div>`;
+    }
+
+    const deviceBits = {
+      "Flash": [1, 0, 1, 0, 0, 1, 0, 1],
+      "Sensor": [0, 0, 1, 1, 1, 1, 0, 0],
+      "ADC": [0, 1, 0, 1, 1, 0, 1, 0],
+      "Display": [1, 1, 1, 1, 0, 0, 0, 0]
+    };
+
+    const misoDisplayBits = [];
+    for (let bitIdx = 0; bitIdx < 8; bitIdx++) {
+      const drivenValues = [];
+      assertedDevices.forEach(dev => {
+        drivenValues.push(deviceBits[dev][bitIdx]);
+      });
+
+      if (numAsserted === 0) {
+        misoDisplayBits.push(1);
+      } else if (numAsserted === 1) {
+        misoDisplayBits.push(drivenValues[0]);
+      } else {
+        const uniqueVals = Array.from(new Set(drivenValues));
+        if (uniqueVals.length === 1) {
+          misoDisplayBits.push(drivenValues[0]);
+        } else {
+          misoDisplayBits.push("X");
+        }
+      }
+    }
+
+    const svgW = 950;
+    const svgH = 240;
+    const padLeft = 110;
+    const xEdges = [];
+    for (let i = 0; i < 16; i++) {
+      xEdges.push(padLeft + 45 + i * 35);
+    }
+
+    const svgBlocks = [];
+
+    // CS lines
+    const cs0Color = flashActive ? "#10B981" : "#475569";
+    const cs0Y = 20;
+    const cs0Path = `M ${padLeft},${cs0Y} L ${xEdges[0]},${cs0Y} L ${xEdges[0]},${cs0Y + (flashActive ? 10 : 0)} L ${xEdges[14]},${cs0Y + (flashActive ? 10 : 0)} L ${xEdges[14]},${cs0Y} L ${svgW},${cs0Y}`;
+    svgBlocks.push(`<path d="${cs0Path}" fill="none" stroke="${cs0Color}" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${cs0Y + 3}" fill="${cs0Color}" font-family="var(--mono)" font-size="8" text-anchor="end">CS_Flash (CS0)</text>`);
+
+    const cs1Color = sensorActive ? "#3B82F6" : "#475569";
+    const cs1Y = 45;
+    const cs1Path = `M ${padLeft},${cs1Y} L ${xEdges[0]},${cs1Y} L ${xEdges[0]},${cs1Y + (sensorActive ? 10 : 0)} L ${xEdges[14]},${cs1Y + (sensorActive ? 10 : 0)} L ${xEdges[14]},${cs1Y} L ${svgW},${cs1Y}`;
+    svgBlocks.push(`<path d="${cs1Path}" fill="none" stroke="${cs1Color}" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${cs1Y + 3}" fill="${cs1Color}" font-family="var(--mono)" font-size="8" text-anchor="end">CS_Sensor (CS1)</text>`);
+
+    const cs2Color = adcActive ? "#F59E0B" : "#475569";
+    const cs2Y = 70;
+    const cs2Path = `M ${padLeft},${cs2Y} L ${xEdges[0]},${cs2Y} L ${xEdges[0]},${cs2Y + (adcActive ? 10 : 0)} L ${xEdges[14]},${cs2Y + (adcActive ? 10 : 0)} L ${xEdges[14]},${cs2Y} L ${svgW},${cs2Y}`;
+    svgBlocks.push(`<path d="${cs2Path}" fill="none" stroke="${cs2Color}" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${cs2Y + 3}" fill="${cs2Color}" font-family="var(--mono)" font-size="8" text-anchor="end">CS_ADC (CS2)</text>`);
+
+    const cs3Color = displayActive ? "#EC4899" : "#475569";
+    const cs3Y = 95;
+    const cs3Path = `M ${padLeft},${cs3Y} L ${xEdges[0]},${cs3Y} L ${xEdges[0]},${cs3Y + (displayActive ? 10 : 0)} L ${xEdges[14]},${cs3Y + (displayActive ? 10 : 0)} L ${xEdges[14]},${cs3Y} L ${svgW},${cs3Y}`;
+    svgBlocks.push(`<path d="${cs3Path}" fill="none" stroke="${cs3Color}" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${cs3Y + 3}" fill="${cs3Color}" font-family="var(--mono)" font-size="8" text-anchor="end">CS_Display (CS3)</text>`);
+
+    // SCLK
+    const sclkYHigh = 120;
+    const sclkYLow = 135;
+    let sclkPath = `M 0,${sclkYLow} L ${xEdges[0]},${sclkYLow}`;
+    let currY = sclkYLow;
+    for (let i = 0; i < 14; i++) {
+      const nextY = currY === sclkYLow ? sclkYHigh : sclkYLow;
+      sclkPath += ` L ${xEdges[i]},${currY} L ${xEdges[i]},${nextY}`;
+      currY = nextY;
+    }
+    sclkPath += ` L ${svgW},${sclkYLow}`;
+    svgBlocks.push(`<path d="${sclkPath}" fill="none" stroke="#6366F1" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${sclkYLow - 2}" fill="#6366F1" font-family="var(--mono)" font-size="8" text-anchor="end">SCLK (Clock)</text>`);
+
+    // MOSI
+    const mosiYHigh = 155;
+    const mosiYLow = 170;
+    let mosiPath = `M 0,${mosiYLow} L ${xEdges[0]},${mosiYLow}`;
+    for (let i = 0; i < 8; i++) {
+      const yVal = (i % 2 === 0) ? mosiYHigh : mosiYLow;
+      mosiPath += ` L ${xEdges[2 * i]},${yVal} L ${xEdges[2 * i + 1]},${yVal}`;
+    }
+    mosiPath += ` L ${svgW},${mosiYLow}`;
+    svgBlocks.push(`<path d="${mosiPath}" fill="none" stroke="#94A3B8" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${mosiYLow - 2}" fill="#94A3B8" font-family="var(--mono)" font-size="8" text-anchor="end">MOSI (Data Out)</text>`);
+
+    // MISO
+    const misoYHigh = 190;
+    const misoYLow = 205;
+    const misoYMid = 197.5;
+    const misoStartColor = numAsserted <= 1 ? (numAsserted === 0 ? "#F59E0B" : "#10B981") : "#EF6868";
+
+    for (let i = 0; i < 8; i++) {
+      const val = misoDisplayBits[i];
+      const xStart = xEdges[2 * i];
+      const xEnd = xEdges[2 * i + 1];
+
+      if (val === 1) {
+        svgBlocks.push(`<path d="M ${xStart},${misoYHigh} L ${xEnd},${misoYHigh}" fill="none" stroke="#10B981" stroke-width="2" />`);
+      } else if (val === 0) {
+        svgBlocks.push(`<path d="M ${xStart},${misoYLow} L ${xEnd},${misoYLow}" fill="none" stroke="#10B981" stroke-width="2" />`);
+      } else if (val === "X") {
+        svgBlocks.push(`
+          <path d="M ${xStart},${misoYHigh} L ${xEnd},${misoYHigh}" fill="none" stroke="#EF6868" stroke-width="2" />
+          <path d="M ${xStart},${misoYLow} L ${xEnd},${misoYLow}" fill="none" stroke="#EF6868" stroke-width="2" />
+          <path d="M ${xStart},${misoYHigh} L ${xEnd},${misoYLow}" fill="none" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="2,2" />
+          <path d="M ${xStart},${misoYLow} L ${xEnd},${misoYHigh}" fill="none" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="2,2" />
+          <rect x="${xStart}" y="${misoYHigh}" width="${xEnd - xStart}" height="${misoYLow - misoYHigh}" fill="rgba(239, 104, 104, 0.15)" />
+          <text x="${(xStart + xEnd) / 2}" y="${misoYMid + 3}" fill="#EF6868" font-family="var(--mono)" font-size="8" font-weight="bold" text-anchor="middle">CONFLICT</text>
+        `);
+      }
+    }
+
+    for (let i = 0; i < 7; i++) {
+      const xMidStart = xEdges[2 * i + 1];
+      const xMidEnd = xEdges[2 * i + 2];
+      const valPrev = misoDisplayBits[i];
+      const valNext = misoDisplayBits[i + 1];
+
+      const y1 = (valPrev === 1 || valPrev === "X") ? misoYHigh : misoYLow;
+      const y2 = (valNext === 1 || valNext === "X") ? misoYHigh : misoYLow;
+      const color = (valPrev === "X" || valNext === "X") ? "#EF6868" : "#10B981";
+
+      svgBlocks.push(`<path d="M ${xMidStart},${y1} L ${xMidEnd},${y2}" fill="none" stroke="${color}" stroke-width="2" />`);
+    }
+
+    svgBlocks.push(`<path d="M 0,${misoYHigh} L ${xEdges[0]},${misoYHigh}" fill="none" stroke="${misoStartColor}" stroke-width="1.5" />`);
+    const yLast = (misoDisplayBits[7] === 1 || misoDisplayBits[7] === "X") ? misoYHigh : misoYLow;
+    svgBlocks.push(`<path d="M ${xEdges[15]},${yLast} L ${svgW},${yLast}" fill="none" stroke="${misoStartColor}" stroke-width="1.5" />`);
+    svgBlocks.push(`<text x="${padLeft - 15}" y="${misoYLow - 2}" fill="${misoStartColor}" font-family="var(--mono)" font-size="8" text-anchor="end">MISO (Data In)</text>`);
+
+    if (animating && animStep < 16) {
+      const cursorX = xEdges[0] + animStep * 35;
+      svgBlocks.push(`<line x1="${cursorX}" y1="10" x2="${cursorX}" y2="225" stroke="#3B82F6" stroke-width="1.5" />`);
+    }
+
+    waveformContainer.innerHTML = `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%">${svgBlocks.join('')}</svg>`;
+
+    // Logging Terminal
+    const logs = [];
+    if (numAsserted === 0) {
+      logs.push("[0.0ms] Master pulls all CS lines High (deasserted).");
+      logs.push("[0.2ms] SCLK active, driving 8 clock pulses.");
+      logs.push("[0.5ms] MISO wire is placed in high-impedance (tri-state) mode by all slaves.");
+      logs.push("[0.8ms] Physical bus pull-up resistor pulls MISO voltage up to VCC (+3.3V).");
+      for (let idx = 0; idx < 8; idx++) {
+        if (animStep >= idx * 2) {
+          logs.push(`[Bit ${7 - idx}] Master samples MISO High -> Read 1 (Tri-stated).`);
+        }
+      }
+      if (animStep >= 16) {
+        logs.push("[2.5ms] Clock pulses complete. Transaction ended.");
+        logs.push("[Outcome] Master successfully read 0xFF (tri-stated bus).");
+      }
+    } else if (numAsserted === 1) {
+      const devName = assertedDevices[0];
+      const devHex = devName === "Flash" ? "0xA5" : (devName === "Sensor" ? "0x3C" : (devName === "ADC" ? "0x5A" : "0xF0"));
+      logs.push(`[0.0ms] Master pulls CS_${devName} Low (asserted). All other CS lines remain High.`);
+      logs.push(`[0.2ms] peripheral '${devName}' wakes up, enables output driver on MISO trace.`);
+      logs.push("[0.4ms] SCLK clock line begins pulsing.");
+      for (let idx = 0; idx < 8; idx++) {
+        if (animStep >= idx * 2) {
+          const val = deviceBits[devName][idx];
+          logs.push(`[Bit ${7 - idx}] ${devName} drives MISO: ${val} -> Master samples: ${val}.`);
+        }
+      }
+      if (animStep >= 16) {
+        logs.push("[2.5ms] Clock pulses complete. CS deasserted.");
+        logs.push(`[Outcome] Communication clean. Master successfully read ${devHex} from ${devName}.`);
+      }
+    } else {
+      const conflictNames = assertedDevices.slice(0, -1).join(', ') + " and " + assertedDevices[assertedDevices.length - 1];
+      logs.push(`[CRITICAL] Master asserts multiple CS lines simultaneously: ${conflictNames}!`);
+      logs.push("[0.1ms] Multiple output drivers enabled on the shared MISO physical trace.");
+      logs.push("[0.2ms] SCLK begins pulsing. Peripherals attempt to transmit concurrent bytes.");
+      for (let idx = 0; idx < 8; idx++) {
+        if (animStep >= idx * 2) {
+          const vals = assertedDevices.map(dev => deviceBits[dev][idx]);
+          const uniqueVals = Array.from(new Set(vals));
+          if (uniqueVals.length === 1) {
+            logs.push(`[Bit ${7 - idx}] All devices driving ${vals[0]} -> Master samples: ${vals[0]} (No collision).`);
+          } else {
+            const details = assertedDevices.map(dev => `${dev[0]}=${deviceBits[dev][idx]}`).join(' vs ');
+            logs.push(`[COLLISION] Bit ${7 - idx} conflict: ${details}.`);
+            logs.push(`            MISO line voltage collapses. Logic state indeterminate.`);
+          }
+        }
+      }
+      if (animStep >= 16) {
+        logs.push("[2.5ms] Transaction terminated.");
+        logs.push("[CRITICAL] Bus contention caused short circuits. Current spike > 50mA recorded.");
+        logs.push("[CRITICAL] Data read is corrupted/indeterminate. High hardware damage risk!");
+      }
+    }
+
+    logContainer.innerHTML = logs.join('<br>');
+    logContainer.scrollTop = logContainer.scrollHeight;
+
+    // Electrical Status
+    if (numAsserted === 0) {
+      electricalStatus.innerHTML = `
+        <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">MISO BUS VOLTAGE LEVEL:</div>
+        <div style="font-family:var(--mono); font-size:1.4rem; color:#F59E0B; font-weight:bold;">~ 3.3V (Tri-State Pull-Up)</div>
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#A5F3FC; line-height:1.4;">Current consumption: 0.0mA (Min)<br>Recovered Byte: 0xFF (Idle)</div>
+      `;
+    } else if (numAsserted === 1) {
+      const dev = assertedDevices[0];
+      const devHex = dev === "Flash" ? "0xA5" : (dev === "Sensor" ? "0x3C" : (dev === "ADC" ? "0x5A" : "0xF0"));
+      electricalStatus.innerHTML = `
+        <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">MISO BUS VOLTAGE (${dev}):</div>
+        <div style="font-family:var(--mono); font-size:1.4rem; color:#10B981; font-weight:bold;">Clean Digital 0V / 3.3V Transitions</div>
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#A5F3FC; line-height:1.4;">Current consumption: ~1.2mA (Nominal)<br>Recovered Byte: ${devHex}</div>
+      `;
+    } else {
+      electricalStatus.innerHTML = `
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#EF6868; font-weight:bold;">⚠️ ELECTRICAL HAZARD: SHORT CIRCUIT</div>
+        <div style="font-family:var(--mono); font-size:1.4rem; color:#EF6868; font-weight:bold;">~ 1.6V Intermediate (Contention)</div>
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#EF6868; line-height:1.4;">Current consumption: &gt; 48.5mA (EXCESSIVE HEAT)<br>Recovered Byte: ERROR / GARBAGE</div>
+      `;
+    }
   }
 }
 
