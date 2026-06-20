@@ -85,6 +85,7 @@ const systemsTreeNodes = {
       { id: "uart-structured-asynchronous-communication", title: "UART: Structured Asynchronous Communication" },
       { id: "spi-shared-rhythm-of-machines", title: "SPI: The Shared Rhythm of Machines" },
       { id: "i2c-the-shared-conversation", title: "I2C: The Shared Conversation" },
+      { id: "can-the-language-of-many-voices", title: "CAN: The Language of Many Voices" },
       { id: null, title: "Coming Soon" }
     ]
   },
@@ -2302,6 +2303,128 @@ const blogPosts = [
     quote: "On a shared wire, silence is as critical as speech. It is the pull-up resistor that lifts the bus when all devices learn to let go."
   },
   footer: "Reflections on cooperative I2C communication - PrajnaEdge.dev"
+},
+{
+  id: "can-the-language-of-many-voices",
+  category: "Interaction",
+  series: "System Explorations",
+  part: 4,
+  title: "CAN: The Language of Many Voices",
+  subtitle: "How differential signaling and destructive-free arbitration solved the noise and coordination challenges of multi-master buses.",
+  date: "20th June, 2026",
+  tags: ["CAN Bus", "Differential Signaling", "Arbitration", "Message RAM", "Hardware Safety"],
+  sections: [
+    {
+      heading: "1. The Single-Ended Voltage Failure",
+      content: [
+        {
+          type: "p",
+          text: "In our earlier explorations, we watched systems learn to speak. UART established a simple contract between two nodes. SPI shared a clock to unlock extreme speeds. I2C shared clock and data lines using open-drain logic and addressing, allowing dozens of chips to coexist on a single two-wire bus.\n\nYet, all three protocols share a fatal vulnerability: they are single-ended. They measure logic states by comparing the voltage of a signal line against a common reference: ground. If a signal line is at 3.3V relative to ground, it is a 1; if it is at 0V, it is a 0.\n\nThis architecture works beautifully on a clean PCB. But transport these wires onto a factory floor, an elevator shaft, or a car engine bay, and the physics changes. High-current electric motors, ignition systems, and magnetic fields induce voltage spikes in nearby wires. If electromagnetic interference (EMI) induces a +1.5V spike on the signal line, a 0V logic level is suddenly misread as 1.5V (which can be interpreted as a logic 1). If ground offsets occur between nodes due to long cables, the common ground reference drifts, and nodes lose the ability to interpret each other's voltages. In a noisy world, single-ended coordination collapses."
+        }
+      ]
+    },
+    {
+      heading: "2. Differential Signaling: Noise Cancellation through Subtraction",
+      content: [
+        {
+          type: "p",
+          text: "In 1983, Bosch engineers designing automotive electronics realized that they could not eliminate electrical noise; they had to learn to ignore it. The result was the Controller Area Network (CAN) bus.\n\nTo defeat noise, CAN discards the single-ended model in favor of differential signaling. Instead of one signal line and a ground reference, CAN uses two dedicated lines twisted together: CAN High (CANH) and CAN Low (CANL).\n\nWhen a noise spike hits the twisted-pair cable, the electromagnetic fields affect both wires equally. If a motor induces a +1.0V spike, it shifts both CANH and CANL up by exactly 1.0V. The receiving node does not measure each wire against ground; instead, it measures the voltage difference between them (Vdiff = V_CANH - V_CANL). Because the noise spike is added to both wires, subtraction cancels it out completely:\n\n(V_CANH + V_noise) - (V_CANL + V_noise) = V_CANH - V_CANL\n\nThis simple mathematical physics makes CAN almost completely immune to common-mode noise, allowing it to communicate reliably over hundreds of meters in the most hostile environments."
+        },
+        {
+          type: "image",
+          src: "Images/can_network.png",
+          alt: "CAN Network Topology showing CANH and CANL twisted pair with nodes and transceivers"
+        }
+      ]
+    },
+    {
+      heading: "3. Dominant and Recessive: The Wired-AND Evolution",
+      content: [
+        {
+          type: "p",
+          text: "How do we transmit data on this differential bus? CAN takes a page from I2C's open-drain playbook but elevates it to a differential drive.\n\nIn I2C, a node either actively pulls the bus LOW or releases it to float HIGH via pull-up resistors. CAN implements a similar philosophy using dominant and recessive states:\n\n1. Recessive State (Logic 1): The transmitter drivers are turned off. Both CANH and CANL float to a nominal 2.5V, driven by terminating resistors. The differential voltage is Vdiff = 2.5V - 2.5V = 0.0V.\n2. Dominant State (Logic 0): The transmitter actively drives the lines apart. CANH is driven high to 3.5V, and CANL is driven low to 1.5V. The differential voltage is Vdiff = 3.5V - 1.5V = 2.0V.\n\nBecause the dominant state actively drives the lines while the recessive state passively lets them float, a dominant bit (0) will always override a recessive bit (1). If one node attempts to write a recessive 1, but another node writes a dominant 0, the bus resolves to a dominant 0. This dominant/recessive physics forms the basis of CAN's collision-free, multi-master arbitration."
+        },
+        {
+          type: "image",
+          src: "Images/can_differential.png",
+          alt: "Differential Voltage Levels: Dominant vs Recessive on CANH and CANL"
+        }
+      ]
+    },
+    {
+      heading: "4. The Physics of the 120 Ohm Terminator",
+      content: [
+        {
+          type: "p",
+          text: "Look at any CAN network, and you will find a 120 Ohm resistor at each extreme end of the bus, bridging CANH and CANL. These are not simple pull-up resistors; they are transmission line terminators.\n\nAt high speeds, electrical signals behave like waves in water. When a voltage transition travels down a wire, it carries electrical energy. If it hits the open end of a cable, it encounters a boundary mismatch: the energy has nowhere to go, so it reflects back down the wire in the opposite direction. These reflected waves bounce back and forth, colliding with new incoming bits and corrupting the waveform.\n\nTo prevent signal reflections, we must match the cable's characteristic impedance. A standard twisted-pair cable has a characteristic impedance of 120 Ohms. Placing 120 Ohm resistors at both ends acts as an electrical sink: the incoming wave's energy is completely absorbed and converted to heat, preventing any reflections and maintaining pristine signal integrity."
+        },
+        {
+          type: "image",
+          src: "Images/can_termination.png",
+          alt: "CAN Bus Termination: Impedance Matching vs Signal Reflections"
+        }
+      ]
+    },
+    {
+      heading: "5. Bit Arbitration: The Conversation of Dominance",
+      content: [
+        {
+          type: "p",
+          text: "In SPI, a master dictates timing and selection. In I2C, a master addresses slaves. But CAN is a peer-to-peer network: there are no masters or slaves, only nodes. Any node can transmit whenever the bus is idle.\n\nWhat happens when three nodes start transmitting at the exact same microsecond? In Ethernet, this causes a collision; the nodes stop, wait a random interval, and try again, wasting bandwidth. CAN solves this using bitwise arbitration.\n\nEvery CAN frame begins with an Identifier (ID), which serves two purposes: it defines the priority of the message and labels the data content. When multiple nodes start transmitting, they write their ID bits onto the bus one bit at a time while simultaneously reading the state of the bus.\n\nIf Node A writes a recessive 1, but Node B writes a dominant 0, the bus becomes dominant. When Node A reads the bus, it notices the mismatch: it wrote a 1, but it sees a 0. Knowing that another node with a higher priority (a lower numerical ID) is transmitting, Node A immediately falls silent, dropping out of arbitration. Node B continues uninterrupted. This arbitration is completely non-destructive: the winning message is delivered without a single bit of corruption."
+        },
+        {
+          type: "edgecase",
+          id: "can-conversation-of-dominance"
+        }
+      ]
+    },
+    {
+      heading: "6. Frame Architectures: CAN 2.0A vs CAN 2.0B",
+      content: [
+        {
+          type: "p",
+          text: "As networks grew, the original 11-bit identifier space (CAN 2.0A) proved too small for complex systems. To expand this, engineers introduced the Extended CAN frame (CAN 2.0B).\n\n1. Standard Frame (CAN 2.0A): Uses an 11-bit identifier, allowing up to 2,048 unique message priorities. It is the core format for basic automotive and industrial networks.\n2. Extended Frame (CAN 2.0B): Uses a 29-bit identifier, expanding the space to over 536 million unique priorities. This is achieved by splitting the ID into an 11-bit Base ID and an 18-bit Extension ID, separated by the IDE (Identifier Extension) and SRR (Substitute Remote Request) bits. If a standard and an extended frame with the same base ID compete, the standard frame wins arbitration because its IDE bit is dominant (logic 0), whereas the extended frame's IDE bit is recessive (logic 1)."
+        },
+        {
+          type: "image",
+          src: "Images/can_frame_format.png",
+          alt: "CAN 2.0A Standard vs CAN 2.0B Extended Frame Layouts"
+        }
+      ]
+    },
+    {
+      heading: "7. The Safety Layer: Stuffing, CRC, and ACK",
+      content: [
+        {
+          type: "p",
+          text: "Because CAN has no shared clock line (like SPI or I2C), nodes must synchronize their clocks using the transitions (edges) of the incoming data bits. If a message contains a long sequence of identical bits—for example, a data payload of 0x00 (all 0s)—the line remains flat, and the nodes' clocks drift out of sync.\n\nTo maintain synchronization, CAN uses bit stuffing. If the controller detects five consecutive bits of the same polarity, it automatically inserts an opposite 'stuff bit' into the stream. The receiving controller detects these stuff bits and strips them out before delivering the data, ensuring the receiver's phase-locked loop (PLL) stays locked to the transmitter.\n\nAdditionally, CAN includes robust integrity checks. The transmitter appends a 15-bit Cyclic Redundancy Check (CRC) checksum. After the CRC comes the Acknowledge (ACK) slot. During the ACK bit, the transmitter writes a recessive 1. Every receiver that successfully validated the frame overrides this slot by writing a dominant 0. If the transmitter reads a 0 in the ACK slot, it knows at least one node received the frame correctly. If it reads a 1, it assumes a transmission error and retransmits the message."
+        }
+      ]
+    },
+    {
+      heading: "8. Message RAM: The Hidden Geography of Firmware",
+      content: [
+        {
+          type: "p",
+          html: true,
+          text: "In our earlier journey through <a onclick=\"openItem('the-hidden-geography-of-firmware', 'blogs')\" style=\"color:var(--blue); cursor:pointer; text-decoration:underline;\">The Hidden Geography of Firmware</a>, we saw that SRAM is not a uniform block of memory. It is divided into distinct regions, and modern microcontrollers often allocate specific, hardware-accessible partitions for peripheral data. CAN controllers are a prime example.\n\nIn high-performance microcontrollers (such as the STM32H7 or microcontrollers containing Bosch's M_CAN IP), CAN frames are not handled directly in general-purpose CPU registers. Instead, they are written to and read from a dedicated region of memory called Message RAM.\n\nThis Message RAM contains the configuration for receive and transmit buffers, filters, and FIFO queues. Because the CAN peripheral's hardware controller reads and writes to this RAM region directly via DMA (Direct Memory Access), the firmware developer must carefully define the start address and offsets of these buffers in linker scripts or configuration registers. A misalignment of a single word in the Message RAM boundary causes the CAN hardware to generate a bus fault or corrupt frame routing. To write robust CAN drivers, you must understand the exact physical layout of your microcontroller's memory map."
+        },
+        {
+          type: "edgecase",
+          id: "can-journey-of-a-frame"
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Cooperative Network",
+    paragraphs: [
+      "CAN represents the pinnacle of cooperative embedded networking. By replacing central master control with distributed, non-destructive bit arbitration and robust differential physics, it creates a system where nodes can converse reliably in the presence of noise that would disable any other protocol.",
+      "It reminds us that robust communication does not require silence from others; it requires a physical layer that allows voices to merge and resolve their differences without corruption."
+    ],
+    quote: "When machines speak in many voices, harmony is not achieved by force, but by a physical agreement on who steps aside."
+  },
+  footer: "Reflections on differential CAN bus communication - PrajnaEdge.dev"
 }
 ];
 
@@ -2729,7 +2852,7 @@ function openItem(id, type) {
   let label = item.category;
   let sectionsHtml = item.sections.map(sec => {
     let blocks = sec.content.map(b => {
-      if (b.type === 'p') return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${escHtml(b.text)}</p>`;
+      if (b.type === 'p') return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${b.html ? b.text : escHtml(b.text)}</p>`;
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
       if (b.type === 'image') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
@@ -2851,6 +2974,10 @@ function initEdgeCase(containerId) {
     renderI2cSharedBus();
   } else if (containerId === 'i2c-bus-arbitration') {
     renderI2cBusArbitration();
+  } else if (containerId === 'can-conversation-of-dominance') {
+    renderCanConversationOfDominance();
+  } else if (containerId === 'can-journey-of-a-frame') {
+    renderCanJourneyOfAFrame();
   }
 }
 
@@ -5083,6 +5210,443 @@ function renderI2cBusArbitration() {
       <div style="font-family:var(--mono); font-size:0.95rem; color:#FFF;">${statusB}</div>
     `;
   }
+}
+
+function renderCanConversationOfDominance() {
+  const container = document.getElementById('can-conversation-of-dominance');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Conversation of Dominance</div>
+    <div class="edgecase-subheader">Watch Arbitration Happen</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Configure three nodes with 11-bit identifiers (in Hex) and watch them compete for bus access. Dominant bits (0) override recessive bits (1).
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Identifier Configuration</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+        <div>
+          <div class="panel-title" style="color:#3B82F6; font-size:0.8rem; margin-bottom:0.4rem;">Node 1 (Engine ECU)</div>
+          <input type="text" id="ec-can-id1" class="edgecase-select" style="font-family:var(--mono); background:var(--surface2); border:1px solid var(--border); color:#FFF; padding:0.4rem; border-radius:4px; width:100%;" value="0x3F4">
+        </div>
+        <div>
+          <div class="panel-title" style="color:#EC4899; font-size:0.8rem; margin-bottom:0.4rem;">Node 2 (ABS Controller)</div>
+          <input type="text" id="ec-can-id2" class="edgecase-select" style="font-family:var(--mono); background:var(--surface2); border:1px solid var(--border); color:#FFF; padding:0.4rem; border-radius:4px; width:100%;" value="0x3A2">
+        </div>
+        <div>
+          <div class="panel-title" style="color:#A855F7; font-size:0.8rem; margin-bottom:0.4rem;">Node 3 (Body Control)</div>
+          <input type="text" id="ec-can-id3" class="edgecase-select" style="font-family:var(--mono); background:var(--surface2); border:1px solid var(--border); color:#FFF; padding:0.4rem; border-radius:4px; width:100%;" value="0x5B1">
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM CONTROLS -->
+    <div class="pipeline-step">System Controls</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: 3fr 1fr; gap:1rem; align-items:center;">
+        <div style="font-size:0.75rem; color:var(--text); font-family:var(--mono);">
+          Click to start transmission. The nodes will write their IDs bit-by-bit onto the differential bus.
+        </div>
+        <button id="ec-can-transmit-btn" class="edgecase-button" style="margin:0; width:100%; height:38px;">TRANSMIT</button>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Physical Waveform Arbitration Trace (Shared Differential Bus)</div>
+    <div class="edgecase-visual" id="ec-can-waveform-container" style="background:#0F172A; min-height:280px; position:relative;"></div>
+
+    <!-- OUTPUT PANELS -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1.5rem;">
+      <div>
+        <div class="pipeline-step">Arbitration Log</div>
+        <div id="ec-can-log" class="terminal-box"></div>
+      </div>
+      <div>
+        <div class="pipeline-step">Node Active States</div>
+        <div class="panel-box" id="ec-can-summary" style="height:200px; display:flex; flex-direction:column; justify-content:center; gap:0.5rem; box-sizing:border-box;"></div>
+      </div>
+    </div>
+  `;
+
+  const id1Input = document.getElementById('ec-can-id1');
+  const id2Input = document.getElementById('ec-can-id2');
+  const id3Input = document.getElementById('ec-can-id3');
+  const transmitBtn = document.getElementById('ec-can-transmit-btn');
+  const waveformContainer = document.getElementById('ec-can-waveform-container');
+  const logContainer = document.getElementById('ec-can-log');
+  const summaryContainer = document.getElementById('ec-can-summary');
+
+  let animating = false;
+  let animStep = 20;
+
+  function parseHex(val, defaultVal) {
+    try {
+      let clean = val.trim();
+      if (!clean.startsWith('0x')) clean = '0x' + clean;
+      const parsed = parseInt(clean, 16);
+      if (isNaN(parsed) || parsed < 0 || parsed > 0x7FF) return defaultVal;
+      return parsed;
+    } catch(e) {
+      return defaultVal;
+    }
+  }
+
+  transmitBtn.addEventListener('click', () => {
+    if (animating) return;
+    animating = true;
+    animStep = 0;
+    runAnimation();
+  });
+
+  function runAnimation() {
+    if (!animating) return;
+
+    const id1 = parseHex(id1Input.value, 0x3F4);
+    const id2 = parseHex(id2Input.value, 0x3A2);
+    const id3 = parseHex(id3Input.value, 0x5B1);
+
+    // Convert to 11 bits
+    const bits1 = [];
+    const bits2 = [];
+    const bits3 = [];
+    for (let i = 10; i >= 0; i--) {
+      bits1.push((id1 >> i) & 1);
+      bits2.push((id2 >> i) & 1);
+      bits3.push((id3 >> i) & 1);
+    }
+
+    // Step-by-step state calculation
+    const states = [];
+    let act1 = true, act2 = true, act3 = true;
+    let logLines = ["Initializing CAN arbitration sequence...", "Nodes check for bus idle. Bus is free.", "Simultaneously transmitting SOF (Start of Frame: Dominant 0)..."];
+
+    for (let s = 0; s < 11; s++) {
+      const bit1 = bits1[s];
+      const bit2 = bits2[s];
+      const bit3 = bits3[s];
+
+      const out1 = act1 ? bit1 : 1;
+      const out2 = act2 ? bit2 : 1;
+      const out3 = act3 ? bit3 : 1;
+
+      // Shared bus resolves to dominant (0) if any active node writes 0.
+      const busState = out1 & out2 & out3;
+
+      let stepDesc = `Bit ${10-s}: `;
+      let dropouts = [];
+
+      if (act1 && bit1 === 1 && busState === 0) {
+        act1 = false;
+        dropouts.push("Node 1 dropped out (wrote 1, read 0)");
+      }
+      if (act2 && bit2 === 1 && busState === 0) {
+        act2 = false;
+        dropouts.push("Node 2 dropped out (wrote 1, read 0)");
+      }
+      if (act3 && bit3 === 1 && busState === 0) {
+        act3 = false;
+        dropouts.push("Node 3 dropped out (wrote 1, read 0)");
+      }
+
+      stepDesc += `[Node 1: ${act1 ? bit1 : '-'}, Node 2: ${act2 ? bit2 : '-'}, Node 3: ${act3 ? bit3 : '-'}] => Bus: ${busState}`;
+      if (dropouts.length > 0) {
+        stepDesc += ` | ${dropouts.join(", ")}`;
+      }
+
+      logLines.push(stepDesc);
+
+      states.push({
+        step: s,
+        bits: [bit1, bit2, bit3],
+        actives: [act1, act2, act3],
+        bus: busState,
+        dropouts: dropouts
+      });
+    }
+
+    let winner = 1;
+    if (act2) winner = 2;
+    if (act3) winner = 3;
+    logLines.push(`Arbitration completed. Node ${winner} wins and gains bus control.`);
+
+    if (animStep <= 11) {
+      // Draw SVG waveform
+      drawWaveforms(bits1, bits2, bits3, states, animStep);
+      
+      // Update Log
+      logContainer.innerHTML = logLines.slice(0, animStep + 3).map(l => `<div>${escHtml(l)}</div>`).join('');
+      logContainer.scrollTop = logContainer.scrollHeight;
+
+      // Update Summary panel
+      updateSummary(states, animStep, winner);
+
+      animStep++;
+      setTimeout(runAnimation, 1200);
+    } else {
+      animating = false;
+    }
+  }
+
+  function drawWaveforms(bits1, bits2, bits3, states, currentStep) {
+    const w = waveformContainer.clientWidth || 700;
+    const h = 260;
+    const pad = 100;
+    const stepW = (w - pad - 40) / 11;
+
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" style="font-family:var(--mono);">`;
+
+    // Draw background grid lines for bit boundaries
+    for (let i = 0; i <= 11; i++) {
+      const x = pad + i * stepW;
+      svg += `<line x1="${x}" y1="10" x2="${x}" y2="${h - 20}" stroke="var(--border)" stroke-dasharray="2,2"/>`;
+      if (i < 11) {
+        svg += `<text x="${x + stepW/2}" y="${h - 5}" fill="var(--muted)" font-size="9" text-anchor="middle">Bit ${10-i}</text>`;
+      }
+    }
+
+    // Row settings
+    const rows = [
+      { name: "Node 1 TX", y: 35, color: "#3B82F6", bits: bits1, idx: 0 },
+      { name: "Node 2 TX", y: 85, color: "#EC4899", bits: bits2, idx: 1 },
+      { name: "Node 3 TX", y: 135, color: "#A855F7", bits: bits3, idx: 2 },
+      { name: "Shared Bus", y: 195, color: "#10B981", bits: states.map(s => s.bus), idx: -1 }
+    ];
+
+    rows.forEach(r => {
+      // Row Label
+      svg += `<text x="10" y="${r.y + 5}" fill="${r.color}" font-size="10" font-weight="bold">${r.name}</text>`;
+
+      // Generate signal path
+      let path = `M ${pad} ${r.y + (r.bits[0] === 1 ? -12 : 12)}`;
+
+      for (let i = 0; i < 11; i++) {
+        const xStart = pad + i * stepW;
+        const xEnd = pad + (i + 1) * stepW;
+        let val = r.bits[i];
+
+        if (r.idx !== -1) {
+          // For node signals, if it dropped out, show it floating HIGH (1)
+          if (i > 0 && !states[i-1].actives[r.idx]) {
+            val = 1;
+          }
+        }
+
+        const yVal = r.y + (val === 1 ? -12 : 12);
+        
+        // Horizontal line
+        path += ` L ${xStart} ${yVal} L ${xEnd} ${yVal}`;
+
+        // If node dropped out exactly at this step, draw a mark
+        if (r.idx !== -1 && i < currentStep && states[i].dropouts.some(d => d.includes(`Node ${r.idx + 1}`))) {
+          svg += `<circle cx="${xStart + stepW/2}" cy="${yVal}" r="5" fill="#EF6868"/>`;
+          svg += `<text x="${xStart + stepW/2}" y="${yVal - 8}" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">LOST</text>`;
+        }
+      }
+
+      svg += `<path d="${path}" fill="none" stroke="${r.color}" stroke-width="2"/>`;
+    });
+
+    // Draw active cursor
+    if (currentStep < 11) {
+      const cursorX = pad + currentStep * stepW;
+      svg += `<rect x="${cursorX}" y="10" width="${stepW}" height="${h - 30}" fill="rgba(59, 130, 246, 0.08)" stroke="var(--blue)" stroke-width="1" stroke-dasharray="4,4"/>`;
+    }
+
+    svg += `</svg>`;
+    waveformContainer.innerHTML = svg;
+  }
+
+  function updateSummary(states, currentStep, winner) {
+    if (currentStep === 0) {
+      summaryContainer.innerHTML = `<div style="font-family:var(--mono); font-size:0.8rem; color:#FFF; text-align:center;">Sequence started...</div>`;
+      return;
+    }
+
+    const idx = Math.min(currentStep - 1, 10);
+    const s = states[idx];
+
+    const s1 = s.actives[0] ? `<span style="color:#10B981;font-weight:bold;">ACTIVE</span>` : `<span style="color:#EF6868;">DROPPED OUT</span>`;
+    const s2 = s.actives[1] ? `<span style="color:#10B981;font-weight:bold;">ACTIVE</span>` : `<span style="color:#EF6868;">DROPPED OUT</span>`;
+    const s3 = s.actives[2] ? `<span style="color:#10B981;font-weight:bold;">ACTIVE</span>` : `<span style="color:#EF6868;">DROPPED OUT</span>`;
+
+    summaryContainer.innerHTML = `
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Node 1 (Engine ECU):</div>
+      <div style="font-family:var(--mono); font-size:0.85rem; color:#FFF; margin-bottom:0.5rem;">${s1} (ID bits: ${bitsHtml(states, 0, currentStep)})</div>
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Node 2 (ABS Controller):</div>
+      <div style="font-family:var(--mono); font-size:0.85rem; color:#FFF; margin-bottom:0.5rem;">${s2} (ID bits: ${bitsHtml(states, 1, currentStep)})</div>
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase;">Node 3 (Body Control):</div>
+      <div style="font-family:var(--mono); font-size:0.85rem; color:#FFF; margin-bottom:0.5rem;">${s3} (ID bits: ${bitsHtml(states, 2, currentStep)})</div>
+      ${currentStep >= 11 ? `<div style="margin-top:0.4rem; font-family:var(--mono); font-weight:bold; font-size:0.8rem; color:#10B981; text-align:center;">Winner: Node ${winner} (Lowest ID wins!)</div>` : ''}
+    `;
+  }
+
+  function bitsHtml(states, nodeIdx, currentStep) {
+    let out = '';
+    for (let i = 0; i < 11; i++) {
+      let char = states[i].bits[nodeIdx];
+      let color = 'var(--muted)';
+      if (i < currentStep) {
+        color = states[i].actives[nodeIdx] ? '#FFF' : '#EF6868';
+      }
+      out += `<span style="color:${color}; margin-right:2px;">${char}</span>`;
+    }
+    return out;
+  }
+
+  // Draw initial waveforms on load
+  drawWaveforms([0,1,1,1,1,1,1,0,1,0,0], [0,1,1,1,0,1,0,0,0,1,0], [1,0,1,1,0,1,1,0,0,0,1], Array(11).fill({ bus: 1,actives:[true,true,true], dropouts:[] }), 11);
+  summaryContainer.innerHTML = `<div style="font-family:var(--mono); font-size:0.8rem; color:var(--muted); text-align:center;">Configure identifiers and click TRANSMIT to watch arbitration live.</div>`;
+}
+
+function renderCanJourneyOfAFrame() {
+  const container = document.getElementById('can-journey-of-a-frame');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Journey of a CAN Frame</div>
+    <div class="edgecase-subheader">Watch a Message Travel through the CAN Controller</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Follow a CAN frame step-by-step from the application layer, through registers, Message RAM, bit-stuffing, the differential bus, and final arrival.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Frame Settings</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.25rem;">
+        <div>
+          <div class="panel-title" style="color:var(--blue); font-size:0.8rem; margin-bottom:0.4rem;">Message Identifier</div>
+          <input type="text" id="ec-jf-id" class="edgecase-select" style="font-family:var(--mono); background:var(--surface2); border:1px solid var(--border); color:#FFF; padding:0.4rem; border-radius:4px; width:100%;" value="0x1F4">
+        </div>
+        <div>
+          <div class="panel-title" style="color:#10B981; font-size:0.8rem; margin-bottom:0.4rem;">Data Payload (Hex bytes)</div>
+          <input type="text" id="ec-jf-data" class="edgecase-select" style="font-family:var(--mono); background:var(--surface2); border:1px solid var(--border); color:#FFF; padding:0.4rem; border-radius:4px; width:100%;" value="0xDE 0xAD 0xBE 0xEF">
+        </div>
+      </div>
+    </div>
+
+    <!-- PIPELINE STEPPER -->
+    <div class="pipeline-step">Pipeline Progress</div>
+    <div class="panel-box" style="padding:1rem; overflow-x:auto;">
+      <div id="ec-jf-stepper" style="display:flex; justify-content:space-between; align-items:center; min-width:650px;"></div>
+    </div>
+
+    <!-- STAGE DETAIL PANEL -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
+      <div>
+        <div class="pipeline-step">Current Stage Mechanics</div>
+        <div class="panel-box" id="ec-jf-details" style="min-height:220px; display:flex; flex-direction:column; justify-content:flex-start; gap:0.6rem; box-sizing:border-box;"></div>
+      </div>
+      <div>
+        <div class="pipeline-step">Controller Signal Log</div>
+        <div id="ec-jf-log" class="terminal-box" style="height:220px;"></div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div style="margin-top:1rem; display:flex; justify-content:flex-end;">
+      <button id="ec-jf-transmit-btn" class="edgecase-button" style="margin:0; width:150px; height:38px;">TRANSMIT</button>
+    </div>
+  `;
+
+  const idInput = document.getElementById('ec-jf-id');
+  const dataInput = document.getElementById('ec-jf-data');
+  const stepperContainer = document.getElementById('ec-jf-stepper');
+  const detailsContainer = document.getElementById('ec-jf-details');
+  const logContainer = document.getElementById('ec-jf-log');
+  const transmitBtn = document.getElementById('ec-jf-transmit-btn');
+
+  const stages = [
+    { title: "Application", desc: "The software application calls the driver function: <code>can_transmit(0x1F4, [0xDE, 0xAD, 0xBE, 0xEF])</code>. The core processor prepares to hand over control." },
+    { title: "CAN Controller", desc: "The driver writes the transmit request command to the CAN Controller peripheral register (TXBAR - Transmit Buffer Add Request register), setting up transmission flags." },
+    { title: "Message RAM", desc: "The peripheral writes the frame description into a dedicated **Message RAM** partition. <i>Connection to <a onclick=\"openItem('the-hidden-geography-of-firmware', 'blogs')\" style=\"color:var(--blue); cursor:pointer; text-decoration:underline;\">The Hidden Geography of Firmware</a></i>: On microcontrollers like STM32H7, Message RAM sits in a specific SRAM block. A misalignment in the register base offset triggers a hardware bus fault or silent frame drops." },
+    { title: "Frame Builder", desc: "The CAN controller IP packages the identifier, DLC (Data Length Code = 4), and the hex payload into a structured serial frame, ready for physical bitwise streaming." },
+    { title: "Arbitration", desc: "The transceiver checks if the bus is idle, then asserts SOF and transmits the 11 ID bits (00111110100) onto the bus, listening to ensure no higher-priority message collides." },
+    { title: "Bit Stuffing", desc: "As bits flow, the hardware controller monitors the stream. If it detects five consecutive 1s or 0s, it automatically inserts an opposite bit (stuff bit) to keep the receiver clocks synchronized." },
+    { title: "CRC Generator", desc: "The hardware calculates a 15-bit Cyclic Redundancy Check (CRC) over the address and payload, appending the checksum to the frame for error validation." },
+    { title: "Differential Bus", desc: "The CAN transceiver drives the physical twisted-pair wire. Logic 0 pushes CANH to 3.5V and CANL to 1.5V (Dominant). Logic 1 leaves both lines floating at 2.5V (Recessive)." },
+    { title: "Receiving Node", desc: "The receiving transceiver senses the differential voltage. Validating the CRC, it overrides the ACK slot with a dominant 0 to acknowledge correct delivery." },
+    { title: "App Delivery", desc: "The receiving CAN controller copies the received payload from its FIFO Message RAM buffer to CPU registers, triggering an RX interrupt so the destination application can process the data." }
+  ];
+
+  let currentStageIdx = 0;
+  let animating = false;
+
+  function renderStepper() {
+    stepperContainer.innerHTML = stages.map((s, idx) => {
+      let color = "var(--muted)";
+      if (idx === currentStageIdx) color = "var(--blue)";
+      else if (idx < currentStageIdx) color = "#10B981";
+
+      const bullet = idx < currentStageIdx ? "✓" : idx + 1;
+      const lineHtml = idx < stages.length - 1 ? `<div style="flex-grow:1; height:2px; background:${idx < currentStageIdx ? '#10B981' : 'var(--border)'}; margin:0 6px;"></div>` : '';
+
+      return `
+        <div style="display:flex; align-items:center; flex-grow:${idx < stages.length - 1 ? 1 : 0}">
+          <div style="width:24px; height:24px; border-radius:50%; border:2px solid ${color}; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:0.7rem; font-weight:bold; color:${color}; background:#0F172A;" title="${s.title}">
+            ${bullet}
+          </div>
+          ${lineHtml}
+        </div>
+      `;
+    }).join('');
+  }
+
+  function updateStage() {
+    renderStepper();
+    const stage = stages[currentStageIdx];
+    const logTimestamp = new Date().toISOString().slice(11, 19);
+
+    // Show details
+    detailsContainer.innerHTML = `
+      <div style="font-family:'Syne',sans-serif; font-size:1rem; font-weight:bold; color:#FFF;">${currentStageIdx + 1}. ${stage.title}</div>
+      <p style="font-size:0.85rem; color:#CBD5E1; line-height:1.6; margin-top:0.4rem;">${stage.desc}</p>
+    `;
+
+    // Append to log
+    const valId = idInput.value.trim();
+    const valData = dataInput.value.trim();
+    let logLine = `[${logTimestamp}] Stage ${currentStageIdx + 1}: ${stage.title} - `;
+    if (currentStageIdx === 0) logLine += `Preparing packet ID ${valId}, payload [${valData}]`;
+    else if (currentStageIdx === 2) logLine += `Wrote descriptor boundaries to CAN Message RAM`;
+    else if (currentStageIdx === 4) logLine += `Starting bit-arbitration with ID bits`;
+    else if (currentStageIdx === 7) logLine += `Driving physical lines CANH/CANL`;
+    else if (currentStageIdx === 8) logLine += `ACK assertion detected (Dominant 0 in slot)`;
+    else logLine += `OK`;
+
+    logContainer.innerHTML += `<div>${escHtml(logLine)}</div>`;
+    logContainer.scrollTop = logContainer.scrollHeight;
+  }
+
+  transmitBtn.addEventListener('click', () => {
+    if (animating) return;
+    animating = true;
+    currentStageIdx = 0;
+    logContainer.innerHTML = `<div>[${new Date().toISOString().slice(11, 19)}] Transmit sequence started.</div>`;
+    animatePipeline();
+  });
+
+  function animatePipeline() {
+    if (currentStageIdx < stages.length) {
+      updateStage();
+      currentStageIdx++;
+      setTimeout(animatePipeline, 2000);
+    } else {
+      animating = false;
+      logContainer.innerHTML += `<div style="color:#10B981;font-weight:bold;">[SYSTEM] Frame transaction completed successfully.</div>`;
+    }
+  }
+
+  // Draw initial
+  currentStageIdx = 0;
+  renderStepper();
+  detailsContainer.innerHTML = `<div style="font-family:var(--mono); font-size:0.85rem; color:var(--muted); text-align:center;">Configure message and press TRANSMIT to watch the frame pipeline.</div>`;
+  logContainer.innerHTML = `<div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Terminal idle.</div>`;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
