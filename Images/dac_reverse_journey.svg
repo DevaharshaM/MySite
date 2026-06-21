@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  
+  <!-- Outer Border -->
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  
+  <!-- Left Column: ADC -->
+  <g transform="translate(20, 20)">
+    <text x="130" y="25" fill="#FFF" font-weight="bold" font-size="12" text-anchor="middle" letter-spacing="0.05em">ANALOG-TO-DIGITAL (ADC)</text>
+    <text x="130" y="42" fill="#64748B" font-family="monospace" font-size="8" text-anchor="middle">REALITY → NUMBERS</text>
+    
+    <!-- Analog Wave -->
+    <path d="M 30 130 C 50 70, 90 70, 110 130 C 130 190, 170 190, 190 130" fill="none" stroke="rgba(148,163,184,0.4)" stroke-width="2" />
+    <!-- Sampling Grid and Dots -->
+    <path d="M 50 130 V 100 M 70 130 V 85 M 90 130 V 100 M 110 130 V 130 M 130 130 V 160 M 150 130 V 175 M 170 130 V 160 M 190 130 V 130" fill="none" stroke="#3B82F6" stroke-width="1" stroke-dasharray="2,2" />
+    <circle cx="50" cy="100" r="3" fill="#EF6868" />
+    <circle cx="70" cy="85" r="3" fill="#EF6868" />
+    <circle cx="90" cy="100" r="3" fill="#EF6868" />
+    <circle cx="110" cy="130" r="3" fill="#EF6868" />
+    <circle cx="130" cy="160" r="3" fill="#EF6868" />
+    <circle cx="150" cy="175" r="3" fill="#EF6868" />
+    <circle cx="170" cy="160" r="3" fill="#EF6868" />
+    <circle cx="190" cy="130" r="3" fill="#EF6868" />
+    
+    <!-- Arrow & Bits -->
+    <path d="M 210 130 H 240 M 235 125 L 240 130 L 235 135" fill="none" stroke="#3B82F6" stroke-width="1.5" />
+    <text x="225" y="115" fill="#3B82F6" font-family="monospace" font-size="9" text-anchor="middle">SAMPLES</text>
+    <rect x="245" y="100" width="30" height="60" rx="3" fill="#1E293B" stroke="rgba(148,163,184,0.15)" />
+    <text x="260" y="118" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">0110</text>
+    <text x="260" y="133" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">1001</text>
+    <text x="260" y="148" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">0110</text>
+  </g>
+
+  <!-- Right Column: DAC -->
+  <g transform="translate(320, 20)">
+    <text x="150" y="25" fill="#FFF" font-weight="bold" font-size="12" text-anchor="middle" letter-spacing="0.05em">DIGITAL-TO-ANALOG (DAC)</text>
+    <text x="150" y="42" fill="#64748B" font-family="monospace" font-size="8" text-anchor="middle">NUMBERS → REALITY</text>
+    
+    <!-- Input Bits -->
+    <rect x="10" y="100" width="30" height="60" rx="3" fill="#1E293B" stroke="rgba(148,163,184,0.15)" />
+    <text x="25" y="118" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">1011</text>
+    <text x="25" y="133" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">0010</text>
+    <text x="25" y="148" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">1100</text>
+    <path d="M 45 130 H 75 M 70 125 L 75 130 L 70 135" fill="none" stroke="#10B981" stroke-width="1.5" />
+    <text x="60" y="115" fill="#10B981" font-family="monospace" font-size="9" text-anchor="middle">CODES</text>
+    
+    <!-- Stepped Staircase and Smooth Reconstructed Wave -->
+    <path d="M 85 130 H 105 V 90 H 125 V 70 H 145 V 105 H 165 V 150 H 185 V 170 H 205 V 140 H 225 V 110" fill="none" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="2,1" />
+    <path d="M 85 130 C 105 100, 125 70, 145 105 C 165 140, 185 170, 205 140 C 225 110, 245 90, 255 110" fill="none" stroke="#10B981" stroke-width="2" />
+    
+    <!-- Labels -->
+    <text x="145" y="195" fill="#64748B" font-size="8" text-anchor="middle">Discrete steps smoothed into continuous physics</text>
+  </g>
+</svg>

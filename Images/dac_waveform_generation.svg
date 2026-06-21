@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  
+  <!-- Outer Border -->
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  
+  <!-- 1. Sine Wave (Top-Left) -->
+  <g transform="translate(20, 20)">
+    <text x="130" y="20" fill="#FFF" font-weight="bold" font-size="9" text-anchor="middle">SINE WAVE (Array Lookup)</text>
+    <path d="M 30 70 H 45 V 50 H 60 V 38 H 75 V 32 H 90 V 38 H 105 V 50 H 120 V 70 H 135 V 90 H 150 V 102 H 165 V 108 H 180 V 102 H 195 V 90 H 210 V 70" fill="none" stroke="#3B82F6" stroke-width="1.5" />
+    <path d="M 30 70 C 45 40, 75 25, 105 40 C 135 70, 165 110, 195 90 C 210 80, 215 75, 220 70" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="1" stroke-dasharray="2,2" />
+  </g>
+
+  <!-- 2. Triangle Wave (Top-Right) -->
+  <g transform="translate(340, 20)">
+    <text x="130" y="20" fill="#FFF" font-weight="bold" font-size="9" text-anchor="middle">TRIANGLE WAVE (Slope Counting)</text>
+    <path d="M 30 100 H 45 V 82.5 H 60 V 65 H 75 V 47.5 H 90 V 30 H 105 V 47.5 H 120 V 65 H 135 V 82.5 H 150 V 100 H 165 V 82.5 H 180 V 65 H 195 V 47.5 H 210 V 30" fill="none" stroke="#F59E0B" stroke-width="1.5" />
+    <path d="M 30 100 L 90 30 L 150 100 L 210 30" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="1" stroke-dasharray="2,2" />
+  </g>
+
+  <!-- 3. Sawtooth Wave (Bottom-Left) -->
+  <g transform="translate(20, 120)">
+    <text x="130" y="20" fill="#FFF" font-weight="bold" font-size="9" text-anchor="middle">SAWTOOTH WAVE (Accumulator)</text>
+    <path d="M 30 100 H 45 V 85 H 60 V 70 H 75 V 55 H 90 V 40 H 105 V 25 H 120 V 100 H 135 V 85 H 150 V 70 H 165 V 55 H 180 V 40 H 195 V 25 H 210 V 100" fill="none" stroke="#EF6868" stroke-width="1.5" />
+    <path d="M 30 100 L 105 25 M 120 100 L 195 25" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="1" stroke-dasharray="2,2" />
+  </g>
+
+  <!-- 4. Square Wave (Bottom-Right) -->
+  <g transform="translate(340, 120)">
+    <text x="130" y="20" fill="#FFF" font-weight="bold" font-size="9" text-anchor="middle">SQUARE WAVE (State Toggling)</text>
+    <path d="M 30 100 H 105 V 25 H 180 V 100 H 220" fill="none" stroke="#10B981" stroke-width="1.5" />
+    <path d="M 30 100 H 105 V 25 H 180 V 100 H 220" fill="none" stroke="rgba(148,163,184,0.15)" stroke-width="1" stroke-dasharray="2,2" />
+  </g>
+  
+  <!-- Divider grid lines -->
+  <line x1="320" y1="20" x2="320" y2="220" stroke="rgba(148,163,184,0.08)" stroke-width="1" />
+  <line x1="20" y1="120" x2="620" y2="120" stroke="rgba(148,163,184,0.08)" stroke-width="1" />
+</svg>

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  
+  <!-- Outer Border -->
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  
+  <!-- Raw DAC Stepped Output -->
+  <g transform="translate(10, 10)">
+    <text x="90" y="30" fill="#EF6868" font-weight="bold" font-size="9" text-anchor="middle">1. RAW DAC OUTPUT</text>
+    <path d="M 20 130 H 40 V 100 H 60 V 80 H 80 V 110 H 100 V 140 H 120 V 160 H 140 V 130 H 160 V 100" fill="none" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="2,1" />
+    <text x="90" y="190" fill="#64748B" font-size="8" text-anchor="middle">Jagged staircase (High Frequency Noise)</text>
+  </g>
+
+  <!-- Filter Block (Center) -->
+  <g transform="translate(200, 40)">
+    <rect x="10" y="30" width="180" height="110" rx="4" fill="#1E293B" stroke="rgba(148,163,184,0.2)" stroke-width="1.5" />
+    <text x="100" y="55" fill="#FFF" font-weight="bold" font-size="10" text-anchor="middle">Low-Pass Filter</text>
+    
+    <!-- RC circuit schematic inside the block -->
+    <!-- Input line -> Resistor symbol -> Node -> Output line -->
+    <path d="M 30 90 H 50 L 53 85 L 57 95 L 61 85 L 65 95 L 69 85 L 73 95 L 76 90 H 110" fill="none" stroke="#FFF" stroke-width="1.5" />
+    <text x="65" y="75" fill="#64748B" font-family="monospace" font-size="8" text-anchor="middle">R</text>
+    
+    <!-- Capacitor to ground -->
+    <path d="M 110 90 V 110" fill="none" stroke="#FFF" stroke-width="1.5" />
+    <path d="M 100 110 H 120 M 100 115 H 120" fill="none" stroke="#FFF" stroke-width="1.5" />
+    <path d="M 110 115 V 130" fill="none" stroke="#FFF" stroke-width="1.5" />
+    <!-- Ground symbol -->
+    <path d="M 105 130 H 115 M 107 133 H 113 M 109 136 H 111" fill="none" stroke="#FFF" stroke-width="1" />
+    <text x="130" y="118" fill="#64748B" font-family="monospace" font-size="8">C</text>
+    
+    <!-- Output -->
+    <path d="M 110 90 H 150" fill="none" stroke="#FFF" stroke-width="1.5" />
+    
+    <!-- Left and right arrows -->
+    <path d="M -10 90 H 10 M 5 85 L 10 90 L 5 95" fill="none" stroke="#EF6868" stroke-width="1.5" />
+    <path d="M 180 90 H 200 M 195 85 L 200 90 L 195 95" fill="none" stroke="#10B981" stroke-width="1.5" />
+  </g>
+
+  <!-- Filtered Analog Output -->
+  <g transform="translate(420, 10)">
+    <text x="90" y="30" fill="#10B981" font-weight="bold" font-size="9" text-anchor="middle">2. RECONSTRUCTED WAVE</text>
+    <path d="M 20 130 C 40 100, 60 80, 80 110 C 100 140, 120 160, 140 130 C 160 100, 170 85, 180 90" fill="none" stroke="#10B981" stroke-width="2" />
+    <text x="90" y="190" fill="#64748B" font-size="8" text-anchor="middle">Continuous physical signal (Smooth)</text>
+  </g>
+</svg>

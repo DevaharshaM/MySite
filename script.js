@@ -96,6 +96,9 @@ const systemsTreeNodes = {
     explorations: [
       { id: "the-architecture-of-time", title: "The Architecture of Time" },
       { id: "when-machines-learned-to-observe", title: "When Machines Learned to Observe" },
+      { id: "when-machines-learned-to-speak-back", title: "When Machines Learned to Speak Back" },
+      { id: "the-tyranny-of-waiting", title: "The Tyranny of Waiting" },
+      { id: "when-hardware-learned-to-interrupt", title: "When Hardware Learned to Interrupt" },
       { id: null, title: "Coming Soon" }
     ]
   },
@@ -2893,6 +2896,432 @@ const blogPosts = [
     quote: "A processor without an ADC is a brain without senses—trapped in a silent chamber of its own logical abstractions."
   },
   footer: "Reflections on analog interfaces and ADC conversions - PrajnaEdge.dev"
+},
+{
+  id: "when-machines-learned-to-speak-back",
+  category: "Coordination",
+  series: "The Architecture of Time",
+  title: "When Machines Learned to Speak Back",
+  subtitle: "How numbers became reality.",
+  date: "21st June, 2026",
+  tags: ["DAC", "R-2R Ladder", "PWM", "Reconstruction Filter", "Waveform Generation"],
+  sections: [
+    {
+      heading: "1. The Need to Influence Reality",
+      content: [
+        {
+          type: "p",
+          text: "Sensing the world is a passive act. A microcontroller can read an ADC, clocking timing intervals and translating physical temperatures, light levels, or voltages into neat digital variables. But observation alone does not change the physical state of a system. A machine that can only observe is a brain trapped in a jar—fully aware of its environment but powerless to act.\n\nTo become purposeful, a machine must eventually influence its surroundings. It needs to drive a speaker cone to vibrate air and generate sound, adjust the speed of a high-torque motor in an industrial conveyor, produce a specific reference voltage to calibrate another sensor, or generate a precise high-frequency carrier wave for radio transmission. Every active control system, from a simple thermostat to a multi-axis surgical robot, requires the ability to write actions back into physical space. Observation must give way to influence."
+        }
+      ]
+    },
+    {
+      heading: "2. The Reverse Journey",
+      content: [
+        {
+          type: "p",
+          text: "This requirement defines a symmetrical engineering challenge. In our earlier explorations, we watched the Analog-to-Digital Converter (ADC) carve physical reality into discrete digital states. The ADC took a continuous voltage, sampled it at discrete intervals in time, and rounded it to the nearest binary code on a grid. It was a journey from continuous physics to discrete numbers.\n\nTo speak back, the machine must take the reverse journey. It must start with a discrete binary code—a neat integer stored in a CPU register—and translate it back into a continuous physical voltage. This is the domain of the Digital-to-Analog Converter (DAC). Below is a conceptual representation of this symmetry:"
+        },
+        {
+          type: "image",
+          src: "Images/dac_reverse_journey.svg",
+          alt: "The Symmetry of ADC and DAC pathways",
+          caption: "Figure 1: While the ADC slices continuous signals into discrete digital numbers, the DAC maps numbers back into physical voltages."
+        }
+      ]
+    },
+    {
+      heading: "3. How a DAC Works: The Resistor Divider Intuition",
+      content: [
+        {
+          type: "p",
+          text: "How does a chip translate an abstract binary number into a real physical voltage? At its heart, a DAC is a network of resistors and switches that divide a stable Reference Voltage ($V_{REF}$) down to a specific fraction.\n\nConsider a simple resistor divider ladder. A binary code represents a set of instructions for a switch matrix. For instance, in a classic R-2R ladder architecture, each bit of the digital input code controls a corresponding physical switch. If a bit is 1, its switch connects a node in the resistor ladder to the Reference Voltage ($V_{REF}$). If a bit is 0, the switch connects that node to ground. The current splits symmetrically at each R-2R junction. By summing these scaled currents, the DAC generates an output current directly proportional to the digital code, which is then buffered by an operational amplifier to output a clean, stable voltage. The hardware block diagram below illustrates this pipeline:"
+        },
+        {
+          type: "image",
+          src: "Images/dac_block_diagram.svg",
+          alt: "DAC Pipeline Block Diagram",
+          caption: "Figure 2: The internal elements of a DAC: input register, switch matrix, resistor scaling network, and output buffer."
+        }
+      ]
+    },
+    {
+      heading: "4. Resolution: Slicing the Staircase",
+      content: [
+        {
+          type: "p",
+          text: "Just as with ADCs, a DAC's precision is governed by its Resolution. Resolution defines the number of discrete steps the DAC can use to construct its output voltage.\n\n- An **8-bit DAC** yields $2^8 = 256$ discrete voltage steps.\n- A **10-bit DAC** provides $2^{10} = 1024$ steps.\n- A **12-bit DAC** provides $2^{12} = 4096$ steps, which is standard for high-quality microcontroller peripherals.\n- A **16-bit DAC** provides $2^{16} = 65,536$ steps, used in high-fidelity audio equipment where stepped jaggedness would introduce audible distortion.\n\nThe smallest voltage change the DAC can output is called the Least Significant Bit (LSB) size. As resolution increases, the step size shrinks, transforming a coarse, jagged staircase into a smooth line. Below is a comparison of output granularity across resolutions:"
+        },
+        {
+          type: "image",
+          src: "Images/dac_resolution_comparison.svg",
+          alt: "DAC Resolution Step Comparison",
+          caption: "Figure 3: High resolution minimizes the quantization step size, allowing the DAC to reconstruct curves with minimal distortion."
+        }
+      ]
+    },
+    {
+      heading: "5. Reference Voltage: The Boundary Ruler",
+      content: [
+        {
+          type: "p",
+          text: "A DAC cannot output a voltage larger than the Reference Voltage ($V_{REF}$) supplied to its core. $V_{REF}$ acts as the physical ruler that calibrates the digital steps. The relationship between the output voltage ($V_{OUT}$), the digital code, the resolution ($N$), and $V_{REF}$ is defined as:\n\n$V_{OUT} = V_{REF} \\times \\frac{\\text{Digital Code}}{2^N - 1}$\n\nIf $V_{REF}$ is 3.3V, a 12-bit code of `4095` outputs exactly 3.3V, while `2048` outputs 1.65V. If $V_{REF}$ drifts or contains high-frequency electrical noise, that noise couples directly into $V_{OUT}$—if the ruler expands and contracts, the measurements scale with it. Therefore, a clean, stable, and decoupled reference voltage is vital for analog precision. Below is an illustration of how $V_{REF}$ defines the output scaling boundaries:"
+        },
+        {
+          type: "image",
+          src: "Images/dac_reference_voltage.svg",
+          alt: "Reference Voltage Scaling",
+          caption: "Figure 4: Reference voltage dictates both the maximum output range and the individual step size (LSB) of the converter."
+        }
+      ]
+    },
+    {
+      heading: "6. Waveform Generation: Building Curves from Steps",
+      content: [
+        {
+          type: "p",
+          text: "To generate a dynamic waveform—such as a smooth audio tone, a linear motor ramp, or a calibration pulse—the CPU writes a continuous stream of digital values to the DAC register in a periodic loop driven by timer interrupts.\n\nFor example, to generate a Sine Wave, engineers compute a table of sine values beforehand and load them into memory. Every time a timer overflows, a DMA (Direct Memory Access) channel automatically copies the next value from the table directly into the DAC data register without CPU intervention. By updating the DAC at a high, constant frequency, the discrete steps approximate a continuous curve. The illustrations below depict how different waveforms are constructed by sequencing discrete values:"
+        },
+        {
+          type: "image",
+          src: "Images/dac_waveform_generation.svg",
+          alt: "Waveform Generation",
+          caption: "Figure 5: Building Sine, Triangle, Sawtooth, and Square waveforms by outputting timed sequences of digital codes."
+        }
+      ]
+    },
+    {
+      heading: "7. The Illusion of Continuity: Filtering the Steps",
+      content: [
+        {
+          type: "p",
+          text: "If you look closely at a raw DAC output on an oscilloscope, you will see a stair-step pattern. If this raw voltage is fed directly to a high-frequency speaker, the sharp corners of the steps (which represent high-frequency harmonic distortion) will cause an audible hiss or crackle. How do we turn these steps into a truly smooth curve?\n\nThe solution is a Reconstruction Filter. This is a low-pass analog filter placed immediately after the DAC output pin. A simple resistor-capacitor (RC) filter removes the high-frequency transitions (the sharp corners of the steps), leaving only the fundamental low-frequency analog wave. Furthermore, many physical loads (like speaker diaphragms or heavy motor coils) possess natural mechanical or inductive inertia, meaning they cannot react instantly to the steps anyway. They act as natural low-pass filters, integrating the steps into smooth physical movements. Below is a diagram of low-pass reconstruction filtering:"
+        },
+        {
+          type: "image",
+          src: "Images/dac_illusion_continuity.svg",
+          alt: "Low-Pass Reconstruction Filter",
+          caption: "Figure 6: A low-pass filter integrates the sharp steps of the raw DAC output, smoothing it into a continuous analog waveform."
+        }
+      ]
+    },
+    {
+      heading: "8. PWM: The Impostor DAC",
+      content: [
+        {
+          type: "p",
+          text: "In many embedded systems, dedicated DAC hardware is absent because it requires substantial PCB silicon and pin counts. Instead, engineers often use a timer to generate Pulse-Width Modulation (PWM) signals, mimicking an analog output.\n\nBy toggling a digital pin rapidly between 0V and 3.3V at a high frequency (often tens of kilohertz) and adjusting the Duty Cycle (the ratio of HIGH time to the total period), we can represent different voltages. If we pass this PWM stream through a low-pass RC filter, the filter integrates the square pulses, smoothing the high-frequency switching into a steady DC voltage directly proportional to the duty cycle. The diagram below illustrates this integration:"
+        },
+        {
+          type: "image",
+          src: "Images/pwm_impostor_dac.svg",
+          alt: "PWM Impostor DAC",
+          caption: "Figure 7: Using high-frequency PWM duty-cycle pulses combined with a low-pass filter to generate an average analog voltage."
+        },
+        {
+          type: "p",
+          text: "While PWM is cheap, simple, and highly efficient for power applications (like driving LEDs or brushless motors), it is an imperfect 'impostor' DAC. It suffers from slow response times (due to filter charging delays) and contains switching ripple noise that is difficult to filter out completely. A true DAC provides a steady, immediate voltage level without switching noise. The comparison below contrasts the two methods:"
+        },
+        {
+          type: "image",
+          src: "Images/pwm_vs_dac_comparison.svg",
+          alt: "PWM vs True DAC Comparison",
+          caption: "Figure 8: A true DAC provides clean, instantaneous voltage steps, whereas a filtered PWM introduces exponential rise delays and ripple noise."
+        }
+      ]
+    },
+    {
+      heading: "9. Painting with Voltage",
+      content: [
+        {
+          type: "p",
+          text: "Let's observe these conversion behaviors. In the interactive panel below, modify reference voltage, DAC resolution, and digital input codes to watch how digital values translate into analog voltages on a meter."
+        },
+        {
+          type: "edgecase",
+          id: "painting-with-voltage"
+        }
+      ]
+    },
+    {
+      heading: "10. The Illusion of Smoothness",
+      content: [
+        {
+          type: "p",
+          text: "How does sequence timing and low-pass filtering shape the output waveform? In the simulator below, adjust the waveform type, update rate, resolution, and low-pass reconstruction filter cutoff to see how a continuous curve is painted."
+        },
+        {
+          type: "edgecase",
+          id: "illusion-of-smoothness"
+        }
+      ]
+    },
+    {
+      heading: "11. Real Embedded Applications",
+      content: [
+        {
+          type: "p",
+          text: "DACs are the expressive voice of microcontrollers. They drive audio amplifiers in smart speakers, generate control voltages in industrial loops (like proportional valves), produce high-frequency diagnostic test signals in lab instruments, calibrate medical pacemakers, and execute motor speed profiling in robotics. By giving digital systems a path to write back to the physical world, the DAC completes the handshake between computational logic and physical reality."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Expressive Handshake",
+    paragraphs: [
+      "Timers taught machines when to pay attention. ADCs taught machines how to translate reality into digital coordinates. DACs taught machines how to write numbers back into physical reality.",
+      "For the first time, a machine could not only understand its environment, but actively influence it. Yet as these sensory and output capabilities expanded, a new system challenge emerged. Managing high-speed sampling, responding, keeping time, and communicating all at once required synchronized scheduling. The next engineering frontier was no longer sensing or speaking—it was scheduling what deserved the processor's attention next."
+    ],
+    quote: "A processor without a DAC is a mind without a voice—fully capable of thought, but unable to sing."
+  },
+  footer: "Reflections on digital-to-analog conversions - PrajnaEdge.dev"
+},
+{
+  id: "the-tyranny-of-waiting",
+  category: "Coordination",
+  series: "The Architecture of Time",
+  title: "The Tyranny of Waiting",
+  subtitle: "The simplest way to control a machine eventually becomes its greatest limitation.",
+  date: "21st June, 2026",
+  tags: ["Polling", "Bare-Metal", "Latency", "Real-Time Constraints", "CPU Overhead"],
+  sections: [
+    {
+      heading: "1. The Infinite Loop",
+      content: [
+        {
+          type: "p",
+          text: "At the root of almost every bare-metal embedded system is a simple, inescapable fact: a processor must never stop executing instructions. Unlike desktop software that can run, finish its task, and cleanly return to an operating system, a microcontroller is the operating system. It has nowhere to go. If the CPU is allowed to reach the end of the program counter, it falls off a digital cliff, entering an undefined state where it may execute random garbage RAM contents. To maintain absolute control, the core must loop forever.\n\nThis is why embedded firmware fundamentally revolves around an endless loop:\n\n```c\nint main(void) {\n    // Initialize peripherals\n    SystemInit();\n    \n    while(1) {\n        // The engine of the system\n    }\n}\n```\n\nThis simple `while(1)` structure is the structural spine of bare-metal computing. It keeps the CPU active, heartbeat regular, and program execution contained. In a quiet, simple machine, this loop is the perfect foundation. But it is also an empty arena, waiting for responsibilities."
+        },
+        {
+          type: "img",
+          src: "Images/polling_infinite_loop.svg",
+          alt: "The circular flow of the infinite while(1) loop."
+        }
+      ]
+    },
+    {
+      heading: "2. The Birth of Polling",
+      content: [
+        {
+          type: "p",
+          text: "Suppose we want our microcontroller to react when a user presses a button. How does the software know the button was pressed? The simplest and most intuitive way is to write code that actively, repeatedly checks the state of the pin connected to that button. We place a check function inside our loop:\n\n```c\nwhile(1) {\n    if (ReadPin(BUTTON_PIN) == PIN_LOW) {\n        ToggleLED();\n    }\n}\n```\n\nThis is the birth of Polling. The central processing unit (CPU) is placed in a perpetual state of interrogation. It reads the input port register, compares the bit with its target state, and takes action if necessary. It asks: *'Has anything happened?'* Then, nanoseconds later, it asks again: *'Has anything happened?'*\n\nThis direct checking pattern is incredibly elegant because it is deterministic and easy to reason about. There are no background threads, no complex scheduler structures, and no preemption. The CPU does one thing: it waits, inspects, and reacts."
+        }
+      ]
+    },
+    {
+      heading: "3. The Cost of Curiosity",
+      content: [
+        {
+          type: "p",
+          text: "But this curiosity is not free. When a processor polls, it consumes energy at its maximum operating rate. Even if the button is pressed once an hour, the processor does not rest. It spends millions of CPU cycles every second checking the same pin, reading the same registry value, and getting the exact same answer: *'No. Nothing has changed.'*\n\nIn a battery-powered device, this is a disaster. Polling wastes massive amounts of power. The core is 100% active, running at full speed and drawing full current, simply to confirm that the world is quiet. The processor is trapped in a loop of wasted effort, spinning its wheels at top speed while waiting for something to happen."
+        },
+        {
+          type: "img",
+          src: "Images/polling_wasted_effort.svg",
+          alt: "Wasted CPU cycles: 99.9% of checks return no change, keeping core load at 100%."
+        },
+        {
+          type: "curious",
+          text: "Curious? Many early embedded systems, from microwave ovens to simple industrial controllers, relied entirely on polling. Because power consumption and complex coordination were secondary concerns, the simplicity of a polling loop was an easy engineering tradeoff."
+        }
+      ]
+    },
+    {
+      heading: "4. The Growing System",
+      content: [
+        {
+          type: "p",
+          text: "The limitations of polling become severe when we add more responsibilities. Let's design a real-world system. It needs to read a UART command interface, sample an ADC temperature sensor, monitor a CAN bus network for safety alerts, and toggle an indicator LED. If we stick to our polling strategy, our loop grows to handle all of them:\n\n```c\nwhile(1) {\n    CheckButton();\n    CheckUART();\n    CheckADC();\n    CheckCAN();\n    UpdateLEDs();\n}\n```\n\nNow, the central processing unit is no longer just checking the button. It must perform a sequence of duties. Each check requires time. If `CheckUART()` has to read a packet, it executes instructions. If `CheckADC()` must wait for a conversion, it spins. As we add more peripherals, the total execution time of a single pass through the loop—the loop cycle time—stretches."
+        },
+        {
+          type: "img",
+          src: "Images/polling_growing_system.svg",
+          alt: "The expanding loop: as more peripherals are added, loop cycle time grows significantly."
+        },
+        {
+          type: "curious",
+          text: "Curious? As systems grow larger, waiting becomes increasingly expensive. When one slow driver function blocks the loop, every other peripheral in the system is forced to wait for its turn, degrading the responsiveness of the entire machine."
+        }
+      ]
+    },
+    {
+      heading: "5. Latency: The Unnoticed Gap",
+      content: [
+        {
+          type: "p",
+          text: "This brings us to the critical bottleneck of polling: Latency. In embedded engineering, latency is the delay between the occurrence of a physical event and the processor's response to it.\n\nImagine a UART message packet arriving at the exact millisecond `CheckUART()` finishes. The CPU moves to `CheckADC()`, then `CheckCAN()`, then `UpdateLEDs()`, and finally loops back to `CheckButton()`. Only when the execution path returns to `CheckUART()` does the CPU finally detect the packet. The worst-case response latency is directly proportional to the total loop cycle time:\n\n$$\\text{Max Latency} = \\sum_{i=1}^{N} \\text{Time}(\\text{Check}_i)$$\n\nIf the loop cycle time exceeds the arrival rate of new data, we encounter a catastrophic failure mode: missed events. If a second UART character arrives before the loop finishes its round to read the first, the hardware's internal buffer overflows, and data is permanently lost."
+        },
+        {
+          type: "img",
+          src: "Images/polling_latency_timeline.svg",
+          alt: "Timing timeline: showing the latency delay between an event's occurrence and its detection by the polling CPU."
+        }
+      ]
+    },
+    {
+      heading: "6. Real Embedded Examples",
+      content: [
+        {
+          type: "p",
+          text: "Despite these limits, polling is still widely used in modern systems. In simple, low-cost microcontrollers running household appliances—like a toaster, a digital clock, or a basic toy—polling is perfectly sufficient. The event rates are low, power saving is achieved by sleeping the entire system when inactive, and latency is human-scale (a 50ms delay in a button press is imperceptible to a human user).\n\nHowever, in high-speed and complex applications—such as CAN communication in automotive ECUs, high-rate sensor acquisition in flight stabilizers, or audio stream buffers—polling fails. High-speed systems cannot afford to wait for a loop to spin; they require immediate, microsecond-accurate responses."
+        }
+      ]
+    },
+    {
+      heading: "7. The Fundamental Limitation",
+      content: [
+        {
+          type: "p",
+          text: "The core design flaw of polling is structural: it ties coordination to the execution path of the software. The CPU spends almost all its time and power asking if something has happened, only to receive 'no' as an answer. It is a system built on active waiting, where the processor is both a bottleneck and a victim of its own loop structure."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Tyranny of the Loop",
+    paragraphs: [
+      "Polling works because the processor is simple, tireless, and constantly asks whether something has happened. It is the easiest way to control a machine, but as complexity grows, it becomes a structural straightjacket.",
+      "But what if the processor could stop asking? What if the hardware could announce events instead? What if the machine only reacted when something actually changed, leaving the processor free to sleep or run other tasks in the meantime?",
+      "That question would fundamentally change embedded software design. And it would lead directly to interrupts."
+    ],
+    quote: "To free the processor from the tyranny of waiting, we must stop asking the hardware if it is ready, and teach the hardware to speak up when it is."
+  },
+  footer: "Reflections on bare-metal polling loops and latency constraints - PrajnaEdge.dev"
+},
+{
+  id: "when-hardware-learned-to-interrupt",
+  category: "Coordination",
+  series: "The Architecture of Time",
+  title: "When Hardware Learned to Interrupt",
+  subtitle: "The moment machines stopped waiting.",
+  date: "21st June, 2026",
+  tags: ["Interrupts", "NVIC", "Preemption", "Latency", "Vector Table"],
+  sections: [
+    {
+      heading: "1. A World of Waiting",
+      content: [
+        {
+          type: "p",
+          text: "In our previous exploration, we watched a simple bare-metal embedded loop scale from a single button check to a complex array of duties. The microcontroller had to check the UART console, query an ADC sensor, inspect a CAN bus register, and toggle diagnostic LEDs. The result was a monolithic loop:\n\n```c\nwhile(1) {\n    CheckButton();\n    CheckUART();\n    CheckADC();\n    CheckCAN();\n}\n```\n\nThis is polling. Its primary flaw is structural: it ties coordination entirely to the execution path of the software. The CPU spends almost all its time and power asking if something has happened, only to receive 'no' as an answer. It keeps the core running at 100% load, consuming maximum power simply to check idle pins. It is a system built on active waiting, where responsiveness degrades as more peripherals stretch the loop cycle time."
+        }
+      ]
+    },
+    {
+      heading: "2. The Reversal",
+      content: [
+        {
+          type: "p",
+          text: "What if we could reverse this relationship? Instead of the central processor constantly interrogating passive hardware components, what if the hardware could announce events instead?\n\nThis is the core philosophy of **Interrupts**. Rather than the CPU spinning in a loop asking *'Has anything happened?'*, the hardware peripherals are given a dedicated channel to signal the CPU: *'Something happened. Act now.'*\n\nThis simple reversal represents the most fundamental shift in embedded system architecture. It decouples event detection from the sequential flow of execution, freeing the CPU to execute background calculations or enter deep low-power sleep modes until the physical world demands its attention."
+        }
+      ]
+    },
+    {
+      heading: "3. The Doorbell Analogy",
+      content: [
+        {
+          type: "p",
+          text: "To appreciate this shift, imagine waiting for a package delivery. Under a polling strategy, you must walk to the front door every ten seconds, open it, check the porch, close the door, and walk back. You can do nothing else; you are entirely consumed by the active wait.\n\nAn interrupt-driven approach equips the door with a bell. You sit down, read a book, or fall asleep. The visitor arrives and presses the button. The bell rings, interrupting your activity. You bookmark your page, answer the door, sign for the package, and return to exactly where you left off. The active checking is gone, replaced by a reactive trigger."
+        }
+      ]
+    },
+    {
+      heading: "4. The Anatomy of an Interrupt",
+      content: [
+        {
+          type: "p",
+          text: "How does this handoff occur in raw silicon? When an external event occurs—such as a button pin falling low or a byte arriving in a UART buffer—the peripheral asserts a physical interrupt request (IRQ) line connected to the processor core. The hardware handoff then unfolds automatically:\n\n1. **Assertion**: The peripheral drives its IRQ line to its active state (high or low).\n2. **Synchronization**: The core detects the active line and waits to finish its currently executing machine instruction (typically 1 to 5 clock cycles).\n3. **Context Saving**: The CPU automatically halts normal execution and pushes its current register states (such as the Program Counter, Link Register, Stack Pointer, and Status Register) onto the stack. This preserves the exact state of the background program.\n4. **Vector Fetch**: The processor reads the vector table to fetch the memory address of the handler function associated with the triggering IRQ.\n5. **Execution**: The Program Counter jumps to that address, and the CPU begins executing the **Interrupt Service Routine (ISR)**.\n6. **Return**: Once the handler finishes, it executes a special return instruction. The CPU pops the saved registers back off the stack, restoring the CPU state, and resumes the background program exactly where it was paused."
+        },
+        {
+          type: "img",
+          src: "Images/interrupt_flow.svg",
+          alt: "The step-by-step lifecycle of an interrupt request handoff."
+        }
+      ]
+    },
+    {
+      heading: "5. Interrupt Latency",
+      content: [
+        {
+          type: "p",
+          text: "While interrupts resolve the polling delay bottleneck, they do not respond instantly. In embedded systems engineering, **Interrupt Latency** is the exact delay between the assertion of the hardware IRQ line and the execution of the first instruction in the ISR.\n\nLatency is a hardware tax composed of several parts: completing the current instruction, pushing CPU registers onto the stack (stacking), syncing clocks between the peripheral bus and core, and executing entry handler routines. In modern ARM Cortex-M processors, this hardware stacking and lookup process is heavily optimized, taking as few as 12 to 24 clock cycles. But in real-time systems, every cycle counts. If another interrupt is already running or interrupts are temporarily disabled by the driver, this latency can stretch, potentially causing missed deadlines."
+        },
+        {
+          type: "img",
+          src: "Images/interrupt_latency.svg",
+          alt: "The timing breakdown of hardware stacking and vector fetch latencies."
+        }
+      ]
+    },
+    {
+      heading: "6. Priority and Preemption",
+      content: [
+        {
+          type: "p",
+          text: "A real embedded system has multiple interrupt sources. What happens if a button press occurs at the exact same millisecond a critical CAN network alarm frame arrives? How does the hardware choose?\n\nThis is solved by **Interrupt Priority**. Every interrupt source is assigned a priority value. When multiple IRQ lines are asserted simultaneously, the core's hardware interrupt controller (such as the Nested Vectored Interrupt Controller, or NVIC, in ARM architectures) compares their values and runs the highest-priority handler first. If a lower-priority handler is already running when a higher-priority event arrives, the hardware executes **Preemption**—instantly pausing the lower-priority ISR, pushing its registers to the stack, and running the higher-priority ISR. Only when the high-priority handler completes does the lower-priority handler resume."
+        },
+        {
+          type: "img",
+          src: "Images/interrupt_priority.svg",
+          alt: "A multi-lane timing diagram visualizing preemption and context nesting."
+        }
+      ]
+    },
+    {
+      heading: "7. Nested Interrupts",
+      content: [
+        {
+          type: "p",
+          text: "This ability to preempt running handlers is called **Nesting**. Without nesting, a slow, low-priority handler (like a periodic temperature readout) would block a high-speed critical line (like a motor safety trip signal) for milliseconds, defeating the real-time guarantees of the system.\n\nPrioritization and nesting ensure that critical routines remain deterministic, regardless of other activities. However, nesting also introduces a system risk: stack depth. Each nested layer pushes more registers onto the RAM stack. If too many interrupts nest, the stack can overrun into application variables, leading to silent memory corruption."
+        },
+        {
+          type: "curious",
+          text: "Curious? Most timer compare events can be configured to generate interrupts. This allows firmware to schedule high-precision periodic events without polluting the main loop."
+        }
+      ]
+    },
+    {
+      heading: "8. The Vector Table",
+      content: [
+        {
+          type: "p",
+          text: "How does the hardware translate a physical IRQ number into a software function address? It reads the **Vector Table**.\n\nThe Vector Table is an array of function pointers placed at a fixed location in memory (typically at the very bottom of the Flash partition, `0x0000_0000` or `0x0800_0000`). Each index corresponds to a specific hardware line: index 0 is the initial stack pointer, index 1 is the Reset Vector, index 2 is the Non-Maskable Interrupt (NMI), and subsequent indices map to internal faults, timers, and external peripherals.\n\nWhen a peripheral triggers, the processor uses the IRQ index to offset into this table, reads the 32-bit address stored there, and jumps directly to that address. You may recognize the first entries from *The First Instruction*: the Reset Vector is simply the very first interrupt address fetched by the silicon when power is applied."
+        },
+        {
+          type: "img",
+          src: "Images/interrupt_vector_table.svg",
+          alt: "The mapping between hardware address indexes and handler code in flash."
+        },
+        {
+          type: "curious",
+          text: "Curious? ADC conversions often notify software through interrupts. When a conversion completes, the ADC asserts its IRQ line, allowing the CPU to read the register exactly when the conversion finishes."
+        }
+      ]
+    },
+    {
+      heading: "9. Real Embedded Examples",
+      content: [
+        {
+          type: "p",
+          text: "Interrupts are the invisible coordination layer of modern electronics. In a UART interface, an interrupt triggers each time a character lands in the receive register, ensuring the CPU extracts it before it is overwritten. In a motor control loop, timer compare interrupts trigger microsecond-aligned PWM adjustments. In safety systems, CAN controllers trigger emergency handlers the moment an error frame is detected.\n\nBy replacing active waiting with reactive notifications, interrupts allow microcontrollers to sleep when inactive and respond with microsecond precision when needed. They represent the moment hardware became coordinate-aware."
+        },
+        {
+          type: "curious",
+          text: "Curious? Some high-speed communication systems generate so many interrupts that a new bottleneck emerges. If interrupts trigger faster than the CPU can push and pop the stack, the processor gets stuck in a state of continuous interrupt thrashing, leaving no time for background application tasks."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Limits of Response",
+    paragraphs: [
+      "Polling wasted CPU time by constantly asking if anything happened. Interrupts solved this by reversing the relationship, allowing the hardware to announce its readiness directly to the core.",
+      "But as system speeds continued to climb, a new engineering limit emerged. Imagine a high-speed network transceiver receiving thousands of bytes every millisecond, or an ADC sampling at megahertz rates. If the CPU must pause, save registers, jump to an ISR, extract a byte, restore registers, and return for every single byte, the processor is quickly overwhelmed.",
+      "The CPU now spends less time waiting, but it spends all of its time responding. Handling the data has become more expensive than detecting it.",
+      "To break this bottleneck, data needed to be moved directly from hardware to memory without involving the CPU at all. That need would lead directly to Direct Memory Access."
+    ],
+    quote: "Interrupts freed the processor from active waiting, but as speed scaled, the core became a victim of its own responsiveness."
+  },
+  footer: "Reflections on hardware interrupt requests and vector table architectures - PrajnaEdge.dev"
 }
 ];
 
@@ -3481,6 +3910,10 @@ function initEdgeCase(containerId) {
     renderCapturingReality();
   } else if (containerId === 'cost-of-observation') {
     renderCostOfObservation();
+  } else if (containerId === 'painting-with-voltage') {
+    renderPaintingWithVoltage();
+  } else if (containerId === 'illusion-of-smoothness') {
+    renderIllusionOfSmoothness();
   }
 }
 
@@ -7269,6 +7702,468 @@ function renderCostOfObservation() {
     samplePoints.forEach(pt => {
       svgContent += `<circle cx="${pt.x}" cy="${pt.y}" r="3" fill="#EF6868" />`;
     });
+
+    svg.innerHTML = svgContent;
+  }
+
+  updateSimulation();
+}
+
+function renderPaintingWithVoltage() {
+  const container = document.getElementById('painting-with-voltage');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: Painting with Voltage</div>
+    <div class="edgecase-subheader">Watch Numbers Become Analog Voltages</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust resolution, reference voltage, and digital input value to watch how a number transforms into an analog voltage level.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Converter Configuration</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-pv-res">DAC Resolution</label>
+          <select id="ec-pv-res" class="edgecase-select">
+            <option value="3" selected>3-bit (8 Levels)</option>
+            <option value="4">4-bit (16 Levels)</option>
+            <option value="8">8-bit (256 Levels)</option>
+            <option value="12">12-bit (4096 Levels)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-pv-vref">Reference Voltage (V)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-pv-vref" class="edgecase-slider" min="10" max="50" value="33">
+            <span id="ec-pv-vref-val" class="edgecase-slider-val">3.3V</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-pv-code">Digital Input Code</label>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <input type="range" id="ec-pv-code" class="edgecase-slider" min="0" max="7" value="4" style="flex-grow:1;">
+            <span id="ec-pv-code-val" class="edgecase-slider-val" style="min-width:45px;">4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- METRICS & GAUGE PANEL -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-top:1rem;">
+      <!-- GAUGE DISPLAY -->
+      <div>
+        <div class="pipeline-step">Analog Voltmeter Gauge</div>
+        <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem; display:flex; justify-content:center; align-items:center; min-height:220px;">
+          <svg id="ec-pv-svg" viewBox="0 0 300 200" style="width:100%; max-width:260px; height:auto; overflow:visible;">
+            <!-- Voltmeter drawn dynamically -->
+          </svg>
+        </div>
+      </div>
+
+      <!-- METRICS & DIGITAL OUT -->
+      <div>
+        <div class="pipeline-step">Output Calculations & Register Log</div>
+        <div class="edgecase-output-panel" style="min-height:220px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div class="edgecase-output-grid" style="grid-template-columns: 1fr 1fr; gap:0.75rem; padding:0.25rem;">
+            <div class="edgecase-output-box" style="padding:0.5rem;">
+              <div class="edgecase-output-label">Resolution Steps</div>
+              <div class="edgecase-output-val" id="ec-pv-calc-steps" style="font-size:0.8rem;">8 Steps</div>
+            </div>
+            <div class="edgecase-output-box" style="padding:0.5rem;">
+              <div class="edgecase-output-label">LSB Size (Step Width)</div>
+              <div class="edgecase-output-val" id="ec-pv-calc-lsb" style="font-size:0.8rem;">471.4 mV</div>
+            </div>
+            <div class="edgecase-output-box" style="padding:0.5rem;">
+              <div class="edgecase-output-label">Binary Value</div>
+              <div class="edgecase-output-val" id="ec-pv-calc-binary" style="font-size:0.8rem; font-family:var(--mono);">100</div>
+            </div>
+            <div class="edgecase-output-box" style="padding:0.5rem;">
+              <div class="edgecase-output-label">Output Voltage</div>
+              <div class="edgecase-output-val" id="ec-pv-calc-vout" style="font-size:0.9rem; font-weight:bold; color:#10B981;">1.886 V</div>
+            </div>
+          </div>
+          
+          <div class="terminal-box" id="ec-pv-log" style="height:85px; font-size:0.65rem; padding:0.4rem; overflow-y:auto; line-height:1.3; margin-top:0.5rem;">
+            <!-- Register transaction logs -->
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // References
+  const resSelect = document.getElementById('ec-pv-res');
+  const vrefSlider = document.getElementById('ec-pv-vref');
+  const vrefVal = document.getElementById('ec-pv-vref-val');
+  const codeSlider = document.getElementById('ec-pv-code');
+  const codeVal = document.getElementById('ec-pv-code-val');
+  const svg = document.getElementById('ec-pv-svg');
+  const logDiv = document.getElementById('ec-pv-log');
+
+  const calcSteps = document.getElementById('ec-pv-calc-steps');
+  const calcLsb = document.getElementById('ec-pv-calc-lsb');
+  const calcBinary = document.getElementById('ec-pv-calc-binary');
+  const calcVout = document.getElementById('ec-pv-calc-vout');
+
+  // Event Listeners
+  resSelect.addEventListener('change', () => {
+    const res = parseInt(resSelect.value);
+    const steps = Math.pow(2, res) - 1;
+    codeSlider.max = steps;
+    // Set a proportional value
+    const fraction = parseFloat(codeSlider.value) / parseInt(codeSlider.max);
+    codeSlider.value = Math.round(fraction * steps);
+    codeVal.textContent = codeSlider.value;
+    updateSimulation();
+  });
+
+  vrefSlider.addEventListener('input', () => {
+    vrefVal.textContent = `${(vrefSlider.value / 10).toFixed(1)}V`;
+    updateSimulation();
+  });
+
+  codeSlider.addEventListener('input', () => {
+    codeVal.textContent = codeSlider.value;
+    updateSimulation();
+  });
+
+  let lastCode = -1;
+  let lastRes = -1;
+  let lastVref = -1;
+
+  function updateSimulation() {
+    if (!document.getElementById('painting-with-voltage')) return;
+
+    const res = parseInt(resSelect.value);
+    const vref = parseFloat(vrefSlider.value) / 10;
+    const code = parseInt(codeSlider.value);
+    const steps = Math.pow(2, res) - 1;
+
+    // Constrain code
+    const validCode = Math.max(0, Math.min(steps, code));
+
+    // Calculate metrics
+    const lsb = (vref / steps) * 1000;
+    const vout = (validCode / steps) * vref;
+
+    calcSteps.textContent = `${steps + 1} Levels`;
+    calcLsb.textContent = `${lsb.toFixed(1)} mV`;
+    calcBinary.textContent = validCode.toString(2).padStart(res, '0');
+    calcVout.textContent = `${vout.toFixed(3)} V`;
+
+    // Append to register log if anything changed
+    if (validCode !== lastCode || res !== lastRes || vref !== lastVref) {
+      const timestamp = new Date().toISOString().slice(11, 19);
+      const hexStr = "0x" + validCode.toString(16).toUpperCase().padStart(Math.ceil(res/4), '0');
+      let logLine = `[${timestamp}] Write Register: ${hexStr} (Bin: ${validCode.toString(2).padStart(res, '0')}) -> Output: ${vout.toFixed(3)} V`;
+      logDiv.innerHTML += `<div>${escHtml(logLine)}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+      
+      lastCode = validCode;
+      lastRes = res;
+      lastVref = vref;
+    }
+
+    // Render SVG Voltmeter
+    const cx = 150;
+    const cy = 130;
+    const r = 80;
+    const fraction = vout / vref;
+    const angle = Math.PI * (1 - fraction); // Semicircle from left to right
+
+    // Needle coordinates
+    const nx = cx + r * Math.cos(angle);
+    const ny = cy - r * Math.sin(angle);
+
+    // Build meter arcs
+    let meterContent = `
+      <!-- Background grid pattern -->
+      <defs>
+        <pattern id="pv-grid" width="15" height="15" patternUnits="userSpaceOnUse">
+          <path d="M 15 0 L 0 0 0 15" fill="none" stroke="rgba(148,163,184,0.03)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#pv-grid)" rx="6" />
+
+      <!-- Outer voltmeter arc outline -->
+      <path d="M 60 130 A 90 90 0 0 1 240 130" fill="none" stroke="rgba(148, 163, 184, 0.15)" stroke-width="8" stroke-linecap="round" />
+      <path d="M 60 130 A 90 90 0 0 1 ${cx + 90 * Math.cos(angle)} ${cy - 90 * Math.sin(angle)}" fill="none" stroke="#10B981" stroke-width="8" stroke-linecap="round" />
+
+      <!-- Center spindle -->
+      <circle cx="${cx}" cy="${cy}" r="12" fill="#1E293B" stroke="rgba(148, 163, 184, 0.3)" stroke-width="2" />
+      <circle cx="${cx}" cy="${cy}" r="4" fill="#EF6868" />
+
+      <!-- Needle pointer line -->
+      <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#EF6868" stroke-width="2.5" stroke-linecap="round" />
+
+      <!-- Scale Ticks (5 ticks: 0%, 25%, 50%, 75%, 100%) -->
+    `;
+
+    for (let i = 0; i <= 4; i++) {
+      const frac = i / 4;
+      const a = Math.PI * (1 - frac);
+      const txStart = cx + 86 * Math.cos(a);
+      const tyStart = cy - 86 * Math.sin(a);
+      const txEnd = cx + 94 * Math.cos(a);
+      const tyEnd = cy - 94 * Math.sin(a);
+      const lx = cx + 106 * Math.cos(a);
+      const ly = cy - 106 * Math.sin(a);
+      
+      const vTick = frac * vref;
+
+      meterContent += `
+        <line x1="${txStart}" y1="${tyStart}" x2="${txEnd}" y2="${tyEnd}" stroke="rgba(148, 163, 184, 0.4)" stroke-width="1.5" />
+        <text x="${lx}" y="${ly + 3}" fill="var(--muted)" font-family="var(--mono)" font-size="7" text-anchor="middle">${vTick.toFixed(1)}V</text>
+      `;
+    }
+
+    // Text Display inside meter
+    meterContent += `
+      <text x="${cx}" y="${cy + 30}" fill="#FFF" font-weight="bold" font-size="14" text-anchor="middle">${vout.toFixed(3)} V</text>
+      <text x="${cx}" y="${cy + 45}" fill="var(--muted)" font-family="var(--mono)" font-size="8" text-anchor="middle">DAC OUTPUT</text>
+    `;
+
+    svg.innerHTML = meterContent;
+  }
+
+  updateSimulation();
+}
+
+function renderIllusionOfSmoothness() {
+  const container = document.getElementById('illusion-of-smoothness');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Illusion of Smoothness</div>
+    <div class="edgecase-subheader">How Sequence Timing & Filters Create Continuous Waves</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust the waveform type, resolution, update frequency, and filter cutoff to witness how discrete staircases are integrated into smooth analog physics.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Signal Generation & Filtering Parameters</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-is-type">Waveform Type</label>
+          <select id="ec-is-type" class="edgecase-select">
+            <option value="sine" selected>Sine Wave</option>
+            <option value="triangle">Triangle Wave</option>
+            <option value="sawtooth">Sawtooth Wave</option>
+            <option value="square">Square Wave</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-is-res">DAC Resolution</label>
+          <select id="ec-is-res" class="edgecase-select">
+            <option value="3" selected>3-bit (8 Levels)</option>
+            <option value="4">4-bit (16 Levels)</option>
+            <option value="8">8-bit (256 Levels)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-is-rate">Update Frequency (Hz)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-is-rate" class="edgecase-slider" min="10" max="120" value="30">
+            <span id="ec-is-rate-val" class="edgecase-slider-val">30 Hz</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-is-cutoff">RC Filter Cutoff (Hz)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-is-cutoff" class="edgecase-slider" min="5" max="100" value="40">
+            <span id="ec-is-cutoff-val" class="edgecase-slider-val">40 Hz</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Continuous Ideal (Gray) vs. Stepped DAC (Red) vs. Reconstructed Analog (Green)</div>
+    <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem;">
+      <svg id="ec-is-svg" viewBox="0 0 800 240" style="width:100%; height:auto; overflow:visible;">
+        <!-- Waveforms drawn dynamically -->
+      </svg>
+    </div>
+
+    <!-- DIAGNOSTIC STATUS PANEL -->
+    <div class="pipeline-step">Filter Alignment Alert</div>
+    <div class="edgecase-output-panel" style="padding:1rem;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;" id="ec-is-alerts-grid">
+        <!-- Alerts output dynamically -->
+      </div>
+    </div>
+  `;
+
+  // References
+  const typeSelect = document.getElementById('ec-is-type');
+  const resSelect = document.getElementById('ec-is-res');
+  const rateSlider = document.getElementById('ec-is-rate');
+  const rateVal = document.getElementById('ec-is-rate-val');
+  const cutoffSlider = document.getElementById('ec-is-cutoff');
+  const cutoffVal = document.getElementById('ec-is-cutoff-val');
+  const svg = document.getElementById('ec-is-svg');
+  const alertsGrid = document.getElementById('ec-is-alerts-grid');
+
+  // Listeners
+  typeSelect.addEventListener('change', updateSimulation);
+  resSelect.addEventListener('change', updateSimulation);
+
+  rateSlider.addEventListener('input', () => {
+    rateVal.textContent = `${rateSlider.value} Hz`;
+    updateSimulation();
+  });
+
+  cutoffSlider.addEventListener('input', () => {
+    cutoffVal.textContent = `${cutoffSlider.value} Hz`;
+    updateSimulation();
+  });
+
+  function updateSimulation() {
+    if (!document.getElementById('illusion-of-smoothness')) return;
+
+    const waveType = typeSelect.value;
+    const res = parseInt(resSelect.value);
+    const f_update = parseFloat(rateSlider.value);
+    const f_cutoff = parseFloat(cutoffSlider.value);
+
+    const f_sig = 3;
+    const vref = 3.3;
+    const sig_center = 1.65;
+    const sig_amp = 1.2;
+    const steps = Math.pow(2, res) - 1;
+
+    const isFilterTooHigh = f_cutoff > f_update * 0.7;
+    const isFilterTooLow = f_cutoff < f_sig * 1.5;
+
+    let alertsHtml = "";
+    if (isFilterTooHigh) {
+      alertsHtml += `
+        <div class="agreement-item" style="border-radius:6px; padding:0.6rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); color:#F59E0B;">
+          <div style="font-weight:bold; font-size:0.75rem;">⚠ INSUFFICIENT FILTERING</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Filter cutoff (${f_cutoff} Hz) is too close to update rate (${f_update} Hz). High-frequency switching staircases remain visible on the output.</div>
+        </div>
+      `;
+    } else if (isFilterTooLow) {
+      alertsHtml += `
+        <div class="agreement-item agreement-fail" style="border-radius:6px; padding:0.6rem; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✗ SEVERE ATTENUATION</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Filter cutoff (${f_cutoff} Hz) is too low. The filter blocks our target signal (${f_sig} Hz), leading to massive amplitude loss and phase delay.</div>
+        </div>
+      `;
+    } else {
+      alertsHtml += `
+        <div class="agreement-item agreement-ok" style="border-radius:6px; padding:0.6rem; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✓ RECONSTRUCTION LOCK</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Cutoff frequency is balanced. High-frequency steps are completely smoothed out while preserving signal amplitude.</div>
+        </div>
+      `;
+    }
+    alertsGrid.innerHTML = alertsHtml;
+
+    const width = 800;
+    const height = 240;
+    const padding = 40;
+    const plotW = width - 2 * padding;
+    const plotH = height - 2 * padding;
+
+    function getIdealVoltage(t) {
+      if (waveType === 'sine') {
+        return sig_center + sig_amp * Math.sin(2 * Math.PI * f_sig * t);
+      } else if (waveType === 'triangle') {
+        const period = 1 / f_sig;
+        const phase = (t % period) / period;
+        const val = phase < 0.5 ? (4 * phase - 1) : (3 - 4 * phase);
+        return sig_center + sig_amp * val;
+      } else if (waveType === 'sawtooth') {
+        const period = 1 / f_sig;
+        const phase = (t % period) / period;
+        return sig_center + sig_amp * (2 * phase - 1);
+      } else {
+        const val = Math.sin(2 * Math.PI * f_sig * t) >= 0 ? 1 : -1;
+        return sig_center + sig_amp * val;
+      }
+    }
+
+    function getX(t) {
+      return padding + t * plotW;
+    }
+    function getY(v) {
+      const clampedV = Math.max(0, Math.min(vref, v));
+      return height - padding - (clampedV / vref) * plotH;
+    }
+
+    let svgContent = `
+      <rect width="100%" height="100%" fill="none" rx="6" />
+      <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="${padding - 28}" y="${padding + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">3.3V</text>
+      
+      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="${padding - 28}" y="${height - padding + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">0V</text>
+    `;
+
+    let idealPath = "";
+    const samplesCount = 300;
+    for (let i = 0; i <= samplesCount; i++) {
+      const t = i / samplesCount;
+      const v = getIdealVoltage(t);
+      const x = getX(t);
+      const y = getY(v);
+      if (i === 0) idealPath += `M ${x} ${y}`;
+      else idealPath += ` L ${x} ${y}`;
+    }
+    svgContent += `<path d="${idealPath}" fill="none" stroke="rgba(148, 163, 184, 0.18)" stroke-width="1.5" stroke-dasharray="3,3" />`;
+
+    const updateSteps = Math.floor(f_update);
+    let stepPoints = [];
+    for (let i = 0; i <= updateSteps; i++) {
+      const t = i / f_update;
+      const v_ideal = getIdealVoltage(t);
+      const rawCode = Math.round((v_ideal / vref) * steps);
+      const code = Math.max(0, Math.min(steps, rawCode));
+      const v_quant = (code / steps) * vref;
+      stepPoints.push({ t, v: v_quant });
+    }
+
+    let steppedPath = "";
+    stepPoints.forEach((pt, idx) => {
+      const x = getX(pt.t);
+      const y = getY(pt.v);
+      if (idx === 0) {
+        steppedPath += `M ${x} ${y}`;
+      } else {
+        steppedPath += ` H ${x} V ${y}`;
+      }
+    });
+    svgContent += `<path d="${steppedPath}" fill="none" stroke="#EF6868" stroke-width="1.5" stroke-opacity="0.8" />`;
+
+    const dt = 1.0 / samplesCount;
+    const tau = 1.0 / (2 * Math.PI * f_cutoff);
+    const alpha = dt / (tau + dt);
+    
+    let filteredPath = "";
+    let y_lpf = getIdealVoltage(0);
+    
+    for (let i = 0; i <= samplesCount; i++) {
+      const t = i / samplesCount;
+      const activeStepIdx = Math.floor(t * f_update);
+      const clampedIdx = Math.min(activeStepIdx, stepPoints.length - 1);
+      const x_val = stepPoints[clampedIdx].v;
+      
+      y_lpf = alpha * x_val + (1.0 - alpha) * y_lpf;
+      
+      const x = getX(t);
+      const y = getY(y_lpf);
+      if (i === 0) filteredPath += `M ${x} ${y}`;
+      else filteredPath += ` L ${x} ${y}`;
+    }
+    svgContent += `<path d="${filteredPath}" fill="none" stroke="#10B981" stroke-width="2.5" />`;
 
     svg.innerHTML = svgContent;
   }

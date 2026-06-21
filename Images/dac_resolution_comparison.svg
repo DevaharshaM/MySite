@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  
+  <!-- Outer Border -->
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  
+  <!-- Left Panel: 3-bit -->
+  <g transform="translate(10, 10)">
+    <text x="100" y="30" fill="#FFF" font-weight="bold" font-size="10" text-anchor="middle">3-Bit Resolution</text>
+    <text x="100" y="44" fill="#EF6868" font-family="monospace" font-size="8" text-anchor="middle">2^3 = 8 Discrete Levels</text>
+    
+    <!-- Waveforms -->
+    <!-- Ideal Continuous Curve -->
+    <path d="M 25 130 C 45 60, 75 60, 95 130 C 115 200, 145 200, 165 130" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5" />
+    
+    <!-- 3-bit Staircase approximation -->
+    <!-- Levels: 130 (mid), 95 (level 5), 60 (level 7), 165 (level 1), 200 (level 0) -->
+    <!-- Steps along x: 25, 40, 60, 80, 100, 120, 140, 165 -->
+    <path d="M 25 130 H 40 V 95 H 60 V 60 H 80 V 95 H 100 V 130 H 120 V 165 H 140 V 200 H 155 V 165 H 165 130" fill="none" stroke="#EF6868" stroke-width="2" />
+    
+    <text x="100" y="200" fill="#64748B" font-size="8" text-anchor="middle">Coarse, heavy quantization error</text>
+  </g>
+
+  <!-- Middle Panel: 4-bit -->
+  <g transform="translate(220, 10)">
+    <text x="100" y="30" fill="#FFF" font-weight="bold" font-size="10" text-anchor="middle">4-Bit Resolution</text>
+    <text x="100" y="44" fill="#3B82F6" font-family="monospace" font-size="8" text-anchor="middle">2^4 = 16 Discrete Levels</text>
+    
+    <!-- Waveforms -->
+    <!-- Ideal Continuous Curve -->
+    <path d="M 25 130 C 45 60, 75 60, 95 130 C 115 200, 145 200, 165 130" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5" />
+    
+    <!-- 4-bit Staircase (twice as many steps as 3-bit) -->
+    <path d="M 25 130 H 32 V 112 H 40 V 95 H 48 V 78 H 58 V 60 H 68 V 78 H 76 V 95 H 84 V 112 H 92 V 130 H 100 V 148 H 108 V 165 H 116 V 182 H 126 V 200 H 136 V 182 H 144 V 165 H 152 V 148 H 165 130" fill="none" stroke="#3B82F6" stroke-width="2" />
+    
+    <text x="100" y="200" fill="#64748B" font-size="8" text-anchor="middle">Improved approximation</text>
+  </g>
+
+  <!-- Right Panel: 8-bit -->
+  <g transform="translate(430, 10)">
+    <text x="100" y="30" fill="#FFF" font-weight="bold" font-size="10" text-anchor="middle">8-Bit Resolution</text>
+    <text x="100" y="44" fill="#10B981" font-family="monospace" font-size="8" text-anchor="middle">2^8 = 256 Discrete Levels</text>
+    
+    <!-- Waveforms -->
+    <!-- Ideal Continuous Curve -->
+    <path d="M 25 130 C 45 60, 75 60, 95 130 C 115 200, 145 200, 165 130" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5" />
+    
+    <!-- 8-bit Staircase is so fine it sits on top of the curve -->
+    <path d="M 25 130 C 45 60, 75 60, 95 130 C 115 200, 145 200, 165 130" fill="none" stroke="#10B981" stroke-width="2" />
+    
+    <text x="100" y="200" fill="#64748B" font-size="8" text-anchor="middle">Smooth, steps virtually invisible</text>
+  </g>
+</svg>

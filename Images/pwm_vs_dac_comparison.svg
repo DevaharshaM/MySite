@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  
+  <!-- Outer Border -->
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  
+  <!-- Left Panel: True DAC -->
+  <g transform="translate(10, 10)">
+    <text x="140" y="25" fill="#FFF" font-weight="bold" font-size="11" text-anchor="middle" letter-spacing="0.05em">TRUE DAC OUTPUT</text>
+    
+    <!-- Waveform axis -->
+    <line x1="30" y1="50" x2="30" y2="180" stroke="rgba(148,163,184,0.2)" stroke-width="1.5" />
+    <line x1="30" y1="180" x2="260" y2="180" stroke="rgba(148,163,184,0.2)" stroke-width="1.5" />
+    <text x="25" y="53" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">VREF</text>
+    <text x="25" y="183" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">0V</text>
+    
+    <!-- Flat step output -->
+    <path d="M 30 180 H 60 V 130 H 120 V 90 H 180 V 150 H 240 V 180" fill="none" stroke="#10B981" stroke-width="2.5" />
+    
+    <!-- Labels -->
+    <rect x="60" y="193" width="160" height="20" rx="3" fill="#1E293B" />
+    <text x="140" y="206" fill="#10B981" font-size="8" text-anchor="middle">✓ Instant changes, zero voltage ripple</text>
+  </g>
+
+  <!-- Right Panel: Filtered PWM -->
+  <g transform="translate(320, 10)">
+    <text x="140" y="25" fill="#FFF" font-weight="bold" font-size="11" text-anchor="middle" letter-spacing="0.05em">FILTERED PWM OUTPUT</text>
+    
+    <!-- Waveform axis -->
+    <line x1="30" y1="50" x2="30" y2="180" stroke="rgba(148,163,184,0.2)" stroke-width="1.5" />
+    <line x1="30" y1="180" x2="260" y2="180" stroke="rgba(148,163,184,0.2)" stroke-width="1.5" />
+    <text x="25" y="53" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">VREF</text>
+    <text x="25" y="183" fill="#64748B" font-family="monospace" font-size="8" text-anchor="end">0V</text>
+    
+    <!-- RC-delayed and ripple output -->
+    <!-- Transition paths: slowly charging and discharging with a ripple trace -->
+    <path d="M 30 180 C 45 180, 55 178, 60 175 C 62 165, 65 155, 70 148 C 72 143, 75 140, 80 135 L 85 131 L 90 133 L 95 129 L 100 131 L 105 129 L 110 131 L 115 129 L 120 131 C 122 120, 125 110, 130 102 C 132 98, 135 95, 140 93 L 145 89 L 150 91 L 155 89 L 160 91 L 165 89 L 170 91 L 175 89 L 180 91 C 182 105, 185 118, 190 128 C 192 135, 195 142, 200 146 L 205 152 L 210 149 L 215 152 L 220 149 L 225 152 L 230 149 L 235 152 L 240 149" fill="none" stroke="#EF6868" stroke-width="2" />
+    
+    <!-- Labels -->
+    <rect x="60" y="193" width="160" height="20" rx="3" fill="#1E293B" />
+    <text x="140" y="206" fill="#EF6868" font-size="8" text-anchor="middle">✗ Exponential rise delay + ripple noise</text>
+  </g>
+  
+  <!-- Divider -->
+  <line x1="320" y1="30" x2="320" y2="220" stroke="rgba(148,163,184,0.1)" stroke-width="1" stroke-dasharray="3,3" />
+</svg>
