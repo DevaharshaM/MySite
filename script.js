@@ -94,6 +94,8 @@ const systemsTreeNodes = {
     title: "Coordination",
     description: "Why isolated computation evolved into synchronized systems.",
     explorations: [
+      { id: "the-architecture-of-time", title: "The Architecture of Time" },
+      { id: "when-machines-learned-to-observe", title: "When Machines Learned to Observe" },
       { id: null, title: "Coming Soon" }
     ]
   },
@@ -2536,6 +2538,361 @@ const blogPosts = [
     quote: "Engineering does not look for perfect answers. It builds paths through constraints."
   },
   footer: "Reflections on specialized protocols and constraints - PrajnaEdge.dev"
+},
+{
+  id: "the-architecture-of-time",
+  category: "Coordination",
+  series: "System Explorations",
+  part: 1,
+  title: "The Architecture of Time",
+  subtitle: "How machines learned to measure cycles, divide frequencies, and keep promises.",
+  date: "21st June, 2026",
+  tags: ["Timers", "Prescalers", "PWM", "Compare Match", "Input Capture", "Real-Time Systems"],
+  sections: [
+    {
+      heading: "1. The Illusion of Speed",
+      content: [
+        {
+          type: "p",
+          text: "In our earlier explorations, we watched systems learn to speak. UART established timing contracts, SPI synchronized clocks, and I2C/CAN introduced bus sharing. Yet, all communication protocols and computational structures share an underlying assumption: they assume the existence of structured, reliable time.\n\nHow does software wait? The most naive approach is a busy-wait delay loop:\n\n`for(volatile int i = 0; i < 100000; i++);`\n\nThis simple loop runs on a test bench, but collapses in a real-world system. First, it is entirely clock-frequency dependent: if the microcontroller switches from an 8 MHz internal RC oscillator to a 168 MHz external crystal, the delay shrinks to a fraction of its intended duration. Second, if you enable compiler optimizations (such as `-O3`), the compiler may strip the empty loop entirely. Third, if an interrupt service routine (ISR) fires during the loop, the CPU suspends execution to handle the event, stretching the delay unpredictably. Software alone cannot keep temporal promises."
+        }
+      ]
+    },
+    {
+      heading: "2. The Hardware Counter",
+      content: [
+        {
+          type: "p",
+          text: "To keep time reliably, the CPU must delegate the task to dedicated hardware: the timer. At its simplest, a timer is an independent hardware block consisting of a clock oscillator feeding a digital register called the Counter (CNT).\n\nOn every tick of the clock, the counter register increments. Because this incrementing happens in hardware, it is completely independent of CPU execution. The CPU can be performing complex arithmetic, waiting for an interrupt, or even resting in a low-power sleep state; the hardware counter increments steadily in the background, counting clock cycles to track elapsed time."
+        }
+      ]
+    },
+    {
+      heading: "3. Prescalers: Division of Labor",
+      content: [
+        {
+          type: "p",
+          text: "Directly clocking the counter register quickly reveals a physical limitation: frequency. Suppose our microcontroller runs at 84 MHz, and we use a 16-bit counter register (which can hold values from 0 to 65,535).\n\nAt 84 million ticks per second, the counter will fill up and wrap back to zero in just 780 microseconds. Measuring a simple 1-second interval would require tracking thousands of wraps in software, consuming CPU cycles and defeating the purpose of hardware timing.\n\nTo solve this, timers use a Prescaler (PSC). The prescaler is a programmable frequency divider. If we set the prescaler to 8399, the incoming 84 MHz clock is divided by 8400 (PSC + 1), feeding the counter a slow, manageable 10 kHz signal. The counter now increments once every 100 microseconds, wrapping in a comfortable 6.5 seconds."
+        },
+        {
+          type: "image",
+          src: "Images/timer_prescaler.png",
+          alt: "Timer Clock Division: Clock source divided by Prescaler to drive Counter CNT"
+        }
+      ]
+    },
+    {
+      heading: "4. Overflow: The Heartbeat of wrapping",
+      content: [
+        {
+          type: "p",
+          text: "When the counter register counts past its maximum value (or a configured Auto-Reload Register / ARR value), it wraps back to zero. This wraparound is called an Overflow.\n\nThe moment an overflow occurs, the timer hardware asserts an Update Interrupt Flag (UIF) and can trigger a CPU interrupt. By adjusting the ARR value, we dictate the exact period of this wraparound. A 10 kHz counter configured to wrap at 10,000 generates an overflow interrupt exactly once every second, creating a deterministic periodic heartbeat."
+        },
+        {
+          type: "image",
+          src: "Images/timer_overflow.png",
+          alt: "Timer Overflow Sequence showing Counter wrapping at ARR and generating Update Flag"
+        }
+      ]
+    },
+    {
+      heading: "5. Compare Match: Keeping Promises",
+      content: [
+        {
+          type: "p",
+          text: "Periodic overflows are useful, but what if we need events to happen *during* the count cycle? That is where the Compare Register (CCR) comes in.\n\nThe CPU writes a target value to the CCR. The timer's hardware comparator continuously checks: `Is CNT == CCR?`.\n\nThe moment the counter matches the compare register, the timer asserts a Compare Match flag and can toggle an output pin or trigger an event. This allows the system to schedule precise sub-millisecond events without CPU intervention."
+        },
+        {
+          type: "image",
+          src: "Images/timer_compare_match.png",
+          alt: "Timer Compare Match Waveform showing Counter intersecting CCR to trigger Match Events"
+        }
+      ]
+    },
+    {
+      heading: "6. Timer Configurator: The Race Against Time",
+      content: [
+        {
+          type: "p",
+          text: "Let's experiment with these core concepts. In the simulator below, configure the clock source, prescaler division, counter size, and compare match values to see how physical frequencies translate into structured temporal events."
+        },
+        {
+          type: "edgecase",
+          id: "timer-builder"
+        }
+      ]
+    },
+    {
+      heading: "7. Pulse Width Modulation: Painting with Time",
+      content: [
+        {
+          type: "p",
+          text: "Compare match logic unlocks a powerful technique: Pulse Width Modulation (PWM). If we configure a timer pin to go HIGH on counter reset (0) and go LOW when the counter matches the Compare Value (CCR), we generate a repeating digital pulse train.\n\nBy changing the compare value, we adjust the Duty Cycle—the percentage of the period that the signal is HIGH. By toggling this signal at high frequencies, we can simulate an analog voltage.\n\nA 50% duty cycle on a 3.3V pin outputs 3.3V half the time, averaging to 1.65V. To an LED, this appears as half brightness. To a DC motor, it translates to half speed. Timers allow us to paint analog behaviors onto digital silicon using nothing but time."
+        },
+        {
+          type: "image",
+          src: "Images/pwm_waveforms.png",
+          alt: "PWM Waveform showing Period, Pulse Width, and Amplitude"
+        },
+        {
+          type: "image",
+          src: "Images/pwm_duty_cycle.png",
+          alt: "Comparison of 25%, 50%, and 75% Duty Cycles and resulting average voltages"
+        }
+      ]
+    },
+    {
+      heading: "8. PWM Simulator: Painting with Time",
+      content: [
+        {
+          type: "p",
+          text: "Adjust the frequency and duty cycle below to see how pulse widths map directly to average output voltages, controlling LED intensity and motor velocity."
+        },
+        {
+          type: "edgecase",
+          id: "pwm-painter"
+        }
+      ]
+    },
+    {
+      heading: "9. Input Capture: Measuring the World",
+      content: [
+        {
+          type: "p",
+          text: "Timers do not just generate waveforms; they can also measure them. This is the role of Input Capture.\n\nInstead of the counter triggering changes on an external pin, external pin transitions (edges) trigger the timer. When a rising edge is detected on an input capture pin, the hardware instantly copies (captures) the current counter value (CNT) into the capture register (CCR). When the falling edge arrives, it captures the value again.\n\nBy subtracting the first captured value from the second, the software can measure the exact pulse width of an external signal down to the nanosecond, enabling precise sensor decoding (such as ultrasonic distance sensors or RPM tachometers) with zero CPU polling overhead."
+        },
+        {
+          type: "image",
+          src: "Images/input_capture.png",
+          alt: "Timer Input Capture timing showing CCR latching at rising/falling edges to measure width"
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Foundation of Decision",
+    paragraphs: [
+      "Communication protocols taught machines how to exchange information. Time taught machines how to coordinate action.",
+      "Before a system can observe the world, react to events, or schedule complex work, it must first learn how to measure time itself. With a structured heartbeat established, we can begin exploring how multiple activities are coordinated on a single CPU core."
+    ],
+    quote: "Time is the canvas upon which coordination is painted. Without a clock, a machine is merely reactive; with one, it becomes purposeful."
+  },
+  footer: "Reflections on timing architectures and hardware counters - PrajnaEdge.dev"
+},
+{
+  id: "when-machines-learned-to-observe",
+  category: "Coordination",
+  title: "When Machines Learned to Observe",
+  subtitle: "How reality became numbers.",
+  date: "21st June, 2026",
+  tags: ["ADC", "Sampling", "Quantization", "Resolution", "Hardware Pipeline"],
+  sections: [
+    {
+      heading: "1. The Analog World",
+      content: [
+        {
+          type: "p",
+          text: "The physical world is fluid, continuous, and unbroken. If you measure the temperature of a room, it does not jump instantly from 22°C to 23°C; it transitions through an infinite number of intermediate states. The pressure of sound waves hitting a microphone, the changing angle of a steering wheel potentiometer, the terminal voltage of a discharging lithium-ion battery, and the intensity of morning light are all continuous. They exist as physical quantities that can take any value within a range, changing smoothly across time."
+        },
+        {
+          type: "image",
+          src: "Images/analog_signals.png",
+          alt: "Continuous physical waveforms vs discrete computer states"
+        }
+      ]
+    },
+    {
+      heading: "2. Why Computers Cannot Directly Understand Analog Signals",
+      content: [
+        {
+          type: "p",
+          text: "A digital processor, by contrast, is a machine of absolute division. Inside its silicon core, electricity is gated into binary states: a transistor is either fully conducting or cut off, representing a logical 1 or 0. A processor cannot store 'a slightly warm voltage' or 'a loud sound wave' in its registers. It understands only precise digital numbers. To bridge this gap between continuous physical reality and discrete computation, the system needs an interface that translates raw, infinitely variable analog signals into finite, structured digital words. This interface is the Analog-to-Digital Converter (ADC)."
+        }
+      ]
+    },
+    {
+      heading: "3. Sampling: Freezing Time",
+      content: [
+        {
+          type: "p",
+          text: "The first step of this translation is Sampling. Since a computer cannot observe the world constantly, it must observe it at discrete moments. Sampling is the process of reading the analog voltage of a signal at precise, regular intervals.\n\nThis is where we connect back to the Hardware Timer. A timer serves as the clock heartbeat of the system, asserting trigger events to dictate exactly *when* the ADC should observe. By sampling at a fast enough rate, the machine captures enough snapshots of the signal to represent its behavior across time."
+        },
+        {
+          type: "image",
+          src: "Images/sampling_process.png",
+          alt: "Sampling timing trace showing periodic capture ticks"
+        }
+      ]
+    },
+    {
+      heading: "4. Quantization: Slicing the Continuous",
+      content: [
+        {
+          type: "p",
+          text: "Freezing time via sampling is only half the battle. At each sampling moment, the voltage level is still a continuous value with infinite decimal possibilities. A computer has a finite number of bits to represent this value, so it must map this infinite voltage to the nearest level on a pre-defined digital staircase. This mapping process is called Quantization.\n\nQuantization discards the infinite sub-millivolt details, rounding the physical voltage to the closest discrete step. The tiny difference between the true analog voltage and the rounded digital level is called Quantization Error."
+        },
+        {
+          type: "image",
+          src: "Images/quantization_steps.png",
+          alt: "Continuous signal mapped onto discrete binary quantization levels"
+        }
+      ]
+    },
+    {
+      heading: "5. Resolution: The Fineness of the Mesh",
+      content: [
+        {
+          type: "p",
+          text: "How close can our digital staircase approximate reality? That depends on the ADC's Resolution. Resolution refers to the number of binary bits the converter uses to represent the signal, which dictates the number of steps on our measurement staircase.\n\n- A **3-bit ADC** has only $2^3 = 8$ steps. The staircase is coarse, jagged, and introduces substantial quantization noise.\n- An **8-bit ADC** provides $2^8 = 256$ steps, which is sufficient for basic sensing but still relatively coarse.\n- A **12-bit ADC** provides $2^{12} = 4096$ steps, offering a fine mesh that captures small changes with minimal noise.\n- A **16-bit ADC** offers $2^{16} = 65,536$ steps, resolving microvolt fluctuations for high-fidelity audio or medical instrumentation.\n\nBy increasing resolution, we make the grid mesh finer, allowing the machine to capture a closer approximation of the physical wave."
+        },
+        {
+          type: "image",
+          src: "Images/resolution_comparison.png",
+          alt: "Comparison of grid density for 3-bit vs 8-bit resolutions"
+        }
+      ]
+    },
+    {
+      heading: "6. Reference Voltage: The Calibration Ruler",
+      content: [
+        {
+          type: "p",
+          text: "To assign digital numbers to analog voltages, the ADC needs a ruler. This ruler is the Reference Voltage ($V_{REF}$). The reference voltage defines the maximum physical voltage the ADC can measure, which corresponds to the maximum digital count.\n\nIf we have a 12-bit ADC (0 to 4095) with a $V_{REF}$ of 3.3V:\n- An input of 0.0V resolves to `0`.\n- An input of 3.3V resolves to `4095`.\n- An input of 1.65V resolves to exactly `2048`.\n\nIf the reference voltage fluctuates, our measurements fluctuate too. If $V_{REF}$ drops to 3.0V due to poor power supply regulation, an input of 1.5V will resolve to `2048` instead of `1861`, causing a measurement error. Precise calibration of $V_{REF}$ is the cornerstone of accurate physical observation."
+        },
+        {
+          type: "image",
+          src: "Images/reference_voltage.png",
+          alt: "Reference voltage acting as a calibrated measuring scale"
+        }
+      ]
+    },
+    {
+      heading: "7. The Conversion Pipeline: Sample, Hold, Convert, Store",
+      content: [
+        {
+          type: "p",
+          text: "How does the physical conversion happen? Most microcontrollers use a Successive Approximation Register (SAR) ADC. The hardware processes each sample through a four-stage pipeline:\n\n1. **Sample**: A physical switch closes briefly, connecting the external pin to an internal capacitor.\n2. **Hold**: The switch opens. The capacitor 'holds' the captured charge steady so the voltage doesn't change during conversion.\n3. **Convert**: A comparator compares the held voltage to a series of voltages generated by an internal DAC. Using a binary search (Successive Approximation), it tests the most significant bit first, deciding whether the signal is above or below half of $V_{REF}$, and repeats for each bit down to the LSB.\n4. **Store**: Once all bits are decided, the binary result is copied to a data register, raising an interrupt or DMA request so the CPU can read it."
+        },
+        {
+          type: "image",
+          src: "Images/adc_pipeline.png",
+          alt: "SAR ADC hardware blocks: Sample switch, Hold capacitor, Comparator, and SAR register"
+        }
+      ]
+    },
+    {
+      heading: "8. Accuracy vs Precision",
+      content: [
+        {
+          type: "p",
+          text: "In embedded sensing, engineers often confuse two critical terms: Accuracy and Precision. They are not the same.\n\n- **Accuracy** is how close a measurement is to the true physical value. An accurate system has minimal calibration offset.\n- **Precision** is how consistent and repeatable the measurements are when the same input is read multiple times. A precise system has low noise.\n\nA system can be highly precise but inaccurate (giving highly repeatable, low-noise readings that are calibrated incorrectly) or highly accurate but imprecise (averaging to the correct value but showing substantial noise on each individual sample). Below is a visual representation of these states:"
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.25rem; border:1px solid var(--border); border-radius:8px; display:flex; justify-content:center; align-items:center; margin:1.5rem 0;">
+            <svg width="640" height="170" viewBox="0 0 640 170" style="background:transparent; overflow:visible; width:100%; max-width:640px;">
+              <!-- 1. Low Accuracy, Low Precision -->
+              <g transform="translate(70, 75)">
+                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
+                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
+                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
+                <circle cx="-25" cy="-20" r="3" fill="#EF6868"/>
+                <circle cx="15" cy="-35" r="3" fill="#EF6868"/>
+                <circle cx="-10" cy="30" r="3" fill="#EF6868"/>
+                <circle cx="35" cy="20" r="3" fill="#EF6868"/>
+                <circle cx="-30" cy="15" r="3" fill="#EF6868"/>
+                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Imprecise & Inaccurate</text>
+              </g>
+              <!-- 2. Low Accuracy, High Precision -->
+              <g transform="translate(230, 75)">
+                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
+                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
+                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
+                <circle cx="-25" cy="-25" r="3" fill="#EF6868"/>
+                <circle cx="-27" cy="-22" r="3" fill="#EF6868"/>
+                <circle cx="-23" cy="-26" r="3" fill="#EF6868"/>
+                <circle cx="-26" cy="-28" r="3" fill="#EF6868"/>
+                <circle cx="-22" cy="-21" r="3" fill="#EF6868"/>
+                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Precise & Inaccurate</text>
+              </g>
+              <!-- 3. High Accuracy, Low Precision -->
+              <g transform="translate(390, 75)">
+                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
+                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
+                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
+                <circle cx="-12" cy="-10" r="3" fill="#10B981"/>
+                <circle cx="10" cy="-8" r="3" fill="#10B981"/>
+                <circle cx="-5" cy="12" r="3" fill="#10B981"/>
+                <circle cx="14" cy="10" r="3" fill="#10B981"/>
+                <circle cx="2" cy="-14" r="3" fill="#10B981"/>
+                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Imprecise & Accurate</text>
+              </g>
+              <!-- 4. High Accuracy, High Precision -->
+              <g transform="translate(550, 75)">
+                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
+                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
+                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
+                <circle cx="0" cy="0" r="3" fill="#10B981"/>
+                <circle cx="-2" cy="1" r="3" fill="#10B981"/>
+                <circle cx="1" cy="-2" r="3" fill="#10B981"/>
+                <circle cx="2" cy="2" r="3" fill="#10B981"/>
+                <circle cx="-1" cy="-1" r="3" fill="#10B981"/>
+                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Precise & Accurate</text>
+              </g>
+            </svg>
+          </div>`
+        }
+      ]
+    },
+    {
+      heading: "9. Capturing Reality",
+      content: [
+        {
+          type: "p",
+          text: "Let's observe these conversion behaviors. In the interactive panel below, modify signal frequency, resolution, and sampling rate to watch how an analog signal is sliced and rounded into digital numbers."
+        },
+        {
+          type: "edgecase",
+          id: "capturing-reality"
+        }
+      ]
+    },
+    {
+      heading: "10. The Cost of Observation",
+      content: [
+        {
+          type: "p",
+          text: "What happens when our observation parameters are configured incorrectly? In the simulator below, adjust the reference voltage, resolution, and sample rate to induce signal clipping, aliasing (undersampling), or high quantization stepping."
+        },
+        {
+          type: "edgecase",
+          id: "cost-of-observation"
+        }
+      ]
+    },
+    {
+      heading: "11. Real Embedded Applications",
+      content: [
+        {
+          type: "p",
+          text: "ADCs are the sensory organs of embedded silicon. They monitor the health of battery cells in electric vehicles, translate analog temperature sensors (like thermistors or RTDs) into precise degrees, decode phase currents for brushless DC motor control, digitize microphone voice data in smart assistants, and capture cardiac electrical potentials in medical ECG monitors. Without the ADC, a processor is deaf, blind, and isolated from physical reality."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Sensory Handshake",
+    paragraphs: [
+      "Timers taught machines when to pay attention. ADCs taught machines how to translate reality into something computation could understand.",
+      "Yet observing reality is only half the story. Once a machine has observed its environment and decided on a course of action, it must eventually speak back—driving physical outputs and painting analog actions onto the physical world."
+    ],
+    quote: "A processor without an ADC is a brain without senses—trapped in a silent chamber of its own logical abstractions."
+  },
+  footer: "Reflections on analog interfaces and ADC conversions - PrajnaEdge.dev"
 }
 ];
 
@@ -2963,7 +3320,10 @@ function openItem(id, type) {
   let label = item.category;
   let sectionsHtml = item.sections.map(sec => {
     let blocks = sec.content.map(b => {
-      if (b.type === 'p') return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${b.html ? b.text : escHtml(b.text)}</p>`;
+      if (b.type === 'p') {
+        let textContent = b.html ? b.text : escHtml(b.text);
+        return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${parseTextFormatting(textContent)}</p>`;
+      }
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
       if (b.type === 'image') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
@@ -3030,7 +3390,10 @@ function openItem(id, type) {
     ${sectionsHtml}
     <div style="margin-bottom:2.5rem">
       <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(item.closing.heading)}</h2>
-      ${item.closing.paragraphs.map(p => `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">${escHtml(p)}</p>`).join('')}
+      ${item.closing.paragraphs.map(p => {
+        let textContent = escHtml(p);
+        return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">${parseTextFormatting(textContent)}</p>`;
+      }).join('')}
       <div class="blog-quote">${escHtml(item.closing.quote)}</div>
     </div>
     ${navHtml}
@@ -3074,6 +3437,27 @@ function renderJourney() {
 function setNode(i) { activeNode = i; renderJourney(); }
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+function parseTextFormatting(text) {
+  // 1. Bold notation: **text** -> <strong>text</strong>
+  let parsed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // 2. Math LaTeX-like notation: $...$ -> custom HTML formatting
+  parsed = parsed.replace(/\$(.*?)\$/g, (match, mathExpr) => {
+    // Replace 2^x or 2^{x}
+    if (/^2\^\{?(\d+)\}?$/.test(mathExpr)) {
+      return mathExpr.replace(/^2\^\{?(\d+)\}?$/, '2<sup>$1</sup>');
+    }
+    // Replace V_{REF} or V_REF
+    if (/^V_\{?REF\}?$/.test(mathExpr)) {
+      return '<i>V</i><sub>REF</sub>';
+    }
+    // Fallback: wrap in italic tag for variables
+    return `<i>${mathExpr}</i>`;
+  });
+  
+  return parsed;
+}
+
 function initEdgeCase(containerId) {
   if (containerId === 'uart-conversation-builder') {
     renderUartConversationBuilder();
@@ -3089,6 +3473,14 @@ function initEdgeCase(containerId) {
     renderCanConversationOfDominance();
   } else if (containerId === 'can-journey-of-a-frame') {
     renderCanJourneyOfAFrame();
+  } else if (containerId === 'timer-builder') {
+    renderTimerBuilder();
+  } else if (containerId === 'pwm-painter') {
+    renderPwmPainter();
+  } else if (containerId === 'capturing-reality') {
+    renderCapturingReality();
+  } else if (containerId === 'cost-of-observation') {
+    renderCostOfObservation();
   }
 }
 
@@ -5675,7 +6067,7 @@ function renderCanJourneyOfAFrame() {
   const stages = [
     { title: "Application", desc: "The software application calls the driver function: <code>can_transmit(0x1F4, [0xDE, 0xAD, 0xBE, 0xEF])</code>. The core processor prepares to hand over control." },
     { title: "CAN Controller", desc: "The driver writes the transmit request command to the CAN Controller peripheral register (TXBAR - Transmit Buffer Add Request register), setting up transmission flags." },
-    { title: "Message RAM", desc: "The peripheral writes the frame description into a dedicated **Message RAM** partition. <i>Connection to <a onclick=\"openItem('the-hidden-geography-of-firmware', 'blogs')\" style=\"color:var(--blue); cursor:pointer; text-decoration:underline;\">The Hidden Geography of Firmware</a></i>: On microcontrollers like STM32H7, Message RAM sits in a specific SRAM block. A misalignment in the register base offset triggers a hardware bus fault or silent frame drops." },
+    { title: "Message RAM", desc: "The peripheral writes the frame description into a dedicated <strong>Message RAM</strong> partition. <i>Connection to <a onclick=\"openItem('the-hidden-geography-of-firmware', 'blogs')\" style=\"color:var(--blue); cursor:pointer; text-decoration:underline;\">The Hidden Geography of Firmware</a></i>: On microcontrollers like STM32H7, Message RAM sits in a specific SRAM block. A misalignment in the register base offset triggers a hardware bus fault or silent frame drops." },
     { title: "Frame Builder", desc: "The CAN controller IP packages the identifier, DLC (Data Length Code = 4), and the hex payload into a structured serial frame, ready for physical bitwise streaming." },
     { title: "Arbitration", desc: "The transceiver checks if the bus is idle, then asserts SOF and transmits the 11 ID bits (00111110100) onto the bus, listening to ensure no higher-priority message collides." },
     { title: "Bit Stuffing", desc: "As bits flow, the hardware controller monitors the stream. If it detects five consecutive 1s or 0s, it automatically inserts an opposite bit (stuff bit) to keep the receiver clocks synchronized." },
@@ -5758,6 +6150,1130 @@ function renderCanJourneyOfAFrame() {
   renderStepper();
   detailsContainer.innerHTML = `<div style="font-family:var(--mono); font-size:0.85rem; color:var(--muted); text-align:center;">Configure message and press TRANSMIT to watch the frame pipeline.</div>`;
   logContainer.innerHTML = `<div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Terminal idle.</div>`;
+}
+
+function renderTimerBuilder() {
+  const container = document.getElementById('timer-builder');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Race Against Time</div>
+    <div class="edgecase-subheader">Configure Hardware Timer Registers & Waveform Generation</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Interact with clock prescalers, auto-reload value (ARR), and compare match threshold (CCR) to see how digital signals are structured in hardware.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Register Configurations</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.25rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-tb-clk">Clock Source Frequency</label>
+          <select id="ec-tb-clk" class="edgecase-select">
+            <option value="1000000" selected>1 MHz (Internal Oscillator)</option>
+            <option value="8000000">8 MHz (HSE Crystal)</option>
+            <option value="16000000">16 MHz (PLL Speed)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tb-psc">Prescaler (PSC Register value)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-tb-psc" class="edgecase-slider" min="0" max="1000" value="9">
+            <span id="ec-tb-psc-val" class="edgecase-slider-val">9</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tb-bits">Counter Register Size</label>
+          <select id="ec-tb-bits" class="edgecase-select">
+            <option value="8" selected>8-bit (Max count: 255)</option>
+            <option value="16">16-bit (Max count: 65535)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tb-arr">Auto-Reload (ARR Register)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-tb-arr" class="edgecase-slider" min="1" max="255" value="99">
+            <span id="ec-tb-arr-val" class="edgecase-slider-val">99</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-tb-ccr">Compare Value (CCR Register)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-tb-ccr" class="edgecase-slider" min="0" max="99" value="49">
+            <span id="ec-tb-ccr-val" class="edgecase-slider-val">49</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISUAL COMPARATOR & COUNTER PLOT -->
+    <div class="pipeline-step">Hardware Counting & Signal Generation Waveform</div>
+    <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem;">
+      <svg id="ec-tb-svg" viewBox="0 0 800 240" style="width:100%; height:auto; overflow:visible;">
+        <!-- Waveform drawings will go here -->
+      </svg>
+    </div>
+
+    <!-- CALCULATIONS PANEL -->
+    <div class="pipeline-step">Calculated Technical Metrics</div>
+    <div class="edgecase-output-panel">
+      <div class="edgecase-output-grid">
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Divider Ratio (PSC + 1)</div>
+          <div class="edgecase-output-val" id="ec-tb-calc-div">10</div>
+        </div>
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Counter Frequency (f_CNT)</div>
+          <div class="edgecase-output-val" id="ec-tb-calc-fcnt">100.00 kHz</div>
+        </div>
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Overflow Frequency (Interrupt)</div>
+          <div class="edgecase-output-val" id="ec-tb-calc-farr">1.00 kHz (1.00 ms period)</div>
+        </div>
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Compare Match Event Duty Cycle</div>
+          <div class="edgecase-output-val" id="ec-tb-calc-duty">50.0%</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Grab element references
+  const clkSelect = document.getElementById('ec-tb-clk');
+  const pscSlider = document.getElementById('ec-tb-psc');
+  const pscValText = document.getElementById('ec-tb-psc-val');
+  const bitsSelect = document.getElementById('ec-tb-bits');
+  const arrSlider = document.getElementById('ec-tb-arr');
+  const arrValText = document.getElementById('ec-tb-arr-val');
+  const ccrSlider = document.getElementById('ec-tb-ccr');
+  const ccrValText = document.getElementById('ec-tb-ccr-val');
+  const svg = document.getElementById('ec-tb-svg');
+
+  // Calc texts
+  const calcDiv = document.getElementById('ec-tb-calc-div');
+  const calcFcnt = document.getElementById('ec-tb-calc-fcnt');
+  const calcFarr = document.getElementById('ec-tb-calc-farr');
+  const calcDuty = document.getElementById('ec-tb-calc-duty');
+
+  // Handle register bits changing slider limits
+  bitsSelect.addEventListener('change', () => {
+    const bits = parseInt(bitsSelect.value);
+    const maxVal = bits === 8 ? 255 : 2000;
+    arrSlider.max = maxVal;
+    if (parseInt(arrSlider.value) > maxVal) {
+      arrSlider.value = maxVal;
+      arrValText.textContent = maxVal;
+    }
+    updateLimitsAndCalculations();
+  });
+
+  // Event listeners for real-time slider updates
+  pscSlider.addEventListener('input', () => {
+    pscValText.textContent = pscSlider.value;
+    updateLimitsAndCalculations();
+  });
+
+  arrSlider.addEventListener('input', () => {
+    arrValText.textContent = arrSlider.value;
+    ccrSlider.max = arrSlider.value;
+    if (parseInt(ccrSlider.value) > parseInt(arrSlider.value)) {
+      ccrSlider.value = arrSlider.value;
+      ccrValText.textContent = arrSlider.value;
+    }
+    updateLimitsAndCalculations();
+  });
+
+  ccrSlider.addEventListener('input', () => {
+    ccrValText.textContent = ccrSlider.value;
+    updateLimitsAndCalculations();
+  });
+
+  clkSelect.addEventListener('change', updateLimitsAndCalculations);
+
+  let tOffset = 0;
+
+  function updateLimitsAndCalculations() {
+    const fOsc = parseFloat(clkSelect.value);
+    const pscVal = parseInt(pscSlider.value);
+    const arrVal = parseInt(arrSlider.value);
+    const ccrVal = parseInt(ccrSlider.value);
+
+    // Div ratio
+    const divRatio = pscVal + 1;
+    calcDiv.textContent = `${divRatio} (divided by PSC+1)`;
+
+    // Counter frequency
+    const fCnt = fOsc / divRatio;
+    if (fCnt >= 1000000) {
+      calcFcnt.textContent = `${(fCnt / 1000000).toFixed(2)} MHz`;
+    } else {
+      calcFcnt.textContent = `${(fCnt / 1000).toFixed(2)} kHz`;
+    }
+
+    // Overflow freq
+    const fArr = fCnt / (arrVal + 1);
+    const periodMs = (1000 / fArr);
+    if (fArr >= 1000) {
+      calcFarr.textContent = `${(fArr / 1000).toFixed(2)} kHz (period: ${periodMs.toFixed(3)} ms)`;
+    } else {
+      calcFarr.textContent = `${fArr.toFixed(2)} Hz (period: ${periodMs.toFixed(2)} ms)`;
+    }
+
+    // Compare duty cycle
+    const dutyPercent = ((ccrVal / arrVal) * 100).toFixed(1);
+    calcDuty.textContent = `${dutyPercent}% (CCR / ARR)`;
+  }
+
+  function drawTimerWaveforms() {
+    // Check if element is still in DOM (prevents background loop running on page change)
+    if (!document.getElementById('timer-builder')) return;
+
+    const arrVal = parseInt(arrSlider.value);
+    const ccrVal = parseInt(ccrSlider.value);
+
+    const width = 800;
+    const height = 240;
+    const padding = 40;
+
+    tOffset += 0.8; // animation velocity
+
+    let svgContent = `
+      <!-- Background grid -->
+      <defs>
+        <pattern id="tb-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.03)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#tb-grid)" rx="6" />
+    `;
+
+    // Coordinates mapping
+    const chartYTop = 30;
+    const chartYBottom = 120;
+    const chartHeight = chartYBottom - chartYTop;
+
+    // Draw ARR threshold line
+    svgContent += `
+      <line x1="${padding}" y1="${chartYTop}" x2="${width - padding}" y2="${chartYTop}" stroke="rgba(239, 68, 68, 0.4)" stroke-dasharray="3,3" stroke-width="1.5" />
+      <text x="${width - padding + 5}" y="${chartYTop + 4}" fill="rgba(239, 68, 68, 0.8)" font-family="var(--mono)" font-size="0.65rem">ARR (${arrVal})</text>
+    `;
+
+    // Draw CCR threshold line
+    const ccrY = chartYBottom - (ccrVal / arrVal) * chartHeight;
+    svgContent += `
+      <line x1="${padding}" y1="${ccrY}" x2="${width - padding}" y2="${ccrY}" stroke="rgba(59, 130, 246, 0.6)" stroke-dasharray="4,2" stroke-width="1.5" />
+      <text x="${width - padding + 5}" y="${ccrY + 4}" fill="rgba(59, 130, 246, 0.9)" font-family="var(--mono)" font-size="0.65rem">CCR (${ccrVal})</text>
+    `;
+
+    // Draw baseline
+    svgContent += `
+      <line x1="${padding}" y1="${chartYBottom}" x2="${width - padding}" y2="${chartYBottom}" stroke="var(--border)" stroke-width="1" />
+      <text x="${padding - 30}" y="${chartYBottom + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem">0</text>
+    `;
+
+    const periodWidth = 200;
+    let matchPulses = [];
+    let overflowPulses = [];
+
+    // Draw counter trace (sawtooth)
+    let pathD = "";
+    const startX = padding;
+    const endX = width - padding;
+
+    for (let x = startX; x <= endX; x++) {
+      const cycleX = (x + tOffset) % periodWidth;
+      const progress = cycleX / periodWidth;
+      const cntValVal = progress * arrVal;
+      const y = chartYBottom - progress * chartHeight;
+
+      if (x === startX) {
+        pathD += `M ${x} ${y}`;
+      } else {
+        const prevCycleX = (x - 1 + tOffset) % periodWidth;
+        if (cycleX < prevCycleX) {
+          pathD += ` L ${x} ${chartYBottom} M ${x} ${chartYBottom - chartHeight}`;
+          overflowPulses.push(x);
+        } else {
+          pathD += ` L ${x} ${y}`;
+        }
+      }
+
+      const prevProgress = ((x - 1 + tOffset) % periodWidth) / periodWidth;
+      const prevCntVal = prevProgress * arrVal;
+      if (prevCntVal <= ccrVal && cntValVal > ccrVal) {
+        matchPulses.push(x);
+      }
+    }
+
+    svgContent += `<path d="${pathD}" fill="none" stroke="#E2E8F0" stroke-width="2" />`;
+
+    // Draw PWM Output wave
+    const outYTop = 150;
+    const outYBottom = 190;
+
+    let pwmPathD = "";
+    for (let x = startX; x <= endX; x++) {
+      const cycleX = (x + tOffset) % periodWidth;
+      const progress = cycleX / periodWidth;
+      const cntValVal = progress * arrVal;
+      const isHigh = cntValVal < ccrVal;
+      const y = isHigh ? outYTop : outYBottom;
+
+      if (x === startX) {
+        pwmPathD += `M ${x} ${y}`;
+      } else {
+        const prevCycleX = (x - 1 + tOffset) % periodWidth;
+        const prevProgress = prevCycleX / periodWidth;
+        const prevCnt = prevProgress * arrVal;
+        const prevHigh = prevCnt < ccrVal;
+        if (isHigh !== prevHigh) {
+          pwmPathD += ` L ${x} ${prevHigh ? outYBottom : outYTop} L ${x} ${y}`;
+        } else {
+          pwmPathD += ` L ${x} ${y}`;
+        }
+      }
+    }
+
+    svgContent += `
+      <line x1="${padding}" y1="${outYBottom}" x2="${width - padding}" y2="${outYBottom}" stroke="var(--border)" stroke-width="1" />
+      <text x="${padding - 30}" y="${outYBottom - 10}" fill="#10B981" font-family="var(--mono)" font-size="0.65rem">PWM</text>
+      <text x="${padding - 30}" y="${outYTop + 10}" fill="#10B981" font-family="var(--mono)" font-size="0.65rem">OUT</text>
+      <path d="${pwmPathD}" fill="none" stroke="#10B981" stroke-width="2" />
+    `;
+
+    matchPulses.forEach(x => {
+      svgContent += `
+        <line x1="${x}" y1="${chartYTop}" x2="${x}" y2="${chartYBottom}" stroke="rgba(59, 130, 246, 0.2)" stroke-width="1" stroke-dasharray="2,2" />
+        <circle cx="${x}" cy="${chartYBottom - (ccrVal / arrVal) * chartHeight}" r="4" fill="var(--blue)" />
+        <path d="M ${x - 5} 140 L ${x} 133 L ${x + 5} 140 Z" fill="var(--blue)" />
+      `;
+    });
+
+    overflowPulses.forEach(x => {
+      svgContent += `
+        <line x1="${x}" y1="${chartYTop}" x2="${x}" y2="${chartYBottom}" stroke="rgba(239, 68, 68, 0.2)" stroke-width="1" stroke-dasharray="2,2" />
+        <circle cx="${x}" cy="${chartYBottom}" r="4" fill="#EF6868" />
+        <text x="${x - 18}" y="${chartYTop - 8}" fill="#EF6868" font-family="var(--mono)" font-size="0.6rem">OVERFLOW</text>
+      `;
+    });
+
+    svg.innerHTML = svgContent;
+
+    container.animationId = requestAnimationFrame(drawTimerWaveforms);
+  }
+
+  // Cancel previous animations if any
+  if (container.animationId) {
+    cancelAnimationFrame(container.animationId);
+  }
+
+  updateLimitsAndCalculations();
+  drawTimerWaveforms();
+}
+
+function renderPwmPainter() {
+  const container = document.getElementById('pwm-painter');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: Painting with Time</div>
+    <div class="edgecase-subheader">Pulse Width Modulation (PWM) and Average Power Integration</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust the frequency and duty cycle to inspect how digital pulses simulate analog voltages, driving physical loads like LEDs and DC motors.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">PWM Waveform Configuration</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1.5rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-pwm-freq">PWM Frequency</label>
+          <select id="ec-pwm-freq" class="edgecase-select">
+            <option value="50">50 Hz (Servo Motor / Low speed)</option>
+            <option value="500">500 Hz (Standard Arduino PWM)</option>
+            <option value="2000" selected>2.0 kHz (Audible motor drive)</option>
+            <option value="10000">10.0 kHz (Ultrasonic range / LED dimming)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-pwm-duty">Duty Cycle (0% to 100%)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-pwm-duty" class="edgecase-slider" min="0" max="100" value="50">
+            <span id="ec-pwm-duty-val" class="edgecase-slider-val">50%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOADS DISPLAY (SIDE-BY-SIDE LED & MOTOR) -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-bottom:1.5rem;">
+      <div>
+        <div class="pipeline-step">Output Load 1: Dimmable LED</div>
+        <div class="panel-box" style="height:150px; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#0F172A;">
+          <svg width="60" height="80" viewBox="0 0 60 80" style="overflow:visible;">
+            <!-- LED Bulb Body -->
+            <path d="M 15 45 L 15 35 C 15 20 45 20 45 35 L 45 45 Z" fill="#1E293B" stroke="var(--border)" stroke-width="2" />
+            <!-- LED Glow Layer -->
+            <path id="ec-led-glow" d="M 15 45 L 15 35 C 15 20 45 20 45 35 L 45 45 Z" fill="#10B981" opacity="0.5" style="filter: drop-shadow(0px 0px 12px #10B981);" />
+            <!-- LED Metal Base and Leads -->
+            <rect x="20" y="45" width="20" height="6" fill="#64748B" rx="1" />
+            <line x1="25" y1="51" x2="25" y2="75" stroke="#94A3B8" stroke-width="2" />
+            <line x1="35" y1="51" x2="35" y2="75" stroke="#94A3B8" stroke-width="2" />
+          </svg>
+          <div style="font-family:var(--mono); font-size:0.75rem; color:var(--text); margin-top:0.75rem;" id="ec-led-status">LED Brightness: 50%</div>
+        </div>
+      </div>
+      <div>
+        <div class="pipeline-step">Output Load 2: DC Fan Motor</div>
+        <div class="panel-box" style="height:150px; display:flex; flex-direction:column; justify-content:center; align-items:center; background:#0F172A;">
+          <svg width="90" height="90" viewBox="0 0 100 100" style="overflow:visible;">
+            <!-- Outer casing -->
+            <circle cx="50" cy="50" r="45" fill="none" stroke="var(--border)" stroke-width="2" />
+            <!-- Motor Hub -->
+            <circle cx="50" cy="50" r="10" fill="#334155" />
+            <!-- Fan blades group -->
+            <g id="ec-fan-blades" transform="rotate(0, 50, 50)">
+              <!-- Blade 1 -->
+              <path d="M 50 40 C 40 30 40 10 50 10 C 60 10 60 30 50 40 Z" fill="#E2E8F0" />
+              <!-- Blade 2 -->
+              <path d="M 60 50 C 70 40 90 40 90 50 C 90 60 70 60 60 50 Z" fill="#E2E8F0" />
+              <!-- Blade 3 -->
+              <path d="M 50 60 C 60 70 60 90 50 90 C 40 90 40 70 50 60 Z" fill="#E2E8F0" />
+              <!-- Blade 4 -->
+              <path d="M 40 50 C 30 60 10 60 10 50 C 10 40 30 40 40 50 Z" fill="#E2E8F0" />
+            </g>
+          </svg>
+          <div style="font-family:var(--mono); font-size:0.75rem; color:var(--text); margin-top:0.75rem;" id="ec-fan-status">Fan RPM: ~1500 RPM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Inspected Pulse Waveform (Time domain)</div>
+    <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem;">
+      <svg id="ec-pwm-svg" viewBox="0 0 800 140" style="width:100%; height:auto; overflow:visible;">
+        <!-- PWM trace -->
+      </svg>
+    </div>
+
+    <!-- STATS PANEL -->
+    <div class="pipeline-step">Timing & Signal Metrics</div>
+    <div class="edgecase-output-panel">
+      <div class="edgecase-output-grid">
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Signal Period (T)</div>
+          <div class="edgecase-output-val" id="ec-pwm-calc-period">0.50 ms (500 µs)</div>
+        </div>
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">On-Time / Pulse Width (T_on)</div>
+          <div class="edgecase-output-val" id="ec-pwm-calc-ton">0.25 ms (250 µs)</div>
+        </div>
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Off-Time (T_off)</div>
+          <div class="edgecase-output-val" id="ec-pwm-calc-toff">0.25 ms (250 µs)</div>
+        </div>
+        <div class="edgecase-output-box">
+          <div class="edgecase-output-label">Equivalent DC Voltage</div>
+          <div class="edgecase-output-val" id="ec-pwm-calc-vavg">1.65 V (at 3.3V Logic)</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const freqSelect = document.getElementById('ec-pwm-freq');
+  const dutySlider = document.getElementById('ec-pwm-duty');
+  const dutyValText = document.getElementById('ec-pwm-duty-val');
+
+  const ledGlow = document.getElementById('ec-led-glow');
+  const ledStatus = document.getElementById('ec-led-status');
+  const fanBlades = document.getElementById('ec-fan-blades');
+  const fanStatus = document.getElementById('ec-fan-status');
+
+  const pwmSvg = document.getElementById('ec-pwm-svg');
+
+  const calcPeriod = document.getElementById('ec-pwm-calc-period');
+  const calcTon = document.getElementById('ec-pwm-calc-ton');
+  const calcToff = document.getElementById('ec-pwm-calc-toff');
+  const calcVavg = document.getElementById('ec-pwm-calc-vavg');
+
+  let fanAngle = 0;
+
+  dutySlider.addEventListener('input', () => {
+    dutyValText.textContent = `${dutySlider.value}%`;
+    updatePWMCalculations();
+  });
+
+  freqSelect.addEventListener('change', updatePWMCalculations);
+
+  function updatePWMCalculations() {
+    const freq = parseFloat(freqSelect.value);
+    const duty = parseFloat(dutySlider.value);
+
+    // Period
+    const periodSeconds = 1 / freq;
+    const periodMs = periodSeconds * 1000;
+    const periodUs = periodSeconds * 1000000;
+    calcPeriod.textContent = `${periodMs.toFixed(2)} ms (${Math.round(periodUs)} µs)`;
+
+    // Ton
+    const tonMs = periodMs * (duty / 100);
+    const tonUs = periodUs * (duty / 100);
+    calcTon.textContent = `${tonMs.toFixed(2)} ms (${Math.round(tonUs)} µs)`;
+
+    // Toff
+    const toffMs = periodMs * ((100 - duty) / 100);
+    const toffUs = periodUs * ((100 - duty) / 100);
+    calcToff.textContent = `${toffMs.toFixed(2)} ms (${Math.round(toffUs)} µs)`;
+
+    // Equivalent Voltage
+    const vAvg = 3.3 * (duty / 100);
+    calcVavg.textContent = `${vAvg.toFixed(2)} V (3.3V reference)`;
+
+    // Update LED glow
+    ledGlow.setAttribute('opacity', duty / 100);
+    ledStatus.textContent = `LED Brightness: ${duty}%`;
+
+    // Update Fan RPM label
+    const maxRpm = 3000;
+    const currentRpm = Math.round(maxRpm * (duty / 100));
+    fanStatus.textContent = `Fan RPM: ~${currentRpm} RPM`;
+  }
+
+  function drawPwmWaveform() {
+    if (!document.getElementById('pwm-painter')) return;
+
+    const duty = parseFloat(dutySlider.value);
+    const width = 800;
+    const height = 140;
+    const padding = 40;
+
+    let svgContent = `
+      <rect width="100%" height="100%" fill="none" rx="6" />
+      <line x1="${padding}" y1="${height - 20}" x2="${width - padding}" y2="${height - 20}" stroke="var(--border)" stroke-width="1" />
+      <line x1="${padding}" y1="20" x2="${width - padding}" y2="20" stroke="var(--border)" stroke-dasharray="3,3" stroke-width="1" />
+      <text x="${padding - 30}" y="24" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem">3.3V</text>
+      <text x="${padding - 30}" y="${height - 16}" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem">0V</text>
+    `;
+
+    const cycleWidth = 175;
+    let pathD = "";
+    const startX = padding;
+    const endX = width - padding;
+
+    const highY = 20;
+    const lowY = height - 20;
+
+    for (let x = startX; x <= endX; x++) {
+      const cycleX = (x - padding) % cycleWidth;
+      const progress = cycleX / cycleWidth;
+      const isHigh = progress < (duty / 100);
+      const y = isHigh ? highY : lowY;
+
+      if (x === startX) {
+        pathD += `M ${x} ${y}`;
+      } else {
+        const prevCycleX = (x - 1 - padding) % cycleWidth;
+        const prevProgress = prevCycleX / cycleWidth;
+        const prevHigh = prevProgress < (duty / 100);
+
+        if (isHigh !== prevHigh) {
+          pathD += ` L ${x} ${prevHigh ? lowY : highY} L ${x} ${y}`;
+        } else {
+          pathD += ` L ${x} ${y}`;
+        }
+      }
+    }
+
+    svgContent += `<path d="${pathD}" fill="none" stroke="#10B981" stroke-width="2.5" />`;
+
+    pwmSvg.innerHTML = svgContent;
+
+    const speed = (duty / 100) * 15;
+    fanAngle = (fanAngle + speed) % 360;
+    fanBlades.setAttribute('transform', `rotate(${fanAngle}, 50, 50)`);
+
+    container.animationId = requestAnimationFrame(drawPwmWaveform);
+  }
+
+  if (container.animationId) {
+    cancelAnimationFrame(container.animationId);
+  }
+
+  updatePWMCalculations();
+  drawPwmWaveform();
+}
+
+function renderCapturingReality() {
+  const container = document.getElementById('capturing-reality');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: Capturing Reality</div>
+    <div class="edgecase-subheader">Watch Analog Signals Become Digital Numbers</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust signal frequency, amplitude, ADC resolution, and sampling rate to see how reality is sliced in time and quantized in levels.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Signal & Converter Configuration</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-cr-type">Signal Type</label>
+          <select id="ec-cr-type" class="edgecase-select">
+            <option value="sine" selected>Sine Wave (Smooth vibration)</option>
+            <option value="triangle">Triangle Wave (Linear ramp)</option>
+            <option value="sawtooth">Sawtooth Wave (Asymmetric rise)</option>
+            <option value="noisy">Noisy Signal (Complex sum + noise)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-cr-freq">Signal Frequency (Hz)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-cr-freq" class="edgecase-slider" min="1" max="10" value="3">
+            <span id="ec-cr-freq-val" class="edgecase-slider-val">3 Hz</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-cr-amp">Signal Amplitude (V)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-cr-amp" class="edgecase-slider" min="5" max="33" value="25">
+            <span id="ec-cr-amp-val" class="edgecase-slider-val">2.5V</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-cr-res">ADC Resolution</label>
+          <select id="ec-cr-res" class="edgecase-select">
+            <option value="3" selected>3-bit (8 Levels)</option>
+            <option value="4">4-bit (16 Levels)</option>
+            <option value="8">8-bit (256 Levels)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-cr-rate">Sampling Rate (Hz)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-cr-rate" class="edgecase-slider" min="5" max="80" value="20">
+            <span id="ec-cr-rate-val" class="edgecase-slider-val">20 Hz</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Reconstructed Waveform (Green) vs. Original Analog (Gray)</div>
+    <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem;">
+      <svg id="ec-cr-svg" viewBox="0 0 800 240" style="width:100%; height:auto; overflow:visible;">
+        <!-- Waveforms will be drawn dynamically -->
+      </svg>
+    </div>
+
+    <!-- METRICS & DECODED TABLE -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;">
+      <div>
+        <div class="pipeline-step">Sensing Metrics</div>
+        <div class="edgecase-output-panel" style="min-height:180px;">
+          <div class="edgecase-output-grid" style="grid-template-columns: 1fr 1fr; gap:0.75rem;">
+            <div class="edgecase-output-box" style="padding:0.6rem;">
+              <div class="edgecase-output-label">Step Size (LSB)</div>
+              <div class="edgecase-output-val" id="ec-cr-calc-lsb" style="font-size:0.8rem;">471.4 mV</div>
+            </div>
+            <div class="edgecase-output-box" style="padding:0.6rem;">
+              <div class="edgecase-output-label">Sampling Period</div>
+              <div class="edgecase-output-val" id="ec-cr-calc-period" style="font-size:0.8rem;">50.0 ms</div>
+            </div>
+            <div class="edgecase-output-box" style="padding:0.6rem;">
+              <div class="edgecase-output-label">Nyquist Threshold</div>
+              <div class="edgecase-output-val" id="ec-cr-calc-nyquist" style="font-size:0.8rem;">6 Hz</div>
+            </div>
+            <div class="edgecase-output-box" style="padding:0.6rem;">
+              <div class="edgecase-output-label">Nyquist Criteria</div>
+              <div class="edgecase-output-val" id="ec-cr-calc-nyq-status" style="font-size:0.8rem;">Satisfied</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="pipeline-step">Digital Output Buffer Log</div>
+        <div class="terminal-box" id="ec-cr-log" style="height:180px; font-size:0.68rem; padding:0.5rem; overflow-y:auto; line-height:1.4;">
+          <!-- Decoded data logs -->
+        </div>
+      </div>
+    </div>
+  `;
+
+  // References
+  const typeSelect = document.getElementById('ec-cr-type');
+  const freqSlider = document.getElementById('ec-cr-freq');
+  const freqVal = document.getElementById('ec-cr-freq-val');
+  const ampSlider = document.getElementById('ec-cr-amp');
+  const ampVal = document.getElementById('ec-cr-amp-val');
+  const resSelect = document.getElementById('ec-cr-res');
+  const rateSlider = document.getElementById('ec-cr-rate');
+  const rateVal = document.getElementById('ec-cr-rate-val');
+  const svg = document.getElementById('ec-cr-svg');
+  const logDiv = document.getElementById('ec-cr-log');
+
+  const calcLsb = document.getElementById('ec-cr-calc-lsb');
+  const calcPeriod = document.getElementById('ec-cr-calc-period');
+  const calcNyquist = document.getElementById('ec-cr-calc-nyquist');
+  const calcNyqStatus = document.getElementById('ec-cr-calc-nyq-status');
+
+  // Listeners
+  typeSelect.addEventListener('change', updateSimulation);
+  resSelect.addEventListener('change', updateSimulation);
+
+  freqSlider.addEventListener('input', () => {
+    freqVal.textContent = `${freqSlider.value} Hz`;
+    updateSimulation();
+  });
+
+  ampSlider.addEventListener('input', () => {
+    ampVal.textContent = `${(ampSlider.value / 10).toFixed(1)}V`;
+    updateSimulation();
+  });
+
+  rateSlider.addEventListener('input', () => {
+    rateVal.textContent = `${rateSlider.value} Hz`;
+    updateSimulation();
+  });
+
+  function updateSimulation() {
+    if (!document.getElementById('capturing-reality')) return;
+
+    const signalType = typeSelect.value;
+    const f_sig = parseFloat(freqSlider.value);
+    const amp = parseFloat(ampSlider.value) / 10;
+    const res = parseInt(resSelect.value);
+    const f_sample = parseFloat(rateSlider.value);
+
+    // Calculate metrics
+    const steps = Math.pow(2, res) - 1;
+    const lsb = (3.3 / steps) * 1000;
+    calcLsb.textContent = `${lsb.toFixed(1)} mV`;
+
+    const samplePeriodMs = 1000 / f_sample;
+    calcPeriod.textContent = `${samplePeriodMs.toFixed(1)} ms`;
+
+    const nyquist = 2 * f_sig;
+    calcNyquist.textContent = `${nyquist} Hz`;
+
+    const satisfiesNyquist = f_sample >= nyquist;
+    if (satisfiesNyquist) {
+      calcNyqStatus.innerHTML = `<span style="color:#10B981;font-weight:bold;">✓ Met</span>`;
+    } else {
+      calcNyqStatus.innerHTML = `<span style="color:#EF6868;font-weight:bold;">✗ Violated</span>`;
+    }
+
+    // Render SVG Waveforms
+    const width = 800;
+    const height = 240;
+    const padding = 40;
+    const plotW = width - 2 * padding;
+    const plotH = height - 2 * padding;
+
+    function getAnalogVoltage(t) {
+      const center = 1.65;
+      const maxAmp = Math.min(amp, 1.65);
+
+      if (signalType === 'sine') {
+        return center + maxAmp * Math.sin(2 * Math.PI * f_sig * t);
+      } else if (signalType === 'triangle') {
+        const period = 1 / f_sig;
+        const phase = (t % period) / period;
+        const value = phase < 0.5 ? (4 * phase - 1) : (3 - 4 * phase);
+        return center + maxAmp * value;
+      } else if (signalType === 'sawtooth') {
+        const period = 1 / f_sig;
+        const phase = (t % period) / period;
+        return center + maxAmp * (2 * phase - 1);
+      } else {
+        const s1 = Math.sin(2 * Math.PI * f_sig * t);
+        const s2 = 0.3 * Math.sin(2 * Math.PI * (f_sig * 2.3) * t + 1.2);
+        const n = 0.15 * Math.sin(100 * t);
+        return center + (maxAmp / 1.3) * (s1 + s2 + n);
+      }
+    }
+
+    function getX(t) {
+      return padding + t * plotW;
+    }
+    function getY(v) {
+      const clampedV = Math.max(0, Math.min(3.3, v));
+      return height - padding - (clampedV / 3.3) * plotH;
+    }
+
+    let svgContent = `
+      <!-- Background Grid -->
+      <defs>
+        <pattern id="cr-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.03)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#cr-grid)" rx="6" />
+      
+      <!-- Ruler Grid Lines for Quantization Levels -->
+      <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="${padding - 28}" y="${padding + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">3.3V</text>
+      
+      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="${padding - 28}" y="${height - padding + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">0V</text>
+      
+      <line x1="${padding}" y1="${height / 2}" x2="${width - padding}" y2="${height / 2}" stroke="rgba(148, 163, 184, 0.08)" stroke-width="1" stroke-dasharray="2,2" />
+      <text x="${padding - 33}" y="${height / 2 + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">1.65V</text>
+    `;
+
+    let analogPath = "";
+    const stepsCount = 200;
+    for (let i = 0; i <= stepsCount; i++) {
+      const t = i / stepsCount;
+      const v = getAnalogVoltage(t);
+      const x = getX(t);
+      const y = getY(v);
+      if (i === 0) {
+        analogPath += `M ${x} ${y}`;
+      } else {
+        analogPath += ` L ${x} ${y}`;
+      }
+    }
+    svgContent += `<path d="${analogPath}" fill="none" stroke="rgba(148, 163, 184, 0.3)" stroke-width="2" />`;
+
+    const totalSamples = Math.floor(f_sample);
+    let samplePoints = [];
+    let reconstructedPoints = [];
+    let logLines = [];
+
+    for (let i = 0; i <= totalSamples; i++) {
+      const t = i / f_sample;
+      if (t > 1.0) break;
+
+      const v_anal = getAnalogVoltage(t);
+      const rawCode = Math.round((v_anal / 3.3) * steps);
+      const code = Math.max(0, Math.min(steps, rawCode));
+      const v_quant = (code / steps) * 3.3;
+
+      const x = getX(t);
+      const y_quant = getY(v_quant);
+
+      samplePoints.push({ x, y: y_quant, t, v_anal, v_quant, code });
+
+      if (i === 0) {
+        reconstructedPoints.push({ x, y: y_quant });
+      } else {
+        reconstructedPoints.push({ x, y: samplePoints[i - 1].y });
+        reconstructedPoints.push({ x, y: y_quant });
+      }
+
+      const timeMs = (t * 1000).toFixed(1);
+      const binCode = code.toString(2).padStart(res, '0');
+      const hexCode = code.toString(16).toUpperCase().padStart(2, '0');
+      logLines.push(`[${timeMs}ms] Vin = ${v_anal.toFixed(3)}V -> ADC: ${code} (0b${binCode} / 0x${hexCode}) -> Vout = ${v_quant.toFixed(3)}V`);
+    }
+
+    samplePoints.forEach(pt => {
+      svgContent += `<line x1="${pt.x}" y1="${padding}" x2="${pt.x}" y2="${height - padding}" stroke="rgba(59, 130, 246, 0.15)" stroke-width="1" stroke-dasharray="3,3" />`;
+    });
+
+    let staircasePath = "";
+    reconstructedPoints.forEach((pt, idx) => {
+      if (idx === 0) {
+        staircasePath += `M ${pt.x} ${pt.y}`;
+      } else {
+        staircasePath += ` L ${pt.x} ${pt.y}`;
+      }
+    });
+    if (samplePoints.length > 0) {
+      staircasePath += ` L ${width - padding} ${samplePoints[samplePoints.length - 1].y}`;
+    }
+    svgContent += `<path d="${staircasePath}" fill="none" stroke="#10B981" stroke-width="2" />`;
+
+    samplePoints.forEach(pt => {
+      svgContent += `
+        <circle cx="${pt.x}" cy="${pt.y}" r="3.5" fill="#EF6868" />
+        <circle cx="${pt.x}" cy="${pt.y}" r="6" fill="none" stroke="#EF6868" stroke-width="1" opacity="0.4" />
+      `;
+    });
+
+    svg.innerHTML = svgContent;
+
+    logDiv.innerHTML = logLines.map(line => `<div>${escHtml(line)}</div>`).join('');
+    logDiv.scrollTop = logDiv.scrollHeight;
+  }
+
+  updateSimulation();
+}
+
+function renderCostOfObservation() {
+  const container = document.getElementById('cost-of-observation');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Cost of Observation</div>
+    <div class="edgecase-subheader">Visualizing Signal Corruptions: Aliasing, Clipping & Quantization Noise</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust parameters below to trigger typical measurement errors: sample below 2x frequency to induce aliasing; drop reference voltage below amplitude to clip; lower resolution to increase quantization steps.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">Measurement System Parameters</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-co-freq">Signal Frequency (Hz)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-co-freq" class="edgecase-slider" min="1" max="15" value="5">
+            <span id="ec-co-freq-val" class="edgecase-slider-val">5 Hz</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-co-rate">Sampling Rate (Hz)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-co-rate" class="edgecase-slider" min="2" max="30" value="8">
+            <span id="ec-co-rate-val" class="edgecase-slider-val">8 Hz</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-co-res">ADC Resolution</label>
+          <select id="ec-co-res" class="edgecase-select">
+            <option value="3" selected>3-bit (8 Levels)</option>
+            <option value="4">4-bit (16 Levels)</option>
+            <option value="12">12-bit (4096 Levels)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-co-vref">Reference Voltage (V)</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-co-vref" class="edgecase-slider" min="10" max="50" value="25">
+            <span id="ec-co-vref-val" class="edgecase-slider-val">2.5V</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVEFORM DISPLAY -->
+    <div class="pipeline-step">Measured Reconstructed Signal (Green) vs. True Analog Wave (Gray)</div>
+    <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem;">
+      <svg id="ec-co-svg" viewBox="0 0 800 240" style="width:100%; height:auto; overflow:visible;">
+        <!-- Waveforms will be drawn dynamically -->
+      </svg>
+    </div>
+
+    <!-- DIAGNOSTIC STATUS PANEL -->
+    <div class="pipeline-step">System Diagnostic Lock Alerts</div>
+    <div class="edgecase-output-panel" style="padding:1rem;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;" id="ec-co-alerts-grid">
+        <!-- Dynamic warnings go here -->
+      </div>
+    </div>
+  `;
+
+  // References
+  const freqSlider = document.getElementById('ec-co-freq');
+  const freqVal = document.getElementById('ec-co-freq-val');
+  const rateSlider = document.getElementById('ec-co-rate');
+  const rateVal = document.getElementById('ec-co-rate-val');
+  const resSelect = document.getElementById('ec-co-res');
+  const vrefSlider = document.getElementById('ec-co-vref');
+  const vrefVal = document.getElementById('ec-co-vref-val');
+  const svg = document.getElementById('ec-co-svg');
+  const alertsGrid = document.getElementById('ec-co-alerts-grid');
+
+  // Event Listeners
+  resSelect.addEventListener('change', updateSimulation);
+
+  freqSlider.addEventListener('input', () => {
+    freqVal.textContent = `${freqSlider.value} Hz`;
+    updateSimulation();
+  });
+
+  rateSlider.addEventListener('input', () => {
+    rateVal.textContent = `${rateSlider.value} Hz`;
+    updateSimulation();
+  });
+
+  vrefSlider.addEventListener('input', () => {
+    vrefVal.textContent = `${(vrefSlider.value / 10).toFixed(1)}V`;
+    updateSimulation();
+  });
+
+  function updateSimulation() {
+    if (!document.getElementById('cost-of-observation')) return;
+
+    const f_sig = parseFloat(freqSlider.value);
+    const f_sample = parseFloat(rateSlider.value);
+    const res = parseInt(resSelect.value);
+    const vref = parseFloat(vrefSlider.value) / 10;
+
+    const sig_center = 1.65;
+    const sig_amp = 1.3;
+
+    // Check failure modes
+    const isAliased = f_sample < 2 * f_sig;
+    const isClipped = (sig_center + sig_amp > vref) || (sig_center - sig_amp < 0);
+    const hasHighNoise = res === 3;
+    const hasRangeUnderutilization = vref >= 4.0;
+
+    // Build diagnostics
+    let alertsHtml = "";
+    if (isAliased) {
+      alertsHtml += `
+        <div class="agreement-item agreement-fail" style="border-radius:6px; padding:0.6rem; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✗ ALIASING DETECTED</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Sample rate ${f_sample} Hz is less than Nyquist rate (${2 * f_sig} Hz). High-frequency detail is folded back into a false lower frequency.</div>
+        </div>
+      `;
+    } else {
+      alertsHtml += `
+        <div class="agreement-item agreement-ok" style="border-radius:6px; padding:0.6rem; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✓ NYQUIST LOCK</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Sample rate is sufficient to capture waveforms without folding distortion.</div>
+        </div>
+      `;
+    }
+
+    if (isClipped) {
+      alertsHtml += `
+        <div class="agreement-item agreement-fail" style="border-radius:6px; padding:0.6rem; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✗ SIGNAL CLIPPING</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Signal peak (${(sig_center + sig_amp).toFixed(2)}V) exceeds VREF (${vref.toFixed(1)}V). Voltage above VREF is saturated to maximum digital code.</div>
+        </div>
+      `;
+    } else if (hasRangeUnderutilization) {
+      alertsHtml += `
+        <div class="agreement-item" style="border-radius:6px; padding:0.6rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); color:#F59E0B;">
+          <div style="font-weight:bold; font-size:0.75rem;">⚠ UNDER-UTILIZED RANGE</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">VREF (${vref.toFixed(1)}V) is much larger than signal peak. Digital counts use only a fraction of dynamic range.</div>
+        </div>
+      `;
+    } else {
+      alertsHtml += `
+        <div class="agreement-item agreement-ok" style="border-radius:6px; padding:0.6rem; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✓ RANGE ALIGNED</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">VREF perfectly envelopes the signal span without saturation or wasteful range.</div>
+        </div>
+      `;
+    }
+
+    if (hasHighNoise) {
+      alertsHtml += `
+        <div class="agreement-item" style="border-radius:6px; padding:0.6rem; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); color:#F59E0B;">
+          <div style="font-weight:bold; font-size:0.75rem;">⚠ QUANTIZATION STEPS</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">3-bit resolution mesh divides VREF into only 8 steps. Severe rounding error results in coarse signal steps.</div>
+        </div>
+      `;
+    } else {
+      alertsHtml += `
+        <div class="agreement-item agreement-ok" style="border-radius:6px; padding:0.6rem; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2);">
+          <div style="font-weight:bold; font-size:0.75rem;">✓ LOW QUANTIZATION NOISE</div>
+          <div style="font-size:0.6rem; color:var(--muted); margin-top:0.15rem;">Resolution is fine enough to approximate the curve smoothly.</div>
+        </div>
+      `;
+    }
+
+    alertsGrid.innerHTML = alertsHtml;
+
+    // Render SVG
+    const width = 800;
+    const height = 240;
+    const padding = 40;
+    const plotW = width - 2 * padding;
+    const plotH = height - 2 * padding;
+
+    function getAnalogVoltage(t) {
+      return sig_center + sig_amp * Math.sin(2 * Math.PI * f_sig * t);
+    }
+
+    function getX(t) {
+      return padding + t * plotW;
+    }
+    function getY(v) {
+      const clampedV = Math.max(0, Math.min(vref, v));
+      return height - padding - (clampedV / vref) * plotH;
+    }
+
+    let svgContent = `
+      <rect width="100%" height="100%" fill="none" rx="6" />
+      <line x1="${padding}" y1="${padding}" x2="${width - padding}" y2="${padding}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="${padding - 28}" y="${padding + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">${vref.toFixed(1)}V</text>
+      
+      <line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="${padding - 28}" y="${height - padding + 4}" fill="var(--muted)" font-family="var(--mono)" font-size="9">0V</text>
+    `;
+
+    let analogPath = "";
+    const stepsCount = 200;
+    for (let i = 0; i <= stepsCount; i++) {
+      const t = i / stepsCount;
+      const v = getAnalogVoltage(t);
+      const x = getX(t);
+      const y = getY(v);
+      if (i === 0) {
+        analogPath += `M ${x} ${y}`;
+      } else {
+        analogPath += ` L ${x} ${y}`;
+      }
+    }
+    svgContent += `<path d="${analogPath}" fill="none" stroke="rgba(148, 163, 184, 0.2)" stroke-width="2" />`;
+
+    const steps = Math.pow(2, res) - 1;
+    const totalSamples = Math.floor(f_sample);
+    let samplePoints = [];
+    let reconstructedPoints = [];
+
+    for (let i = 0; i <= totalSamples; i++) {
+      const t = i / f_sample;
+      if (t > 1.0) break;
+
+      const v_anal = getAnalogVoltage(t);
+      const rawCode = Math.round((v_anal / vref) * steps);
+      const code = Math.max(0, Math.min(steps, rawCode));
+      const v_quant = (code / steps) * vref;
+
+      const x = getX(t);
+      const y_quant = getY(v_quant);
+
+      samplePoints.push({ x, y: y_quant });
+
+      if (i === 0) {
+        reconstructedPoints.push({ x, y: y_quant });
+      } else {
+        reconstructedPoints.push({ x, y: samplePoints[i - 1].y });
+        reconstructedPoints.push({ x, y: y_quant });
+      }
+    }
+
+    samplePoints.forEach(pt => {
+      svgContent += `<line x1="${pt.x}" y1="${padding}" x2="${pt.x}" y2="${height - padding}" stroke="rgba(59, 130, 246, 0.12)" stroke-width="1" stroke-dasharray="3,3" />`;
+    });
+
+    let staircasePath = "";
+    reconstructedPoints.forEach((pt, idx) => {
+      if (idx === 0) {
+        staircasePath += `M ${pt.x} ${pt.y}`;
+      } else {
+        staircasePath += ` L ${pt.x} ${pt.y}`;
+      }
+    });
+    if (samplePoints.length > 0) {
+      staircasePath += ` L ${width - padding} ${samplePoints[samplePoints.length - 1].y}`;
+    }
+    svgContent += `<path d="${staircasePath}" fill="none" stroke="#10B981" stroke-width="2" />`;
+
+    samplePoints.forEach(pt => {
+      svgContent += `<circle cx="${pt.x}" cy="${pt.y}" r="3" fill="#EF6868" />`;
+    });
+
+    svg.innerHTML = svgContent;
+  }
+
+  updateSimulation();
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
