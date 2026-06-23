@@ -99,6 +99,7 @@ const systemsTreeNodes = {
       { id: "when-machines-learned-to-speak-back", title: "When Machines Learned to Speak Back" },
       { id: "the-tyranny-of-waiting", title: "The Tyranny of Waiting" },
       { id: "when-hardware-learned-to-interrupt", title: "When Hardware Learned to Interrupt" },
+      { id: "when-machines-learned-to-delegate", title: "When Machines Learned to Delegate" },
       { id: null, title: "Coming Soon" }
     ]
   },
@@ -3322,6 +3323,146 @@ const blogPosts = [
     quote: "Interrupts freed the processor from active waiting, but as speed scaled, the core became a victim of its own responsiveness."
   },
   footer: "Reflections on hardware interrupt requests and vector table architectures - PrajnaEdge.dev"
+},
+{
+  id: "when-machines-learned-to-delegate",
+  category: "Coordination",
+  series: "The Architecture of Time",
+  title: "When Machines Learned to Delegate",
+  subtitle: "The moment processors stopped carrying every byte themselves.",
+  date: "23rd June, 2026",
+  tags: ["DMA", "Direct Memory Access", "Circular Buffer", "Interrupt Storm", "System Performance"],
+  sections: [
+    {
+      heading: "1. Interrupts Solved Waiting",
+      content: [
+        {
+          type: "p",
+          text: "In our previous exploration, we watched the CPU break free from the waste of polling. Rather than spinning in an endless `while(1)` loop actively asking peripherals *'Has anything happened?'*, the core could now sleep or execute background logic. The hardware itself took responsibility for gaining attention, alerting the CPU only when a physical button was pressed, a timer overflowed, or a byte landed in a register. The coordination loop evolved into a neat event-driven diagram:\n\n$$\\text{Event} \\rightarrow \\text{Interrupt Request (IRQ)} \\rightarrow \\text{CPU Handles Event}$$\n\nThis was a monumental improvement. The CPU slept when idle, power consumption dropped, and real-time responsiveness was guaranteed. But as embedded systems grew more complex and physical data rates increased, this event-driven success story revealed a new, severe bottleneck: the CPU was now spending all its energy simply responding."
+        }
+      ]
+    },
+    {
+      heading: "2. The Growing Burden",
+      content: [
+        {
+          type: "p",
+          text: "Consider a modern microsecond-scale system. A high-speed UART port is receiving data packets at 921,600 baud, translating to roughly 92,000 bytes per second. An ADC temperature sensor is continuously sampling at 100 kHz. A CAN network is delivering vehicle safety packets at 1 Mbps.\n\nWithout a helper, the CPU must trigger an interrupt for every single UART byte, every single ADC sample, and every single CAN frame. This means the CPU stack-saves, branches, reads a register, copies the byte to RAM, branches back, and restores context—over 200,000 times every second. At a CPU frequency of 16 MHz, the instruction cycles consumed solely by this entry-and-exit overhead (typically 12 to 24 cycles each way) completely devour the processor's capacity. This state of constant preemption is called an **Interrupt Storm**. The CPU is no longer waiting, but it has become a victim of its own responsiveness, trapped in a loop of stack pushes and context restores."
+        }
+      ]
+    },
+    {
+      heading: "3. The Data Mover Problem",
+      content: [
+        {
+          type: "p",
+          text: "When we look closely at what the CPU does inside these high-rate interrupt handlers, we find a glaring inefficiency. The code inside `USART1_IRQHandler()` is almost always a basic copy routine:\n\n```c\nvoid USART1_IRQHandler(void) {\n    if (USART1->SR & USART_SR_RXNE) {\n        rx_buffer[rx_index++] = USART1->DR;\n    }\n}\n```\n\nNo calculations are performed. No algorithms are run. The CPU performs no logic or control decisions. It is acting as a dumb shovel, copying data from a hardware register (`USART1->DR`) to a memory address (`rx_buffer`). Utilizing an advanced, arithmetic-logic-rich processor core simply to move individual bytes is like employing a senior software architect to carry boxes of paper from the receiving bay to the printer cupboard. It is a massive waste of computational power."
+        },
+        {
+          type: "img",
+          src: "Images/dma_interrupt_path.svg",
+          alt: "The CPU-driven data path: the processor acts as a middleman for every byte."
+        }
+      ]
+    },
+    {
+      heading: "4. The Reversal",
+      content: [
+        {
+          type: "p",
+          text: "To break this bottleneck, we must remove the CPU from the data transit path entirely. We need a way to connect peripherals directly to system memory.\n\nThis is the purpose of **Direct Memory Access (DMA)**. A DMA controller is a dedicated, specialized hardware coprocessor designed for a single, simple duty: moving bytes. It is a bus master, capable of taking control of the microcontroller's shared memory buses to transfer data directly from peripheral registers to SRAM arrays, completely bypassing the CPU core. The CPU is freed from the data highway, delegating the physical movement of information to dedicated silicon circuits."
+        },
+        {
+          type: "img",
+          src: "Images/dma_direct_path.svg",
+          alt: "The DMA-driven data path: data bypasses the CPU completely."
+        }
+      ]
+    },
+    {
+      heading: "5. The Anatomy of DMA",
+      content: [
+        {
+          type: "p",
+          text: "A DMA transfer cycle unfolds in four hardware stages, independent of CPU software:\n\n1. **Peripheral Request**: The peripheral (e.g., UART RX buffer full) asserts a DMA request line to the DMA controller.\n2. **Bus Arbitration**: The DMA controller requests control of the system bus. The bus matrix grants access, temporarily pausing the CPU's bus access for a single clock cycle.\n3. **Memory Transfer**: The DMA controller reads the data from the peripheral register and writes it directly to the target RAM address in a single step. It automatically increments the target RAM pointer and decrements its internal transfer counter.\n4. **Completion Notification**: Only when the internal counter reaches zero (signaling that an entire block of data, such as a 512-byte packet, has been completely copied) does the DMA controller assert an IRQ line to the CPU. The CPU is interrupted exactly once at the end of the block, rather than 512 times for individual bytes."
+        },
+        {
+          type: "img",
+          src: "Images/dma_anatomy.svg",
+          alt: "The four stages of a hardware-managed DMA transfer loop."
+        }
+      ]
+    },
+    {
+      heading: "6. A Tale of Two Systems",
+      content: [
+        {
+          type: "p",
+          text: "The difference between these two paradigms becomes stark when comparing system load. In an interrupt-only system, CPU utilization scales linearly with data rates; double the sampling speed, and you double the CPU overhead, leading to inevitable saturation. In a DMA-enabled system, the CPU load remains flat at near-zero, regardless of sampling rates. The hardware transfers data in the background, allowing the CPU to execute real-time calculations or enter low-power sleep modes while megabytes of data stream through the system."
+        }
+      ]
+    },
+    {
+      heading: "7. Circular Buffers and Continuous Streams",
+      content: [
+        {
+          type: "p",
+          text: "To manage continuous high-rate data streams (such as audio signals, high-frequency ADC sweeps, or serial packets) without gaps or memory exhaustion, DMA controllers utilize **Circular Buffers**.\n\nA circular buffer is a contiguous block of RAM that wraps around on itself. The DMA controller is programmed with the buffer's start address and length. As it writes data, it moves its write pointer forward. When it reaches the end of the buffer, it automatically rolls back to the starting address, creating a seamless, infinite loop of data writing. The CPU read pointer follows behind it, processing data blocks. To prevent data corruption, the CPU must read faster than the DMA writes; if the DMA write pointer overlaps the CPU read pointer, a buffer overrun occurs, and old data is lost."
+        },
+        {
+          type: "img",
+          src: "Images/dma_circular_buffer.svg",
+          alt: "The circular buffer write and read pointer dynamics."
+        }
+      ]
+    },
+    {
+      heading: "8. The CPU Becomes Free Again",
+      content: [
+        {
+          type: "p",
+          text: "By delegating the movement of information to the DMA controller, the processor returns to its true calling: computation. Instead of burning millions of cycles copying data registers, the CPU can now spend its capacity running digital filters, executing control algorithms, computing fast Fourier transforms, or parsing complex protocol layers. The processor is no longer a physical packer of bytes; it is once again the intelligent coordinator of the machine."
+        },
+        {
+          type: "edgecase",
+          id: "overworked-processor"
+        }
+      ]
+    },
+    {
+      heading: "9. Real Embedded Examples",
+      content: [
+        {
+          type: "p",
+          text: "DMA is the silent backbone of modern consumer and industrial electronics. In audio systems, DMA feeds samples to the DAC codec continuously to prevent audio glitching. In smartphones, DMA streams pixel arrays from the camera sensor directly to RAM buffers. In automotive ECUs, DMA collects CAN messages in background SRAM blocks, allowing the processor to query network messages on-demand without dealing with frame-level reception interrupts.\n\nWithout DMA, high-speed interfaces like USB, Ethernet, and SD card storage would be physically impossible, as the CPU could never copy bytes fast enough to keep up with the wire speed. By learning to delegate, machines finally learned to scale."
+        },
+        {
+          type: "curious",
+          text: "Curious? Most modern ADC systems rely heavily on DMA. This allows high-precision sensors to sample at megahertz rates while the CPU is entirely asleep, waking up only when a large array of samples is ready for processing."
+        },
+        {
+          type: "curious",
+          text: "Curious? High-speed communication often becomes impossible without DMA. At gigabit ethernet speeds, even the fastest CPU cannot handle individual byte transfer interrupts without crashing the operating system."
+        },
+        {
+          type: "curious",
+          text: "Curious? Some systems eventually stop processing every piece of data and begin extracting patterns from it instead. This shift from manual byte manipulation to pattern extraction is what paved the way for Edge AI."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Architecture of Attention",
+    paragraphs: [
+      "Polling taught machines to wait. Interrupts taught machines to respond. DMA taught machines to delegate.",
+      "With these strategies, coordination has evolved from simple timekeeping to observation, action, attention, response, and delegation. The movement of information has ceased to be the bottleneck.",
+      "But a new question now emerges. Once a system can efficiently collect, move, and store physical information in memory...",
+      "How does it begin to understand it?",
+      "That question leads us out of coordination—and directly into intelligence."
+    ],
+    quote: "Delegation is not a luxury for a processor; it is the prerequisite for intelligence."
+  },
+  footer: "Reflections on Direct Memory Access and delegation architectures - PrajnaEdge.dev"
 }
 ];
 
@@ -3870,20 +4011,60 @@ function parseTextFormatting(text) {
   // 1. Bold notation: **text** -> <strong>text</strong>
   let parsed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   
-  // 2. Math LaTeX-like notation: $...$ -> custom HTML formatting
-  parsed = parsed.replace(/\$(.*?)\$/g, (match, mathExpr) => {
-    // Replace 2^x or 2^{x}
-    if (/^2\^\{?(\d+)\}?$/.test(mathExpr)) {
-      return mathExpr.replace(/^2\^\{?(\d+)\}?$/, '2<sup>$1</sup>');
-    }
-    // Replace V_{REF} or V_REF
-    if (/^V_\{?REF\}?$/.test(mathExpr)) {
-      return '<i>V</i><sub>REF</sub>';
-    }
-    // Fallback: wrap in italic tag for variables
-    return `<i>${mathExpr}</i>`;
+  // 2. Block math: $$...$$ -> centered block equation
+  parsed = parsed.replace(/\$\$(.*?)\$\$/g, (match, mathExpr) => {
+    let html = mathExpr;
+    // Replace \text{...} with just ...
+    html = html.replace(/\\text\{(.*?)\}/g, '$1');
+    // Replace \rightarrow or \\rightarrow with →
+    html = html.replace(/\\+rightarrow/g, ' &rarr; ');
+    // Replace \sum_{i=1}^{N} or similar summation
+    html = html.replace(/\\+sum_\{?(.*?)\}?\^\{?(.*?)\}?/g, '<span style="font-size:1.2rem;position:relative;top:1px">&Sigma;</span><sub>$1</sub><sup>$2</sup>');
+    // Clean up any remaining backslashes (like \\ or \)
+    html = html.replace(/\\+/g, '');
+    
+    // Format any sub/superscripts in the block math
+    // e.g. Check_i or Check_{i}
+    html = html.replace(/([a-zA-Z0-9]+)_\{?([a-zA-Z0-9_=-]+)\}?/g, '$1<sub>$2</sub>');
+    html = html.replace(/([a-zA-Z0-9]+)\^\{?([a-zA-Z0-9_=-]+)\}?/g, '$1<sup>$2</sup>');
+    
+    return `<div class="math-block" style="text-align:center; margin:1.5rem 0; padding:1.2rem; background:rgba(30, 41, 59, 0.4); border: 1px solid rgba(148, 163, 184, 0.1); border-radius:8px; font-family:var(--mono); color:#3B82F6; font-size:1rem; letter-spacing:0.02em; box-shadow:inset 0 1px 3px rgba(0,0,0,0.2);">${html}</div>`;
   });
-  
+
+  // 3. Inline math: $...$
+  parsed = parsed.replace(/\$(.*?)\$/g, (match, mathExpr) => {
+    let html = mathExpr;
+    
+    // If it's V_{OUT} = V_{REF} \times \frac{\text{Digital Code}}{2^N - 1} or contains parts of it
+    if (html.includes('V_{OUT}') || html.includes('V_OUT') || html.includes('frac')) {
+      // Custom pretty format for the DAC equation
+      return '<span class="math-inline" style="font-family:var(--mono); font-size:0.9rem; color:#60A5FA; padding:0.1rem 0.2rem; background:rgba(30, 41, 59, 0.3); border-radius:4px;"><i>V</i><sub>OUT</sub> = <i>V</i><sub>REF</sub> &times; <sup>Digital Code</sup>&frasl;<sub>2<sup>N</sup> - 1</sub></span>';
+    }
+    
+    // Replace \text{...} with just ...
+    html = html.replace(/\\text\{(.*?)\}/g, '$1');
+    
+    // Format V_{REF} or V_REF
+    html = html.replace(/V_\{?REF\}?/g, '<i>V</i><sub>REF</sub>');
+    html = html.replace(/V_\{?OUT\}?/g, '<i>V</i><sub>OUT</sub>');
+    
+    // Format 2^x or 2^{x}
+    html = html.replace(/2\^\{?([a-zA-Z0-9_-]+)\}?/g, '2<sup>$1</sup>');
+    
+    // Format any general variable^exponent or variable_subscript
+    // e.g. 2^N
+    html = html.replace(/([a-zA-Z0-9]+)\^\{?([a-zA-Z0-9_=-]+)\}?/g, '$1<sup>$2</sup>');
+    html = html.replace(/([a-zA-Z0-9]+)_\{?([a-zA-Z0-9_=-]+)\}?/g, '$1<sub>$2</sub>');
+    
+    // Replace \times with &times;
+    html = html.replace(/\\times/g, '&times;');
+    
+    // Clean up any remaining backslashes
+    html = html.replace(/\\+/g, '');
+    
+    return `<span class="math-inline" style="font-family:var(--mono); font-size:0.9rem; color:#60A5FA; padding:0.1rem 0.2rem; background:rgba(30, 41, 59, 0.3); border-radius:4px;">${html}</span>`;
+  });
+
   return parsed;
 }
 
@@ -3914,6 +4095,8 @@ function initEdgeCase(containerId) {
     renderPaintingWithVoltage();
   } else if (containerId === 'illusion-of-smoothness') {
     renderIllusionOfSmoothness();
+  } else if (containerId === 'overworked-processor') {
+    renderOverworkedProcessor();
   }
 }
 
@@ -8169,6 +8352,340 @@ function renderIllusionOfSmoothness() {
   }
 
   updateSimulation();
+}
+
+function renderOverworkedProcessor() {
+  const container = document.getElementById('overworked-processor');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  container.innerHTML = `
+    <div class="edgecase-header">EdgeCase: The Overworked Processor</div>
+    <div class="edgecase-subheader">When Handling Data Becomes More Expensive Than Detecting It</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Adjust sensor rates and CPU speed to create an interrupt storm. Watch the core saturate and drop bytes, then delegate the load to the DMA controller.
+    </div>
+
+    <!-- CONFIGURATION SETTINGS -->
+    <div class="pipeline-step">System & Peripheral Load Parameters</div>
+    <div class="panel-box">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:1.25rem;">
+        <div class="edgecase-control-group">
+          <label for="ec-op-cpu-freq">CPU Frequency</label>
+          <select id="ec-op-cpu-freq" class="edgecase-select">
+            <option value="2">2 MHz (Low Power)</option>
+            <option value="4">4 MHz</option>
+            <option value="8">8 MHz</option>
+            <option value="16" selected>16 MHz (Standard)</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-op-adc-rate">ADC Sample Rate</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-op-adc-rate" class="edgecase-slider" min="5" max="200" value="20">
+            <span id="ec-op-adc-rate-val" class="edgecase-slider-val">20 kHz</span>
+          </div>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-op-uart-baud">UART Baud Rate</label>
+          <select id="ec-op-uart-baud" class="edgecase-select">
+            <option value="115200" selected>115,200 baud</option>
+            <option value="230400">230,400 baud</option>
+            <option value="460800">460,800 baud</option>
+            <option value="921600">921,600 baud</option>
+          </select>
+        </div>
+        <div class="edgecase-control-group">
+          <label for="ec-op-can-load">CAN Bus Load</label>
+          <div class="edgecase-slider-container">
+            <input type="range" id="ec-op-can-load" class="edgecase-slider" min="0" max="100" value="10">
+            <span id="ec-op-can-load-val" class="edgecase-slider-val">10%</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Toggle DMA Button -->
+      <div style="margin-top:1.25rem; display:flex; justify-content:center;">
+        <button id="ec-op-dma-btn" class="edgecase-button" style="min-width:180px; padding:0.6rem 1.2rem; font-weight:bold; font-size:0.85rem; letter-spacing:0.5px; border-radius:6px; cursor:pointer; transition:all 0.2s;">
+          Enable DMA
+        </button>
+      </div>
+    </div>
+
+    <!-- PIPELINE VISUALIZER -->
+    <div class="pipeline-step">System Data Flow & Processing Pipeline</div>
+    <div class="edgecase-visual" style="background:#0F172A; padding:1rem; position:relative; min-height:240px; display:flex; justify-content:center; align-items:center;">
+      <svg id="ec-op-svg" viewBox="0 0 600 220" style="width:100%; height:auto; overflow:visible;">
+        <!-- SVGs elements drawn dynamically -->
+      </svg>
+      
+      <!-- Flashing status banners -->
+      <div id="ec-op-status-banner" style="position:absolute; top:12px; right:12px; font-family:var(--mono); font-size:0.65rem; padding:0.35rem 0.65rem; border-radius:4px; font-weight:bold; pointer-events:none;">
+        SYSTEM HEALTHY
+      </div>
+    </div>
+
+    <!-- METRICS PANEL -->
+    <div class="pipeline-step">Real-Time Core Performance Telemetry</div>
+    <div class="edgecase-output-panel" style="padding:1rem;">
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:1rem;">
+        <div class="panel-box" style="padding:0.5rem 0.75rem; text-align:center; border:1px solid rgba(148, 163, 184, 0.12); background:rgba(15, 23, 42, 0.3);">
+          <div style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; font-family:var(--mono);">CPU Utilization</div>
+          <div id="ec-op-cpu-util" style="font-size:1.4rem; font-weight:bold; color:#10B981; margin:0.25rem 0; font-family:var(--mono);">5%</div>
+          <div style="font-size:0.55rem; color:var(--muted); line-height:1.2;">Core cycles dedicated to processing tasks.</div>
+        </div>
+        <div class="panel-box" style="padding:0.5rem 0.75rem; text-align:center; border:1px solid rgba(148, 163, 184, 0.12); background:rgba(15, 23, 42, 0.3);">
+          <div style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; font-family:var(--mono);">IRQ Rate</div>
+          <div id="ec-op-irq-rate" style="font-size:1.4rem; font-weight:bold; color:#FFF; margin:0.25rem 0; font-family:var(--mono);">0 Hz</div>
+          <div style="font-size:0.55rem; color:var(--muted); line-height:1.2;">Number of interrupt context jumps per second.</div>
+        </div>
+        <div class="panel-box" style="padding:0.5rem 0.75rem; text-align:center; border:1px solid rgba(148, 163, 184, 0.12); background:rgba(15, 23, 42, 0.3);">
+          <div style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; font-family:var(--mono);">Throughput</div>
+          <div id="ec-op-throughput" style="font-size:1.4rem; font-weight:bold; color:#3B82F6; margin:0.25rem 0; font-family:var(--mono);">0 B/s</div>
+          <div style="font-size:0.55rem; color:var(--muted); line-height:1.2;">Bytes successfully written into SRAM buffer.</div>
+        </div>
+        <div class="panel-box" style="padding:0.5rem 0.75rem; text-align:center; border:1px solid rgba(148, 163, 184, 0.12); background:rgba(15, 23, 42, 0.3);">
+          <div style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; font-family:var(--mono);">Missed Bytes</div>
+          <div id="ec-op-missed" style="font-size:1.4rem; font-weight:bold; color:#64748B; margin:0.25rem 0; font-family:var(--mono);">0</div>
+          <div style="font-size:0.55rem; color:var(--muted); line-height:1.2;">Data lost due to CPU register overrun / saturation.</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // References
+  const cpuFreqSelect = document.getElementById('ec-op-cpu-freq');
+  const adcSlider = document.getElementById('ec-op-adc-rate');
+  const adcVal = document.getElementById('ec-op-adc-rate-val');
+  const uartBaudSelect = document.getElementById('ec-op-uart-baud');
+  const canSlider = document.getElementById('ec-op-can-load');
+  const canVal = document.getElementById('ec-op-can-load-val');
+  const dmaBtn = document.getElementById('ec-op-dma-btn');
+
+  const svg = document.getElementById('ec-op-svg');
+  const statusBanner = document.getElementById('ec-op-status-banner');
+  const cpuUtilVal = document.getElementById('ec-op-cpu-util');
+  const irqRateVal = document.getElementById('ec-op-irq-rate');
+  const throughputVal = document.getElementById('ec-op-throughput');
+  const missedVal = document.getElementById('ec-op-missed');
+
+  const peripheralNames = ["Button", "UART", "Temp Sensor", "ADC", "CAN Bus"];
+  const peripheralColors = ["#3B82F6", "#10B981", "#F59E0B", "#EF6868", "#A78BFA"];
+
+  // State
+  let dmaEnabled = false;
+  let missedCount = 0;
+  let particles = [];
+  let lastTime = performance.now();
+  let animationId = null;
+
+  updateDmaButtonState();
+
+  function updateDmaButtonState() {
+    if (dmaEnabled) {
+      dmaBtn.textContent = "Disable DMA";
+      dmaBtn.style.background = "rgba(16, 185, 129, 0.15)";
+      dmaBtn.style.color = "#10B981";
+      dmaBtn.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+    } else {
+      dmaBtn.textContent = "Enable DMA";
+      dmaBtn.style.background = "rgba(59, 130, 246, 0.15)";
+      dmaBtn.style.color = "#3B82F6";
+      dmaBtn.style.border = "1px solid rgba(59, 130, 246, 0.4)";
+    }
+  }
+
+  dmaBtn.addEventListener('click', () => {
+    dmaEnabled = !dmaEnabled;
+    updateDmaButtonState();
+  });
+
+  adcSlider.addEventListener('input', () => {
+    adcVal.textContent = `${adcSlider.value} kHz`;
+  });
+  canSlider.addEventListener('input', () => {
+    canVal.textContent = `${canSlider.value}%`;
+  });
+
+  function loop(time) {
+    if (!document.getElementById('overworked-processor')) {
+      cancelAnimationFrame(animationId);
+      return;
+    }
+
+    const dt = (time - lastTime) / 1000;
+    lastTime = time;
+
+    const cpuFreq = parseInt(cpuFreqSelect.value) * 1000000;
+    const adcRate = parseInt(adcSlider.value) * 1000;
+    const uartBaud = parseInt(uartBaudSelect.value);
+    const canLoad = parseInt(canSlider.value);
+
+    const uartRate = uartBaud / 10;
+    const canRate = canLoad * 10;
+
+    let adcIrqs = adcRate;
+    let uartIrqs = uartRate;
+    let canIrqs = canRate;
+
+    const adcCycles = 50;
+    const uartCycles = 40;
+    const canCycles = 120;
+
+    let totalIrqs = adcIrqs + uartIrqs + canIrqs;
+    let totalIrqCycles = (adcIrqs * adcCycles) + (uartIrqs * uartCycles) + (canIrqs * canCycles);
+
+    let cpuLoad = 5;
+    let finalIrqRate = totalIrqs;
+
+    if (dmaEnabled) {
+      const dmaOverheadCycles = totalIrqCycles * 0.02;
+      cpuLoad += (dmaOverheadCycles / cpuFreq) * 100;
+      finalIrqRate = totalIrqs / 100;
+    } else {
+      cpuLoad += (totalIrqCycles / cpuFreq) * 100;
+    }
+
+    cpuLoad = Math.min(100, cpuLoad);
+
+    let isSaturated = cpuLoad >= 100;
+    let successFraction = 1.0;
+
+    if (isSaturated && !dmaEnabled) {
+      successFraction = cpuFreq / totalIrqCycles;
+      successFraction = Math.max(0.1, Math.min(0.99, successFraction));
+      const totalBytesSec = adcRate + uartRate + (canRate * 8);
+      const droppedBytesSec = totalBytesSec * (1.0 - successFraction);
+      missedCount += droppedBytesSec * dt;
+    }
+
+    cpuUtilVal.textContent = `${cpuLoad.toFixed(1)}%`;
+    cpuUtilVal.style.color = cpuLoad > 90 ? '#EF6868' : (cpuLoad > 60 ? '#F59E0B' : '#10B981');
+
+    irqRateVal.textContent = `${Math.round(finalIrqRate).toLocaleString()} Hz`;
+    
+    const throughput = (adcRate + uartRate + (canRate * 8)) * (dmaEnabled ? 1.0 : successFraction);
+    throughputVal.textContent = `${Math.round(throughput).toLocaleString()} B/s`;
+    
+    missedVal.textContent = Math.round(missedCount).toLocaleString();
+    missedVal.style.color = missedCount > 0 ? '#EF6868' : 'var(--muted)';
+
+    if (dmaEnabled) {
+      statusBanner.textContent = "DMA OFFLOAD ACTIVE";
+      statusBanner.style.background = "rgba(16, 185, 129, 0.15)";
+      statusBanner.style.color = "#10B981";
+      statusBanner.style.border = "1px solid rgba(16, 185, 129, 0.4)";
+    } else if (isSaturated) {
+      statusBanner.textContent = "⚠ INTERRUPT STORM: DROPPING DATA";
+      statusBanner.style.background = "rgba(239, 104, 104, 0.15)";
+      statusBanner.style.color = "#EF6868";
+      statusBanner.style.border = "1px solid rgba(239, 104, 104, 0.4)";
+    } else {
+      statusBanner.textContent = "SYSTEM STABLE";
+      statusBanner.style.background = "rgba(59, 130, 246, 0.1)";
+      statusBanner.style.color = "#3B82F6";
+      statusBanner.style.border = "1px solid rgba(59, 130, 246, 0.2)";
+    }
+
+    const spawnChance = Math.min(0.5, (adcRate + uartRate + canRate) / 50000);
+    if (Math.random() < spawnChance && particles.length < 50) {
+      const srcType = Math.random() < 0.4 ? 'adc' : (Math.random() < 0.7 ? 'uart' : 'can');
+      particles.push({
+        x: 60,
+        y: srcType === 'adc' ? 60 : (srcType === 'uart' ? 110 : 160),
+        color: srcType === 'adc' ? '#3B82F6' : (srcType === 'uart' ? '#10B981' : '#F59E0B'),
+        phase: 0,
+        targetMidX: 300,
+        targetMidY: dmaEnabled ? 165 : 110
+      });
+    }
+
+    particles.forEach(p => {
+      if (p.phase === 0) {
+        const dx = p.targetMidX - p.x;
+        const dy = p.targetMidY - p.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 4) {
+          p.phase = 1;
+          p.x = p.targetMidX;
+          p.y = p.targetMidY;
+        } else {
+          p.x += (dx / dist) * 180 * dt;
+          p.y += (dy / dist) * 180 * dt;
+        }
+      } else {
+        const dx = 520 - p.x;
+        const dy = 110 - p.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 4) {
+          p.dead = true;
+        } else {
+          p.x += (dx / dist) * 180 * dt;
+          p.y += (dy / dist) * 180 * dt;
+        }
+      }
+    });
+
+    particles = particles.filter(p => !p.dead);
+
+    drawPipelineSvg(cpuLoad, isSaturated);
+
+    animationId = requestAnimationFrame(loop);
+  }
+
+  function drawPipelineSvg(cpuLoad, isSaturated) {
+    let content = `
+      <defs>
+        <filter id="ec-op-glow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      </defs>
+
+      <path d="M 120 60 Q 210 60 ${dmaEnabled ? '300 165' : '300 110'}" fill="none" stroke="rgba(148, 163, 184, 0.1)" stroke-width="2" />
+      <path d="M 120 110 H 300" fill="none" stroke="rgba(148, 163, 184, 0.1)" stroke-width="2" />
+      <path d="M 120 160 Q 210 160 ${dmaEnabled ? '300 165' : '300 110'}" fill="none" stroke="rgba(148, 163, 184, 0.1)" stroke-width="2" />
+
+      <path d="M 300 ${dmaEnabled ? '165' : '110'} Q 410 ${dmaEnabled ? '165' : '110'} 520 110" fill="none" stroke="${dmaEnabled ? 'rgba(16,185,129,0.2)' : 'rgba(148,163,184,0.1)'}" stroke-width="2" />
+
+      <line x1="300" y1="110" x2="300" y2="165" stroke="rgba(148, 163, 184, 0.05)" stroke-dasharray="2,2" />
+
+      <circle cx="60" cy="60" r="15" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5" />
+      <text x="60" y="63" fill="#3B82F6" font-family="var(--mono)" font-size="7" font-weight="bold" text-anchor="middle">ADC</text>
+      
+      <circle cx="60" cy="110" r="15" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+      <text x="60" y="113" fill="#10B981" font-family="var(--mono)" font-size="7" font-weight="bold" text-anchor="middle">UART</text>
+      
+      <circle cx="60" cy="160" r="15" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="60" y="163" fill="#F59E0B" font-family="var(--mono)" font-size="7" font-weight="bold" text-anchor="middle">CAN</text>
+
+      <rect x="250" y="85" width="100" height="50" rx="4" fill="#1E293B" stroke="${!dmaEnabled && isSaturated ? '#EF6868' : '#3B82F6'}" stroke-width="${!dmaEnabled ? 2.5 : 1.5}" ${(!dmaEnabled && isSaturated) ? 'filter="url(#ec-op-glow)"' : ''} />
+      <text x="300" y="108" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">CPU Core</text>
+      <text x="300" y="122" fill="${!dmaEnabled && isSaturated ? '#EF6868' : 'var(--muted)'}" font-family="var(--mono)" font-size="7" text-anchor="middle">${!dmaEnabled && isSaturated ? 'SATURATED' : 'Processing'}</text>
+
+      <rect x="250" y="145" width="100" height="40" rx="4" fill="#1E293B" stroke="${dmaEnabled ? '#10B981' : 'rgba(148, 163, 184, 0.2)'}" stroke-width="${dmaEnabled ? 2.5 : 1.5}" ${dmaEnabled ? 'filter="url(#ec-op-glow)"' : ''} />
+      <text x="300" y="167" fill="${dmaEnabled ? '#FFF' : 'var(--muted)'}" font-size="9" font-weight="bold" text-anchor="middle">DMA</text>
+      <text x="300" y="177" fill="${dmaEnabled ? '#10B981' : 'var(--muted)'}" font-family="var(--mono)" font-size="6" text-anchor="middle">${dmaEnabled ? 'OFFLOADING' : 'Inactive'}</text>
+
+      <rect x="470" y="80" width="100" height="60" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5" />
+      <rect x="470" y="80" width="100" height="15" fill="#0F172A" opacity="0.5" />
+      <text x="520" y="91" fill="#64748B" font-family="var(--mono)" font-size="7" text-anchor="middle">SRAM Buffer</text>
+      
+      <line x1="490" y1="105" x2="550" y2="105" stroke="rgba(148, 163, 184, 0.15)" />
+      <line x1="490" y1="120" x2="550" y2="120" stroke="rgba(148, 163, 184, 0.15)" />
+      <line x1="510" y1="100" x2="510" y2="130" stroke="rgba(148, 163, 184, 0.15)" />
+      <line x1="530" y1="100" x2="530" y2="130" stroke="rgba(148, 163, 184, 0.15)" />
+    `;
+
+    particles.forEach(p => {
+      content += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="${p.color}" filter="url(#ec-op-glow)" />`;
+    });
+
+    svg.innerHTML = content;
+  }
+
+  animationId = requestAnimationFrame(loop);
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
