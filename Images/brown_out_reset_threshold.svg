@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+
+  <text x="320" y="32" fill="#E2E8F0" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="0.05em">BROWN-OUT RESET (BOR) PROTECTION REGIONS</text>
+
+  <!-- Regions shaded -->
+  <!-- Safe Region (Y = 50 to 110) -->
+  <rect x="50" y="50" width="540" height="60" fill="rgba(16, 185, 129, 0.04)" />
+  <text x="560" y="70" fill="#10B981" font-size="8" font-weight="bold" text-anchor="end">SAFE REGION (100% Reliable)</text>
+
+  <!-- Unsafe Region (Y = 110 to 170) -->
+  <rect x="50" y="110" width="540" height="60" fill="rgba(239, 68, 68, 0.04)" />
+  <text x="560" y="130" fill="#EF4444" font-size="8" font-weight="bold" text-anchor="end">UNSAFE REGION (Potential Corruption)</text>
+
+  <!-- Y-Axis (Voltage) -->
+  <line x1="50" y1="45" x2="50" y2="210" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" />
+  <text x="40" y="55" fill="#64748B" font-size="7" font-family="monospace">VCC</text>
+  <text x="40" y="210" fill="#64748B" font-size="7" font-family="monospace">0V</text>
+
+  <!-- V_BOR Threshold Line -->
+  <line x1="50" y1="110" x2="590" y2="110" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4,2" />
+  <text x="290" y="105" fill="#F59E0B" font-size="8" font-family="monospace">V_BOR Threshold (e.g. 2.7V)</text>
+
+  <!-- VCC Curve showing slow decay -->
+  <path d="M 50 70
+           H 250
+           L 420 150
+           H 590"
+        fill="none" stroke="#3B82F6" stroke-width="2.5" />
+  <text x="55" y="62" fill="#3B82F6" font-size="8" font-weight="bold">Input Voltage (VCC)</text>
+
+  <!-- Action: BOR trigger at X=340 -->
+  <circle cx="340" cy="110" r="4" fill="#EF4444" />
+  <line x1="340" y1="110" x2="340" y2="185" stroke="#EF4444" stroke-dasharray="2,2" stroke-width="1" />
+  <text x="350" y="125" fill="#EF4444" font-size="7" font-weight="bold">BOR Triggers</text>
+
+  <!-- RESET line behaviour below -->
+  <line x1="50" y1="185" x2="340" y2="185" stroke="#10B981" stroke-width="2" />
+  <line x1="340" y1="185" x2="340" y2="205" stroke="#EF4444" stroke-width="2" />
+  <line x1="340" y1="205" x2="590" y2="205" stroke="#EF4444" stroke-width="2" />
+  
+  <text x="120" y="178" fill="#10B981" font-size="8" font-weight="bold">RESET High (Executing)</text>
+  <text x="470" y="200" fill="#EF4444" font-size="8" font-weight="bold">RESET Asserted Low (CPU Stopped)</text>
+</svg>

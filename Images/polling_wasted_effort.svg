@@ -19,7 +19,7 @@
   <text x="120" y="175" fill="#E2E8F0" font-size="9" text-anchor="middle">Always running at full speed</text>
 
   <!-- Checks Timeline (Right) -->
-  <text x="240" y="40" fill="#E2E8F0" font-size="11" font-weight="bold">Interrogation Log (Time &rarr;)</text>
+  <text x="240" y="40" fill="#E2E8F0" font-size="11" font-weight="bold">Interrogation Log (Time &#8594;)</text>
 
   <!-- Timeline axis -->
   <path d="M 240 100 H 580" fill="none" stroke="rgba(148,163,184,0.3)" stroke-width="1" />

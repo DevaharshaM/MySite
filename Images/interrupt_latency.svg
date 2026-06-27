@@ -10,7 +10,7 @@
   <!-- Time Axis -->
   <line x1="40" y1="130" x2="580" y2="130" stroke="rgba(148, 163, 184, 0.3)" stroke-width="2" />
   <path d="M 575 125 L 580 130 L 575 135" fill="none" stroke="rgba(148, 163, 184, 0.3)" stroke-width="2" />
-  <text x="580" y="150" fill="#64748B" font-size="9" text-anchor="end">Time &rarr;</text>
+  <text x="580" y="150" fill="#64748B" font-size="9" text-anchor="end">Time &#8594;</text>
 
   <!-- Execution blocks -->
   <!-- 1. Main Thread -->

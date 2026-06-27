@@ -49,9 +49,9 @@
 
 <div class="page active" id="page-home">
   <div class="empty-page">
-    <div class="empty-title">From Matter to Machines</div>
+    <div class="empty-title">From Signal to Intelligence</div>
     <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
-      PrajnaEdge is an embedded systems knowledge library created by Devaharsha Meesarapu, exploring how modern machines evolve—from matter and computation to interaction, coordination, integration, and beyond.
+      PrajnaEdge is a systems exploration project by Devaharsha Meesarapu. It maps how intelligent systems emerge through successive layers of engineering: from physical Matter and abstract Computation, through Interaction and Coordination, to final Intelligence.
     </div>
 
     <div class="tree-branch"></div>

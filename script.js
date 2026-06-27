@@ -107,6 +107,10 @@ const systemsTreeNodes = {
     title: "Intelligence",
     description: "How systems evolved from deterministic control into adaptive intelligence.",
     explorations: [
+      { id: "when-machines-became-systems", title: "When Machines Became Systems" },
+      { id: "when-machines-learned-to-survive", title: "When Machines Learned to Survive" },
+      { id: "when-one-loop-was-enough", title: "When One Loop Was Enough" },
+      { id: "when-one-processor-wasnt-enough", title: "When One Processor Wasn't Enough" },
       { id: null, title: "Coming Soon" }
     ]
   }
@@ -3463,6 +3467,424 @@ const blogPosts = [
     quote: "Delegation is not a luxury for a processor; it is the prerequisite for intelligence."
   },
   footer: "Reflections on Direct Memory Access and delegation architectures - PrajnaEdge.dev"
+},
+{
+  id: "when-machines-became-systems",
+  category: "Integration",
+  series: "System Explorations",
+  title: "When Machines Became Systems",
+  subtitle: "The moment individual peripherals became something greater than the sum of their parts.",
+  date: "27th June, 2026",
+  tags: ["Embedded Systems", "System Architecture", "Emergence", "System Dynamics"],
+  sections: [
+    {
+      heading: "1. The Journey So Far",
+      content: [
+        {
+          type: "p",
+          text: "To appreciate what an embedded system is, we must first look back at the path we have travelled. We began with **Matter** — the physical chemistry of silicon and the manufacturing of the crystal lattice. We watched this physical matter organize itself into **Computation**, giving rise to registers, instruction cycles, SRAM, and bootloaders. Then, we crossed the boundary into **Interaction**, where GPIO and communication protocols (UART, SPI, I2C, CAN) allowed software to influence and exchange data with external hardware. Finally, we encountered **Coordination**, where hardware timers, interrupts, and Direct Memory Access (DMA) synchronized these independent transfers. Each phase represented a major layer of abstraction."
+        },
+        {
+          type: "p",
+          text: "For weeks, we have been dissecting individual organs: checking the clock tree, examining registers, and timing SPI bus transfers. But if you lay all these organs out on a table, you do not have a living organism. A collection of coordinated components is not yet a complete system."
+        }
+      ]
+    },
+    {
+      heading: "2. A Box Full of Parts",
+      content: [
+        {
+          type: "p",
+          text: "Imagine placing the following components on a clean wooden worktable:\n\n* A central processor core capable of executing millions of instructions per second.\n* A crystal oscillator ticking at a stable high frequency.\n* A slice of SRAM memory to store variables and pointers.\n* A GPIO controller to sense and toggle physical lines.\n* A few hardware timers counting clock cycles.\n* An ADC to translate physical voltages into digital values.\n* A DAC to scale digital values back into physical voltages.\n* UART, SPI, and CAN controllers to transmit serial frames.\n* An Interrupt Controller to prioritize hardware exceptions.\n* A DMA Controller to move bytes across the internal bus matrix.\n\nLooking at this box of parts, we must ask: At what point do these independent components cease to be a list of features in a datasheet and become a system? Is it simply a matter of soldering them to the same PCB and connecting them to the same bus? Or is there a deeper shift that occurs when they begin to work in unison?"
+        }
+      ]
+    },
+    {
+      heading: "3. Nothing Works Alone",
+      content: [
+        {
+          type: "p",
+          text: "In a real embedded system, no peripheral exists in isolation. The power of the device does not come from the individual capability of its timer or its ADC; it emerges from their cooperation. Consider a common physical monitoring task:\n\n1. A hardware **Timer** counts down to zero, generating a periodic trigger pulse.\n2. The **ADC** receives this trigger and immediately starts an analog-to-digital conversion, capturing a physical signal at a precise moment without CPU delay.\n3. The **DMA Controller** receives a transfer request from the ADC, copying the digital sample straight to an SRAM buffer, bypassing the CPU.\n4. When the SRAM buffer is full, the DMA controller asserts an interrupt line to the **Interrupt Controller**.\n5. The CPU receives the **Interrupt Request**, suspends its current work, processes the array of samples in RAM, and decides on a corrective action.\n6. The CPU writes the processed result to the **UART** data register to transmit it to an external monitor."
+        },
+        {
+          type: "img",
+          src: "Images/peripheral_cooperation.svg",
+          alt: "Peripheral Cooperation Pipeline"
+        },
+        {
+          type: "p",
+          text: "None of these components knew what the others were doing. The timer simply ticked; the ADC simply measured; the DMA simply moved bytes; the UART simply serialized bits. Yet, when their physical pathways are coordinated, they form a unified pipeline. The system's behavior emerges from their cooperation, not their individual functions."
+        }
+      ]
+    },
+    {
+      heading: "4. The Flow of Information",
+      content: [
+        {
+          type: "p",
+          text: "This cooperation creates a continuous loop where information travels from the physical world, through the machine, and back out again. We can trace this lifecycle as a clear journey of state changes:\n\n$$\\text{Physical Event} \\\\rightarrow \\\\text{Analog Signal} \\\\rightarrow \\\\text{Digital Numbers} \\\\rightarrow \\\\text{CPU Decision} \\\\rightarrow \\\\text{Physical Action}$$\n\nIf we map this to the hardware blocks we have studied, the architecture aligns perfectly:"
+        },
+        {
+          type: "img",
+          src: "Images/information_flow.svg",
+          alt: "The Lifecycle of Information"
+        },
+        {
+          type: "p",
+          text: "Every block in this diagram has a corresponding physical peripheral. When we write firmware, we are not just configuring registers; we are designing the physical channel through which information moves. We are translating a wave in the air or a thermal change in a wire into a number, choosing what to do with that number, and translating that choice back into physical force."
+        }
+      ]
+    },
+    {
+      heading: "5. The Emergence of Behaviour",
+      content: [
+        {
+          type: "p",
+          text: "This brings us to a critical distinction: the difference between **function** and **behaviour**. A peripheral has a function. A timer's function is to count; an ADC's function is to convert; a GPIO pin's function is to drive a voltage high or low.\n\nBut a system has a behaviour. A thermostat maintaining a room at exactly 21°C is a behaviour. A washing machine cycling through wash, rinse, and spin cycles is a behaviour. A motor controller holding a brushless motor at a stable 3,000 RPM under load is a behaviour. A drone balancing itself against a sudden crosswind is a behaviour.\n\nNone of these behaviours can be found inside a single peripheral. You cannot look at a datasheet and find the 'drone-balancing' pin. The balancing behaviour is emergent. It emerges because the sensor, the ADC, the CPU, the DMA, the timers, and the motor drivers are constantly communicating through a tight, closed feedback loop. The system is the relationship between these parts."
+        }
+      ]
+    },
+    {
+      heading: "6. What Makes a System Feel Alive?",
+      content: [
+        {
+          type: "p",
+          text: "When you observe a well-designed embedded system, it can often feel alive. A thermostat appears to 'know' when the room is cold. An elevator appears to 'make decisions' about which floor to visit first to minimize waiting times. An automotive engine control unit (ECU) appears to 'understand' the driver's intent when they step on the throttle.\n\nBut this is not intelligence in the sense of neural networks or machine learning. It is the natural consequence of tight feedback loops. When a machine can observe the physical world, compute a response in real time, and immediately apply a physical counter-force, its behaviour naturally aligns with its environment. It behaves as if it has intent. This lifelike quality is the hallmark of a successful embedded architecture."
+        }
+      ]
+    },
+    {
+      heading: "7. From Components to Architecture",
+      content: [
+        {
+          type: "p",
+          text: "As you transition from learning individual peripherals to building real devices, your thinking must shift. You are no longer configuring a UART driver or writing an ADC handler in isolation. You are designing an architecture.\n\nAn embedded system architect must manage multiple competing flows across the entire system. Instead of focusing on individual code statements, the architect balances the entire stack: ensuring the **timing** is deterministic, the **communication** buses are not saturated, the **power** consumption is managed, the **data** pathways are optimized via DMA, and the **memory** footprint is reliable. Architecture is the art of balancing these physical limits to allow emergent behavior to flourish."
+        }
+      ]
+    },
+    {
+      heading: "8. Real Embedded Examples",
+      content: [
+        {
+          type: "p",
+          text: "We can see these architectural principles at play in almost every real-world system around us:\n\n* **Motor Controllers**: A timer drives high-frequency PWM lines to switch MOSFETs. Current-sensing resistors feed analog signals back to a high-speed ADC. The CPU processes the current vectors and runs a field-oriented control (FOC) algorithm to adjust the PWM duty cycles, stabilizing the motor's rotation under variable loads.\n* **Battery Management Systems (BMS)**: Multiple ADC channels continuously scan cell voltages and temperatures. A SPI bus gathers these readings from monitoring chips. The CPU monitors safety limits, balancing cells by routing current through bypass resistors and communicating state-of-charge data via CAN.\n* **Automotive ECUs**: Dozens of sensors (crankshaft angle, oxygen level, manifold pressure) generate high-frequency pulses and analog signals. Timers capture pulse widths, while the ADC reads voltage levels. The CPU calculates ignition timing and injector pulse widths, driving actuators while exchanging safety state data with other ECUs over CAN.\n* **Drone Flight Controllers**: A gyro and accelerometer continuously output orientation data over a high-speed SPI bus. The CPU pulls this data, filters it, runs a PID algorithm, and generates updated PWM pulse widths for the electronic speed controllers (ESCs), keeping the drone stable in mid-air.\n\nIn every case, the story is the same: the system is not defined by its parts, but by how those parts work together."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Architecture of Survival",
+    paragraphs: [
+      "The journey so far has focused on building systems.",
+      "But real systems must survive failure.",
+      "Power disappears. Voltages fluctuate. Software crashes. Clocks stop. Unexpected physical behaviour becomes inevitable.",
+      "As embedded systems became more important, they also needed to become more reliable. The CPU could no longer just coordinate; it needed a way to protect the system from its own failures.",
+      "The next chapter explores how machines learned to protect themselves."
+    ],
+    quote: "An embedded system is not a collection of peripherals that happen to share a bus; it is a single physical conversation that has achieved stable form."
+  },
+  footer: "Reflections on systems thinking and emergent architectures - PrajnaEdge.dev"
+},
+{
+  id: "when-machines-learned-to-survive",
+  category: "Integration",
+  series: "System Explorations",
+  title: "When Machines Learned to Survive",
+  subtitle: "Why embedded systems stopped assuming the world was perfect.",
+  date: "27th June, 2026",
+  tags: ["Reliability", "POR", "BOR", "Watchdog", "Functional Safety"],
+  sections: [
+    {
+      heading: "1. The Perfect World",
+      content: [
+        {
+          type: "p",
+          text: "Every layer we have built so far — from silicon transistors and CPU instruction sets, to communication buses and direct memory transfers — has quietly relied on a dangerous assumption: everything works.\n\nWe assumed that power rails are perfectly flat lines, that crystal oscillators deliver a clean, unwavering heartbeat, and that software is entirely bug-free. In the clean laboratory of our minds, the machine is a pure logical construct. But when an embedded device crosses from the laboratory into the real world, it meets a hostile, chaotic physical environment. To build machines that survive, we must stop assuming the world is perfect."
+        },
+        {
+          type: "img",
+          src: "Images/unstable_power_vs_stable.svg",
+          alt: "Ideal Laboratory Power vs. Unstable Real-World Voltage Rails"
+        }
+      ]
+    },
+    {
+      heading: "2. Power Is Never Perfect",
+      content: [
+        {
+          type: "p",
+          text: "In the real world, voltage rails do not instantly snap from 0V to a stable 3.3V. Consider these everyday realities:\n\n* A battery-powered sensor charges slowly as a capacitor buffers the incoming current.\n* An industrial motor starter pulls massive current, causing neighboring supply lines to dip.\n* A car ignition system sucks power, dragging the 12V battery line down to 6V during engine crank.\n* A wall adapter is plugged into an unstable, noisy mains outlet.\n\n### Power-On Reset (POR)\n\nWhen voltage rises slowly, the silicon inside the microcontroller is in an undefined state. Transistors are partially turned on, logic gates are operating at incorrect switching thresholds, and internal registers hold random noise. If the CPU attempts to fetch and execute instructions immediately, it will read garbage from memory, branch to invalid addresses, and crash. To prevent this, microcontrollers utilize **Power-On Reset (POR)**. The POR circuit is a simple, dedicated hardware monitor that holds the CPU in a hard reset state until the supply voltage rises past a safe threshold, delaying execution until the system's power is stable and clean."
+        },
+        {
+          type: "img",
+          src: "Images/power_on_reset_timing.svg",
+          alt: "Power-On Reset Timing and Startup Delay"
+        }
+      ]
+    },
+    {
+      heading: "3. The Dangerous Middle",
+      content: [
+        {
+          type: "p",
+          text: "Power failures are rarely instantaneous. When a battery drains or a power plug is pulled, the voltage decays slowly over milliseconds. This decay creates a highly dangerous state: the brown-out.\n\n### Brown-Out Reset (BOR)\n\nAs voltage sinks below the nominal operating limit but remains above zero, the CPU core continues to run. However, the internal SRAM cells begin to lose charge, the flash memory decoder fails to read bits reliably, and the arithmetic units compute incorrect math. The processor begins executing corrupted instructions. It might accidentally write garbage to safety-critical configuration sectors, trigger actuators incorrectly, or clear system memory. A partially functioning system is often far more dangerous than one that stops completely. To prevent this, a **Brown-Out Reset (BOR)** monitor continuously measures VCC against a fixed threshold. If the voltage drops below this safety line, the BOR hardware immediately halts the CPU, forcing it into a safe reset state before it can corrupt its own state."
+        },
+        {
+          type: "img",
+          src: "Images/brown_out_reset_threshold.svg",
+          alt: "Brown-Out Reset Voltage Threshold Protection Regions"
+        }
+      ]
+    },
+    {
+      heading: "4. When Software Stops Thinking",
+      content: [
+        {
+          type: "p",
+          text: "Even if power is perfect, software is not. Despite months of testing, real-world edge cases eventually trigger bugs:\n\n* An unexpected sensor value causes a division-by-zero, creating an infinite loop.\n* Two independent interrupt routines block each other, causing a deadlock.\n* A stack overflow corrupts the return address of a function, sending the CPU to an empty memory region.\n\n### The Watchdog Timer (WDT)\n\nIn these states, the processor is powered and the clock is ticking, but nothing useful is happening. The system is frozen. To recover, we need an independent observer: the **Watchdog Timer**. A watchdog is a hardware timer that runs completely separate from the main CPU. As the main software executes its control loop, it must periodically 'kick' or 'feed' the watchdog, resetting its counter. If the software crashes or hangs, the CPU fails to feed the watchdog. The counter counts down to zero (timeout) and triggers a hard hardware reset, rebooting the machine and restoring safe operation."
+        },
+        {
+          type: "img",
+          src: "Images/watchdog_supervision.svg",
+          alt: "Watchdog Timer Supervision and Recovery Cycle"
+        }
+      ]
+    },
+    {
+      heading: "5. When Time Itself Breaks",
+      content: [
+        {
+          type: "p",
+          text: "All digital logic relies on a steady clock signal to coordinate instruction execution and bus transfers. But what happens if the clock itself fails? An external crystal oscillator can stop vibrating due to physical vibration, thermal stress, or moisture on the PCB pins. An internal PLL (Phase-Locked Loop) can lose lock, causing the clock speed to drift wildly.\n\n### Clock Security System (CSS)\n\nIf the clock stops, the CPU freezes, interrupts cease to trigger, and watchdogs based on the same clock become useless. Modern microcontrollers solve this with a **Clock Security System (CSS)**. The CSS acts as an independent heartbeat monitor. It continuously measures the external clock against a secondary, low-frequency internal RC oscillator. If the external heartbeat disappears, the CSS hardware automatically switches the system clock to the internal RC source and triggers a high-priority interrupt, allowing the system to log the fault and shut down actuators safely."
+        }
+      ]
+    },
+    {
+      heading: "6. Reliability Is Invisible",
+      content: [
+        {
+          type: "p",
+          text: "The paradox of reliability engineering is that its greatest successes are completely invisible. Users expect that automotive engines start in freezing weather, medical ventilators never freeze, and factory controllers recover instantly from grid dips. When a system is engineered correctly, failures are handled silently by the hardware monitors. The CPU is reset, variables are reinitialized, and safe states are restored in milliseconds. The user never knows that a catastrophic failure was averted. In embedded systems, the absence of visible problems is the ultimate proof of design excellence."
+        }
+      ]
+    },
+    {
+      heading: "7. Real Embedded Examples",
+      content: [
+        {
+          type: "p",
+          text: "We can see these safety monitors at work in critical applications all around us:\n\n* **Automotive ECUs**: An ECU relies on a strict combination of POR, BOR, and watchdogs. If the car starter motor drags the battery rail down, the BOR holds the system in reset until the voltage stabilizes, preventing random fuel injector firing.\n* **Medical Devices**: Ventilators and cardiac monitors utilize independent windowed watchdogs that require software to kick them within a tight time window. If software runs too fast (suggesting a corrupted clock) or too slow (suggesting a lockup), the system reboots and sounds an alarm.\n* **Drone Flight Controllers**: A drone uses clock security and watchdogs. If the high-vibration environment causes the external crystal to fail, the flight controller instantly falls back to an internal RC oscillator to maintain stable flight control.\n* **Industrial Controllers (PLCs)**: A PLC monitors supply rail noise and temperature. If a brown-out occurs, it writes crucial state metrics to non-volatile RAM and forces all output lines low, bringing heavy machinery to a safe, controlled stop."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Architecture of Order",
+    paragraphs: [
+      "A reliable system can survive in a hostile physical world.",
+      "But modern embedded products rarely perform only one task in isolation.",
+      "A vehicle simultaneously manages engine timing, CAN bus communications, diagnostics, dashboard displays, and safety telemetry. A medical monitor continuously samples sensors while updating screens, storing logs, and communicating over networks.",
+      "One processor core. Many competing responsibilities. Reliability alone was no longer enough; the processor faced the challenge of organizing many independent tasks without chaos.",
+      "That question eventually led to the development of Operating Systems."
+    ],
+    quote: "A system that cannot protect itself from reality is not an architecture; it is a temporary state of success."
+  },
+  footer: "Reflections on clock security, brown-out reset, and watchdog supervision - PrajnaEdge.dev"
+},
+{
+  id: "when-one-loop-was-enough",
+  category: "Integration",
+  series: "System Explorations",
+  title: "When One Loop Was Enough",
+  subtitle: "The first software architecture of embedded systems.",
+  date: "27th June, 2026",
+  tags: ["Bare Metal", "Software Architecture", "Super-loop", "Multitasking", "Embedded Systems"],
+  sections: [
+    {
+      heading: "1. The Hardware Is Ready",
+      content: [
+        {
+          type: "p",
+          text: "We have spent chapters assembling the physical machine. We designed the silicon gates, configured the system clocks, wired up communication buses, and added watchdog monitors to protect the device from itself. The hardware is ready. But at this moment, the processor is silent. At power-on, it simply loads the reset vector, initializes the stack pointer, and waits.\n\nWithout software to orchestrate its behavior, a microcontroller is nothing more than expensive sand. The hardware provides the capability, but software must provide the purpose. How do we organize the instructions that bring this silicon to life?"
+        },
+        {
+          type: "img",
+          src: "Images/bare_metal_system_overview.svg",
+          alt: "Bare Metal Firmware Structure Overview"
+        }
+      ]
+    },
+    {
+      heading: "2. The First Software",
+      content: [
+        {
+          type: "p",
+          text: "When personal computers run software, they do so under the supervision of a massive operating system. But in early embedded systems, there were no operating systems. The software had to run directly on the 'bare metal' of the hardware.\n\nThe simplest possible software architecture is a sequence of direct instructions. We fetch a sensor value, perform a calculation, and write the output to a pin. But an embedded system cannot simply execute these instructions once and shut down; it must monitor and control its environment indefinitely. To achieve this, the entire program is wrapped in a loop that never ends:\n\n```c\nint main(void) {\n    // Initialize hardware clocks and peripherals\n    hardware_init();\n\n    while (1) {\n        // Execute code repeatedly forever\n        read_sensors();\n        update_outputs();\n    }\n}\n```\n\nThis simple infinite loop — the super-loop — became the heartbeat of early embedded systems. It runs as fast as the processor can fetch instructions, executing the same sequence of tasks over and over."
+        }
+      ]
+    },
+    {
+      heading: "3. Growing Responsibilities",
+      content: [
+        {
+          type: "p",
+          text: "In a basic device, the super-loop is elegant and short. But as products grow, the loop becomes the repository for every new feature. A single loop must now handle a multitude of tasks:\n\n* **Inputs**: Check if a button is pressed; sample the ADC channel for temperature.\n* **Logic**: Run a filter on the ADC readings; calculate the next motor velocity.\n* **Outputs**: Write a new duty cycle value to the PWM timer; toggle status LEDs.\n* **Communications**: Check if a byte has arrived in the UART buffer; parse a CAN frame.\n* **Diagnostics**: Feed the watchdog timer; monitor the battery voltage.\n\nEvery single one of these tasks is placed inside the same `while(1)` block, executed sequentially, one after another."
+        },
+        {
+          type: "img",
+          src: "Images/superloop_responsibilities.svg",
+          alt: "The Classic Super-Loop Task Sequence"
+        }
+      ]
+    },
+    {
+      heading: "4. Why It Worked",
+      content: [
+        {
+          type: "p",
+          text: "It is tempting to view Bare Metal as a primitive, outdated architecture. But in engineering, simplicity is a feature, not a bug. Bare Metal was, and remains, an exceptionally powerful design choice for several reasons:\n\n* **Zero Overhead**: There is no operating system scheduler taking up CPU cycles. Every clock cycle is dedicated to your application code.\n* **Tiny Memory Footprint**: A super-loop does not need task control blocks, stacks for each thread, or message queues. It runs entirely on a single system stack, preserving precious SRAM.\n* **Total Predictability**: Because tasks run in a fixed sequence, there are no unpredictable context switches or priority inversions. The path of execution is completely deterministic.\n* **Easy Debugging**: If the system halts, the call stack tells you exactly which instruction inside the loop caused the failure.\n\nFor millions of successful products — from digital thermometers and microwave ovens to automotive sensors — Bare Metal is not a compromise; it is the optimal engineering solution."
+        }
+      ]
+    },
+    {
+      heading: "5. The Hidden Cost",
+      content: [
+        {
+          type: "p",
+          text: "The vulnerability of a sequential loop is that it assumes every task is fast. In a super-loop, a delay in one task becomes a delay for the entire system. This is the 'Timing Wall'.\n\nConsider what happens if we add a slow task, like reading an external temperature sensor over I2C. The sensor takes 10 milliseconds to perform a conversion. If the CPU spins in a blocking while-loop waiting for the I2C transfer to complete, the entire loop stops. During those 10 milliseconds, the buttons are not polled, the motor PWM is not updated, and serial bytes are missed. If a user presses a button during that window, the press is completely lost. The tasks are cooperatively linked: if one misbehaves, the timing of the entire device is destroyed."
+        },
+        {
+          type: "img",
+          src: "Images/superloop_crowded_delay.svg",
+          alt: "Timing Delays and Missed Events in a Crowded Loop"
+        }
+      ]
+    },
+    {
+      heading: "6. Architecture Before Frameworks",
+      content: [
+        {
+          type: "p",
+          text: "Bare Metal is not simply 'no operating system.' It is a active architectural choice that forces the developer to become the scheduler. To keep the loop running smoothly, the engineer must write non-blocking code. Instead of waiting for a timer to expire, they poll a hardware flag. Instead of waiting for a UART transmission to finish, they write bytes to a software buffer and let interrupts handle the hardware registers.\n\nThis approach teaches fundamental embedded systems thinking. It forces the developer to understand the timing budget of every line of code, the bandwidth of the bus, and the cooperative relationship between hardware peripherals and CPU cycles."
+        }
+      ]
+    },
+    {
+      heading: "7. Real Embedded Examples",
+      content: [
+        {
+          type: "p",
+          text: "We can observe Bare Metal super-loops running reliably in many everyday systems:\n\n* **Simple Sensor Nodes**: A remote temperature transmitter reads an SPI sensor, formats a packet, transmits it via a sub-GHz radio, and enters a low-power sleep mode, repeating this sequence once per minute.\n* **Digital Thermometers**: The loop continuously samples an ADC channel connected to a thermistor, converts the readings to a temperature value using a lookup table, and updates a segment LCD driver.\n* **Brushless Motor Controllers**: A high-speed super-loop runs the field-oriented control (FOC) mathematical algorithms to adjust motor phase voltages at 20 kHz. Because the math must be completed in under 50 microseconds, there is no room for operating system overhead.\n* **Battery Chargers**: The controller loops continuously to check battery voltage, current, and temperature, adjusting the output buck converter's PWM duty cycle to maintain a safe charging curve."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Multitasking Horizon",
+    paragraphs: [
+      "For years, one loop was enough.",
+      "But as embedded products grew, communication requirements multiplied, displays became graphical, networking appeared, and diagnostics expanded.",
+      "One processor core now carried dozens of independent responsibilities. The challenge was no longer writing code for a peripheral; it was organizing the execution of independent, parallel activities without letting one delay the other.",
+      "That challenge eventually led to the development of Operating Systems."
+    ],
+    quote: "When a single loop must carry every burden, a single delay becomes a universal failure."
+  },
+  footer: "Reflections on bare-metal architectures, super-loop execution, and cooperative timing - PrajnaEdge.dev"
+},
+{
+  id: "when-one-processor-wasnt-enough",
+  category: "Integration",
+  series: "System Explorations",
+  title: "When One Processor Wasn't Enough",
+  subtitle: "The evolution from general-purpose computing to specialized intelligence.",
+  date: "27th June, 2026",
+  tags: ["Computer Architecture", "Heterogeneous Compute", "GPU", "NPU", "Edge AI", "SoC"],
+  sections: [
+    {
+      heading: "1. One Processor",
+      content: [
+        {
+          type: "p",
+          text: "For decades, the central processing unit (CPU) was the uncontested monarch of the machine. It executed the control flow, calculated the variables, ran the operating system, managed communication buses, and drew the user interface. It was designed to be the ultimate general-purpose engine — optimized to fetch and execute a sequence of instructions as fast as physically possible. If you needed more performance, chip manufacturers simply increased the clock frequency, making the single core execute instruction steps faster."
+        }
+      ]
+    },
+    {
+      heading: "2. The Growing Demand",
+      content: [
+        {
+          type: "p",
+          text: "But as computing evolved, we asked systems to solve vastly different problems. We demanded high-resolution 3D graphics, real-time wireless audio filtering, continuous sensor telemetry logging, and eventually, deep artificial intelligence.\n\nSqueezing higher clock speeds out of a single CPU core hit a physical wall. Higher frequencies require higher voltages, leading to exponential increases in heat dissipation. The 'thermal wall' meant monolithic processors could no longer scale. If one processor could not run any faster, it could no longer solve every computational challenge alone. We had to rethink how we designed silicon."
+        }
+      ]
+    },
+    {
+      heading: "3. The Rise of Parallel Thinking",
+      content: [
+        {
+          type: "p",
+          text: "The first major split in architecture came from graphics. Drawing millions of pixels on a screen is mathematically simple but computationally immense. Rendering a scene requires calculating basic vector algebra for every pixel. If a CPU attempts to do this sequentially, it quickly bogs down, regardless of clock speed.\n\n### Latency vs. Throughput\n\nTo solve this, chip designers split computing into two paths. A CPU is a latency-optimized engine, built with massive control logic and caches to execute one thread of complex instructions very quickly. A GPU (Graphics Processing Unit), by contrast, is a throughput-optimized engine. It features thousands of tiny, simple ALU cores designed to execute identical calculations in parallel. Instead of running one fast instruction sequence, the GPU runs millions of simple calculations simultaneously."
+        },
+        {
+          type: "img",
+          src: "Images/cpu_vs_gpu_workloads.svg",
+          alt: "Latency-Optimized CPU vs. Throughput-Optimized GPU Workload Paradigms"
+        }
+      ]
+    },
+    {
+      heading: "4. Beyond Graphics",
+      content: [
+        {
+          type: "p",
+          text: "When artificial intelligence emerged, it brought a different mathematical constraint. Deep neural networks consist of layers of weights. Processing a single image frame through a model requires performing billions of matrix multiplications and additions in real time.\n\nWhile GPUs were a massive improvement over CPUs for matrix math, they were still generic graphics processors carrying overhead for textures and polygons. Running AI at the edge — inside low-power battery-operated devices — demanded dedicated hardware built solely for linear algebra. The age of specialized accelerators became inevitable."
+        }
+      ]
+    },
+    {
+      heading: "5. The Age of Specialized Compute",
+      content: [
+        {
+          type: "p",
+          text: "Modern silicon is no longer a monolithic CPU. It is a collaborative matrix of specialized processing blocks, each designed to excel at a specific math problem:\n\n### Neural Processing Units (NPUs)\n\nAn NPU is designed specifically for matrix multiplication. It features dedicated MAC (Multiply-Accumulate) hardware blocks configured as a tensor array, allowing it to execute neural network layers in parallel at a fraction of the power consumed by a CPU.\n\n### Digital Signal Processors (DSPs)\n\nA DSP is optimized for real-time mathematical operations on continuous analog streams (like audio filtering or radio telemetry), executing fast Fourier transforms (FFTs) in deterministic cycles.\n\n### Hardware Accelerators\n\nDedicated silicon blocks are created for specific, repetitive algorithms — such as AES cryptographic encryption or H.264 video decoding — allowing these tasks to be completed instantly without waking up the general-purpose CPU."
+        },
+        {
+          type: "img",
+          src: "Images/specialized_compute_architecture.svg",
+          alt: "Heterogeneous System-on-Chip (SoC) Component Interconnect"
+        }
+      ]
+    },
+    {
+      heading: "6. Compute Inside Embedded Systems",
+      content: [
+        {
+          type: "p",
+          text: "This heterogeneous architecture is no longer reserved for cloud data centers. Today, even basic embedded microcontrollers feature dedicated accelerators. A drone flight controller uses a DSP to filter gyro noise, an NPU to run obstacle-avoidance logic, and a CPU to manage flight control telemetry.\n\nEmbedded engineering is no longer about programming a single CPU core. It has become the art of managing a heterogeneous system-on-chip, coordinating memory sharing between accelerators, and delegating specific computational tasks to the correct silicon engine."
+        }
+      ]
+    },
+    {
+      heading: "7. The Never-Ending Evolution",
+      content: [
+        {
+          type: "p",
+          text: "There is no 'final' or perfect processor. Every time humanity discovers a new computational challenge, we shape silicon to match it. Silicon did not change; the problems did. Processor architectures will continue to evolve, branching and adapting to mirror the mathematical structures of the questions we ask them to solve."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Silent Foundation",
+    paragraphs: [
+      "Matter, computation, interaction, coordination, and integration. These are not five isolated subjects; they are the nested layers of a single physical architecture.",
+      "Every device we will ever build — from a cardiac pacemaker sensing a heartbeat, to an automotive control unit firing a spark plug, to a rover driving across Mars — relies on this same silent foundation.",
+      "We have traced the journey from atomic silicon to cooperative processors. The baseline is set. The tools are ready.",
+      "This is the end of the beginning. What we do next with these foundations is where the real story begins."
+    ],
+    quote: "Silicon did not change; the problems did. We shaped the gates to match the math."
+  },
+  footer: "Reflections on computer architecture, specialized silicon accelerators, and heterogeneous computing - PrajnaEdge.dev"
 }
 ];
 
@@ -3544,67 +3966,25 @@ function showPage(page) {
     window.history.pushState({ page }, '', newUrl);
   }
 }
-
-// ─── SCROLL TO SYSTEMS TREE ──────────────────────────────────────────────────
-function scrollToSystemsTree() {
-  showPage('home');
-  const treeContainer = document.querySelector('.tree-branch');
-  if (treeContainer) {
-    setTimeout(() => {
-      treeContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 50);
-  }
-}
-
-// ─── RENDER HOME TREE ────────────────────────────────────────────────────────
 function renderHomeTree() {
   const treeContainer = document.querySelector('.tree-branch');
   if (!treeContainer) return;
-  
-  const nodesKeys = ["Matter", "Computation", "Interaction", "Coordination", "Intelligence"];
+
+  const nodesKeys = ['Matter', 'Computation', 'Interaction', 'Coordination', 'Intelligence'];
   let html = '';
-  
   nodesKeys.forEach((key, idx) => {
     const node = systemsTreeNodes[key];
-    const activeCount = node.explorations.filter(e => e.id !== null).length;
-    const progressText = `(${activeCount})`;
-    
     html += `
-      <div class="tree-node" onclick="openNodeModal('${key}')">
+      <div class="tree-node" onclick="filterNodeRoute('${key}')">
         <div class="tree-node-title">${escHtml(node.title)}</div>
-        <div class="tree-node-progress">${escHtml(progressText)}</div>
       </div>
     `;
-    
     if (idx < nodesKeys.length - 1) {
       html += `<div class="tree-arrow"></div>`;
     }
   });
-  
+
   treeContainer.innerHTML = html;
-}
-
-// ─── MODAL CONTROLLERS ───────────────────────────────────────────────────────
-function openNodeModal(nodeKey) {
-  const node = systemsTreeNodes[nodeKey];
-  if (!node) return;
-  
-  const wrapper = document.getElementById('modal-content-wrapper');
-  
-  wrapper.innerHTML = `
-    <h2 class="modal-title">${escHtml(node.title)}</h2>
-    <p class="modal-desc" style="margin-bottom: 2.25rem;">${escHtml(node.description)}</p>
-    <button class="btn-primary" style="width:100%; justify-content:center; padding:0.85rem; font-size:0.85rem;" onclick="exploreNode('${nodeKey}')">
-      Explore ${escHtml(node.title)}
-    </button>
-  `;
-  
-  document.getElementById('nodeModal').classList.add('active');
-}
-
-function exploreNode(nodeKey) {
-  closeModal(null);
-  filterNodeRoute(nodeKey);
 }
 
 function openDirectExplorations() {
@@ -3642,31 +4022,6 @@ function filterNodeRoute(category) {
   isRouting = false;
 }
 
-function closeModal(event) {
-  if (event === null || event.target === document.getElementById('nodeModal')) {
-    document.getElementById('nodeModal').classList.remove('active');
-  }
-}
-
-function filterLayerRoute(category, targetPage) {
-  document.getElementById('nodeModal').classList.remove('active');
-  if (targetPage === 'blogs') {
-    selectedCategoryFilter = category;
-    document.getElementById('clearFilterBtn').style.display = 'block';
-    document.getElementById('blogsBackToTreeBtn').style.display = 'block';
-    document.getElementById('blogsPageTitle').innerText = `Articles: ${category}`;
-    document.getElementById('blogsPageSubtitle').innerText = `Showing explorations inside the "${category}" layer.`;
-    showPage('blogs');
-  } else {
-    selectedDemoCategoryFilter = category;
-    document.getElementById('clearDemoFilterBtn').style.display = 'block';
-    document.getElementById('demosBackToTreeBtn').style.display = 'block';
-    document.getElementById('demosPageTitle').innerText = `Demos: ${category}`;
-    document.getElementById('demosPageSubtitle').innerText = `Showing hardware demonstrations inside the "${category}" layer.`;
-    showPage('demos');
-  }
-}
-
 function clearBlogFilter() {
   selectedCategoryFilter = null;
   const clearBtn = document.getElementById('clearFilterBtn');
@@ -3689,7 +4044,7 @@ function clearDemoFilter() {
 
 function clearBlogFilterAndGoHome() {
   clearBlogFilter();
-  scrollToSystemsTree();
+  showPage('home');
 }
 function clearDemoFilterAndGoHome() { clearDemoFilter(); showPage('home'); }
 
@@ -3896,7 +4251,7 @@ function openItem(id, type) {
       }
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
-      if (b.type === 'image') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
+      if (b.type === 'image' || b.type === 'img') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
       if (b.type === 'edgecase') return `<div id="${escHtml(b.id)}" class="edgecase-container"></div>`;
       return '';
     }).join('');
@@ -4064,6 +4419,12 @@ function parseTextFormatting(text) {
     
     return `<span class="math-inline" style="font-family:var(--mono); font-size:0.9rem; color:#60A5FA; padding:0.1rem 0.2rem; background:rgba(30, 41, 59, 0.3); border-radius:4px;">${html}</span>`;
   });
+
+  // 4. Bullet lists: line starting with "* " or "- "
+  parsed = parsed.replace(/(^|\n)[ \t]*[\*\-][ \t]+(.*?)(?=\n|$)/g, '$1<span class="list-item" style="display:flex; align-items:flex-start; margin-bottom:0.5rem; padding-left:1rem;"><span style="color:#3B82F6; margin-right:0.6rem; font-size:0.8rem; line-height:1.45rem;">&#9632;</span><span style="flex:1;">$2</span></span>');
+
+  // 5. Sub-subheadings: ### Heading -> h3
+  parsed = parsed.replace(/(^|\n)###[ \t]+(.*?)(?=\n|$)/g, '$1<h3 style="font-family:\'Syne\',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">$2</h3>');
 
   return parsed;
 }

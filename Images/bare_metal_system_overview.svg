@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)" />
+  <rect x="10" y="10" width="620" height="220" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+
+  <text x="320" y="32" fill="#E2E8F0" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="0.05em">BARE METAL FIRMWARE STRUCTURE</text>
+
+  <!-- Left: Flash Memory (Binary Code) -->
+  <rect x="40" y="65" width="120" height="120" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5" />
+  <text x="100" y="85" fill="#FFF" font-weight="bold" font-size="9" text-anchor="middle">Flash Memory</text>
+  <rect x="50" y="100" width="100" height="30" rx="2" fill="#0F172A" stroke="rgba(148, 163, 184, 0.12)" />
+  <text x="100" y="118" fill="#3B82F6" font-family="monospace" font-size="8" text-anchor="middle">Firmware Image</text>
+  <rect x="50" y="140" width="100" height="30" rx="2" fill="#0F172A" stroke="rgba(148, 163, 184, 0.12)" />
+  <text x="100" y="158" fill="#64748B" font-family="monospace" font-size="7" text-anchor="middle">while(1) { ... }</text>
+
+  <!-- Arrow Flash -> CPU -->
+  <path d="M 160 125 H 230" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="2,2" />
+  <text x="195" y="115" fill="#3B82F6" font-size="7" text-anchor="middle">Fetches</text>
+
+  <!-- Center: CPU Core -->
+  <rect x="240" y="65" width="140" height="120" rx="4" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+  <text x="310" y="85" fill="#10B981" font-weight="bold" font-size="9" text-anchor="middle">CPU Core</text>
+  <rect x="255" y="100" width="110" height="32" rx="3" fill="#0F172A" stroke="rgba(148, 163, 184, 0.12)" />
+  <text x="310" y="116" fill="#E2E8F0" font-family="monospace" font-size="7" text-anchor="middle">Instruction Decoder</text>
+  <text x="310" y="125" fill="#64748B" font-family="monospace" font-size="6" text-anchor="middle">Direct Hardware Access</text>
+  <text x="310" y="160" fill="#10B981" font-weight="bold" font-size="8" text-anchor="middle">NO OS LAYER</text>
+
+  <!-- Arrow CPU -> Peripherals -->
+  <path d="M 380 125 H 450" fill="none" stroke="#10B981" stroke-width="1.5" />
+  <text x="415" y="115" fill="#10B981" font-size="7" text-anchor="middle">Controls</text>
+
+  <!-- Right: Hardware Peripherals -->
+  <rect x="460" y="65" width="140" height="120" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5" />
+  <text x="530" y="85" fill="#FFF" font-weight="bold" font-size="9" text-anchor="middle">Hardware Peripherals</text>
+  
+  <rect x="470" y="100" width="55" height="30" rx="2" fill="#0F172A" stroke="rgba(148,163,184,0.12)" />
+  <text x="497.5" y="118" fill="#F59E0B" font-size="7" text-anchor="middle">GPIO</text>
+  
+  <rect x="535" y="100" width="55" height="30" rx="2" fill="#0F172A" stroke="rgba(148,163,184,0.12)" />
+  <text x="562.5" y="118" fill="#F59E0B" font-size="7" text-anchor="middle">Timer</text>
+  
+  <rect x="470" y="140" width="55" height="30" rx="2" fill="#0F172A" stroke="rgba(148,163,184,0.12)" />
+  <text x="497.5" y="158" fill="#F59E0B" font-size="7" text-anchor="middle">ADC</text>
+  
+  <rect x="535" y="140" width="55" height="30" rx="2" fill="#0F172A" stroke="rgba(148,163,184,0.12)" />
+  <text x="562.5" y="158" fill="#F59E0B" font-size="7" text-anchor="middle">UART</text>
+</svg>

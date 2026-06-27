@@ -110,12 +110,88 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .blog-continue-title{color:#E2E8F0;transition:color 0.2s}
 .blog-continue:hover .blog-continue-title{color:var(--blue)}
 
-/* EVOLUTION TREE STYLES */
-.tree-branch{display:flex;flex-direction:column;align-items:center;width:100%;margin-top:2.5rem}
-.tree-node{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:100%;max-width:320px;padding:1.1rem;text-align:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);position:relative;z-index:2}
-.tree-node:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 10px 25px -5px var(--blue-glow)}
-.tree-node-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;letter-spacing:0.02em}
-.tree-arrow{width:2px;height:32px;background:linear-gradient(to bottom, var(--blue), transparent);opacity:0.4;margin:0.2rem 0;position:relative;z-index:1}
+/* EVOLUTION TREE STYLES (BANYAN TREE INTERACTIVE NAVIGATION) */
+.tree-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 860px;
+  height: 520px;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #0B132B 0%, #030712 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin: 2.5rem auto;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 20px 45px rgba(0, 0, 0, 0.65);
+}
+.tree-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #F8FAFC;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 12px rgba(59, 130, 246, 0.15);
+  opacity: 0;
+  transform: translate(-50%, -100%) scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 100;
+  white-space: nowrap;
+}
+
+/* EVOLUTION TREE STYLES (ORIGINAL NODE DIAGRAM) */
+.tree-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 3.5rem;
+  position: relative;
+}
+.tree-node {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 280px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+.tree-node:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px var(--blue-glow);
+}
+.tree-node-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.tree-node-subtitle {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  line-height: 1.4;
+}
+.tree-arrow {
+  width: 2px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--blue), transparent);
+  opacity: 0.4;
+  margin: 0.2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
 
 /* CONTROL FILTER HOUSING */
 .control-housing{display:flex;align-items:center;gap:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.75rem}
