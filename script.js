@@ -103,9 +103,9 @@ const systemsTreeNodes = {
       { id: null, title: "Coming Soon" }
     ]
   },
-  Intelligence: {
-    title: "Intelligence",
-    description: "How systems evolved from deterministic control into adaptive intelligence.",
+  Integration: {
+    title: "Integration",
+    description: "How isolated peripherals cooperate to form a complete physical organism.",
     explorations: [
       { id: "when-machines-became-systems", title: "When Machines Became Systems" },
       { id: "when-machines-learned-to-survive", title: "When Machines Learned to Survive" },
@@ -3892,7 +3892,7 @@ const blogPosts = [
 const demoPosts = [
   {
     id: "edge-ai-uno-mpu6050",
-    category: "Intelligence",
+    category: "Integration",
     series: "Edge AI Prototypes",
     title: "Intelligence Under Constraint",
     subtitle: "How to squeeze a real gesture-recognition algorithm inside an Arduino Uno with only 2KB of RAM.",
@@ -3970,7 +3970,7 @@ function renderHomeTree() {
   const treeContainer = document.querySelector('.tree-branch');
   if (!treeContainer) return;
 
-  const nodesKeys = ['Matter', 'Computation', 'Interaction', 'Coordination', 'Intelligence'];
+  const nodesKeys = ['Matter', 'Computation', 'Interaction', 'Coordination', 'Integration'];
   let html = '';
   nodesKeys.forEach((key, idx) => {
     const node = systemsTreeNodes[key];
@@ -3995,7 +3995,7 @@ function openDirectExplorations() {
   
   document.getElementById('blogsBackToTreeBtn').style.display = 'none';
   document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
-  document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to intelligence.';
+  document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to integration.';
   renderBlogs(1);
   showPage('blogs');
 }
@@ -4029,7 +4029,7 @@ function clearBlogFilter() {
   const backBtn = document.getElementById('blogsBackToTreeBtn');
   if (backBtn) backBtn.style.display = 'none';
   document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
-  document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to intelligence.';
+  document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to integration.';
   renderBlogs(1);
 }
 
