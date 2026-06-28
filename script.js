@@ -3967,24 +3967,93 @@ function showPage(page) {
   }
 }
 function renderHomeTree() {
-  const treeContainer = document.querySelector('.tree-branch');
-  if (!treeContainer) return;
+  const viewport = document.getElementById('tree-viewport');
+  const tooltip = document.getElementById('tree-tooltip');
+  const hotspots = document.querySelectorAll('.tree-hotspot-group');
+  
+  if (!viewport || !tooltip) return;
 
-  const nodesKeys = ['Matter', 'Computation', 'Interaction', 'Coordination', 'Integration'];
-  let html = '';
-  nodesKeys.forEach((key, idx) => {
-    const node = systemsTreeNodes[key];
-    html += `
-      <div class="tree-node" onclick="filterNodeRoute('${key}')">
-        <div class="tree-node-title">${escHtml(node.title)}</div>
-      </div>
-    `;
-    if (idx < nodesKeys.length - 1) {
-      html += `<div class="tree-arrow"></div>`;
-    }
+  hotspots.forEach(hotspot => {
+    const nodeId = hotspot.id.replace('hotspot-', '');
+    
+    // Clear any existing listeners by cloning and replacing
+    const newHotspot = hotspot.cloneNode(true);
+    hotspot.parentNode.replaceChild(newHotspot, hotspot);
+    
+    newHotspot.addEventListener('mouseenter', () => {
+      tooltip.innerText = nodeId;
+      tooltip.classList.add('active');
+    });
+    newHotspot.addEventListener('mousemove', (e) => {
+      const viewportRect = viewport.getBoundingClientRect();
+      const x = e.clientX - viewportRect.left;
+      const y = e.clientY - viewportRect.top - 15;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    });
+    newHotspot.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('active');
+    });
+    newHotspot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      tooltip.classList.remove('active');
+      filterNodeRoute(nodeId);
+    });
+  });
+}
+
+function runTreeAwakeningAnimation() {
+  const sequence = [
+    { selector: '', duration: 1500, glow: 'spark' },
+    { selector: '.mask-path-roots', duration: 3000, glow: 'roots' },
+    { selector: '.mask-path-computation', duration: 1500, glow: 'trunk' },
+    { selector: '.mask-path-interaction', duration: 1500 },
+    { selector: '.mask-path-coordination', duration: 1500 },
+    { selector: '.mask-path-integration', duration: 1500 }
+  ];
+
+  // Initialize: Hide all paths in the sequence using SVG stroke dash techniques
+  sequence.forEach(step => {
+    if (!step.selector) return;
+    const paths = document.querySelectorAll(step.selector);
+    paths.forEach(path => {
+      if (typeof path.getTotalLength === 'function') {
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = len;
+        path.style.strokeDashoffset = len;
+      }
+    });
   });
 
-  treeContainer.innerHTML = html;
+  // Start sequence transitions
+  let accumulatedDelay = 500; // start 500ms after load
+
+  sequence.forEach(step => {
+    setTimeout(() => {
+      // Trigger background glows if mapped to this step
+      if (step.glow === 'spark') {
+        document.querySelector('.root-spark')?.classList.add('active');
+      } else if (step.glow === 'roots') {
+        document.querySelector('.roots-spreading')?.classList.add('active');
+      } else if (step.glow === 'trunk') {
+        document.querySelector('.trunk-glow')?.classList.add('active');
+      }
+
+      if (!step.selector) return;
+
+      // Trigger path animation
+      const paths = document.querySelectorAll(step.selector);
+      paths.forEach(path => {
+        if (typeof path.getTotalLength === 'function') {
+          const len = path.getTotalLength();
+          path.style.transition = `stroke-dashoffset ${step.duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
+          path.style.strokeDashoffset = '0';
+        }
+      });
+    }, accumulatedDelay);
+
+    accumulatedDelay += step.duration;
+  });
 }
 
 function openDirectExplorations() {
@@ -9091,6 +9160,7 @@ function handleUrlRouting() {
 renderBlogs(1);
 renderDemos(1);
 renderHomeTree();
+runTreeAwakeningAnimation();
 handleUrlRouting();
 
 window.addEventListener('popstate', () => {

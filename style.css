@@ -143,53 +143,206 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   z-index: 100;
   white-space: nowrap;
 }
-
-/* EVOLUTION TREE STYLES (ORIGINAL NODE DIAGRAM) */
-.tree-branch {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 3.5rem;
-  position: relative;
+.tree-tooltip.active {
+  opacity: 1;
+  transform: translate(-50%, -100%) scale(1);
 }
-.tree-node {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 1.5rem;
-  width: 280px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: center;
+
+/* EVOLUTION TREE STYLES (ANIMATED BANYAN TREE INTEGRATION) */
+@property --op {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+@property --dr {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+.tree-viewport {
   position: relative;
+  width: 100%;
+  max-width: 860px;
+  height: 520px;
+  overflow: hidden;
+  background: #07050c;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin: 2.5rem auto;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 20px 45px rgba(0, 0, 0, 0.65);
+}
+.tree-sway-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Dual image filters: Sleeping vs. Awakened (SVG-embedded images) */
+.tree-img-muted {
+  filter: grayscale(85%) brightness(14%) contrast(85%);
+  opacity: 0.65;
+}
+.tree-img-warm {
+  mask: url(#sap-mask);
+  -webkit-mask: url(#sap-mask);
+  filter: saturate(125%) brightness(108%) drop-shadow(0 0 14px rgba(220,160,48,0.22));
+}
+
+.tree-svg-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+.tree-hotspot-group {
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+/* Gentle organic sway for the whole tree structure */
+@keyframes sway {
+  0%, 100% { transform: rotate(0deg)      scale(1.000); }
+  30%      { transform: rotate(0.38deg)   scale(1.002); }
+  70%      { transform: rotate(-0.38deg)  scale(0.999); }
+}
+.sway {
+  transform-origin: 50% 90%;
+  animation: sway 7.5s ease-in-out infinite;
+  animation-delay: 9.5s;
+  will-change: transform;
+}
+
+/* Class-based transitions for volumetric glow layers */
+.cinematic-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 86% 86% at 50% 48%, transparent 38%, rgba(7,5,12,0.92) 100%);
+  z-index: 3;
+}
+.root-spark {
+  position: absolute;
+  pointer-events: none;
+  bottom: 2%;
+  left: 50%;
+  width: 34%;
+  height: 17%;
+  background: radial-gradient(ellipse 75% 80% at 50% 95%, rgba(226,158,38,0.72) 0%, rgba(200,120,16,0.36) 42%, transparent 72%);
+  filter: blur(18px);
+  mix-blend-mode: screen;
+  transform: translateX(-50%) scale(0.12);
+  opacity: 0;
+  transition: opacity 2.5s cubic-bezier(0, 0, 0.35, 1), transform 2.5s cubic-bezier(0, 0, 0.35, 1);
+  z-index: 1;
+}
+.root-spark.active {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+.roots-spreading {
+  position: absolute;
+  pointer-events: none;
+  bottom: 5%;
+  left: 50%;
+  width: 78%;
+  height: 28%;
+  background: radial-gradient(ellipse 100% 62% at 50% 88%, rgba(210,142,28,0.44) 0%, rgba(182,108,12,0.20) 52%, transparent 80%);
+  filter: blur(26px);
+  mix-blend-mode: screen;
+  transform: translateX(-50%) scale(0.08, 0.45);
+  opacity: 0;
+  transition: opacity 3s cubic-bezier(0, 0, 0.25, 1), transform 3s cubic-bezier(0, 0, 0.25, 1);
+  z-index: 1;
+}
+.roots-spreading.active {
+  opacity: 1;
+  transform: translateX(-50%) scale(1, 1);
+}
+.trunk-glow {
+  position: absolute;
+  pointer-events: none;
+  bottom: 9%;
+  left: 50%;
+  width: 22%;
+  height: 55%;
+  background: radial-gradient(ellipse 55% 100% at 50% 76%, rgba(200,132,24,0.30) 0%, rgba(165,102,8,0.12) 60%, transparent 82%);
+  filter: blur(28px);
+  mix-blend-mode: screen;
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) scaleY(0.04);
+  opacity: 0;
+  transition: opacity 4s cubic-bezier(0.25, 0, 0.3, 1), transform 4s cubic-bezier(0.25, 0, 0.3, 1);
+  z-index: 1;
+}
+.trunk-glow.active {
+  opacity: 1;
+  transform: translateX(-50%) scaleY(1);
+}
+.left-branch-glow, .right-branch-glow, .canopy-glow {
+  display: none;
+}
+.ground-shadow {
+  position: absolute;
+  pointer-events: none;
+  bottom: 0;
+  left: 50%;
+  width: 78%;
+  height: 10%;
+  background: radial-gradient(ellipse 100% 40% at 50% 100%, rgba(3,2,6,0.68) 0%, rgba(3,2,6,0.30) 55%, transparent 82%);
+  filter: blur(6px);
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: ground-shadow-fade 6s ease-in-out both;
+  animation-delay: 2.5s;
+  z-index: 1;
+}
+@keyframes ground-shadow-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Floating Golden Motes */
+.motes-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   z-index: 2;
 }
-.tree-node:hover {
-  border-color: var(--blue);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px var(--blue-glow);
+.mote {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgba(220,160,48,0.9);
+  box-shadow: 0 0 calc(var(--sz) * 2.5) rgba(218,155,44,0.38);
+  width: var(--sz);
+  height: var(--sz);
+  animation: mote-rise var(--dur) ease-in-out infinite var(--dl);
+  opacity: 0;
 }
-.tree-node-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: #fff;
-  letter-spacing: 0.02em;
+@keyframes mote-rise {
+  0%   { opacity: 0;           transform: translateY(0px)    translateX(0px);   }
+  12%  { opacity: var(--op);                                                     }
+  88%  { opacity: var(--op);                                                     }
+  100% { opacity: 0;           transform: translateY(-190px) translateX(var(--dr)); }
 }
-.tree-node-subtitle {
-  font-size: 0.8rem;
-  color: var(--muted);
-  margin-top: 0.4rem;
-  line-height: 1.4;
+
+@media(max-width: 900px) {
+  .tree-viewport {
+    height: 480px;
+    margin: 1.5rem auto;
+  }
 }
-.tree-arrow {
-  width: 2px;
-  height: 32px;
-  background: linear-gradient(to bottom, var(--blue), transparent);
-  opacity: 0.4;
-  margin: 0.2rem 0;
-  position: relative;
-  z-index: 1;
+@media(max-width: 640px) {
+  .tree-viewport {
+    height: 400px;
+    margin: 1rem auto;
+  }
 }
 
 
