@@ -71,8 +71,7 @@ const systemsTreeNodes = {
       { id: "illusion-of-software", title: "The Illusion of Software" },
       { id: "the-architecture-of-memory", title: "The Architecture of Memory" },
       { id: "the-hidden-geography-of-firmware", title: "The Hidden Geography of Firmware" },
-      { id: "the-first-instruction", title: "The First Instruction" },
-      { id: null, title: "Coming Soon" }
+      { id: "the-first-instruction", title: "The First Instruction" }
     ]
   },
   Interaction: {
@@ -86,8 +85,7 @@ const systemsTreeNodes = {
       { id: "spi-shared-rhythm-of-machines", title: "SPI: The Shared Rhythm of Machines" },
       { id: "i2c-the-shared-conversation", title: "I2C: The Shared Conversation" },
       { id: "can-the-language-of-many-voices", title: "CAN: The Language of Many Voices" },
-      { id: "the-roads-not-often-travelled", title: "The Roads Not Often Travelled" },
-      { id: null, title: "Coming Soon" }
+      { id: "the-roads-not-often-travelled", title: "The Roads Not Often Travelled" }
     ]
   },
   Coordination: {
@@ -99,8 +97,7 @@ const systemsTreeNodes = {
       { id: "when-machines-learned-to-speak-back", title: "When Machines Learned to Speak Back" },
       { id: "the-tyranny-of-waiting", title: "The Tyranny of Waiting" },
       { id: "when-hardware-learned-to-interrupt", title: "When Hardware Learned to Interrupt" },
-      { id: "when-machines-learned-to-delegate", title: "When Machines Learned to Delegate" },
-      { id: null, title: "Coming Soon" }
+      { id: "when-machines-learned-to-delegate", title: "When Machines Learned to Delegate" }
     ]
   },
   Integration: {
@@ -110,8 +107,7 @@ const systemsTreeNodes = {
       { id: "when-machines-became-systems", title: "When Machines Became Systems" },
       { id: "when-machines-learned-to-survive", title: "When Machines Learned to Survive" },
       { id: "when-one-loop-was-enough", title: "When One Loop Was Enough" },
-      { id: "when-one-processor-wasnt-enough", title: "When One Processor Wasn't Enough" },
-      { id: null, title: "Coming Soon" }
+      { id: "when-one-processor-wasnt-enough", title: "When One Processor Wasn't Enough" }
     ]
   }
 };
@@ -4337,11 +4333,20 @@ function openItem(id, type) {
         const prevExp = currentIndex > 0 ? node.explorations[currentIndex - 1] : null;
         const nextExp = currentIndex < node.explorations.length - 1 ? node.explorations[currentIndex + 1] : null;
 
+        const nodeOrder = ["Matter", "Computation", "Interaction", "Coordination", "Integration"];
+        const nodeIndex = nodeOrder.indexOf(nodeKey);
+
         let prevHtml = '';
         if (prevExp && prevExp.id) {
           prevHtml = `
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
+          `;
+        } else if (nodeIndex > 0) {
+          const prevNodeKey = nodeOrder[nodeIndex - 1];
+          prevHtml = `
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="filterNodeRoute('${prevNodeKey}')">Return to ${escHtml(prevNodeKey)}</a>
           `;
         } else {
           prevHtml = `
@@ -4355,6 +4360,12 @@ function openItem(id, type) {
           nextHtml = `
             <span class="nav-dir-label">Next →</span>
             <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
+          `;
+        } else if (nodeIndex !== -1 && nodeIndex < nodeOrder.length - 1) {
+          const nextNodeKey = nodeOrder[nodeIndex + 1];
+          nextHtml = `
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" onclick="filterNodeRoute('${nextNodeKey}')">Continue to ${escHtml(nextNodeKey)}</a>
           `;
         } else {
           nextHtml = `
