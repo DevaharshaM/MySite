@@ -3938,6 +3938,91 @@ const demoPosts = [
 ];
 
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function updateSeoMetadata(page) {
+  // 1. Determine unique document title
+  let title = "PrajnaEdge | Devaharsha Meesarapu";
+  if (page === 'about') {
+    title = "About | PrajnaEdge";
+  } else if (page === 'contact') {
+    title = "Contact | PrajnaEdge";
+  } else if (page === 'journey') {
+    title = "Interactive Career Journey | PrajnaEdge";
+  } else if (page === 'demos') {
+    title = "Demonstrations | PrajnaEdge";
+  } else if (page === 'blogs') {
+    if (selectedCategoryFilter) {
+      title = `${selectedCategoryFilter} | Explorations | PrajnaEdge`;
+    } else {
+      title = "Explorations | PrajnaEdge";
+    }
+  } else if (page === 'blog-post') {
+    const params = new URLSearchParams(window.location.search);
+    const blogId = params.get('exploration');
+    const demoId = params.get('demonstration');
+    const activeId = blogId || demoId;
+    const collection = blogId ? blogPosts : (demoId ? demoPosts : []);
+    const item = collection.find(p => p.id === activeId);
+    if (item) {
+      title = `${item.title} | PrajnaEdge`;
+    } else {
+      title = "Exploration | PrajnaEdge";
+    }
+  }
+  document.title = title;
+
+  // 2. Build normalized canonical URL (HTTPS, non-www, stripped UTM/tracking query parameters)
+  const base = "https://prajnaedge.dev";
+  const params = new URLSearchParams(window.location.search);
+  const blogId = params.get('exploration');
+  const demoId = params.get('demonstration');
+  const pageParam = params.get('page');
+  const category = params.get('category');
+
+  let canonicalUrl = `${base}/`;
+  if (blogId) {
+    canonicalUrl = `${base}/?exploration=${encodeURIComponent(blogId)}`;
+  } else if (demoId) {
+    canonicalUrl = `${base}/?demonstration=${encodeURIComponent(demoId)}`;
+  } else if (pageParam) {
+    if (pageParam === 'blogs') {
+      if (category && systemsTreeNodes[category]) {
+        canonicalUrl = `${base}/?page=blogs&category=${encodeURIComponent(category)}`;
+      } else {
+        canonicalUrl = `${base}/?page=blogs`;
+      }
+    } else if (pageParam === 'journey' || pageParam === 'systems-map') {
+      canonicalUrl = `${base}/?page=journey`;
+    } else if (pageParam === 'demos' || pageParam === 'demonstrations') {
+      canonicalUrl = `${base}/?page=demos`;
+    } else if (pageParam === 'about') {
+      canonicalUrl = `${base}/?page=about`;
+    } else if (pageParam === 'contact') {
+      canonicalUrl = `${base}/?page=contact`;
+    }
+  }
+
+  // 3. Update DOM canonical, Open Graph, and Twitter tags
+  let canonicalLink = document.querySelector('link[rel="canonical"]');
+  if (!canonicalLink) {
+    canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonicalLink);
+  }
+  canonicalLink.setAttribute('href', canonicalUrl);
+
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+
+  const twitterUrl = document.querySelector('meta[property="twitter:url"]');
+  if (twitterUrl) twitterUrl.setAttribute('content', canonicalUrl);
+  
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', title);
+
+  const twitterTitle = document.querySelector('meta[property="twitter:title"]');
+  if (twitterTitle) twitterTitle.setAttribute('content', title);
+}
+
 function showPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
@@ -3961,6 +4046,9 @@ function showPage(page) {
       : `${window.location.pathname}?page=${page}`;
     window.history.pushState({ page }, '', newUrl);
   }
+
+  // Always update SEO metadata on every page view
+  updateSeoMetadata(page);
 }
 function renderHomeTree() {
   const viewport = document.getElementById('tree-viewport');
@@ -4403,7 +4491,9 @@ function openItem(id, type) {
     </div>
     ${navHtml}
   `;
+  isRouting = true;
   showPage('blog-post');
+  isRouting = false;
   document.querySelectorAll('.edgecase-container').forEach(container => {
     initEdgeCase(container.id);
   });
