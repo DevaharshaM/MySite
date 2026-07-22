@@ -49,122 +49,65 @@
 
 <div class="page active" id="page-home">
   <div class="empty-page">
-    <div class="empty-title">From Matter to Machines</div>
+    <div class="empty-title">PrajnaEdge Forest</div>
     <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
-      PrajnaEdge is an embedded systems knowledge library created by Devaharsha Meesarapu, exploring how modern machines evolve—from matter and computation to interaction, coordination and integration.
-    </div>
+      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
     <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
       Follow the awakened trunk to begin exploring.
     </div>
-    <!-- Animated Banyan Tree Viewport -->
+    <!-- Cinematic Evolution Viewport Container -->
     <div class="tree-viewport" id="tree-viewport">
       <div class="tree-tooltip" id="tree-tooltip"></div>
       
-      <!-- Sway wrapper (rotates the whole tree) -->
-      <div class="tree-sway-wrap sway">
-        <!-- SVG container holding both images and interactive hotspots to guarantee perfect alignment -->
-        <svg id="tree-svg" viewBox="0 0 1536 1024" class="tree-svg-overlay" style="pointer-events: auto;">
-          <defs>
-            <filter id="mask-blur-filter">
-              <feGaussianBlur stdDeviation="28" />
-            </filter>
-            <mask id="sap-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1024">
-              <!-- Black background (transparent) -->
-              <rect width="1536" height="1024" fill="black" />
-              <!-- White path drawings (reveal the foreground tree) -->
-              <g fill="none" stroke="white" stroke-linecap="round" filter="url(#mask-blur-filter)">
-                <!-- Roots (flow inwards & upwards) -->
-                <g stroke-width="160" class="mask-path-roots">
-                  <path d="M765,737 C600,810 350,880 120,900" />
-                  <path d="M765,737 C680,820 500,900 350,960" />
-                  <path d="M765,737 C740,840 700,900 680,980" />
-                  <path d="M765,737 C790,840 830,900 850,980" />
-                  <path d="M765,737 C850,820 980,900 1100,960" />
-                  <path d="M765,737 C880,820 1100,900 1350,900" />
-                  <!-- Extra root branches to fully cover base -->
-                  <path d="M765,737 C720,830 620,910 550,980" />
-                  <path d="M765,737 C810,830 910,910 980,980" />
-                </g>
-                <!-- Computation -->
-                <path d="M765,737 C770,710 774,685 777,665" stroke-width="150" class="mask-path-computation" />
-                <!-- Interaction -->
-                <path d="M777,665 C782,630 790,595 797,563" stroke-width="140" class="mask-path-interaction" />
-                <!-- Coordination -->
-                <path d="M797,563 C795,530 790,495 785,460" stroke-width="130" class="mask-path-coordination" />
-                <!-- Integration -->
-                <path d="M785,460 C775,425 765,390 754,358" stroke-width="120" class="mask-path-integration" />
-              </g>
-            </mask>
-          </defs>
-
-          <!-- LAYER 1: Muted desaturated dormant background image -->
-          <image href="Images/homeTree.png" x="0" y="0" width="1536" height="1024" class="tree-img-muted" />
-
-          <!-- LAYER 2: Warm glowing awakened foreground image (masked) -->
-          <image href="Images/homeTree.png" x="0" y="0" width="1536" height="1024" mask="url(#sap-mask)" class="tree-img-warm" />
-
-          <!-- LAYER 3: INVISIBLE INTERACTION HOTSPOTS -->
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
           <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
-            <!-- Matter (Roots) -->
-            <g id="hotspot-Matter" class="tree-hotspot-group">
-              <path d="M200,950 C400,900 650,820 765,737" stroke-width="115" />
-              <path d="M450,980 C550,920 700,830 765,737" stroke-width="115" />
-              <path d="M720,990 C730,920 750,850 765,737" stroke-width="115" />
-              <path d="M810,990 C800,920 780,850 765,737" stroke-width="115" />
-              <path d="M1050,980 C950,920 830,830 765,737" stroke-width="115" />
-              <path d="M1350,950 C1100,900 880,820 765,737" stroke-width="115" />
-            </g>
-            <!-- Trunk segments -->
-            <g id="hotspot-Computation" class="tree-hotspot-group">
-              <path d="M765,737 C770,710 774,685 777,665" stroke-width="135" />
-            </g>
-            <g id="hotspot-Interaction" class="tree-hotspot-group">
-              <path d="M777,665 C782,630 790,595 797,563" stroke-width="130" />
-            </g>
-            <g id="hotspot-Coordination" class="tree-hotspot-group">
-              <path d="M797,563 C795,530 790,495 785,460" stroke-width="122" />
-            </g>
-            <g id="hotspot-Integration" class="tree-hotspot-group">
-              <path d="M785,460 C775,425 765,390 754,358" stroke-width="115" />
-            </g>
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-special" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
           </g>
         </svg>
-      </div>
 
-      <!-- Cinematic Vignette Overlay -->
-      <div class="cinematic-vignette"></div>
-
-      <!-- Background glow overlays -->
-      <div class="root-spark"></div>
-      <div class="roots-spreading"></div>
-      <div class="trunk-glow"></div>
-      <div class="left-branch-glow"></div>
-      <div class="right-branch-glow"></div>
-      <div class="canopy-glow"></div>
-      <div class="ground-shadow"></div>
-
-      <!-- Floating golden motes -->
-      <div class="motes-container">
-        <div class="mote" style="left:42.3%; top:78%; --sz:1.8px; --dur:8.2s; --dl:4.1s; --op:0.22; --dr:-3px;"></div>
-        <div class="mote" style="left:56.1%; top:82%; --sz:1.4px; --dur:9.5s; --dl:5.3s; --op:0.18; --dr:2px;"></div>
-        <div class="mote" style="left:48.7%; top:75%; --sz:2.1px; --dur:7.8s; --dl:3.8s; --op:0.24; --dr:-1px;"></div>
-        <div class="mote" style="left:53.4%; top:80%; --sz:1.6px; --dur:10.2s; --dl:6.0s; --op:0.20; --dr:3px;"></div>
-        <div class="mote" style="left:44.2%; top:85%; --sz:1.3px; --dur:8.8s; --dl:4.5s; --op:0.16; --dr:-4px;"></div>
-        <div class="mote" style="left:60.8%; top:79%; --sz:2.0px; --dur:9.1s; --dl:5.8s; --op:0.21; --dr:4px;"></div>
-        <div class="mote" style="left:38.5%; top:83%; --sz:1.5px; --dur:7.5s; --dl:7.2s; --op:0.17; --dr:-2px;"></div>
-        <div class="mote" style="left:50.2%; top:72%; --sz:1.9px; --dur:11.0s; --dl:3.5s; --op:0.20; --dr:1px;"></div>
-        <div class="mote" style="left:55.6%; top:86%; --sz:1.2px; --dur:8.5s; --dl:8.0s; --op:0.15; --dr:5px;"></div>
-        <div class="mote" style="left:46.4%; top:88%; --sz:2.0px; --dur:9.8s; --dl:4.8s; --op:0.23; --dr:-3px;"></div>
-        <div class="mote" style="left:52.1%; top:74%; --sz:1.6px; --dur:8.0s; --dl:6.5s; --op:0.19; --dr:2px;"></div>
-        <div class="mote" style="left:40.9%; top:77%; --sz:1.4px; --dur:10.5s; --dl:5.1s; --op:0.16; --dr:-5px;"></div>
-        <div class="mote" style="left:58.3%; top:81%; --sz:1.8px; --dur:7.2s; --dl:7.8s; --op:0.21; --dr:3px;"></div>
-        <div class="mote" style="left:47.7%; top:90%; --sz:1.3px; --dur:9.3s; --dl:9.2s; --op:0.15; --dr:-1px;"></div>
-        <div class="mote" style="left:54.5%; top:76%; --sz:2.0px; --dur:8.7s; --dl:5.6s; --op:0.24; --dr:4px;"></div>
-        <div class="mote" style="left:43.8%; top:84%; --sz:1.7px; --dur:10.0s; --dl:7.5s; --op:0.19; --dr:-4px;"></div>
-        <div class="mote" style="left:49.3%; top:87%; --sz:1.5px; --dur:9.0s; --dl:4.2s; --op:0.17; --dr:2px;"></div>
-        <div class="mote" style="left:57.2%; top:78%; --sz:1.8px; --dur:8.3s; --dl:6.8s; --op:0.22; --dr:-2px;"></div>
-        <div class="mote" style="left:45.1%; top:80%; --sz:1.2px; --dur:11.2s; --dl:8.5s; --op:0.14; --dr:5px;"></div>
-        <div class="mote" style="left:51.5%; top:83%; --sz:2.1px; --dur:7.9s; --dl:3.9s; --op:0.26; --dr:-3px;"></div>
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
       </div>
     </div>
 

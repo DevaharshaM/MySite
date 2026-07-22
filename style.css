@@ -148,203 +148,170 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   transform: translate(-50%, -100%) scale(1);
 }
 
-/* EVOLUTION TREE STYLES (ANIMATED BANYAN TREE INTEGRATION) */
-@property --op {
-  syntax: '<number>';
-  inherits: false;
-  initial-value: 0;
-}
-@property --dr {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
-}
-
+/* EVOLUTION TREE STYLES (CINEMATIC HOMEPAGE NAVIGATION) */
 .tree-viewport {
   position: relative;
   width: 100%;
-  max-width: 860px;
-  height: 520px;
+  max-width: 1080px;
+  aspect-ratio: 2752 / 1536;
+  height: auto;
   overflow: hidden;
-  background: #07050c;
+  background: #000;
   border: 1px solid var(--border);
   border-radius: 16px;
   margin: 2.5rem auto;
   box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.95), 0 20px 45px rgba(0, 0, 0, 0.65);
 }
-.tree-sway-wrap {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-/* Dual image filters: Sleeping vs. Awakened (SVG-embedded images) */
-.tree-img-muted {
-  filter: grayscale(85%) brightness(14%) contrast(85%);
-  opacity: 0.65;
-}
-.tree-img-warm {
-  mask: url(#sap-mask);
-  -webkit-mask: url(#sap-mask);
-  filter: saturate(125%) brightness(108%) drop-shadow(0 0 14px rgba(220,160,48,0.22));
+
+.homepage-video-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #000;
 }
 
-.tree-svg-overlay {
+.homepage-media {
   position: absolute;
-  left: 0;
   top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.homepage-media-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 10;
-  pointer-events: none;
 }
-.tree-hotspot-group {
-  pointer-events: stroke;
+
+/* Elegant, restrained highlights for interactive node regions */
+.hotspot-active, .hotspot-special, .hotspot-branch {
   cursor: pointer;
+  fill: rgba(255, 255, 255, 0.0);
+  stroke: rgba(255, 255, 255, 0.0);
+  stroke-width: 1.5px;
+  rx: 6px;
+  transition: fill 0.2s ease, stroke 0.2s ease;
 }
 
-/* Gentle organic sway for the whole tree structure */
-@keyframes sway {
-  0%, 100% { transform: rotate(0deg)      scale(1.000); }
-  30%      { transform: rotate(0.38deg)   scale(1.002); }
-  70%      { transform: rotate(-0.38deg)  scale(0.999); }
-}
-.sway {
-  transform-origin: 50% 90%;
-  animation: sway 7.5s ease-in-out infinite;
-  animation-delay: 9.5s;
-  will-change: transform;
+/* Subtle local glow for active nodes */
+.hotspot-active:hover {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke: rgba(59, 130, 246, 0.35); /* soft blue glow */
 }
 
-/* Class-based transitions for volumetric glow layers */
-.cinematic-vignette {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse 86% 86% at 50% 48%, transparent 38%, rgba(7,5,12,0.92) 100%);
-  z-index: 3;
-}
-.root-spark {
-  position: absolute;
-  pointer-events: none;
-  bottom: 2%;
-  left: 50%;
-  width: 34%;
-  height: 17%;
-  background: radial-gradient(ellipse 75% 80% at 50% 95%, rgba(226,158,38,0.72) 0%, rgba(200,120,16,0.36) 42%, transparent 72%);
-  filter: blur(18px);
-  mix-blend-mode: screen;
-  transform: translateX(-50%) scale(0.12);
-  opacity: 0;
-  transition: opacity 2.5s cubic-bezier(0, 0, 0.35, 1), transform 2.5s cubic-bezier(0, 0, 0.35, 1);
-  z-index: 1;
-}
-.root-spark.active {
-  opacity: 1;
-  transform: translateX(-50%) scale(1);
-}
-.roots-spreading {
-  position: absolute;
-  pointer-events: none;
-  bottom: 5%;
-  left: 50%;
-  width: 78%;
-  height: 28%;
-  background: radial-gradient(ellipse 100% 62% at 50% 88%, rgba(210,142,28,0.44) 0%, rgba(182,108,12,0.20) 52%, transparent 80%);
-  filter: blur(26px);
-  mix-blend-mode: screen;
-  transform: translateX(-50%) scale(0.08, 0.45);
-  opacity: 0;
-  transition: opacity 3s cubic-bezier(0, 0, 0.25, 1), transform 3s cubic-bezier(0, 0, 0.25, 1);
-  z-index: 1;
-}
-.roots-spreading.active {
-  opacity: 1;
-  transform: translateX(-50%) scale(1, 1);
-}
-.trunk-glow {
-  position: absolute;
-  pointer-events: none;
-  bottom: 9%;
-  left: 50%;
-  width: 22%;
-  height: 55%;
-  background: radial-gradient(ellipse 55% 100% at 50% 76%, rgba(200,132,24,0.30) 0%, rgba(165,102,8,0.12) 60%, transparent 82%);
-  filter: blur(28px);
-  mix-blend-mode: screen;
-  transform-origin: 50% 100%;
-  transform: translateX(-50%) scaleY(0.04);
-  opacity: 0;
-  transition: opacity 4s cubic-bezier(0.25, 0, 0.3, 1), transform 4s cubic-bezier(0.25, 0, 0.3, 1);
-  z-index: 1;
-}
-.trunk-glow.active {
-  opacity: 1;
-  transform: translateX(-50%) scaleY(1);
-}
-.left-branch-glow, .right-branch-glow, .canopy-glow {
-  display: none;
-}
-.ground-shadow {
-  position: absolute;
-  pointer-events: none;
-  bottom: 0;
-  left: 50%;
-  width: 78%;
-  height: 10%;
-  background: radial-gradient(ellipse 100% 40% at 50% 100%, rgba(3,2,6,0.68) 0%, rgba(3,2,6,0.30) 55%, transparent 82%);
-  filter: blur(6px);
-  transform: translateX(-50%);
-  opacity: 0;
-  animation: ground-shadow-fade 6s ease-in-out both;
-  animation-delay: 2.5s;
-  z-index: 1;
-}
-@keyframes ground-shadow-fade {
-  to {
-    opacity: 1;
-  }
+/* Subtle warning border for special paths */
+.hotspot-special:hover {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke: rgba(239, 68, 68, 0.25); /* soft reddish warning */
 }
 
-/* Floating Golden Motes */
-.motes-container {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
+/* Subtle warning border for dormant industry branches */
+.hotspot-branch:hover {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke: rgba(245, 158, 11, 0.25); /* soft amber warning */
 }
-.mote {
+
+/* Floating Playback Controls (Volume and Replay Buttons) */
+.homepage-controls-group {
   position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-  background: rgba(220,160,48,0.9);
-  box-shadow: 0 0 calc(var(--sz) * 2.5) rgba(218,155,44,0.38);
-  width: var(--sz);
-  height: var(--sz);
-  animation: mote-rise var(--dur) ease-in-out infinite var(--dl);
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.control-btn {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-@keyframes mote-rise {
-  0%   { opacity: 0;           transform: translateY(0px)    translateX(0px);   }
-  12%  { opacity: var(--op);                                                     }
-  88%  { opacity: var(--op);                                                     }
-  100% { opacity: 0;           transform: translateY(-190px) translateX(var(--dr)); }
+
+.control-btn.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.control-btn:hover {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: var(--blue);
+  color: #fff;
+}
+
+.control-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+/* Symmetrical square footprint for the Volume icon button */
+.volume-btn {
+  padding: 0.45rem 0.55rem;
+  justify-content: center;
+}
+
+.control-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.replay-btn:hover svg {
+  transform: rotate(45deg);
 }
 
 @media(max-width: 900px) {
   .tree-viewport {
-    height: 480px;
     margin: 1.5rem auto;
+  }
+  .homepage-controls-group {
+    bottom: 0.75rem;
+    right: 0.75rem;
+    gap: 0.5rem;
+  }
+  .control-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.65rem;
+  }
+  .volume-btn {
+    padding: 0.35rem 0.45rem;
   }
 }
 @media(max-width: 640px) {
   .tree-viewport {
-    height: 400px;
     margin: 1rem auto;
   }
+  .homepage-controls-group {
+    bottom: 0.5rem;
+    right: 0.5rem;
+    gap: 0.4rem;
+  }
+  .control-btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.6rem;
+  }
+  .volume-btn {
+    padding: 0.3rem 0.4rem;
+  }
 }
-
 
 /* CONTROL FILTER HOUSING */
 .control-housing{display:flex;align-items:center;gap:0.75rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.35rem 0.75rem}

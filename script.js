@@ -1,3 +1,6 @@
+// ─── CONFIGURATION ───────────────────────────────────────────────────────────
+const SKIP_INTRO_IF_PLAYED_IN_SESSION = true; // Skip 15s cinematic video if already played in the current session
+
 // ─── STATE & GLOBAL VARIABLES ──────────────────────────────────────────────
 let activeNode = 0; // Explicitly declared state variable
 const BLOGS_PER_PAGE = 6;
@@ -4053,21 +4056,164 @@ function showPage(page) {
 function renderHomeTree() {
   const viewport = document.getElementById('tree-viewport');
   const tooltip = document.getElementById('tree-tooltip');
-  const hotspots = document.querySelectorAll('.tree-hotspot-group');
   
   if (!viewport || !tooltip) return;
 
-  hotspots.forEach(hotspot => {
-    const nodeId = hotspot.id.replace('hotspot-', '');
+  const video = document.getElementById('intro-video');
+  const finalFrame = document.getElementById('final-frame');
+  const overlay = document.getElementById('interactive-overlay');
+  const replayBtn = document.getElementById('replay-intro-btn');
+  const volumeBtn = document.getElementById('volume-control-btn');
+
+  if (!video || !finalFrame || !overlay || !replayBtn || !volumeBtn) return;
+
+  function updateVolumeIcon(isMuted) {
+    if (isMuted) {
+      volumeBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      `;
+      volumeBtn.setAttribute('title', 'Turn sound on');
+      volumeBtn.setAttribute('aria-label', 'Turn sound on');
+    } else {
+      volumeBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        </svg>
+      `;
+      volumeBtn.setAttribute('title', 'Mute');
+      volumeBtn.setAttribute('aria-label', 'Mute');
+    }
+  }
+
+  function showFinalInteractiveState() {
+    video.style.display = 'none';
+    video.pause();
+    finalFrame.style.opacity = '1';
+    finalFrame.style.pointerEvents = 'auto';
+    overlay.style.pointerEvents = 'auto';
     
-    // Clear any existing listeners by cloning and replacing
+    // Toggle button visibility: Replay becomes visible, Volume becomes hidden
+    replayBtn.classList.add('visible');
+  }
+
+  function startVideoPlayback() {
+    // Toggle button visibility: Volume becomes visible, Replay becomes hidden
+    replayBtn.classList.remove('visible');
+    volumeBtn.classList.add('visible');
+    
+    video.style.display = 'block';
+    video.currentTime = 0;
+    finalFrame.style.opacity = '0';
+    overlay.style.pointerEvents = 'none'; // disable interaction during playback
+
+    // Load user's sound preference from sessionStorage
+    const isSoundEnabled = sessionStorage.getItem('prajnaedge_sound_enabled') === 'true';
+    video.muted = !isSoundEnabled;
+    updateVolumeIcon(video.muted);
+
+    let safetyTimeout = setTimeout(() => {
+      console.warn("Video load timeout. Falling back to static tree.");
+      showFinalInteractiveState();
+    }, 4000);
+
+    const onCanPlay = () => {
+      clearTimeout(safetyTimeout);
+      video.removeEventListener('canplay', onCanPlay);
+    };
+    video.addEventListener('canplay', onCanPlay);
+
+    video.play().catch(err => {
+      clearTimeout(safetyTimeout);
+      console.warn("Autoplay blocked or failed, showing static tree:", err);
+      showFinalInteractiveState();
+    });
+  }
+
+  // 1. Session Intro Playback Skip Check
+  const hasPlayed = sessionStorage.getItem('prajnaedge_intro_played');
+  
+  if (SKIP_INTRO_IF_PLAYED_IN_SESSION && hasPlayed === 'true') {
+    showFinalInteractiveState();
+  } else {
+    startVideoPlayback();
+  }
+
+  // Video End event listener
+  const onVideoEnded = () => {
+    sessionStorage.setItem('prajnaedge_intro_played', 'true');
+    showFinalInteractiveState();
+  };
+  video.removeEventListener('ended', onVideoEnded);
+  video.addEventListener('ended', onVideoEnded);
+
+  // Video Error event listener
+  const onVideoError = () => {
+    console.error("Video failed to load. Falling back to static tree.");
+    showFinalInteractiveState();
+  };
+  video.removeEventListener('error', onVideoError);
+  video.addEventListener('error', onVideoError);
+
+  // Volume Button Click Listener
+  volumeBtn.onclick = (e) => {
+    e.stopPropagation();
+    video.muted = !video.muted;
+    sessionStorage.setItem('prajnaedge_sound_enabled', (!video.muted).toString());
+    updateVolumeIcon(video.muted);
+  };
+
+  // Replay Button Listener
+  replayBtn.onclick = (e) => {
+    e.stopPropagation();
+    sessionStorage.removeItem('prajnaedge_intro_played');
+    startVideoPlayback();
+  };
+
+  // 2. Hotspots Event Listeners
+  const hotspots = document.querySelectorAll('#hotspots > rect');
+  hotspots.forEach(hotspot => {
+    // Clear existing listeners by cloning and replacing
     const newHotspot = hotspot.cloneNode(true);
     hotspot.parentNode.replaceChild(newHotspot, hotspot);
-    
+
+    const rawId = newHotspot.id;
+    let label = "";
+    let isDormantBranch = false;
+    let isSpecialPath = false;
+    let nodeId = "";
+
+    if (rawId.startsWith('hotspot-path-')) {
+      isSpecialPath = true;
+      nodeId = rawId.replace('hotspot-path-', ''); // "BareMetal" or "OperatingSystems"
+      if (nodeId === 'BareMetal') {
+        label = "Bare Metal — This path has not awakened yet.";
+      } else if (nodeId === 'OperatingSystems') {
+        label = "Operating Systems — This path has not awakened yet.";
+      }
+    } else if (rawId.startsWith('hotspot-branch-')) {
+      isDormantBranch = true;
+      nodeId = rawId.replace('hotspot-branch-', ''); // "Automotive", "Consumer", etc.
+      let branchName = nodeId;
+      if (nodeId === 'NetworkingConnectivity') branchName = 'Networking & Connectivity';
+      else if (nodeId === 'EdgeAI') branchName = 'Edge AI';
+      else if (nodeId === 'AerospaceDefence') branchName = 'Aerospace & Defence';
+      label = `${branchName} — This branch has not awakened yet.`;
+    } else if (rawId.startsWith('hotspot-')) {
+      nodeId = rawId.replace('hotspot-', ''); // "Matter", "Computation", etc.
+      label = nodeId;
+    }
+
     newHotspot.addEventListener('mouseenter', () => {
-      tooltip.innerText = nodeId;
+      tooltip.innerText = label;
       tooltip.classList.add('active');
     });
+
     newHotspot.addEventListener('mousemove', (e) => {
       const viewportRect = viewport.getBoundingClientRect();
       const x = e.clientX - viewportRect.left;
@@ -4075,69 +4221,36 @@ function renderHomeTree() {
       tooltip.style.left = `${x}px`;
       tooltip.style.top = `${y}px`;
     });
+
     newHotspot.addEventListener('mouseleave', () => {
       tooltip.classList.remove('active');
     });
+
     newHotspot.addEventListener('click', (e) => {
       e.stopPropagation();
       tooltip.classList.remove('active');
-      filterNodeRoute(nodeId);
+      
+      if (isSpecialPath || isDormantBranch) {
+        // Show integrated elegant message inside tooltip and flash it
+        tooltip.innerText = label;
+        tooltip.classList.add('active');
+        // Let it position near mouse click or center of rect
+        const viewportRect = viewport.getBoundingClientRect();
+        const x = e.clientX - viewportRect.left;
+        const y = e.clientY - viewportRect.top - 15;
+        tooltip.style.left = `${x}px`;
+        tooltip.style.top = `${y}px`;
+        setTimeout(() => tooltip.classList.remove('active'), 2500);
+      } else {
+        // Active trunk node: filter explorations
+        filterNodeRoute(nodeId);
+      }
     });
   });
 }
 
 function runTreeAwakeningAnimation() {
-  const sequence = [
-    { selector: '', duration: 1500, glow: 'spark' },
-    { selector: '.mask-path-roots', duration: 3000, glow: 'roots' },
-    { selector: '.mask-path-computation', duration: 1500, glow: 'trunk' },
-    { selector: '.mask-path-interaction', duration: 1500 },
-    { selector: '.mask-path-coordination', duration: 1500 },
-    { selector: '.mask-path-integration', duration: 1500 }
-  ];
-
-  // Initialize: Hide all paths in the sequence using SVG stroke dash techniques
-  sequence.forEach(step => {
-    if (!step.selector) return;
-    const paths = document.querySelectorAll(step.selector);
-    paths.forEach(path => {
-      if (typeof path.getTotalLength === 'function') {
-        const len = path.getTotalLength();
-        path.style.strokeDasharray = len;
-        path.style.strokeDashoffset = len;
-      }
-    });
-  });
-
-  // Start sequence transitions
-  let accumulatedDelay = 500; // start 500ms after load
-
-  sequence.forEach(step => {
-    setTimeout(() => {
-      // Trigger background glows if mapped to this step
-      if (step.glow === 'spark') {
-        document.querySelector('.root-spark')?.classList.add('active');
-      } else if (step.glow === 'roots') {
-        document.querySelector('.roots-spreading')?.classList.add('active');
-      } else if (step.glow === 'trunk') {
-        document.querySelector('.trunk-glow')?.classList.add('active');
-      }
-
-      if (!step.selector) return;
-
-      // Trigger path animation
-      const paths = document.querySelectorAll(step.selector);
-      paths.forEach(path => {
-        if (typeof path.getTotalLength === 'function') {
-          const len = path.getTotalLength();
-          path.style.transition = `stroke-dashoffset ${step.duration}ms cubic-bezier(0.4, 0, 0.2, 1)`;
-          path.style.strokeDashoffset = '0';
-        }
-      });
-    }, accumulatedDelay);
-
-    accumulatedDelay += step.duration;
-  });
+  // Cinematic video replaces the old canvas-based path animations.
 }
 
 function openDirectExplorations() {
