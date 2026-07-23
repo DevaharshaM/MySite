@@ -90,7 +90,7 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
 .blog-back-btn{background:transparent;border:none;color:var(--muted);font-family:var(--mono);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;gap:0.4rem;padding:0;letter-spacing:0.05em;margin-bottom:2rem;transition:color 0.2s}
 .blog-back-btn:hover{color:var(--blue)}
 .blog-quote{border-left:3px solid var(--blue);padding-left:1rem;margin:1.5rem 0;color:#94A3B8;font-size:0.95rem;line-height:1.75;white-space:pre-line}
-.blog-code{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:0.85rem;color:#7DD3FC;margin:1.5rem 0;letter-spacing:0.02em}
+.blog-code{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:0.85rem;color:#7DD3FC;margin:1.5rem 0;letter-spacing:0.02em;white-space:pre-wrap}
 .blog-img-wrap{margin:2rem 0;text-align:center}
 .blog-img-wrap img{max-width:100%;width:100%;max-width:900px;height:auto;border-radius:10px;border:1px solid var(--border);box-shadow:0 4px 32px rgba(0,0,0,0.4);display:inline-block}
 .blog-img-caption{margin-top:0.65rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);font-style:italic;text-align:center;letter-spacing:0.02em}

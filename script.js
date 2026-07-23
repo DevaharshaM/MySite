@@ -112,6 +112,16 @@ const systemsTreeNodes = {
       { id: "when-one-loop-was-enough", title: "When One Loop Was Enough" },
       { id: "when-one-processor-wasnt-enough", title: "When One Processor Wasn't Enough" }
     ]
+  },
+  "Bare Metal": {
+    title: "Bare Metal",
+    description: "The software environment running directly on hardware without an operating system.",
+    explorations: [
+      { id: "before-main", title: "Before main()" },
+      { id: "the-infinite-loop-that-runs-a-machine", title: "The Infinite Loop That Runs a Machine" },
+      { id: "teaching-time-to-an-infinite-loop", title: "Teaching Time to an Infinite Loop" },
+      { id: "when-behaviour-becomes-state", title: "When Behaviour Becomes State" }
+    ]
   }
 };
 
@@ -3884,6 +3894,1342 @@ const blogPosts = [
     quote: "Silicon did not change; the problems did. We shaped the gates to match the math."
   },
   footer: "Reflections on computer architecture, specialized silicon accelerators, and heterogeneous computing - PrajnaEdge.dev"
+},
+{
+  id: "before-main",
+  category: "Bare Metal",
+  series: "System Explorations",
+  title: "Before main()",
+  subtitle: "The hidden choreography that prepares raw silicon for your first line of C.",
+  date: "23rd July, 2026",
+  tags: ["Bare Metal", "Bootloader", "Linker Script", "Reset Vector", "C Runtime"],
+  sections: [
+    {
+      heading: "1. The Myth of the Beginning",
+      content: [
+        {
+          type: "p",
+          text: "To the software engineer, the universe of an application begins with a familiar and comforting signature:\n\n`int main(void) { ... }`\n\nIt is the genesis of our code, the entry point for our debuggers, and the boundary line where high-level state starts its execution. We write our routines under the quiet assumption that the machine starts here, waiting as a clean, blank slate for our first instruction to call it to action."
+        },
+        {
+          type: "p",
+          text: "But this starting line is an artificial boundary. The CPU did not begin at main(), nor does it understand the high-level syntax of a C function. Long before the first line of your main loop runs, the microcontroller has already completed a massive journey. It has left its analog reset state, evaluated physical boot flags, routed through vendor ROMs, set up stack space, copied segments across physical memories, and configured clock frequencies. Before C can exist, the machine must build the world C assumes already exists."
+        },
+        {
+          type: "quote",
+          text: "main() is not the beginning of computation. It is the final handoff from hardware reality to software abstraction."
+        }
+      ]
+    },
+    {
+      heading: "2. Hardware Wakes: The Reset State",
+      content: [
+        {
+          type: "p",
+          text: "When power climbs the capacitive rails of a microcontroller, or the physical reset line is toggled, digital logic does not instantly begin computing. The core starts in an architecture-defined reset state where pipelines are flushed, registers are set to default values, and interrupts are globally disabled."
+        },
+        {
+          type: "p",
+          html: true,
+          text: "<span style=\"display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);\">We have seen this moment before. In <a onclick=\"openItem('the-first-instruction', 'blogs')\" style=\"color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;\">The First Instruction</a>, we traced how analog supervisors release the CPU to fetch its initial Stack Pointer and Reset Vector. Here, we step back to examine the branching boot systems that govern this transition.</span>"
+        },
+        {
+          type: "p",
+          text: "How the processor finds its first executable byte depends on its silicon architecture. There is no single universal embedded boot sequence. While a simple microcontroller might immediately point its Program Counter (PC) to a fixed vector table in Flash, a complex SoC or application processor might boot into an immutable on-chip Boot ROM, check boot pins, or load custom bootloader binaries from external media."
+        }
+      ]
+    },
+    {
+      heading: "3. The Boot Decision Tree",
+      content: [
+        {
+          type: "p",
+          text: "Rather than following one mandatory sequence, microcontrollers and SoCs branch into different boot configurations depending on vendor design, boot configurations, and product architecture. A simple MCU boots directly into application code, while a production-grade secure system routes through multiple stages of software validation."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">THE JOURNEY TO MAIN(): DEVICE-DEPENDENT BOOT PATHS</div>
+  <svg viewBox="0 0 800 480" style="width:100%; height:auto; max-width:760px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+      </marker>
+      <marker id="arrow-warn" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#EF6868"/>
+      </marker>
+    </defs>
+
+    <rect x="330" y="20" width="140" height="40" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="2"/>
+    <text x="400" y="44" fill="#fff" font-size="11" text-anchor="middle" font-weight="bold">POWER ON / RESET</text>
+
+    <path d="M 400 60 L 400 90" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="280" y="90" width="240" height="45" rx="6" fill="#1E293B" stroke="rgba(148, 163, 184, 0.3)" stroke-width="1.5"/>
+    <text x="400" y="116" fill="#E2E8F0" font-size="10" text-anchor="middle">Boot Config / Pin Latches / Hardware Defaults</text>
+
+    <path d="M 330 135 L 200 135 L 200 170" stroke="#3B82F6" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="265" y="128" fill="#64748B" font-size="9" text-anchor="middle">Simpler MCU Path</text>
+
+    <path d="M 470 135 L 600 135 L 600 170" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow-warn)"/>
+    <text x="545" y="128" fill="#EF6868" font-size="9" text-anchor="middle">Bootloader-Based Path</text>
+
+    <rect x="100" y="170" width="200" height="45" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="200" y="196" fill="#E2E8F0" font-size="10" text-anchor="middle">Load Vector Table Pointer</text>
+
+    <path d="M 200 215 L 200 250" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="100" y="250" width="200" height="45" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="200" y="276" fill="#E2E8F0" font-size="10" text-anchor="middle">Fetch Reset Vector (Code Start)</text>
+
+    <rect x="500" y="170" width="200" height="45" rx="6" fill="#1E293B" stroke="#EF6868" stroke-dasharray="3,3" stroke-width="1.5"/>
+    <text x="600" y="191" fill="#E2E8F0" font-size="10" text-anchor="middle" font-weight="bold">Vendor Boot ROM</text>
+    <text x="600" y="204" fill="#64748B" font-size="8" text-anchor="middle">(On-Chip ROM, Immutable)</text>
+
+    <path d="M 600 215 L 600 250" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-warn)"/>
+
+    <rect x="500" y="250" width="200" height="45" rx="6" fill="#1E293B" stroke="#EF6868" stroke-dasharray="3,3" stroke-width="1.5"/>
+    <text x="600" y="271" fill="#E2E8F0" font-size="10" text-anchor="middle" font-weight="bold">Product Bootloader</text>
+    <text x="600" y="284" fill="#64748B" font-size="8" text-anchor="middle">(Custom Boot Stage, OTA)</text>
+
+    <path d="M 600 295 L 600 330" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-warn)"/>
+
+    <rect x="500" y="330" width="200" height="45" rx="6" fill="#1E293B" stroke="#EF6868" stroke-dasharray="3,3" stroke-width="1.5"/>
+    <text x="600" y="356" fill="#E2E8F0" font-size="10" text-anchor="middle">Select & Validate App Entry</text>
+
+    <path d="M 200 295 L 200 395 L 300 395" stroke="#3B82F6" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <path d="M 600 375 L 600 395 L 500 395" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow-warn)"/>
+
+    <rect x="300" y="375" width="200" height="45" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="2"/>
+    <text x="400" y="401" fill="#FFF" font-size="11" text-anchor="middle" font-weight="bold">Startup Code (C Runtime Setup)</text>
+
+    <path d="M 400 420 L 400 445" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="330" y="445" width="140" height="30" rx="4" fill="#1E293B" stroke="#10B981" stroke-width="2"/>
+    <text x="400" y="464" fill="#10B981" font-size="10" text-anchor="middle" font-weight="bold" font-family="var(--mono)">main()</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Optional boot stages split basic microcontrollers from high-reliability multi-stage systems.</div>
+</div>`
+        }
+      ]
+    },
+    {
+      heading: "4. The Boot ROM Sentinel",
+      content: [
+        {
+          type: "p",
+          text: "The first software executed by a processor is not necessarily the application — and it is not necessarily a user-written bootloader.\n\nIn many modern microcontrollers and SoC designs, the physical reset vector points directly into on-chip Boot ROM. This is a small, immutable block of memory mask-programmed into the silicon by the chip vendor during manufacturing. The code within it is permanent; it cannot be modified by firmware updates or device failures."
+        },
+        {
+          type: "p",
+          text: "When the Boot ROM runs, it acts as a sentinel. It inspects the state of physical boot pins (latching external voltage levels to determine the boot source) or reads specific memory-mapped registers. If it detects a recovery condition—such as a specific pin pulled low or an invalid signature in the primary flash sector—it launches an internal serial bootloader interface, listening on UART, USB, or CAN for new firmware. If the system is healthy, the Boot ROM locates the secondary boot stage or application vector table and branches to it."
+        }
+      ]
+    },
+    {
+      heading: "5. Second-Stage Product Bootloaders",
+      content: [
+        {
+          type: "p",
+          text: "While simple microcontrollers often execute their application directly from Flash, commercial products frequently introduce a second-stage, programmable product bootloader. Unlike the Boot ROM, this bootloader is stored in writeable Flash memory and can be updated in the field."
+        },
+        {
+          type: "p",
+          text: "The responsibilities of this stage are critical for product reliability. It acts as a gatekeeper, validating the integrity of the application image using checksums or verifying its authenticity through cryptographic signatures. It manages the swap logic between dual-image banks (A/B partitioning) to ensure that if a wireless OTA update fails mid-transmission, the system can safely roll back to a previously known good firmware image. If validation succeeds, it initiates the handoff."
+        }
+      ]
+    },
+    {
+      heading: "6. The Handoff of Control",
+      content: [
+        {
+          type: "p",
+          text: "When a bootloader transfers control to the application, it does not simply invoke the application's main() as if it were a local subroutine. If the bootloader called main() directly, the application would inherit a contaminated execution context. Bootloader-owned interrupts might still be active, the stack pointer could be misaligned, and peripherals would remain in modified states."
+        },
+        {
+          type: "p",
+          text: "The handoff is a clean break. The bootloader must: disable all of its active interrupts, clear pending flags in the interrupt controller, set the main stack pointer to the application's starting stack address, relocate the Vector Table base address (e.g. by modifying the Vector Table Offset Register VTOR in Cortex-M architectures), and finally jump to the application's entry address. The application must start as if the bootloader had never been there."
+        }
+      ]
+    },
+    {
+      heading: "7. The Application Startup Phase",
+      content: [
+        {
+          type: "p",
+          text: "Once control is transferred to the application's entry address—which is the Reset Handler pointed to by the application's vector table—the execution shifts into the startup code. This code, usually provided by the silicon vendor or toolchain and written in assembly or low-level C, builds the runtime environment step-by-step."
+        },
+        {
+          type: "p",
+          text: "The startup sequence follows a deterministic sequence to construct the C language environment:\n\n```c\nvoid Reset_Handler(void) {\n    /* 1. Low-level initialization */\n    SystemInit();\n    \n    /* 2. Copy initialized data from Flash to RAM */\n    copy_data_segment();\n    \n    /* 3. Zero-initialize BSS memory */\n    zero_bss_segment();\n    \n    /* 4. Call static constructors and runtime libraries */\n    __libc_init_array();\n    \n    /* 5. Transfer control to the application entry */\n    main();\n}\n```"
+        }
+      ]
+    },
+    {
+      heading: "8. Constructing the Memory World",
+      content: [
+        {
+          type: "p",
+          text: "When power is first applied, the cells of volatile Static RAM (SRAM) settle into arbitrary, electrically noisy states. Yet, C language code operates under a strict promise: global and static variables initialized to a value (like `int speed = 100;`) must begin execution with that exact value, and uninitialized objects (like `static int fault_count;`) must start at zero."
+        },
+        {
+          type: "p",
+          text: "Startup code constructs this expected memory layout by migrating data segments from non-volatile storage (Flash) to volatile memory (RAM). The linker script defines two distinct addresses for initialized variables: the Load Memory Address (LMA), where the initial values reside permanently in Flash, and the Virtual Memory Address (VMA), where the variables will reside in RAM during runtime. The startup routine runs a copy loop to copy these bytes from LMA to VMA. It then runs a zeroing loop over the `.bss` section in RAM, clearing it to zero."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">FLASH ↔ RAM DATA MIGRATION IN STARTUP</div>
+  <svg viewBox="0 0 800 320" style="width:100%; height:auto; max-width:760px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981"/>
+      </marker>
+    </defs>
+
+    <rect x="50" y="30" width="280" height="260" rx="8" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5"/>
+    <text x="190" y="52" fill="#FFF" font-size="11" font-weight="bold" text-anchor="middle">FLASH (Non-Volatile / Load Area)</text>
+
+    <rect x="70" y="70" width="240" height="35" rx="4" fill="rgba(148, 163, 184, 0.05)" stroke="rgba(148, 163, 184, 0.15)"/>
+    <text x="190" y="91" fill="#E2E8F0" font-size="9" text-anchor="middle">Vector Table (Pointers)</text>
+
+    <rect x="70" y="115" width="240" height="35" rx="4" fill="rgba(148, 163, 184, 0.05)" stroke="rgba(148, 163, 184, 0.15)"/>
+    <text x="190" y="136" fill="#E2E8F0" font-size="9" text-anchor="middle">.text (Executable Instructions)</text>
+
+    <rect x="70" y="160" width="240" height="35" rx="4" fill="rgba(148, 163, 184, 0.05)" stroke="rgba(148, 163, 184, 0.15)"/>
+    <text x="190" y="181" fill="#E2E8F0" font-size="9" text-anchor="middle">.rodata (Constants & Read-Only)</text>
+
+    <rect x="70" y="215" width="240" height="50" rx="4" fill="rgba(59, 130, 246, 0.08)" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="190" y="238" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">.data initializers (Flash image)</text>
+    <text x="190" y="253" fill="var(--muted)" font-size="8" text-anchor="middle">e.g. initial value of 'int speed = 100;'</text>
+
+    <path d="M 310 240 L 490 100" stroke="#10B981" stroke-width="2" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow-green)"/>
+    <text x="400" y="160" fill="#10B981" font-size="9" text-anchor="middle" font-weight="bold">1. COPY DATA</text>
+
+    <rect x="470" y="30" width="280" height="260" rx="8" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" stroke-width="1.5"/>
+    <text x="610" y="52" fill="#FFF" font-size="11" font-weight="bold" text-anchor="middle">RAM (Volatile / Execution Area)</text>
+
+    <rect x="490" y="70" width="240" height="50" rx="4" fill="rgba(16, 185, 129, 0.08)" stroke="#10B981" stroke-width="1.5"/>
+    <text x="610" y="93" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">.data (Initialized Variables)</text>
+    <text x="610" y="108" fill="var(--muted)" font-size="8" text-anchor="middle">Variables copied to RAM address</text>
+
+    <rect x="490" y="130" width="240" height="50" rx="4" fill="rgba(245, 158, 11, 0.08)" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="610" y="153" fill="#FFF" font-size="10" font-weight="bold" text-anchor="middle">.bss (Zero-Initialized)</text>
+    <text x="610" y="168" fill="var(--muted)" font-size="8" text-anchor="middle">2. ZERO LOOP (e.g. static int fault_count;)</text>
+
+    <rect x="490" y="195" width="110" height="40" rx="4" fill="rgba(148, 163, 184, 0.05)" stroke="rgba(148, 163, 184, 0.15)"/>
+    <text x="545" y="213" fill="#E2E8F0" font-size="9" text-anchor="middle">Heap</text>
+    <text x="545" y="225" fill="var(--muted)" font-size="7" text-anchor="middle">(Grows Up &rarr;)</text>
+
+    <rect x="620" y="195" width="110" height="40" rx="4" fill="rgba(148, 163, 184, 0.05)" stroke="rgba(148, 163, 184, 0.15)"/>
+    <text x="675" y="213" fill="#E2E8F0" font-size="9" text-anchor="middle">Stack</text>
+    <text x="675" y="225" fill="var(--muted)" font-size="7" text-anchor="middle">(&larr; Grows Down)</text>
+
+    <text x="610" y="265" fill="#64748B" font-size="8" text-anchor="middle">Stack Pointer (SP) initialized to RAM top</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Startup code copies initial values to RAM and zeros out BSS segments before main() runs.</div>
+</div>`
+        },
+        {
+          type: "quote",
+          text: "Startup code constructs the memory environment that the C program assumes already exists."
+        }
+      ]
+    },
+    {
+      heading: "9. Stack Initialization and System Clocks",
+      content: [
+        {
+          type: "p",
+          text: "Before any C function can be invoked, the stack must be valid. The stack is the scratch area used for local variables, local execution contexts, and return addresses. If the program counter jumps to a C function before the Stack Pointer (SP) register is loaded with a valid RAM address, the first function call or stack allocation will push data into invalid memory space, crashing the processor immediately."
+        },
+        {
+          type: "p",
+          text: "Different architectures handle stack pointer setup in different ways. In ARM Cortex-M processors, the hardware automatically loads the initial Stack Pointer value from the very first entry (offset 0) of the vector table during the reset cycle. In other architectures, the stack pointer must be explicitly loaded in assembly code inside the reset handler before any other operations occur."
+        },
+        {
+          type: "p",
+          text: "Simultaneously, the system clock tree must be configured. At boot, the CPU runs from a slow, low-power internal default oscillator to guarantee startup. The reset code configures the clock multipliers (PLLs) and oscillators, adjusting Flash access wait-states in tandem to avoid instruction starvation. Order matters: scaling speed without wait states locks the bus."
+        }
+      ]
+    },
+    {
+      heading: "10. The Language Runtime and main()",
+      content: [
+        {
+          type: "p",
+          text: "With memory structured, clocks stabilized, and stack space verified, the hardware environment is finally complete. However, if the project is written in C++, there remains one final software initialization step: static constructors."
+        },
+        {
+          type: "p",
+          text: "Global C++ objects must have their constructors executed before main() starts. The toolchain compiles a list of pointers to these constructor functions into a dedicated section (like `.init_array`). The startup code iterates through this array, executing each constructor function in sequence. Finally, the program counter loads the address of the main() symbol. The application has begun."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Genesis of the Loop",
+    paragraphs: [
+      "Every embedded application starts long before the code we write. Before the first statement of main() executes, a silent, complex dance of analog voltage detectors, memory transfers, and clock trees has already laid the foundation.",
+      "The code begins at main(). The machine became itself before the first line was read."
+    ],
+    quote: "We write main() to dictate what the machine will do. The startup code executes to decide what the machine is."
+  },
+  footer: "Analyzing the low-level boundaries of embedded boot sequences, stack validation, and segment migration - PrajnaEdge.dev"
+},
+{
+  id: "the-infinite-loop-that-runs-a-machine",
+  category: "Bare Metal",
+  series: "System Explorations",
+  title: "The Infinite Loop That Runs a Machine",
+  subtitle: "Why embedded programs enter a loop they never intend to leave.",
+  date: "23rd July, 2026",
+  tags: ["Bare Metal", "Superloop", "Latency", "Polling", "Interrupts"],
+  sections: [
+    {
+      heading: "1. The Lifetime of the Application",
+      content: [
+        {
+          type: "p",
+          text: "In desktop or server application development, an infinite loop is a critical failure. It is the signature of a frozen UI, a runaway process consuming 100% CPU, or a logical bug that requires an immediate process kill. Desktop applications are guests in an operating system; they run, complete their task, and yield control back to the host."
+        },
+        {
+          type: "p",
+          text: "But inside a bare-metal microcontroller, there is no host. The firmware is the operating system. If execution reaches the closing bracket of the main() function, the program counter falls off a digital cliff. It enters an undefined state, executing whatever random instructions happen to reside in the adjacent flash memory. To keep the machine alive, execution must never end. The infinite loop is not a programming mistake — it is the lifetime of the application."
+        },
+        {
+          type: "quote",
+          text: "In bare metal, an infinite loop is not a bug. It is the structural guarantee that the machine remains itself."
+        }
+      ]
+    },
+    {
+      heading: "2. Initialization Happens Once",
+      content: [
+        {
+          type: "p",
+          text: "Every bare-metal application is divided by a clean temporal boundary: code that executes once during boot, and code that executes repeatedly forever.\n\nConsider this conceptual skeleton of a system:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nint main(void)\n{\n    /* One-time initialization */\n    System_Init();\n    Peripheral_Init();\n\n    /* Continuous execution */\n    while (1)\n    {\n        // Application runs here\n    }\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "Before entering the loop, the CPU configures oscillators, sets pin directions, clears memory segments, arms interrupt lines, and initializes peripheral registers. Once this stage finishes, the system steps across the threshold into continuous execution, performing its duties inside the infinite loop."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">BARE-METAL SYSTEM EXECUTION LIFE CYCLE</div>
+  <svg viewBox="0 0 600 360" style="width:100%; height:auto; max-width:540px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+      </marker>
+    </defs>
+
+    <rect x="230" y="10" width="140" height="35" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="300" y="32" fill="#FFF" font-size="10" text-anchor="middle" font-weight="bold">POWER / RESET</text>
+
+    <path d="M 300 45 L 300 75" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="220" y="75" width="160" height="35" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="300" y="97" fill="#E2E8F0" font-size="10" text-anchor="middle">Application Startup</text>
+
+    <path d="M 300 110 L 300 140" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="220" y="140" width="160" height="35" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="300" y="162" fill="#E2E8F0" font-size="10" text-anchor="middle">One-Time Init</text>
+
+    <path d="M 300 175 L 300 205" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+    <rect x="180" y="205" width="240" height="135" rx="10" fill="rgba(59, 130, 246, 0.04)" stroke="#10B981" stroke-width="2"/>
+    <text x="300" y="225" fill="#10B981" font-size="11" text-anchor="middle" font-weight="bold">SUPERLOOP (while(1))</text>
+
+    <g transform="translate(300, 260)">
+      <circle cx="-60" cy="15" r="28" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="-60" y="19" fill="#E2E8F0" font-size="8" text-anchor="middle" font-weight="bold">OBSERVE</text>
+      <text x="-60" y="28" fill="var(--muted)" font-size="6" text-anchor="middle">(Read Inputs)</text>
+
+      <path d="M -28 15 L -4 15" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <circle cx="20" cy="15" r="28" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="20" y="19" fill="#E2E8F0" font-size="8" text-anchor="middle" font-weight="bold">DECIDE</text>
+      <text x="20" y="28" fill="var(--muted)" font-size="6" text-anchor="middle">(Process)</text>
+
+      <path d="M 52 15 L 76 15" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <circle cx="100" cy="15" r="28" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="100" y="19" fill="#E2E8F0" font-size="8" text-anchor="middle" font-weight="bold">ACT</text>
+      <text x="100" y="28" fill="var(--muted)" font-size="6" text-anchor="middle">(Outputs)</text>
+
+      <path d="M 100 -17 C 100 -45, -60 -45, -60 -17" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow)"/>
+      <text x="20" y="-38" fill="#10B981" font-size="8" text-anchor="middle">Repeat Indefinitely</text>
+    </g>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">The system boots and initializes once, then commits to an infinite cycle of reading, thinking, and acting.</div>
+</div>`
+        }
+      ]
+    },
+    {
+      heading: "3. The Superloop Architecture",
+      content: [
+        {
+          type: "p",
+          text: "The simplest bare-metal design pattern is the Superloop. In this structure, all application operations reside sequentially inside the infinite loop. The CPU cycles through these tasks in a strict, repetitive order:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    ReadInputs();\n    ProcessInputs();\n    UpdateOutputs();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "Over time, this means the execution runs as a linear sequence:\n\n- **Iteration 1**: Read &rarr; Process &rarr; Update\n- **Iteration 2**: Read &rarr; Process &rarr; Update\n- **Iteration 3**: Read &rarr; Process &rarr; Update\n\nBecause the processor has only one core executing a single instruction stream, it cannot perform these operations simultaneously. It is a strictly sequential machine, cycling through the tasks as fast as the clock ticks allow."
+        }
+      ]
+    },
+    {
+      heading: "4. The Hidden Property: Loop Latency",
+      content: [
+        {
+          type: "p",
+          text: "As long as the tasks inside the loop are small and fast, the system is highly responsive. But as features accumulate, the loop stretches. Consider a more complex superloop:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    ReadButton();\n    ReadSensor();\n    ProcessData();\n    UpdateDisplay();\n    SendCommunication();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "Every function added introduces execution time. The total time taken to complete a single iteration of the loop—the loop latency ($T_{loop}$)—is the sum of all individual task execution times:\n\n$$T_{loop} = T_{button} + T_{sensor} + T_{processing} + T_{display} + T_{communication}$$\n\nIf \x60SendCommunication()\x60 has to wait for a buffer to clear, or \x60ProcessData()\x60 performs floating-point math, the loop stretches. If $T_{loop}$ reaches 50 milliseconds, then \x60ReadButton()\x60 is only checked once every 50 milliseconds. If the user presses and releases a button in 30 milliseconds while the CPU is busy updating the display, the press is missed completely. The structure of the loop itself defines the latency of the system."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">SUPERLOOP LATENCY COMPARISON</div>
+  <svg viewBox="0 0 700 240" style="width:100%; height:auto; max-width:640px; font-family:var(--mono);">
+    <g transform="translate(20, 20)">
+      <text x="0" y="15" fill="#10B981" font-size="10" font-weight="bold">CASE A: Fast & Balanced Loop (Low Latency)</text>
+      <line x1="0" y1="35" x2="620" y2="35" stroke="rgba(148,163,184,0.2)" stroke-width="2"/>
+      
+      <rect x="0" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="30" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Read</text>
+
+      <rect x="65" y="45" width="80" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="105" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Process</text>
+
+      <rect x="150" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="180" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Update</text>
+
+      <rect x="220" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#10B981"/>
+      <text x="250" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Read</text>
+
+      <rect x="285" y="45" width="80" height="25" rx="3" fill="#1E293B" stroke="#10B981"/>
+      <text x="325" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Process</text>
+
+      <rect x="370" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#10B981"/>
+      <text x="400" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Update</text>
+
+      <rect x="440" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="470" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Read</text>
+      
+      <text x="620" y="30" fill="var(--muted)" font-size="8" text-anchor="end">Time &rarr;</text>
+    </g>
+
+    <g transform="translate(20, 130)">
+      <text x="0" y="15" fill="#EF6868" font-size="10" font-weight="bold">CASE B: Blocking Loop (High Latency/Stretched Interval)</text>
+      <line x1="0" y1="35" x2="620" y2="35" stroke="rgba(148,163,184,0.2)" stroke-width="2"/>
+      
+      <rect x="0" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="30" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Read</text>
+
+      <rect x="65" y="45" width="280" height="25" rx="3" fill="rgba(239, 104, 104, 0.06)" stroke="#EF6868" stroke-dasharray="3,3"/>
+      <text x="205" y="61" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">BLOCKING DELAY / SLOW PERIPHERAL WAIT (1000ms)</text>
+
+      <rect x="350" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="380" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Update</text>
+
+      <rect x="420" y="45" width="60" height="25" rx="3" fill="#1E293B" stroke="#10B981"/>
+      <text x="450" y="61" fill="#E2E8F0" font-size="8" text-anchor="middle">Read</text>
+      
+      <text x="620" y="30" fill="var(--muted)" font-size="8" text-anchor="end">Time &rarr;</text>
+    </g>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Any single blocking task stretches the loop period, delaying all subsequent reads and updates.</div>
+</div>`
+        }
+      ]
+    },
+    {
+      heading: "5. The Cost of Blocking Code",
+      content: [
+        {
+          type: "p",
+          text: "Many simple tutorials instruct developers to handle timing like this:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    ReadInputs();\n    DelayMs(1000);  // wait 1 second\n    UpdateOutputs();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "During \x60DelayMs()\x60, the CPU enters a blocking loop, executing thousands of empty assembly instructions simply to waste time. During this time, the foreground superloop is frozen. It cannot read sensors, process communications, or handle calculations. While hardware interrupts can still temporarily preempt this delay to run brief routines, the main loop remains paralyzed."
+        },
+        {
+          type: "p",
+          text: "A more common, structural form of blocking occurs when waiting for peripherals:\n\n\x60\x60\x60c\nwhile (1)\n{\n    WaitForSensor(); // Spin-waits for a hardware flag\n    ProcessCommunication();\n    UpdateDisplay();\n}\n\x60\x60\x60\n\nIf the sensor breaks, disconnects, or pulls its line low indefinitely, the processor spins inside \x60WaitForSensor()\x60 forever. The communication and display tasks never execute. This vulnerability demands that bare-metal developers design code to avoid passive waiting."
+        }
+      ]
+    },
+    {
+      heading: "6. Polling: The Active Interrogation",
+      content: [
+        {
+          type: "p",
+          text: "The simplest way a superloop interacts with hardware is Polling. In a polling model, the processor actively and repeatedly checks a register flag or GPIO pin to see if a condition has met its criteria:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    if (Button_IsPressed())\n    {\n        LED_Toggle();\n    }\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "The processor is in a state of constant interrogation. It reads the input port register, compares the bits, and takes action. Polling has major advantages: it is simple, predictable, and requires no complex concurrency tools. But in larger systems, its drawbacks become severe. The CPU consumes maximum power running check loops, and the latency to detect an input remains directly tied to the cycle speed of the rest of the loop."
+        }
+      ]
+    },
+    {
+      heading: "7. Interrupts: Breaking the Chain",
+      content: [
+        {
+          type: "p",
+          text: "To bypass the latency limits of polling, processors use Interrupts. An interrupt is a hardware-triggered event that forces the CPU to temporarily suspend its current execution flow, save its registers to the stack, and branch directly to an Interrupt Service Routine (ISR) mapped in the vector table."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">THE FOREGROUND-BACKGROUND SYSTEM MODEL</div>
+  <svg viewBox="0 0 680 240" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+      </marker>
+      <marker id="arrow-warn" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#EF6868"/>
+      </marker>
+    </defs>
+
+    <g transform="translate(20, 20)">
+      <rect x="0" y="0" width="600" height="20" rx="4" fill="rgba(59, 130, 246, 0.05)" stroke="#3B82F6" stroke-dasharray="2,2"/>
+      <text x="10" y="13" fill="#3B82F6" font-size="8" font-weight="bold">FOREGROUND EXECUTION (Main Superloop)</text>
+
+      <rect x="50" y="30" width="100" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="100" y="46" fill="#E2E8F0" font-size="8" text-anchor="middle">Task 1: Math</text>
+
+      <rect x="160" y="30" width="70" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="195" y="46" fill="#E2E8F0" font-size="8" text-anchor="middle">Task 2</text>
+
+      <path d="M 230 42.5 L 310 120" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow-warn)"/>
+      <text x="270" y="75" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">IRQ Preemption</text>
+
+      <path d="M 450 120 L 530 42.5" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="3,3" fill="none" marker-end="url(#arrow-blue)"/>
+      <text x="500" y="75" fill="#3B82F6" font-size="8" text-anchor="middle" font-weight="bold">Return to Main</text>
+
+      <rect x="530" y="30" width="90" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="575" y="46" fill="#E2E8F0" font-size="8" text-anchor="middle">Task 3: Display</text>
+    </g>
+
+    <g transform="translate(20, 140)">
+      <rect x="0" y="0" width="600" height="20" rx="4" fill="rgba(239, 104, 104, 0.05)" stroke="#EF6868" stroke-dasharray="2,2"/>
+      <text x="10" y="13" fill="#EF6868" font-size="8" font-weight="bold">BACKGROUND EXECUTION (Asynchronous Interrupt Service Routines)</text>
+
+      <line x1="50" y1="42.5" x2="310" y2="42.5" stroke="rgba(148,163,184,0.15)" stroke-width="1.5"/>
+      <text x="180" y="38" fill="var(--muted)" font-size="7" text-anchor="middle">Peripherals Sleep / CPU Idle</text>
+
+      <rect x="310" y="30" width="140" height="25" rx="3" fill="#1E293B" stroke="#EF6868" stroke-width="1.5"/>
+      <text x="380" y="46" fill="#FFF" font-size="8" text-anchor="middle" font-weight="bold">USART1_IRQHandler()</text>
+
+      <line x1="450" y1="42.5" x2="620" y2="42.5" stroke="rgba(148,163,184,0.15)" stroke-width="1.5"/>
+    </g>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Hardware interrupts preempt the foreground execution flow instantly, run briefly, and restore main loop execution context.</div>
+</div>`
+        },
+        {
+          type: "p",
+          text: "By delegating observation to peripheral hardware—such as configuring a UART module to raise an interrupt only when a byte arrives—the CPU can spend its foreground cycles on main loop calculations, safe in the knowledge that urgent events will break through instantly."
+        }
+      ]
+    },
+    {
+      heading: "8. The Handoff: Interrupt to Superloop",
+      content: [
+        {
+          type: "p",
+          text: "Because interrupts preempt foreground code, a critical design rule applies: keep ISRs short and bounded. An ISR should never print to a screen, process long packet arrays, or block inside delay loops. If an ISR runs too long, it starves other interrupts, causing data loss and system degradation."
+        },
+        {
+          type: "p",
+          text: "To resolve this, systems use a split handoff model. The ISR (background) detects the hardware condition, registers it, and yields immediately. The main loop (foreground) processes the actual work at a lower priority level:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nvolatile bool data_ready = false;\n\nvoid Some_IRQHandler(void)\n{\n    data_ready = true; // Signal the event\n}\n\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        if (data_ready)\n        {\n            data_ready = false;\n            ProcessData(); // Perform heavy execution here\n        }\n    }\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "This architecture decouples the physical notification of the event from its computational execution. It requires careful concurrency practices—such as marking shared indicators as \x60volatile\x60 to prevent compilers from optimizing away register reads—but it keeps the system both responsive and stable."
+        }
+      ]
+    },
+    {
+      heading: "9. Foreground and Background Work",
+      content: [
+        {
+          type: "p",
+          text: "By combining a sequential superloop with asynchronous interrupts, a simple bare-metal application builds a dual-execution model:\n\n1. **Foreground**: The main loop runs non-urgent application work, scheduling processes and updating slow states.\n2. **Background**: Interrupt routines handle urgent hardware events, copying data packets, and signaling flags.\n\nWhile the CPU core still executes a single instructions stream per instant, interrupts multiplex the execution context, creating a coordinated priority system directly on the silicon."
+        }
+      ]
+    },
+    {
+      heading: "10. The Problem of 'When'",
+      content: [
+        {
+          type: "p",
+          text: "We have answered our opening question: the infinite loop is the lifetime of the application, keeping the processor running and scheduling work.\n\nBut as applications grow, a new problem emerges: timing. Suppose our system needs to:\n- Read a button status frequently (every 1 ms)\n- Sample a temperature sensor occasionally (every 10 ms)\n- Update a low-power screen display periodically (every 100 ms)\n- Transmit a network package slowly (every 1 second)\n\nSimply grouping all of these tasks inside one \x60while(1)\x60 block means they all run at the same arbitrary, frequency-dependent speed of the loop. An infinite loop gives the machine repetition. It does not automatically give it time. To resolve this, we must teach our loop how to measure cycles, divide frequencies, and schedule its promises."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Eternal Engine",
+    paragraphs: [
+      "The infinite loop is the eternal engine of the bare-metal machine. It keeps the core executing, coordinates peripherals, and acts as the canvas upon which interrupts paint asynchronous events.",
+      "A loop can repeat forever. But to make that repetition useful, we must learn to structure it."
+    ],
+    quote: "A processor without a loop is a spark that goes out. The loop makes it a flame."
+  },
+  footer: "Exploring bare-metal superloop architectures, latency bottlenecks, and foreground-background execution coordination - PrajnaEdge.dev"
+},
+{
+  id: "teaching-time-to-an-infinite-loop",
+  category: "Bare Metal",
+  series: "System Explorations",
+  title: "Teaching Time to an Infinite Loop",
+  subtitle: "How to schedule multiple tasks at predictable intervals without an operating system.",
+  date: "23rd July, 2026",
+  tags: ["Bare Metal", "Superloop", "Timer", "Interrupts", "Cooperative Scheduler"],
+  sections: [
+    {
+      heading: "1. The Concept of Time",
+      content: [
+        {
+          type: "p",
+          text: "At the end of our previous journey, we watched the processor enter an infinite loop. It was a structural guarantee that the CPU would never run out of instructions. But we also hit a wall: the loop knows how to repeat, but it does not understand time. Consider this basic superloop:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    ReadSensor();\n    UpdateControl();\n    RefreshDisplay();\n    SendStatus();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "What if the application dictates that \x60ReadSensor()\x60 must execute every 10 milliseconds, \x60UpdateControl()\x60 every 20 milliseconds, \x60RefreshDisplay()\x60 every 100 milliseconds, and \x60SendStatus()\x60 every 1000 milliseconds? Neither the CPU instruction pipeline nor the while loop has any concept of a millisecond. If we run this loop as-is, it executes as fast as the system clock allows. The tasks run at arbitrary, hardware-dependent rates. To build a reliable machine, we must teach our software how to measure intervals."
+        }
+      ]
+    },
+    {
+      heading: "2. The Tempting Solution: Delay",
+      content: [
+        {
+          type: "p",
+          text: "The most common initial attempt to solve timing is the blocking delay. We insert waiting routines directly into the execution path:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    ReadSensor();\n    DelayMs(100); // Wait 100 ms\n    UpdateDisplay();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "During \x60DelayMs(100)\x60, the CPU core spins in a dummy loop, burning power while executing instructions that do nothing. The entire foreground execution path is blocked. If we try to schedule multiple tasks with different intervals using this approach, the timing collapses:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    ReadSensor();\n    DelayMs(10);\n\n    UpdateControl();\n    DelayMs(20);\n\n    RefreshDisplay();\n    DelayMs(100);\n\n    SendStatus();\n    DelayMs(1000);\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "These delays do not run independently; they accumulate. The actual period between executions of \x60ReadSensor()\x60 is not 10 milliseconds. It is the sum of all task execution times plus the sum of all delays—a cycle time exceeding 1130 milliseconds. Blocking delays only mean 'do not progress past this line of code for N milliseconds.' They are not a scheduling architecture."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">ACCUMULATED LATENCY OF BLOCKING DELAYS</div>
+  <svg viewBox="0 0 720 160" style="width:100%; height:auto; max-width:640px; font-family:var(--mono);">
+    <line x1="10" y1="50" x2="670" y2="50" stroke="rgba(148,163,184,0.2)" stroke-width="2"/>
+    <text x="670" y="45" fill="var(--muted)" font-size="8" text-anchor="end">Time &rarr;</text>
+
+    <rect x="10" y="60" width="80" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="50" y="76" fill="#E2E8F0" font-size="8" text-anchor="middle">ReadSensor()</text>
+    <text x="50" y="100" fill="var(--muted)" font-size="7" text-anchor="middle">T_exec: 2ms</text>
+
+    <rect x="90" y="60" width="70" height="25" rx="3" fill="rgba(239, 104, 104, 0.05)" stroke="#EF6868" stroke-dasharray="3,3"/>
+    <text x="125" y="76" fill="#EF6868" font-size="8" text-anchor="middle">DelayMs(10)</text>
+
+    <rect x="160" y="60" width="80" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="200" y="76" fill="#E2E8F0" font-size="8" text-anchor="middle">UpdateControl()</text>
+    <text x="200" y="100" fill="var(--muted)" font-size="7" text-anchor="middle">T_exec: 4ms</text>
+
+    <rect x="240" y="60" width="110" height="25" rx="3" fill="rgba(239, 104, 104, 0.05)" stroke="#EF6868" stroke-dasharray="3,3"/>
+    <text x="295" y="76" fill="#EF6868" font-size="8" text-anchor="middle">DelayMs(20)</text>
+
+    <rect x="350" y="60" width="90" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="395" y="76" fill="#E2E8F0" font-size="8" text-anchor="middle">RefreshDisplay()</text>
+    <text x="395" y="100" fill="var(--muted)" font-size="7" text-anchor="middle">T_exec: 12ms</text>
+
+    <rect x="440" y="60" width="220" height="25" rx="3" fill="rgba(239, 104, 104, 0.05)" stroke="#EF6868" stroke-dasharray="3,3"/>
+    <text x="550" y="76" fill="#EF6868" font-size="8" text-anchor="middle">DelayMs(100)</text>
+
+    <path d="M 10 120 L 10 130 M 10 125 L 660 125 M 660 120 L 660 130" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="335" y="142" fill="#E2E8F0" font-size="9" text-anchor="middle" font-weight="bold">Actual Loop Cycle Time = 148 ms (Expected 100 ms max)</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Delays stack sequentially, so the actual period of any task is stretched by all other operations and delay cycles in the loop.</div>
+</div>`
+        },
+        {
+          type: "p",
+          text: "Blocking delays are appropriate only in limited situations: initializing a display chip during boot, letting voltage lines settle, or debugging simple single-task setups. In real runtime environments, they paralyze foreground logic."
+        }
+      ]
+    },
+    {
+      heading: "3. The Machine Already Has a Clock",
+      content: [
+        {
+          type: "p",
+          text: "Instead of wasting CPU instruction cycles, we can delegate timekeeping to hardware peripherals. Microcontrollers contain hardware timers. These modules are independent binary counters on the silicon that increment based on a dedicated clock signal, running in parallel with the CPU's execution pipelines."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">HARDWARE TIMER PERIPHERAL PIPELINE</div>
+  <svg viewBox="0 0 680 180" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981"/>
+      </marker>
+    </defs>
+
+    <rect x="20" y="50" width="100" height="40" rx="5" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="70" y="70" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">CLOCK SOURCE</text>
+    <text x="70" y="82" fill="var(--muted)" font-size="7" text-anchor="middle">e.g. 16 MHz</text>
+
+    <path d="M 120 70 L 150 70" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+    <rect x="150" y="50" width="100" height="40" rx="5" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="200" y="70" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">PRESCALER</text>
+    <text x="200" y="82" fill="var(--muted)" font-size="7" text-anchor="middle">Divide by N (e.g. 16)</text>
+
+    <path d="M 250 70 L 280 70" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+    <rect x="280" y="50" width="120" height="40" rx="5" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+    <text x="340" y="70" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">TIMER COUNTER</text>
+    <text x="340" y="82" fill="#10B981" font-size="7" text-anchor="middle">Increments (CNT)</text>
+
+    <path d="M 400 70 L 430 70" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+    <rect x="430" y="50" width="120" height="40" rx="5" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="490" y="70" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">COMPARE REG</text>
+    <text x="490" y="82" fill="var(--muted)" font-size="7" text-anchor="middle">Target Value (ARR)</text>
+
+    <path d="M 340 90 L 340 120 L 490 120 L 490 90" fill="none" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,2"/>
+    <text x="415" y="115" fill="#E2E8F0" font-size="7" text-anchor="middle">Continuous hardware comparison: CNT == ARR?</text>
+
+    <path d="M 550 70 L 580 70" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+    <rect x="580" y="45" width="80" height="50" rx="5" fill="#1E293B" stroke="#EF6868" stroke-width="1.5"/>
+    <text x="620" y="65" fill="#EF6868" font-size="9" text-anchor="middle" font-weight="bold">INTERRUPT</text>
+    <text x="620" y="75" fill="#EF6868" font-size="9" text-anchor="middle" font-weight="bold">EVENT</text>
+    <text x="620" y="87" fill="var(--muted)" font-size="6" text-anchor="middle">Triggers ISR</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">The hardware timer counts clock pulses independently of the CPU core instruction pipeline.</div>
+</div>`
+        },
+        {
+          type: "p",
+          text: "Consider a simple configuration: an input clock of 1 MHz. If we set the timer's prescaler to 1, the counter increments every 1 microsecond. If we set a target compare register value of 1000, a comparator on the silicon triggers a compare match event exactly every 1000 counts—representing a precise 1 millisecond interval."
+        }
+      ]
+    },
+    {
+      heading: "4. The Hidden Connection: The Architecture of Time",
+      content: [
+        {
+          type: "p",
+          html: true,
+          text: "<span style=\"display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);\">We have encountered this hardware before. In <a onclick=\"openItem('the-architecture-of-time', 'blogs')\" style=\"color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;\">The Architecture of Time</a>, we explored what happens when timers themselves reach their limits — overflow, wraparound, and the edge cases hidden inside measuring time. Here, we are looking at the same hardware from another direction. Not how time can fail, but how time can organize software.</span>"
+        }
+      ]
+    },
+    {
+      heading: "5. Creating a System Tick",
+      content: [
+        {
+          type: "p",
+          text: "By configuring a hardware timer to assert an interrupt line at a periodic rate, we establish a software timebase—a system tick. Every tick, the CPU jumps to the interrupt vector to increment a global counter:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nvolatile uint32_t system_ticks = 0;\n\nvoid Timer_IRQHandler(void)\n{\n    system_ticks++;\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "If the timer is configured to interrupt every 1 millisecond, then \x60system_ticks\x60 increments 1000 times a second. An elapsed tick count of 10 corresponds to 10 milliseconds, and 1000 ticks represents 1 second. This global tick is the heartbeat of the system."
+        }
+      ]
+    },
+    {
+      heading: "6. Avoid ISR Bloat",
+      content: [
+        {
+          type: "p",
+          text: "Since we have a periodic timer interrupt, it is tempting to run our task logic directly inside the ISR:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nvoid Timer_IRQHandler(void)\n{\n    ReadSensor();\n    UpdateControl();\n    RefreshDisplay();\n    SendStatus();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "This is a dangerous anti-pattern. While this code runs at precise intervals, it executes inside the high-priority interrupt context. If the display refresh or status transmission takes longer than 1 millisecond, the ISR will not complete before the next timer interrupt triggers. The system crashes or locks up. Foreground execution is starved, other interrupts are blocked, and real-time promises fail."
+        }
+      ]
+    },
+    {
+      heading: "7. Flags: Turning Time Into Events",
+      content: [
+        {
+          type: "p",
+          text: "To keep the interrupt context lean, we use flags. The background ISR handles the timing calculations, sets boolean indicators when tasks become due, and yields control immediately. The heavy application execution is performed inside the foreground superloop:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nvolatile bool task_10ms = false;\nvolatile bool task_100ms = false;\nvolatile bool task_1000ms = false;\n\nvoid Timer_IRQHandler(void)\n{\n    static uint32_t tick = 0;\n    tick++;\n\n    if ((tick % 10) == 0)   task_10ms = true;\n    if ((tick % 100) == 0)  task_100ms = true;\n    if ((tick % 1000) == 0) task_1000ms = true;\n}\n\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        if (task_10ms)\n        {\n            task_10ms = false;\n            ReadSensor();\n        }\n        if (task_100ms)\n        {\n            task_100ms = false;\n            RefreshDisplay();\n        }\n        if (task_1000ms)\n        {\n            task_1000ms = false;\n            SendStatus();\n        }\n    }\n}\n\x60\x60\x60"
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">TIMER TICK & FLAG-BASED SUPERLOOP DISPATCH</div>
+  <svg viewBox="0 0 680 260" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+      </marker>
+    </defs>
+
+    <rect x="260" y="10" width="160" height="30" rx="4" fill="#1E293B" stroke="#10B981"/>
+    <text x="340" y="28" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">HARDWARE TIMER (1 ms Period)</text>
+
+    <path d="M 340 40 L 340 70" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <text x="350" y="58" fill="#10B981" font-size="8">Interrupt Request (IRQ)</text>
+
+    <rect x="220" y="70" width="240" height="50" rx="4" fill="#1E293B" stroke="#EF6868"/>
+    <text x="340" y="85" fill="#EF6868" font-size="9" text-anchor="middle" font-weight="bold">Timer_IRQHandler() [Background]</text>
+    <text x="340" y="98" fill="var(--muted)" font-size="8" text-anchor="middle">Increments tick, sets flags if due</text>
+    <text x="340" y="110" fill="var(--muted)" font-size="7" text-anchor="middle">e.g. if (tick % 10 == 0) task_10ms = true</text>
+
+    <path d="M 280 120 L 160 160" stroke="#EF6868" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <path d="M 340 120 L 340 160" stroke="#EF6868" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <path d="M 400 120 L 520 160" stroke="#EF6868" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+    <rect x="100" y="160" width="120" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="160" y="175" fill="#E2E8F0" font-size="8" text-anchor="middle">task_10ms = true</text>
+
+    <rect x="280" y="160" width="120" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="340" y="175" fill="#E2E8F0" font-size="8" text-anchor="middle">task_100ms = true</text>
+
+    <rect x="460" y="160" width="120" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="520" y="175" fill="#E2E8F0" font-size="8" text-anchor="middle">task_1000ms = true</text>
+
+    <path d="M 160 185 L 160 215" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <path d="M 340 185 L 340 215" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <path d="M 520 185 L 520 215" stroke="rgba(148,163,184,0.3)" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+    <rect x="80" y="215" width="520" height="35" rx="4" fill="rgba(59, 130, 246, 0.04)" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="340" y="236" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">FOREGROUND SUPERLOOP (Checks flags, runs tasks, resets flags)</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">The background ISR triggers at a precise frequency to raise flags, which the foreground superloop checks and processes cooperatively.</div>
+</div>`
+        }
+      ]
+    },
+    {
+      heading: "8. Why Flags Are Not Time",
+      content: [
+        {
+          type: "p",
+          text: "This split design keeps interrupts fast. However, it introduces a new variable: scheduling latency. A flag setting does not mean the task executes exactly at the due timestamp; it means the task is released for execution. The actual run begins when the foreground loop reaches the task's check block."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">SCHEDULING LATENCY EFFECT</div>
+  <svg viewBox="0 0 700 180" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <line x1="10" y1="50" x2="650" y2="50" stroke="rgba(148,163,184,0.2)" stroke-width="2"/>
+    <text x="650" y="45" fill="var(--muted)" font-size="8" text-anchor="end">Time &rarr;</text>
+
+    <rect x="10" y="60" width="220" height="25" rx="3" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="120" y="76" fill="#E2E8F0" font-size="8" text-anchor="middle">Foreground busy: RunHeavyMath()</text>
+
+    <line x1="150" y1="120" x2="150" y2="60" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="2,2"/>
+    <circle cx="150" cy="120" r="4" fill="#EF6868"/>
+    <text x="150" y="135" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">Flag set (Due Time)</text>
+    <text x="150" y="145" fill="var(--muted)" font-size="7" text-anchor="middle">task_10ms = true</text>
+
+    <path d="M 150 155 L 150 165 M 150 160 L 230 160 M 230 155 L 230 165" stroke="#EF6868" stroke-width="1"/>
+    <text x="190" y="175" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">Scheduling Latency</text>
+
+    <rect x="230" y="60" width="100" height="25" rx="3" fill="#1E293B" stroke="#10B981"/>
+    <text x="280" y="76" fill="#FFF" font-size="8" text-anchor="middle" font-weight="bold">ReadSensor()</text>
+    <text x="280" y="100" fill="var(--muted)" font-size="7" text-anchor="middle">Actual Execution</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">The difference between a task's release trigger and its actual execution start is the scheduling latency.</div>
+</div>`
+        },
+        {
+          type: "p",
+          text: "If the superloop is currently busy executing a 25 ms calculation when the 10 ms flag is raised, the task experiences 25 ms of scheduling latency. The execution time of the background tasks limits the timing accuracy of the foreground loop."
+        }
+      ]
+    },
+    {
+      heading: "9. When a Boolean Flag Loses Information",
+      content: [
+        {
+          type: "p",
+          text: "What happens if the scheduling latency is longer than the period of the task itself? Suppose the foreground loop is blocked for 35 milliseconds. During this block, the background timer interrupt fires three times at 10 ms, 20 ms, and 30 ms."
+        },
+        {
+          type: "p",
+          text: "With a simple boolean flag: \x60task_10ms = true\x60. The flag switches from false to true on the first tick, and remains true on the second and third ticks. When the foreground loop finally unblocks and checks the flag, it sees a single \x60true\x60 event. Two occurrences have collapsed, causing data loss. If our task is to refresh a screen, this is acceptable; we simply paint the latest frame. If the task is to sample a sensor, we have lost two critical packets of information."
+        },
+        {
+          type: "p",
+          text: "To resolve this, systems rely on event counters, timestamp registers, ring buffers, or hardware-managed DMA paths to capture data autonomously without depending on loop response times."
+        }
+      ]
+    },
+    {
+      heading: "10. Timestamp-Based Periodic Execution",
+      content: [
+        {
+          type: "p",
+          text: "An alternative scheduling architecture checks elapsed timestamps directly in the superloop without setting flags in the ISR. Instead of blocking the loop using delays, we check system ticks continuously:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nuint32_t last_sensor_time = 0;\n\nwhile (1)\n{\n    uint32_t now = system_ticks;\n\n    if ((uint32_t)(now - last_sensor_time) >= 10U)\n    {\n        last_sensor_time = now;\n        ReadSensor();\n    }\n    \n    // Other non-blocking checks can run here\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "Instead of waiting, the CPU evaluates the condition. If 10 milliseconds have not elapsed, it falls through to check other tasks. This transition from blocking waits to non-blocking timestamp comparisons keeps the loop flowing. Furthermore, by utilizing unsigned subtraction (\x60now - last_sensor_time\x60), the comparison remains completely wrap-safe when the 32-bit counter overflows and wraps back to zero."
+        }
+      ]
+    },
+    {
+      heading: "11. Period Versus Execution Time",
+      content: [
+        {
+          type: "p",
+          text: "Regardless of whether we use flags, timestamps, or operating system schedulers, there is an absolute physical constraint. Suppose a task must run every 10 milliseconds, but the task itself requires 15 milliseconds of CPU execution time. No scheduling technique can resolve this. The task overflows its time budget, causing a scheduling overrun:"
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">THE TIME BUDGET COLLAPSE (OVERRUN)</div>
+  <svg viewBox="0 0 700 180" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <line x1="10" y1="50" x2="650" y2="50" stroke="rgba(148,163,184,0.2)" stroke-width="2"/>
+    <text x="650" y="45" fill="var(--muted)" font-size="8" text-anchor="end">Time &rarr;</text>
+
+    <path d="M 10 25 L 10 35 M 10 30 L 250 30 M 250 25 L 250 35" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="130" y="22" fill="#3B82F6" font-size="9" text-anchor="middle" font-weight="bold">Required Period: 10 ms</text>
+
+    <path d="M 250 25 L 250 35 M 250 30 L 490 30 M 490 25 L 490 35" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="370" y="22" fill="#3B82F6" font-size="9" text-anchor="middle" font-weight="bold">Period 2: 10 ms</text>
+
+    <rect x="10" y="60" width="360" height="25" rx="3" fill="rgba(239, 104, 104, 0.05)" stroke="#EF6868"/>
+    <text x="190" y="76" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">Task execution: 15 ms</text>
+
+    <line x1="250" y1="40" x2="250" y2="100" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <polygon points="250,105 245,95 255,95" fill="#EF6868"/>
+    <text x="250" y="118" fill="#EF6868" font-size="8" text-anchor="middle" font-weight="bold">Missed Deadline / Overrun</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">If execution time exceeds the required period, the system cannot meet its timing goals, regardless of the scheduler used.</div>
+</div>`
+        },
+        {
+          type: "p",
+          text: "To avoid timing collapses, the total processor utilization—the sum of all task execution times divided by their periods—must remain safely below 100%. If utilization exceeds this boundary, the workload must be reduced, optimized, or distributed across multiple cores."
+        }
+      ]
+    },
+    {
+      heading: "12. A Simple Cooperative Scheduler",
+      content: [
+        {
+          type: "p",
+          text: "By organizing tasks inside non-blocking time checks, we have constructed a basic Cooperative Scheduler directly on the bare metal:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nwhile (1)\n{\n    if (TaskDue_10ms())   RunFastTask();\n    if (TaskDue_100ms())  RunMediumTask();\n    if (TaskDue_1000ms()) RunSlowTask();\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "Because there is no RTOS kernel managing preemptive context switches, every task runs to completion. This system works because each task cooperates by completing its work quickly and returning control to the superloop. It is simple, highly efficient, and predictable—but it requires discipline to avoid any blocking calls."
+        }
+      ]
+    },
+    {
+      heading: "13. The Timer Solved 'When', But Not 'What'",
+      content: [
+        {
+          type: "p",
+          text: "We have structured our loop, bringing order and timing to our tasks. The microcontroller now executes routines at predictable frequencies."
+        },
+        {
+          type: "p",
+          text: "But knowing when to run is only half of firmware behavior. A system must also know what to do at that moment. A motor controller running every 10 milliseconds must act differently if it is starting up, spinning at target speed, braking, or indicating a fault. Time tells the system when to reconsider its state. We must now explore how behavior shifts as the machine transitions across conditions."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Division of Time",
+    paragraphs: [
+      "The infinite loop gave the machine repetition. The timer gave that repetition structure, dividing time into predictable intervals.",
+      "But to make that repetition useful, the machine must also understand its conditions."
+    ],
+    quote: "A loop without time is a runaway engine. Time gives it a path; state gives it a purpose."
+  },
+  footer: "Analyzing bare-metal timers, flag-based superloops, scheduling latency, and cooperative execution models - PrajnaEdge.dev"
+},
+{
+  id: "when-behaviour-becomes-state",
+  category: "Bare Metal",
+  series: "System Explorations",
+  title: "When Behaviour Becomes State",
+  subtitle: "How to design predictable firmware states without operating system schedulers.",
+  date: "23rd July, 2026",
+  tags: ["Bare Metal", "State Machine", "Firmware Design", "Superloop", "Timing"],
+  sections: [
+    {
+      heading: "1. Same Input, Different Behaviour",
+      content: [
+        {
+          type: "p",
+          text: "Our previous explorations built a sequential superloop and taught it to coordinate tasks at precise intervals using hardware timers. The machine now has heartbeat and timing structure. But a critical question remains: even if the system knows exactly when to run a task, how does it decide what behaviour is appropriate at this exact millisecond?"
+        },
+        {
+          type: "p",
+          text: "Consider a motor-driven industrial system. It receives a single input: a \x60Start\x60 button press. If the system is idle, pressing Start should engage the power relays and initiate a startup sequence. If the motor is already running, pressing Start should be ignored. If the system is in a fault state due to an overcurrent trigger, pressing Start must be rejected for safety."
+        },
+        {
+          type: "p",
+          text: "The physical input is identical in all three cases. Yet, the required software reaction is entirely different. This is because input alone does not determine behaviour. Behaviour is a function of both the current input and the historical context of the system. We call this context the system's State."
+        },
+        {
+          type: "quote",
+          text: "Embedded software cannot exist as a pure function of its inputs. It must remember its past to govern its future."
+        }
+      ]
+    },
+    {
+      heading: "2. The Hidden Memory Inside Behaviour",
+      content: [
+        {
+          type: "p",
+          text: "In poorly structured firmware, state is often stored in scattered boolean flags: \x60bool is_running = false;\x60, \x60bool has_fault = false;\x60, \x60bool is_starting = false;\x60. As features grow, these flags multiply. Contradictory states accidentally become possible: what happens if both \x60is_running\x60 and \x60has_fault\x60 are true? The code enters an undefined territory."
+        },
+        {
+          type: "p",
+          text: "To avoid this complexity, we define mutually exclusive modes of operation using an explicit enumeration:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\ntypedef enum\n{\n    STATE_IDLE,\n    STATE_STARTING,\n    STATE_RUNNING,\n    STATE_FAULT\n} SystemState;\n\nSystemState current_state = STATE_IDLE;\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "By declaring a single \x60current_state\x60 variable, we guarantee that the firmware can occupy exactly one state at any given moment. This is the foundation of a Finite State Machine."
+        }
+      ]
+    },
+    {
+      heading: "3. The First State Machine",
+      content: [
+        {
+          type: "p",
+          text: "The most common bare-metal state machine pattern utilizes a switch statement inside a periodic superloop task:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nswitch (current_state)\n{\n    case STATE_IDLE:\n        HandleIdle();\n        break;\n\n    case STATE_STARTING:\n        HandleStarting();\n        break;\n\n    case STATE_RUNNING:\n        HandleRunning();\n        break;\n\n    case STATE_FAULT:\n        HandleFault();\n        break;\n\n    default:\n        current_state = STATE_FAULT; // Fail-safe default\n        break;\n}\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "This switch-case structure maps our states, events, and transitions. It organizes code into modular, isolated blocks, preventing feature additions from degrading into a tangle of conditional statements."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">SYSTEM STATE TRANSITION DIAGRAM</div>
+  <svg viewBox="0 0 600 320" style="width:100%; height:auto; max-width:500px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+      </marker>
+      <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#EF6868"/>
+      </marker>
+    </defs>
+
+    <rect x="50" y="40" width="100" height="40" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="100" y="65" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">STATE_IDLE</text>
+
+    <path d="M 150 60 L 290 60" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <text x="220" y="52" fill="#3B82F6" font-size="8" text-anchor="middle">Start command</text>
+
+    <rect x="300" y="40" width="100" height="40" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="350" y="65" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">STATE_STARTING</text>
+
+    <path d="M 350 80 L 350 170" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <text x="360" y="130" fill="#3B82F6" font-size="8" text-anchor="start">Startup complete</text>
+
+    <rect x="300" y="180" width="100" height="40" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+    <text x="350" y="205" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">STATE_RUNNING</text>
+
+    <path d="M 300 200 L 150 200" stroke="#EF6868" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+    <text x="225" y="192" fill="#EF6868" font-size="8" text-anchor="middle">Fault detected</text>
+
+    <rect x="50" y="180" width="100" height="40" rx="6" fill="#1E293B" stroke="#EF6868" stroke-width="1.5"/>
+    <text x="100" y="205" fill="#FFF" font-size="9" font-weight="bold" text-anchor="middle">STATE_FAULT</text>
+
+    <path d="M 100 180 L 100 90" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+    <text x="90" y="140" fill="#3B82F6" font-size="8" text-anchor="end">Reset / Fault cleared</text>
+
+    <path d="M 300 70 C 200 90, 150 120, 120 170" fill="none" stroke="#EF6868" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow-red)"/>
+    <text x="180" y="115" fill="#EF6868" font-size="8" text-anchor="middle">Fault during boot</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Mutually exclusive enums form deterministic paths where inputs trigger state transitions and execution modes.</div>
+</div>`
+        }
+      ]
+    },
+    {
+      heading: "4. Transitions: When Behaviour Changes",
+      content: [
+        {
+          type: "p",
+          text: "A state transition is the act of switching from one state to another. In our motor example, transitions are conditional:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\ncase STATE_IDLE:\n    if (start_requested)\n    {\n        current_state = STATE_STARTING;\n    }\n    break;\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "By validating transitions only within specific states, we ensure that out-of-order events (such as pressing Start while the machine is already running or faulted) are ignored, maintaining safety and operational constraints."
+        }
+      ]
+    },
+    {
+      heading: "5. Entry, Run, and Exit Actions",
+      content: [
+        {
+          type: "p",
+          text: "Transitioning to a state often requires one-time configurations. For example, entering \x60STATE_STARTING\x60 requires enabling a motor relay, clearing a fault log, and setting a boot timer. If we place this logic inside the state handler:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\ncase STATE_STARTING:\n    EnableMotorRelay();\n    ResetBootTimer();\n    break;\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "These routines execute repeatedly on every iteration of the superloop. This wastes execution cycles and resets timers continuously, preventing the system from progressing. We must divide state actions into distinct phases:\n\n1. **On Entry**: Runs exactly once when entering the state.\n2. **While Active (Run)**: Runs repeatedly while the state remains active.\n3. **On Exit**: Runs exactly once when leaving the state."
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">STATE TRANSITION LIFECYCLE (ENTRY / RUN / EXIT)</div>
+  <svg viewBox="0 0 680 180" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981"/>
+      </marker>
+    </defs>
+
+    <rect x="20" y="50" width="160" height="50" rx="5" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="100" y="72" fill="#3B82F6" font-size="9" text-anchor="middle" font-weight="bold">ON ENTRY (Once)</text>
+    <text x="100" y="87" fill="var(--muted)" font-size="7" text-anchor="middle">Configure registers / reset timers</text>
+
+    <path d="M 180 75 L 240 75" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+    <rect x="240" y="40" width="200" height="70" rx="5" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+    <text x="340" y="65" fill="#10B981" font-size="9" text-anchor="middle" font-weight="bold">WHILE IN STATE (Every Loop)</text>
+    <text x="340" y="80" fill="var(--muted)" font-size="7" text-anchor="middle">Run continuous task behavior</text>
+    <text x="340" y="93" fill="var(--muted)" font-size="7" text-anchor="middle">Check transition conditions</text>
+
+    <path d="M 440 75 L 500 75" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+    <rect x="500" y="50" width="160" height="50" rx="5" fill="#1E293B" stroke="#EF6868" stroke-width="1.5"/>
+    <text x="580" y="72" fill="#EF6868" font-size="9" text-anchor="middle" font-weight="bold">ON EXIT (Once)</text>
+    <text x="580" y="87" fill="var(--muted)" font-size="7" text-anchor="middle">Release hardware / clear flags</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Explicit boundaries ensure setup and teardown routines execute exactly once during transitions.</div>
+</div>`
+        },
+        {
+          type: "p",
+          text: "In modular systems, transitions are routed through a dedicated state-setter function that enforces this lifecycle:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nvoid SetState(SystemState new_state)\n{\n    if (new_state == current_state)\n        return;\n\n    ExitState(current_state);       // Trigger exit logic\n    current_state = new_state;\n    EnterState(current_state);     // Trigger entry logic\n}\n\x60\x60\x60"
+        }
+      ]
+    },
+    {
+      heading: "6. Integrating Time: Non-Blocking State Waits",
+      content: [
+        {
+          type: "p",
+          text: "Let's connect this state model with the timing engine we built in our previous exploration. Suppose our startup process must wait in \x60STATE_STARTING\x60 for exactly 500 milliseconds before transitioning to \x60STATE_RUNNING\x60. The naive approach uses blocking delay:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\ncase STATE_STARTING:\n    EnableMotorRelay();\n    DelayMs(500); // Blocks the entire system\n    current_state = STATE_RUNNING;\n    break;\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "This delay freezes the superloop. The CPU cannot check sensors, handle communications, or evaluate safety limits for half a second, exposing the machine to catastrophic failure modes if a fault occurs during boot."
+        },
+        {
+          type: "p",
+          text: "Instead of blocking, we integrate state with our non-blocking tick counter: On entering \x60STATE_STARTING\x60, we record the start timestamp: \x60startup_begin_time = system_ticks;\x60. Then, inside the active state checks, we evaluate the duration:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\ncase STATE_STARTING:\n    if ((uint32_t)(system_ticks - startup_begin_time) >= 500U)\n    {\n        SetState(STATE_RUNNING); // Transition safely\n    }\n    break;\n\x60\x60\x60"
+        },
+        {
+          type: "p",
+          text: "By checking elapsed time instead of waiting passively, the processor is released. The loop continues to run, keeping communication layers flowing and safety interrupts fully armed while the startup period progresses. The machine doesn't wait; it remembers."
+        }
+      ]
+    },
+    {
+      heading: "7. Putting It Inside the Superloop",
+      content: [
+        {
+          type: "p",
+          text: "We can now examine how the entire bare-metal architecture comes together inside our main application loop:"
+        },
+        {
+          type: "p",
+          text: "\x60\x60\x60c\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        ProcessInputs();\n        ProcessCommunication();\n\n        if (control_task_due)\n        {\n            control_task_due = false;\n            RunStateMachine(); // Executes periodic control logic\n        }\n\n        ProcessBackgroundWork();\n    }\n}\n\x60\x60\x60"
+        },
+        {
+          type: "html",
+          html: `<div style="background:#0F172A; padding:1.5rem; border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; margin:2rem 0;">
+  <div style="font-family:'Syne',sans-serif; font-size:0.9rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center;">THE COOPERATIVE TIMED STATE ARCHITECTURE</div>
+  <svg viewBox="0 0 680 280" style="width:100%; height:auto; max-width:600px; font-family:var(--mono);">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3B82F6"/>
+      </marker>
+    </defs>
+
+    <rect x="250" y="10" width="180" height="30" rx="4" fill="#1E293B" stroke="#10B981"/>
+    <text x="340" y="28" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">1. HARDWARE TIMER (ticks)</text>
+
+    <path d="M 340 40 L 340 75" stroke="#10B981" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+    <rect x="200" y="75" width="280" height="45" rx="4" fill="#1E293B" stroke="#EF6868"/>
+    <text x="340" y="92" fill="#EF6868" font-size="9" text-anchor="middle" font-weight="bold">2. BACKGROUND TIMER ISR / SYSTEM TICKS</text>
+    <text x="340" y="107" fill="var(--muted)" font-size="7" text-anchor="middle">Increments counter, flags periodic control windows</text>
+
+    <path d="M 340 120 L 340 155" stroke="#EF6868" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+    <rect x="150" y="155" width="380" height="45" rx="4" fill="#1E293B" stroke="#3B82F6"/>
+    <text x="340" y="172" fill="#3B82F6" font-size="9" text-anchor="middle" font-weight="bold">3. FOREGROUND SUPERLOOP DISPATCHER</text>
+    <text x="340" y="187" fill="var(--muted)" font-size="7" text-anchor="middle">Evaluates non-blocking time window tasks</text>
+
+    <path d="M 340 200 L 340 235" stroke="#3B82F6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+
+    <rect x="180" y="235" width="320" height="35" rx="4" fill="rgba(59, 130, 246, 0.04)" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="340" y="256" fill="#FFF" font-size="9" text-anchor="middle" font-weight="bold">4. STATE MACHINE (Determines current behavior)</text>
+  </svg>
+  <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">Hardware timers tick background registers; superloop filters dispatch; state enums direct actual instruction blocks.</div>
+</div>`
+        }
+      ]
+    },
+    {
+      heading: "8. Events Can Come from Many Places",
+      content: [
+        {
+          type: "p",
+          text: "State transitions can be driven by a variety of asynchronous event sources:\n- **Hardware Input Events**: Button presses, optical sensor triggers, limit switch closures.\n- **Timer Expired Events**: Software timeout completions (like our non-blocking 500 ms wait).\n- **Sensor Thresholds**: Temperature crossing safety ranges.\n- **Communication Messages**: Host system packet arrivals.\n- **Interrupt Signals**: Critical peripheral hardware updates."
+        },
+        {
+          type: "p",
+          text: "In a clean cooperative architecture, background interrupts capture and queue these events, leaving the foreground logic to evaluate and execute the state transitions at a safe, unified execution level. This limits context-switch issues and race conditions."
+        }
+      ]
+    },
+    {
+      heading: "9. State Explosion",
+      content: [
+        {
+          type: "p",
+          text: "State machines are a powerful structuring tool, but they have a scaling bottleneck: state explosion. A basic application starts with 4 states. As features are added, you introduce new states: \x60STOPPING\x60, \x60CALIBRATING\x60, \x60DIAGNOSTIC\x60, \x60UPDATE_FW\x60, \x60LOW_POWER\x60. The number of states grows, and the paths between them multiply exponentially."
+        },
+        {
+          type: "p",
+          text: "If transition paths are modified from multiple locations in the file without clear boundaries, states can trigger unexpectedly, causing hidden bugs. Designing state machines requires caution: keep state counts bounded, keep state modification unified, and enforce strict ownership of state-variable updates."
+        }
+      ]
+    },
+    {
+      heading: "10. A State Machine Is Not the Machine",
+      content: [
+        {
+          type: "p",
+          text: "A state machine is a conceptual model used to organize code, not a representation of the entire system. Real-world systems also contain continuous physical processes, asynchronous hardware registers, packet streams, and interrupt lines. Trying to model every single variable and condition as a state will make the code unmanageable. State should be reserved for representing the system's primary operating modes."
+        }
+      ]
+    },
+    {
+      heading: "11. The Complete Bare Metal Picture",
+      content: [
+        {
+          type: "p",
+          text: "We have reached the end of our foundational path. Our bare-metal machine now possesses a complete execution architecture, built step-by-step across four key stages:\n\n1. **Before main()**: How silicon boots, configures vectors, migrates memory segments, and constructs the C environment.\n2. **The Infinite Loop That Runs a Machine**: How the core commits to perpetual execution, performing background and foreground cycles.\n3. **Teaching Time to an Infinite Loop**: How independent counters and timer interrupts segment execution, scheduling tasks periodically.\n4. **When Behaviour Becomes State**: How explicit enums and transitions organize behaviors, ensuring the machine reacts safely to inputs."
+        }
+      ]
+    }
+  ],
+  closing: {
+    heading: "The Limits of the Simple Model",
+    paragraphs: [
+      "This simple timed superloop and state machine architecture can support highly sophisticated products—from medical devices to aerospace sensor nodes. It operates directly on the silicon with zero kernel overhead, minimal memory foot print, and complete predictability.",
+      "But as system complexity continues to scale, this cooperative model reaches a boundary. What happens when multiple tasks must block for external events, or task execution times collide? When sequential cooperation is no longer enough, a new way of organizing execution is waiting."
+    ],
+    quote: "The superloop keeps running, ticking millisecond by millisecond, waiting for the next path to awaken."
+  },
+  footer: "Analyzing bare-metal state machines, transition lifecycles, and integrated timing models - PrajnaEdge.dev"
 }
 ];
 
@@ -4189,12 +5535,16 @@ function renderHomeTree() {
     let nodeId = "";
 
     if (rawId.startsWith('hotspot-path-')) {
-      isSpecialPath = true;
       nodeId = rawId.replace('hotspot-path-', ''); // "BareMetal" or "OperatingSystems"
       if (nodeId === 'BareMetal') {
-        label = "Bare Metal — This path has not awakened yet.";
-      } else if (nodeId === 'OperatingSystems') {
-        label = "Operating Systems — This path has not awakened yet.";
+        isSpecialPath = false;
+        nodeId = "Bare Metal";
+        label = "Bare Metal";
+      } else {
+        isSpecialPath = true;
+        if (nodeId === 'OperatingSystems') {
+          label = "Operating Systems — This path has not awakened yet.";
+        }
       }
     } else if (rawId.startsWith('hotspot-branch-')) {
       isDormantBranch = true;
@@ -4518,6 +5868,7 @@ function openItem(id, type) {
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
       if (b.type === 'image' || b.type === 'img') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
+      if (b.type === 'html') return b.html;
       if (b.type === 'edgecase') return `<div id="${escHtml(b.id)}" class="edgecase-container"></div>`;
       return '';
     }).join('');
@@ -4557,16 +5908,31 @@ function openItem(id, type) {
         }
 
         let nextHtml = '';
-        if (nextExp && nextExp.id) {
-          nextHtml = `
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
-          `;
+        if (nextExp) {
+          if (nextExp.id) {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
+            `;
+          } else {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                ${escHtml(nextExp.title)}
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
+          }
         } else if (nodeIndex !== -1 && nodeIndex < nodeOrder.length - 1) {
           const nextNodeKey = nodeOrder[nodeIndex + 1];
           nextHtml = `
             <span class="nav-dir-label">Next →</span>
             <a class="nav-link active" onclick="filterNodeRoute('${nextNodeKey}')">Continue to ${escHtml(nextNodeKey)}</a>
+          `;
+        } else if (nodeKey === "Bare Metal") {
+          nextHtml = `
+            <span class="nav-dir-label">Next →</span>
+            <span class="nav-link locked">Another path has not awakened yet.</span>
           `;
         } else {
           nextHtml = `
@@ -4611,7 +5977,6 @@ function openItem(id, type) {
     initEdgeCase(container.id);
   });
 }
-
 // ─── JOURNEY ──────────────────────────────────────────────────────────────────
 const stepLabels = ["Foundations","Systems","Intelligence","Current Focus"];
 function renderJourney() {
@@ -4646,8 +6011,14 @@ function setNode(i) { activeNode = i; renderJourney(); }
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function parseTextFormatting(text) {
+  // 0a. Code blocks: ```c ... ``` -> <div class="blog-code">...</div>
+  let parsed = text.replace(/\x60\x60\x60(?:c|cpp|assembly|asm)?\n([\s\S]*?)\n\x60\x60\x60/g, '<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">$1</div>');
+
+  // 0b. Inline code: `code` -> <code style="...">code</code>
+  parsed = parsed.replace(/\x60([^\x60\n]+?)\x60/g, '<code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">$1</code>');
+
   // 1. Bold notation: **text** -> <strong>text</strong>
-  let parsed = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  parsed = parsed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   
   // 2. Block math: $$...$$ -> centered block equation
   parsed = parsed.replace(/\$\$(.*?)\$\$/g, (match, mathExpr) => {
