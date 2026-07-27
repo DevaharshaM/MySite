@@ -5438,14 +5438,22 @@ function renderHomeTree() {
   }
 
   function showFinalInteractiveState() {
-    video.style.display = 'none';
-    video.pause();
+    // Show static final frame overlay, allowing transition to fade it in over the video
     finalFrame.style.opacity = '1';
     finalFrame.style.pointerEvents = 'auto';
     overlay.style.pointerEvents = 'auto';
     
     // Toggle button visibility: Replay becomes visible, Volume becomes hidden
     replayBtn.classList.add('visible');
+    volumeBtn.classList.remove('visible');
+
+    // Smoothly hide the video after the fade-in transition of final-frame has completed (~150ms style.css)
+    setTimeout(() => {
+      if (finalFrame.style.opacity === '1') {
+        video.pause();
+        video.style.display = 'none';
+      }
+    }, 200);
   }
 
   function startVideoPlayback() {
@@ -10752,25 +10760,64 @@ window.addEventListener('popstate', () => {
   handleUrlRouting();
 });
 
+// ─── CONTACT TAB SWITCHER ─────────────────────────────────────────────────────
+function switchContactTab(targetTabId) {
+  const currentPane = document.querySelector('.contact-tab-pane.active');
+  const targetPane = document.getElementById('pane-' + targetTabId);
+  if (!currentPane || !targetPane || currentPane === targetPane) return;
+  
+  // Update button active state
+  const buttons = document.querySelectorAll('.contact-tab-btn');
+  buttons.forEach(btn => {
+    const onclickStr = btn.getAttribute('onclick');
+    if (onclickStr && onclickStr.includes(targetTabId)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Fade out current pane
+  currentPane.classList.remove('show');
+  
+  setTimeout(() => {
+    currentPane.classList.remove('active');
+    currentPane.style.display = 'none';
+    
+    targetPane.style.display = 'block';
+    // Trigger reflow to restart transition
+    targetPane.offsetHeight;
+    targetPane.classList.add('active');
+    targetPane.classList.add('show');
+  }, 150); // wait for 150ms fade-out transition, then switch and fade-in
+}
+
 // ─── FEEDBACK FORM HANDLER ───────────────────────────────────────────────────
 const feedbackForm = document.getElementById("feedback-form");
 if (feedbackForm) {
   feedbackForm.addEventListener("submit", function(event) {
     event.preventDefault(); // Prevent default form submission stalling page routing
     
-    const textarea = document.getElementById("feedback-textarea");
-    if (!textarea) return;
+    const categoryEl = document.getElementById("feedback-category");
+    const subjectEl = document.getElementById("feedback-subject");
+    const messageEl = document.getElementById("feedback-textarea");
     
-    const text = textarea.value;
-    if (!text.trim()) return;
+    if (!categoryEl || !subjectEl || !messageEl) return;
+    
+    const category = categoryEl.value;
+    const subject = subjectEl.value;
+    const message = messageEl.value;
+    
+    if (!message.trim() || !subject.trim()) return;
     
     // Normalize all line breaks to \r\n for maximum mail client compatibility
-    const formattedText = text.replace(/\r?\n/g, "\r\n");
+    const formattedMessage = message.replace(/\r?\n/g, "\r\n");
     
-    // Sanitize the text cleanly
-    const sanitizedText = encodeURIComponent(formattedText);
+    // Sanitize the inputs cleanly
+    const emailSubject = encodeURIComponent(`[${category}] ${subject}`);
+    const emailBody = encodeURIComponent(formattedMessage);
     
     // Explicitly trigger the mailto redirect
-    window.location.href = "mailto:meesarapud@gmail.com?subject=prajnaedge%20feedback&body=" + sanitizedText;
+    window.location.href = `mailto:feedback@prajnaedge.dev?subject=${emailSubject}&body=${emailBody}`;
   });
 }

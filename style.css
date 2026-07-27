@@ -1172,4 +1172,170 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   background: rgba(255, 255, 255, 0.01);
 }
 
+/* CONTACT REDESIGN SECTIONS & TABS */
+.contact-tabs-container {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 2rem 0;
+  width: 100%;
+}
+
+.contact-tabs-segmented {
+  display: inline-flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.contact-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.5rem 1.75rem;
+  border-radius: 20px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.contact-tab-btn:hover {
+  color: #fff;
+}
+
+.contact-tab-btn.active {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* TAB PANES CROSSFADE ANIMATION */
+.contact-tab-pane {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: none;
+  width: 100%;
+}
+
+.contact-tab-pane.active {
+  display: block;
+}
+
+.contact-tab-pane.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* CONNECT TAB SPECIFICS */
+.connect-cards-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.connect-card {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.connect-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+  background: var(--surface2);
+}
+
+.connect-note {
+  margin-top: 2.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.8;
+  font-family: var(--mono);
+  max-width: 500px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* FEEDBACK TAB SPECIFICS */
+.feedback-form-container {
+  width: 100%;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.feedback-group {
+  margin-bottom: 1.25rem;
+}
+
+.feedback-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.feedback-select, .feedback-input, .feedback-textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: #E2E8F0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.85rem 1rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-select:focus, .feedback-input:focus, .feedback-textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px var(--blue-glow);
+}
+
+.feedback-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* RESPONSIVE LAYOUT BREAKPOINTS */
+@media(max-width: 900px) {
+  .connect-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(max-width: 640px) {
+  .connect-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 

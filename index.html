@@ -263,41 +263,71 @@
 </div>
 
 <div class="page" id="page-contact">
-  <section class="empty-page">
-    <div class="empty-title">Let's Connect</div>
-    <div class="empty-sub">
-      If you're working on systems, intelligence, or something in between — I'd like to hear about it.
-    </div>
-    <div style="margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
-      <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer"
-         class="info-card" style="cursor:pointer;text-decoration:none;display:block">
-        LinkedIn<br><span style="color:#64748B">View profile</span>
-      </a>
-      <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer"
-         class="info-card" style="cursor:pointer;text-decoration:none;display:block">
-        GitHub<br><span style="color:#64748B">Explore work</span>
-      </a>
-      <a href="mailto:meesarapud@gmail.com"
-         class="info-card" style="cursor:pointer;text-decoration:none;display:block">
-        Email<br><span style="color:#64748B">Send message</span>
-      </a>
-    </div>
-    <div style="margin-top:2rem;font-size:0.8rem;color:#64748B">
-      Open to conversations, ideas, and interesting problems.
-    </div>
-    <div style="margin-top:3rem;width:100%;max-width:480px">
-      <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;margin-bottom:0.75rem">
-        // leave feedback
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
       </div>
-      <form id="feedback-form" class="feedback-form">
-        <textarea name="feedback" id="feedback-textarea" rows="4" placeholder="Share feedback or suggestions..."
-          style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:#E2E8F0;font-family:'DM Sans',sans-serif;font-size:0.9rem;padding:0.85rem 1rem;resize:vertical;outline:none;box-sizing:border-box;line-height:1.6"
-          onfocus="this.style.borderColor='var(--blue)'"
-          onblur="this.style.borderColor='var(--border)'"></textarea>
-        <button type="submit" class="btn-primary" style="margin-top:0.75rem">
-          Send Feedback →
-        </button>
-      </form>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">GitHub</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
     </div>
   </section>
   <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
