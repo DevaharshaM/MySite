@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>When One Loop Was Enough | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/when-one-loop-was-enough/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+      </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Integration</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">When One Loop Was Enough</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">The first software architecture of embedded systems.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Bare Metal</span><span class="tag">Software Architecture</span><span class="tag">Super-loop</span><span class="tag">Multitasking</span><span class="tag">Embedded Systems</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Hardware Is Ready</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have spent chapters assembling the physical machine. We designed the silicon gates, configured the system clocks, wired up communication buses, and added watchdog monitors to protect the device from itself. The hardware is ready. But at this moment, the processor is silent. At power-on, it simply loads the reset vector, initializes the stack pointer, and waits.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Without software to orchestrate its behavior, a microcontroller is nothing more than expensive sand. The hardware provides the capability, but software must provide the purpose. How do we organize the instructions that bring this silicon to life?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/bare_metal_system_overview.svg/" onclick="openItem('Images/bare_metal_system_overview.svg', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Bare Metal Firmware Structure Overview</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The First Software</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When personal computers run software, they do so under the supervision of a massive operating system. But in early embedded systems, there were no operating systems. The software had to run directly on the 'bare metal' of the hardware.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The simplest possible software architecture is a sequence of direct instructions. We fetch a sensor value, perform a calculation, and write the output to a pin. But an embedded system cannot simply execute these instructions once and shut down; it must monitor and control its environment indefinitely. To achieve this, the entire program is wrapped in a loop that never ends:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">int main(void) {
+    // Initialize hardware clocks and peripherals
+    hardware_init();
+
+    while (1) {
+        // Execute code repeatedly forever
+        read_sensors();
+        update_outputs();
+    }
+}</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This simple infinite loop — the super-loop — became the heartbeat of early embedded systems. It runs as fast as the processor can fetch instructions, executing the same sequence of tasks over and over.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Growing Responsibilities</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In a basic device, the super-loop is elegant and short. But as products grow, the loop becomes the repository for every new feature. A single loop must now handle a multitude of tasks:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Inputs</strong>: Check if a button is pressed; sample the ADC channel for temperature.
+* <strong>Logic</strong>: Run a filter on the ADC readings; calculate the next motor velocity.
+* <strong>Outputs</strong>: Write a new duty cycle value to the PWM timer; toggle status LEDs.
+* <strong>Communications</strong>: Check if a byte has arrived in the UART buffer; parse a CAN frame.
+* <strong>Diagnostics</strong>: Feed the watchdog timer; monitor the battery voltage.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every single one of these tasks is placed inside the same <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">while(1)</code> block, executed sequentially, one after another.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/superloop_responsibilities.svg/" onclick="openItem('Images/superloop_responsibilities.svg', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">The Classic Super-Loop Task Sequence</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Why It Worked</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is tempting to view Bare Metal as a primitive, outdated architecture. But in engineering, simplicity is a feature, not a bug. Bare Metal was, and remains, an exceptionally powerful design choice for several reasons:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Zero Overhead</strong>: There is no operating system scheduler taking up CPU cycles. Every clock cycle is dedicated to your application code.
+* <strong>Tiny Memory Footprint</strong>: A super-loop does not need task control blocks, stacks for each thread, or message queues. It runs entirely on a single system stack, preserving precious SRAM.
+* <strong>Total Predictability</strong>: Because tasks run in a fixed sequence, there are no unpredictable context switches or priority inversions. The path of execution is completely deterministic.
+* <strong>Easy Debugging</strong>: If the system halts, the call stack tells you exactly which instruction inside the loop caused the failure.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For millions of successful products — from digital thermometers and microwave ovens to automotive sensors — Bare Metal is not a compromise; it is the optimal engineering solution.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The Hidden Cost</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The vulnerability of a sequential loop is that it assumes every task is fast. In a super-loop, a delay in one task becomes a delay for the entire system. This is the 'Timing Wall'.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Consider what happens if we add a slow task, like reading an external temperature sensor over I2C. The sensor takes 10 milliseconds to perform a conversion. If the CPU spins in a blocking while-loop waiting for the I2C transfer to complete, the entire loop stops. During those 10 milliseconds, the buttons are not polled, the motor PWM is not updated, and serial bytes are missed. If a user presses a button during that window, the press is completely lost. The tasks are cooperatively linked: if one misbehaves, the timing of the entire device is destroyed.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/superloop_crowded_delay.svg/" onclick="openItem('Images/superloop_crowded_delay.svg', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Timing Delays and Missed Events in a Crowded Loop</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Architecture Before Frameworks</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Bare Metal is not simply 'no operating system.' It is a active architectural choice that forces the developer to become the scheduler. To keep the loop running smoothly, the engineer must write non-blocking code. Instead of waiting for a timer to expire, they poll a hardware flag. Instead of waiting for a UART transmission to finish, they write bytes to a software buffer and let interrupts handle the hardware registers.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This approach teaches fundamental embedded systems thinking. It forces the developer to understand the timing budget of every line of code, the bandwidth of the bus, and the cooperative relationship between hardware peripherals and CPU cycles.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. Real Embedded Examples</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We can observe Bare Metal super-loops running reliably in many everyday systems:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Simple Sensor Nodes</strong>: A remote temperature transmitter reads an SPI sensor, formats a packet, transmits it via a sub-GHz radio, and enters a low-power sleep mode, repeating this sequence once per minute.
+* <strong>Digital Thermometers</strong>: The loop continuously samples an ADC channel connected to a thermistor, converts the readings to a temperature value using a lookup table, and updates a segment LCD driver.
+* <strong>Brushless Motor Controllers</strong>: A high-speed super-loop runs the field-oriented control (FOC) mathematical algorithms to adjust motor phase voltages at 20 kHz. Because the math must be completed in under 50 microseconds, there is no room for operating system overhead.
+* <strong>Battery Chargers</strong>: The controller loops continuously to check battery voltage, current, and temperature, adjusting the output buck converter's PWM duty cycle to maintain a safe charging curve.</p></div>
+    <div style="margin-bottom:2.5rem">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Multitasking Horizon</h2>
+      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">For years, one loop was enough.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But as embedded products grew, communication requirements multiplied, displays became graphical, networking appeared, and diagnostics expanded.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">One processor core now carried dozens of independent responsibilities. The challenge was no longer writing code for a peripheral; it was organizing the execution of independent, parallel activities without letting one delay the other.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">That challenge eventually led to the development of Operating Systems.</p>
+      <div class="blog-quote">When a single loop must carry every burden, a single delay becomes a universal failure.</div>
+    </div>
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/when-machines-learned-to-survive/" onclick="openItem('when-machines-learned-to-survive', 'blogs')">When Machines Learned to Survive</a>
+        </div>
+          <div class="nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/when-one-processor-wasnt-enough/" onclick="openItem('when-one-processor-wasnt-enough', 'blogs')">When One Processor Wasn't Enough</a>
+        </div>
+        </div>
+      </div>
+    
+    </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <h1 class="hero-title">
+          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+        </h1>
+        <p class="hero-sub">
+          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
+          and Edge AI. Engineering from the ground up — one register at a time.
+        </p>
+        <div class="hero-btns">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="section-label">// about</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
+        <p class="about-text">
+          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
+          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
+          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Why This Site Exists</div>
+        <p class="why-text">
+          This is not just a portfolio. It is a space where I explore, document, and simplify
+          how systems evolve from hardware to intelligent behavior.<br><br>
+          Every section is a layer of the stack — from the transistor to the trained model.
+          The goal is to make the journey from silicon to edge AI legible.
+        </p>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-journey">
+  <section id="journey-section">
+    <div class="journey-inner">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">GitHub</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+
+
+</body>
+</html>

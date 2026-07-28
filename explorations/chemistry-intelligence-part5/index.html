@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The First Processor | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/chemistry-intelligence-part5/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+      </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Matter</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">The First Processor</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">A transistor alone does not compute. Intelligence only begins to emerge when billions of switches become organized into systems capable of storing state, processing signals, and coordinating decisions.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">CPU</span><span class="tag">Logic Gates</span><span class="tag">Transistors</span><span class="tag">Computation</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. A Single Transistor Changes Nothing</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By itself, a transistor is remarkably simple.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It controls whether electrical current flows or stops.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Individually, that behavior is not intelligent.
+It is just controlled switching.</p><div class="blog-quote">Computation does not emerge from a single switch.</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It emerges from organization.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Building Logic</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When transistors are connected together, they begin forming logic gates.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">These gates create predictable decision behavior:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">AND gates require multiple conditions.
+OR gates accept alternative conditions.
+NOT gates reverse states.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">At this stage, electrical switching starts becoming logical structure.</p><div class="blog-quote">Matter is no longer only conducting electricity.</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is beginning to process relationships.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. From Logic to Memory</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Logic alone is not enough.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A useful system must also remember previous states.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Special transistor arrangements create memory cells capable of storing binary values.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Now the system can preserve information over time.</p><div class="blog-quote">The moment a system remembers state, behavior becomes far more complex.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Coordination Through Timing</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">As transistor networks grow larger, coordination becomes critical.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Signals must move in the correct order and at predictable times.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is why processors depend on clocks — synchronized timing systems controlling when operations occur.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Without timing, billions of transistors would behave chaotically.</p><div class="blog-quote">Computation is not only logic.</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is organized timing.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The CPU</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Eventually, these systems become organized into processors.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Arithmetic units perform calculations.
+Registers store temporary state.
+Control logic coordinates execution.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Instructions move through these structures continuously.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every operation — from simple addition to artificial intelligence inference — ultimately becomes orchestrated electrical behavior across billions of transistors.</p><div class="blog-quote">The CPU is not a thinking machine.</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is a precisely coordinated system of physical decisions.</p></div>
+    <div style="margin-bottom:2.5rem">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Closing Thought</h2>
+      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">At the beginning of this series, intelligence seemed distant from chemistry.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">Now the connection becomes unavoidable.</p>
+      <div class="blog-quote">Modern computation is ultimately the result of matter organized carefully enough to control information, timing, and behavior.</div>
+    </div>
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/chemistry-intelligence-part4/" onclick="openItem('chemistry-intelligence-part4', 'blogs')">The Birth of the Transistor</a>
+        </div>
+          <div class="nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('Computation')">Advance to Computation</a>
+        </div>
+        </div>
+      </div>
+    
+    </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <h1 class="hero-title">
+          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+        </h1>
+        <p class="hero-sub">
+          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
+          and Edge AI. Engineering from the ground up — one register at a time.
+        </p>
+        <div class="hero-btns">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="section-label">// about</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
+        <p class="about-text">
+          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
+          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
+          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Why This Site Exists</div>
+        <p class="why-text">
+          This is not just a portfolio. It is a space where I explore, document, and simplify
+          how systems evolve from hardware to intelligent behavior.<br><br>
+          Every section is a layer of the stack — from the transistor to the trained model.
+          The goal is to make the journey from silicon to edge AI legible.
+        </p>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-journey">
+  <section id="journey-section">
+    <div class="journey-inner">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">GitHub</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+
+
+</body>
+</html>

@@ -10,6 +10,8 @@ let selectedCategoryFilter = null;
 let selectedDemoCategoryFilter = null;
 let currentSortOrder = "newest";
 let currentDemoSortOrder = "newest";
+let activePostId = null;
+let activePostType = null;
 
 // ─── DATA ARRAYS (PRESERVED INTACT) ──────────────────────────────────────────
 const nodes = [
@@ -5288,6 +5290,7 @@ const demoPosts = [
 
 // ─── NAVIGATION ──────────────────────────────────────────────────────────────
 function updateSeoMetadata(page) {
+  const params = new URLSearchParams(window.location.search);
   // 1. Determine unique document title
   let title = "PrajnaEdge | Devaharsha Meesarapu";
   if (page === 'about') {
@@ -5305,11 +5308,9 @@ function updateSeoMetadata(page) {
       title = "Explorations | PrajnaEdge";
     }
   } else if (page === 'blog-post') {
-    const params = new URLSearchParams(window.location.search);
-    const blogId = params.get('exploration');
-    const demoId = params.get('demonstration');
-    const activeId = blogId || demoId;
-    const collection = blogId ? blogPosts : (demoId ? demoPosts : []);
+    const activeId = activePostId || params.get('exploration') || params.get('demonstration');
+    const activeType = activePostType || (params.get('exploration') ? 'blogs' : (params.get('demonstration') ? 'demos' : null));
+    const collection = activeType === 'blogs' ? blogPosts : (activeType === 'demos' ? demoPosts : []);
     const item = collection.find(p => p.id === activeId);
     if (item) {
       title = `${item.title} | PrajnaEdge`;
@@ -5321,14 +5322,18 @@ function updateSeoMetadata(page) {
 
   // 2. Build normalized canonical URL (HTTPS, non-www, stripped UTM/tracking query parameters)
   const base = "https://prajnaedge.dev";
-  const params = new URLSearchParams(window.location.search);
   const blogId = params.get('exploration');
   const demoId = params.get('demonstration');
   const pageParam = params.get('page');
   const category = params.get('category');
 
   let canonicalUrl = `${base}/`;
-  if (blogId) {
+  if (page === 'blog-post' && (activePostId || blogId || demoId)) {
+    const activeId = activePostId || blogId || demoId;
+    const activeType = activePostType || (blogId ? 'blogs' : 'demos');
+    const routeCategory = activeType === 'blogs' ? 'explorations' : 'demonstrations';
+    canonicalUrl = `${base}/${routeCategory}/${activeId}/`;
+  } else if (blogId) {
     canonicalUrl = `${base}/?exploration=${encodeURIComponent(blogId)}`;
   } else if (demoId) {
     canonicalUrl = `${base}/?demonstration=${encodeURIComponent(demoId)}`;
@@ -5389,11 +5394,21 @@ function showPage(page) {
   if (page === 'demos') renderDemos(currentDemoPage);
 
   // URL State Syncing
-  if (!isRouting) {
-    const newUrl = page === 'home' 
-      ? window.location.pathname 
-      : `${window.location.pathname}?page=${page}`;
-    window.history.pushState({ page }, '', newUrl);
+  if (!isRouting && page !== 'blog-post') {
+    let newUrl;
+    if (page === 'home') {
+      newUrl = siteBase;
+    } else {
+      let routeName = page;
+      if (page === 'blogs') routeName = 'explorations';
+      else if (page === 'demos' || page === 'demonstrations') routeName = 'demonstrations';
+      newUrl = `${siteBase}${routeName}/`;
+    }
+    try {
+      window.history.pushState({ page }, '', newUrl);
+    } catch (e) {
+      console.warn("Could not push history state:", e);
+    }
   }
 
   // Always update SEO metadata on every page view
@@ -5600,8 +5615,14 @@ function renderHomeTree() {
         tooltip.style.top = `${y}px`;
         setTimeout(() => tooltip.classList.remove('active'), 2500);
       } else {
-        // Active trunk node: filter explorations
-        filterNodeRoute(nodeId);
+        // Active trunk node: open its first exploration directly via unified clean-path routing
+        const node = systemsTreeNodes[nodeId];
+        if (node && node.explorations && node.explorations.length > 0) {
+          const targetId = node.explorations[0].id;
+          openItem(targetId, 'blogs');
+        } else {
+          filterNodeRoute(nodeId);
+        }
       }
     });
   });
@@ -5637,8 +5658,12 @@ function filterNodeRoute(category) {
 
   // URL State Syncing for filtered category
   if (!isRouting) {
-    const newUrl = `${window.location.pathname}?page=blogs&category=${category}`;
-    window.history.pushState({ page: 'blogs', category }, '', newUrl);
+    const newUrl = `${siteBase}explorations/?category=${encodeURIComponent(category)}`;
+    try {
+      window.history.pushState({ page: 'blogs', category }, '', newUrl);
+    } catch (e) {
+      console.warn("Could not push history state:", e);
+    }
   }
 
   isRouting = true;
@@ -5859,11 +5884,18 @@ function openItem(id, type) {
     backBtn.setAttribute('onclick', "showPage('demos')");
   }
 
+  activePostId = id;
+  activePostType = type;
+
   // URL State Syncing
   if (!isRouting) {
-    const paramName = type === 'blogs' ? 'exploration' : 'demonstration';
-    const newUrl = `${window.location.pathname}?${paramName}=${id}`;
-    window.history.pushState({ id, type }, '', newUrl);
+    const routeCategory = type === 'blogs' ? 'explorations' : 'demonstrations';
+    const newUrl = `${siteBase}${routeCategory}/${id}/`;
+    try {
+      window.history.pushState({ id, type }, '', newUrl);
+    } catch (e) {
+      console.warn("Could not push history state:", e);
+    }
   }
 
   let label = item.category;
@@ -5875,7 +5907,13 @@ function openItem(id, type) {
       }
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
-      if (b.type === 'image' || b.type === 'img') return `<div class="blog-img-wrap"><img src="${escHtml(b.src)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
+      if (b.type === 'image' || b.type === 'img') {
+        let imgSrc = b.src;
+        if (imgSrc.startsWith('Images/')) {
+          imgSrc = siteBase + imgSrc;
+        }
+        return `<div class="blog-img-wrap"><img src="${escHtml(imgSrc)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
+      }
       if (b.type === 'html') return b.html;
       if (b.type === 'edgecase') return `<div id="${escHtml(b.id)}" class="edgecase-container"></div>`;
       return '';
@@ -5961,6 +5999,7 @@ function openItem(id, type) {
     }
   }
 
+  console.log(`[DEBUG] openItem: Rendering HTML into DOM element #blog-post-content`);
   document.getElementById('blog-post-content').innerHTML = `
     <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">${escHtml(label)}</div>
     <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">${escHtml(item.title)}</h1>
@@ -6027,6 +6066,15 @@ function parseTextFormatting(text) {
 
   // 1. Bold notation: **text** -> <strong>text</strong>
   parsed = parsed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // 1b. Markdown links: [Text](target) -> onclick or href
+  parsed = parsed.replace(new RegExp('\\[([^\\]]+)\\]\\(([^)]+)\\)', 'g'), (match, label, target) => {
+    if (target.startsWith('http') || target.startsWith('mailto:') || target.startsWith('/') || target.endsWith('.html')) {
+      return `<a href="${target}" target="_blank" rel="noopener noreferrer" style="color:var(--blue); text-decoration:underline;">${label}</a>`;
+    } else {
+      return `<a onclick="openItem('${target}', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">${label}</a>`;
+    }
+  });
   
   // 2. Block math: $$...$$ -> centered block equation
   parsed = parsed.replace(/\$\$(.*?)\$\$/g, (match, mathExpr) => {
@@ -10714,19 +10762,140 @@ function renderOverworkedProcessor() {
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 let isRouting = false;
 
+// Determine the absolute base pathname of the site (e.g. "/" or "/MySite/")
+const siteBase = (() => {
+  const path = window.location.pathname;
+  if (path.includes('/explorations/')) {
+    return path.split('/explorations/')[0] + '/';
+  }
+  if (path.includes('/demonstrations/')) {
+    return path.split('/demonstrations/')[0] + '/';
+  }
+  if (path.includes('/about/')) {
+    return path.split('/about/')[0] + '/';
+  }
+  if (path.includes('/contact/')) {
+    return path.split('/contact/')[0] + '/';
+  }
+  if (path.includes('/journey/')) {
+    return path.split('/journey/')[0] + '/';
+  }
+  const idx = path.indexOf('/index.html');
+  if (idx !== -1) {
+    return path.substring(0, idx + 1);
+  }
+  return path.endsWith('/') ? path : path + '/';
+})();
+
+function getPathPrefix() {
+  const relPath = window.location.pathname.substring(siteBase.length);
+  const depth = relPath.split('/').filter(Boolean).length;
+  const isHtml = window.location.pathname.endsWith('.html');
+  const pathDepth = isHtml ? Math.max(0, depth - 1) : depth;
+  return '../'.repeat(pathDepth);
+}
+
 function handleUrlRouting() {
   isRouting = true;
+  
+  // Use relative path relative to siteBase
+  const path = window.location.pathname;
+  const relPath = path.substring(siteBase.length);
+  
+  // 1. Detect if pathname matches an exploration post: /explorations/{post_id}/
+  const explMatch = relPath.match(/^explorations\/([^/]+)\/?(?:index\.html)?$/);
+  if (explMatch) {
+    const post_id = explMatch[1];
+    if (post_id !== 'index.html' && post_id !== '') {
+      openItem(post_id, 'blogs');
+      isRouting = false;
+      return;
+    }
+  }
+  
+  // 2. Detect if pathname matches a demonstration post: /demonstrations/{post_id}/
+  const demoMatch = relPath.match(/^demonstrations\/([^/]+)\/?(?:index\.html)?$/);
+  if (demoMatch) {
+    const post_id = demoMatch[1];
+    if (post_id !== 'index.html' && post_id !== '') {
+      openItem(post_id, 'demos');
+      isRouting = false;
+      return;
+    }
+  }
+  
+  // 3. Detect if pathname matches core pages: /about/, /contact/, /journey/, /explorations/, /demonstrations/
+  if (relPath.startsWith('about/')) {
+    showPage('about');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('contact/')) {
+    showPage('contact');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('journey/')) {
+    showPage('journey');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('explorations/')) {
+    const params = new URLSearchParams(window.location.search);
+    const category = params.get('category');
+    if (category && systemsTreeNodes[category]) {
+      filterNodeRoute(category);
+    } else {
+      openDirectExplorations();
+    }
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('demonstrations/')) {
+    showPage('demos');
+    isRouting = false;
+    return;
+  }
+  
+  // 4. Redirect legacy query parameter URLs to clean clean paths
   const params = new URLSearchParams(window.location.search);
   const page = params.get('page');
   const blogId = params.get('exploration');
   const demoId = params.get('demonstration');
   
   if (blogId) {
+    const cleanUrl = `${siteBase}explorations/${blogId}/`;
+    try {
+      window.history.replaceState({ id: blogId, type: 'blogs' }, '', cleanUrl);
+    } catch (e) {
+      console.warn("Could not replace history state:", e);
+    }
     openItem(blogId, 'blogs');
   } else if (demoId) {
+    const cleanUrl = `${siteBase}demonstrations/${demoId}/`;
+    try {
+      window.history.replaceState({ id: demoId, type: 'demos' }, '', cleanUrl);
+    } catch (e) {
+      console.warn("Could not replace history state:", e);
+    }
     openItem(demoId, 'demos');
   } else if (page) {
     const category = params.get('category');
+    let cleanRoute = page;
+    if (page === 'blogs') cleanRoute = 'explorations';
+    else if (page === 'demos' || page === 'demonstrations') cleanRoute = 'demonstrations';
+    
+    let cleanUrl = `${siteBase}${cleanRoute}/`;
+    if (page === 'blogs' && category && systemsTreeNodes[category]) {
+      cleanUrl += `?category=${encodeURIComponent(category)}`;
+    }
+    try {
+      window.history.replaceState({ page }, '', cleanUrl);
+    } catch (e) {
+      console.warn("Could not replace history state:", e);
+    }
+    
+    // Process display
     if (page === 'blogs') {
       if (category && systemsTreeNodes[category]) {
         filterNodeRoute(category);
@@ -10750,11 +10919,54 @@ function handleUrlRouting() {
   isRouting = false;
 }
 
-renderBlogs(1);
-renderDemos(1);
-renderHomeTree();
-runTreeAwakeningAnimation();
-handleUrlRouting();
+// Asynchronously load markdown content override for migrated explorations
+async function loadDynamicContent() {
+  try {
+    const response = await fetch(siteBase + 'content/content.json');
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Override explorations (blogs)
+      if (data.blogs) {
+        data.blogs.forEach(post => {
+          const idx = blogPosts.findIndex(p => p.id === post.id);
+          if (idx !== -1) {
+            blogPosts[idx] = post;
+          } else {
+            blogPosts.push(post);
+          }
+        });
+      }
+      
+      // Override demonstrations (demos)
+      if (data.demos) {
+        data.demos.forEach(post => {
+          const idx = demoPosts.findIndex(p => p.id === post.id);
+          if (idx !== -1) {
+            demoPosts[idx] = post;
+          } else {
+            demoPosts.push(post);
+          }
+        });
+      }
+    }
+  } catch (err) {
+    console.warn("Could not load dynamic content:", err);
+  }
+}
+
+// ─── INITIALIZATION SEQUENCE (Awaits JSON content first) ──────────────────────
+async function initSite() {
+  await loadDynamicContent();
+  
+  renderBlogs(1);
+  renderDemos(1);
+  renderHomeTree();
+  runTreeAwakeningAnimation();
+  handleUrlRouting();
+}
+
+initSite();
 
 window.addEventListener('popstate', () => {
   handleUrlRouting();

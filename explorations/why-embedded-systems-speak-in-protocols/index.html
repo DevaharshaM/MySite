@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Why Embedded Systems Speak in Protocols | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/why-embedded-systems-speak-in-protocols/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+      </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Interaction</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Why Embedded Systems Speak in Protocols</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Why simple electrical signals evolved into structured conversations.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Protocols</span><span class="tag">Communication</span><span class="tag">SPI</span><span class="tag">I2C</span><span class="tag">UART</span><span class="tag">Embedded Systems</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Limit of Direct Connection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In the early stages of computing design, the challenge is simply getting a CPU to change a physical state. We write a value to a register, voltage appears on a copper pin, and an LED illuminates. This General Purpose Input/Output (GPIO) is the simplest boundary crossing between logic and physical consequence.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But systems do not exist in isolation. A microcontroller must talk to sensors, memory modules, display controllers, and other processors. If we try to scale GPIO to handle this, we quickly run into a physical wall.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To send a single 8-bit integer, we could use eight separate GPIO pins connected by eight physical wires. This parallel approach works, but it consumes valuable pins and turns the PCB routing layout into a dense maze of copper. If we instead use a single wire to send those 8 bits sequentially, we face a new problem: timing. How does the receiver know when to sample the wire? How does it distinguish a string of consecutive '1' bits from a single long '1' bit?</p><div class="blog-quote">Without a shared definition of structure, raw electrical signals are indistinguishable from noise.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Communication as Shared Agreement</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Communication requires more than simply pushing electrons down a copper lead. It requires a shared agreement—a protocol. A protocol transitions communication from raw physics to structured grammar.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every communication protocol establishes three critical boundaries:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">1. The Physical Layer: Agreeing on voltage levels. What voltage represents a digital '1' and what represents a '0'? Are we using single-ended voltages or differential signals?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">2. The Timing: Agreeing on speed. How long does a single bit of information last?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">3. The Framing: Agreeing on structure. How does a transmitter signal that a new message is starting? How does the receiver know when the message has ended, and how does it detect if data was corrupted?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By establishing these rules, we can pack dense information onto a minimal number of physical lines.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Serial vs. Parallel: The Routing Dilemma</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Intuitively, parallel communication seems superior because it transmits multiple bits at the same instant. Early computers relied heavily on parallel buses for printers (LPT ports), hard drives (IDE cables), and internal bus architectures.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">However, as timing speeds increased, parallel communication encountered fundamental physical limits:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Skew: Because copper traces on a PCB have slightly different physical lengths and capacitive characteristics, bits traveling in parallel arrive at the destination at slightly different times. At high frequencies, this skew corrupts the data.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Crosstalk: Parallel lines running close to each other generate electromagnetic fields that induce noise on neighboring lines.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">PCB Complexity: Routing dozens of high-speed parallel traces requires multi-layer boards and tight spacing constraints, increasing manufacturing costs.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Serial communication solves this by sending bits sequentially over a minimal physical path (often just one or two lines). By focusing on timing alignment on a single line, modern systems can achieve transfer rates orders of magnitude faster than historical parallel buses, using far less physical space.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/protocols_vs_gpio_schematic.png/" onclick="openItem('Images/protocols_vs_gpio_schematic.png', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">GPIO Direct vs Protocol Structured Signaling</a></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*The transition from direct, unstructured GPIO toggling to a structured protocol frame containing synchronization and data payload boundaries.*</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Direction of Flow: Simplex to Full Duplex</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Once we move to serial lines, we must decide how devices share the channel to transmit and receive data. This flow is categorized into three modes:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Simplex: One-way communication. A transmitter sends data continuously, and a receiver only listens. There is no feedback loop. This is typical in simple broadcast sensors or debug logs.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Half Duplex: Two-way communication, but only one device can transmit at any given instant. Devices must share the physical line, requiring addressing or turn-taking logic to avoid collisions. I2C and RS-485 are classic examples.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Full Duplex: Simultaneous, bidirectional communication. This is typically achieved by running separate physical lines for transmit (TX) and receive (RX), allowing both devices to speak and listen at the same time without interference. UART and SPI operate in this mode.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The Synchronization Boundary</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The most critical task of any protocol is synchronization—ensuring the receiver samples the wire at the exact moment a bit is stable. This divides serial protocols into two main philosophies:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Synchronous Communication: The transmitter provides a physical clock signal along a dedicated line (e.g., SPI and I2C). The receiver monitors this clock line and samples the data line on the rising or falling clock edge. This is highly reliable and supports variable speeds, but requires an extra physical line.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Asynchronous Communication: No clock signal is transmitted (e.g., UART). Instead, both transmitter and receiver must be configured to use the exact same bit speed (baud rate) beforehand. The receiver detects the start of a transmission by watching for a specific voltage change (the Start Bit) and then uses its local clock to count out intervals and sample the subsequent bits.</p><div class="blog-quote">Synchronous protocols share a clock line to guarantee timing. Asynchronous protocols agree on timing beforehand to save a wire.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. From Signals to Conversations</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Communication protocols are the grammar of systems. They move us past raw physical toggling into organized logical networks where processors, sensors, and displays negotiate control, exchange status, and build coordinated behavior.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">As we explore the interaction layer of the systems tree, we will trace the evolution of these agreements:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">UART: The simple, asynchronous point-to-point interface.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">SPI: The high-speed, synchronous, register-to-register bus.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">I2C: The multi-drop, addressed, two-wire shared conversation.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">CAN: The robust, differential, priority-arbitrated network designed for extreme noise environments.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every protocol is a distinct set of engineering compromises, balancing speed, pin count, distance, and reliability to solve a specific coordination challenge.</p></div>
+    <div style="margin-bottom:2.5rem">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Language of Silicon</h2>
+      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">A processor speaking in isolation is only executing calculations. When it learns to follow structured protocols, it joins a larger network of interaction.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The choice of protocol defines the parameters of that conversation.</p>
+      <div class="blog-quote">Protocols are not just communication mechanisms; they are the architectural agreements that make distributed systems possible.</div>
+    </div>
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/the-physical-edge-of-software/" onclick="openItem('the-physical-edge-of-software', 'blogs')">The Physical Edge of Software</a>
+        </div>
+          <div class="nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/uart-structured-asynchronous-communication/" onclick="openItem('uart-structured-asynchronous-communication', 'blogs')">UART: Structured Asynchronous Communication</a>
+        </div>
+        </div>
+      </div>
+    
+    </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <h1 class="hero-title">
+          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+        </h1>
+        <p class="hero-sub">
+          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
+          and Edge AI. Engineering from the ground up — one register at a time.
+        </p>
+        <div class="hero-btns">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="section-label">// about</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
+        <p class="about-text">
+          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
+          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
+          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Why This Site Exists</div>
+        <p class="why-text">
+          This is not just a portfolio. It is a space where I explore, document, and simplify
+          how systems evolve from hardware to intelligent behavior.<br><br>
+          Every section is a layer of the stack — from the transistor to the trained model.
+          The goal is to make the journey from silicon to edge AI legible.
+        </p>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-journey">
+  <section id="journey-section">
+    <div class="journey-inner">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">GitHub</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+
+
+</body>
+</html>

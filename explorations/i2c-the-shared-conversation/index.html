@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>I2C: The Shared Conversation | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/i2c-the-shared-conversation/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+      </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Interaction</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">I2C: The Shared Conversation</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How open-drain logic and addressing solved the pin inflation crisis of SPI.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">I2C</span><span class="tag">Serial Protocols</span><span class="tag">Open Drain</span><span class="tag">Arbitration</span><span class="tag">Embedded Systems</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The SPI Pin Crisis</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">SPI unlocked extreme communication speeds by sharing a clock, but it introduced a severe hardware bottleneck: pin inflation. Because SPI has no addressing system, the master must use a dedicated Chip Select (CS) pin for every single peripheral on the bus. If you connect five sensors, you need five separate CS pins. If you scale to ten devices, your microcontroller's GPIO lines are consumed entirely by chip selection.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This physical routing nightmare forced engineers to re-evaluate the bus architecture. They needed a protocol that preserved the benefits of a synchronous clock but allowed dozens of devices to share the exact same physical wires without a forest of chip select lines. The solution was the Inter-Integrated Circuit (I2C) protocol.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Shared Wires: The Two-Line Compromise</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">I2C makes a radical design trade-off. It discards the four-wire, point-to-point architecture of SPI in favor of a strictly shared, two-wire bus: SDA (Serial Data) and SCL (Serial Clock). Every device on the bus connects to these same two traces.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By shrinking the bus to two wires, I2C eliminates the physical pin bottleneck. A master can communicate with over a hundred devices using the exact same two pins. However, this simplicity introduces a complex electrical challenge: if multiple devices share the same data and clock lines, how do we prevent them from colliding and burning out their output drivers when one tries to transmit a 1 while another transmits a 0?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/i2c_bus_topology.png/" onclick="openItem('Images/i2c_bus_topology.png', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">I2C Shared Bus Topology showing Pull-up resistors and multiple slaves</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Physics of Open-Drain Buses</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In standard push-pull output stages (used in UART and SPI), a device actively drives the line HIGH (connecting it to VCC) or actively drives it LOW (connecting it to GND). If Device A drives HIGH while Device B drives LOW on a shared wire, a low-resistance path is created directly from VCC to GND. This causes a short circuit, excessive current draw, heating, and physical damage to the silicon.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To prevent this, I2C uses open-drain (or open-collector) output buffers combined with physical pull-up resistors on both SCL and SDA. In an open-drain buffer, a device can only actively pull the line LOW (turning on an internal NMOS transistor connected to GND). It cannot actively drive the line HIGH; instead, to send a 1, it simply turns off the transistor and lets the line float. The external pull-up resistor then pulls the line HIGH.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This creates a 'wired-AND' logic bus. If any single device pulls the line LOW, the entire line goes LOW. The line only returns HIGH when every single device releases it. Electrical collisions are resolved safely: if two devices write conflicting states, the line simply resolves to LOW, drawing only a safe, limited current through the pull-up resistor.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/i2c_open_drain.png/" onclick="openItem('Images/i2c_open_drain.png', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">I2C Open-Drain Transistor Circuit Schematic</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Syntax of a Shared Wire</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because I2C lacks physical Chip Select lines, the protocol must establish starting boundaries and address routing directly within the two-wire interface. Under normal operation, the SDA line is only allowed to change state when the SCL clock line is LOW. When SCL is HIGH, the data on SDA must remain stable to be sampled.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">I2C exploits this stability rule to define START and STOP conditions. A START condition is signaled when SDA transitions from HIGH to LOW while SCL is HIGH. A STOP condition is signaled when SDA transitions from LOW to HIGH while SCL is HIGH. These transitions act as start-of-frame and end-of-frame markers that every peripheral monitors on the bus, resetting their internal receivers to listen for addressing.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/i2c_start_stop.png/" onclick="openItem('Images/i2c_start_stop.png', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">I2C START and STOP Condition Waveforms</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Software Addressing and Handshaking</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Immediately following a START condition, the master transmits a 9-bit address frame. The first 7 bits represent the unique target address of the slave. The 8th bit indicates the transaction direction: Write (0) or Read (1).</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The 9th clock cycle is reserved for a hardware handshake: the Acknowledge (ACK) bit. During the 9th clock tick, the master releases the SDA line (letting it float HIGH). The slave device matching the address must actively pull the SDA line LOW. If the slave pulls SDA LOW, it is an ACK—the transaction continues. If the slave is missing, busy, or has crashed, the line remains HIGH (a Not-Acknowledge, or NACK), signaling the master to stop.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Slowing the Master: Clock Stretching</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">SPI is a 'blind' protocol: the master drives SCLK regardless of whether the slave has processed the data. If the slave lags behind, data is lost. I2C solves this flow-control problem using clock stretching.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Although the master normally controls SCL, the open-drain architecture allows a slave to take control. If a slave needs more time to process a byte or fetch sensor readings, it can actively hold the SCL line LOW after the master releases it. The master monitors the SCL line: as long as it senses SCL is LOW, its internal clock generator pauses, freezing the transaction. Only when the slave releases SCL does it float HIGH and the master continues.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. Polite Arguments: Multi-Master Arbitration</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In complex systems, multiple master devices may share the same bus. If two masters assert a START condition simultaneously, I2C uses bus arbitration to resolve conflicts without corrupting data or causing electrical shorts.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because of the open-drain wired-AND structure, both masters can drive SCL and SDA. As they transmit data bits, each master monitors the actual state of the SDA line. As long as the bus matches the bits they write, they proceed. However, if Master A writes a 1 (releasing SDA) but Master B writes a 0 (pulling SDA LOW), the bus resolves to LOW. Master A, sensing a LOW when it expected a HIGH, realizes another master is active, immediately halts its transmission, releases the bus, and falls back to receiver mode. Master B continues its transaction completely uninterrupted, unaware of the silent victory.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">!<a href="../../explorations/Images/i2c_arbitration.png/" onclick="openItem('Images/i2c_arbitration.png', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">I2C Multi-Master Arbitration Timing Diagram</a></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. The Threshold of Complexity</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Let's review the journey: UART taught us to align clock phases through a timing contract between two nodes. SPI showed us that sharing a physical clock yields speeds orders of magnitude higher at the cost of dedicated wiring. I2C showed us that by using addressing and open-drain physics, we can share the clock and data wires completely, scaling to dozens of devices using only two pins.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Yet I2C has limits. The pull-up resistors create an RC time constant with the parasitic capacitance of the wires: as the bus gets longer or more devices are added, the rising edge of SCL/SDA becomes slow and rounded, limiting speeds (typically 400 kHz to 3.4 MHz) and distances to a few meters. Furthermore, in high-noise environments like automotive engines or industrial floors, common-mode noise can easily flip single-ended logic levels.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When we need to scale to longer distances, high noise immunity, and multi-master robustness without master-slave dependencies, we must look beyond single-ended voltage sharing to differential, arbitrated networks—leading us to the design of the Controller Area Network (CAN).</p></div>
+    <div style="margin-bottom:2.5rem">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Cooperative Bus</h2>
+      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">I2C stands as a monument to cooperation in hardware. By shifting the selection burden from dedicated copper wires (SPI's CS) to software protocol syntax and open-drain physics, it enables complex inter-chip ecosystems using minimum resources.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">It reminds us that communication is not just about driving voltages, but agreeing on when to listen and when to step aside.</p>
+      <div class="blog-quote">On a shared wire, silence is as critical as speech. It is the pull-up resistor that lifts the bus when all devices learn to let go.</div>
+    </div>
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/spi-shared-rhythm-of-machines/" onclick="openItem('spi-shared-rhythm-of-machines', 'blogs')">SPI: The Shared Rhythm of Machines</a>
+        </div>
+          <div class="nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/can-the-language-of-many-voices/" onclick="openItem('can-the-language-of-many-voices', 'blogs')">CAN: The Language of Many Voices</a>
+        </div>
+        </div>
+      </div>
+    
+    </div>
+    </div>
+  </div>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <h1 class="hero-title">
+          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+        </h1>
+        <p class="hero-sub">
+          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
+          and Edge AI. Engineering from the ground up — one register at a time.
+        </p>
+        <div class="hero-btns">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="section-label">// about</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
+        <p class="about-text">
+          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
+          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
+          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">Why This Site Exists</div>
+        <p class="why-text">
+          This is not just a portfolio. It is a space where I explore, document, and simplify
+          how systems evolve from hardware to intelligent behavior.<br><br>
+          Every section is a layer of the stack — from the transistor to the trained model.
+          The goal is to make the journey from silicon to edge AI legible.
+        </p>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-journey">
+  <section id="journey-section">
+    <div class="journey-inner">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">GitHub</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+
+
+</body>
+</html>
