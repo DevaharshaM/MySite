@@ -50,7 +50,8 @@
             },
             {
               "type": "p",
-              "text": "<span style=\"display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);\">We have seen this moment before. In [The First Instruction](the-first-instruction), we traced how analog supervisors release the CPU to fetch its initial Stack Pointer and Reset Vector. Here, we step back to examine the branching boot systems that govern this transition.</span>"
+              "text": "<span style=\"display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);\">We have seen this moment before. In [The First Instruction](the-first-instruction), we traced how analog supervisors release the CPU to fetch its initial Stack Pointer and Reset Vector. Here, we step back to examine the branching boot systems that govern this transition.</span>",
+              "html": true
             },
             {
               "type": "p",
@@ -127,7 +128,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvoid Reset_Handler(void) {\n    /* 1. Low-level initialization */\n    SystemInit();\n    \n    /* 2. Copy initialized data from Flash to RAM */\n    copy_data_segment();\n    \n    /* 3. Zero-initialize BSS memory */\n    zero_bss_segment();\n    \n    /* 4. Call static constructors and runtime libraries */\n    __libc_init_array();\n    \n    /* 5. Transfer control to the application entry */\n    main();\n}\n`"
+              "text": "```c\nvoid Reset_Handler(void) {\n    /* 1. Low-level initialization */\n    SystemInit();\n    \n    /* 2. Copy initialized data from Flash to RAM */\n    copy_data_segment();\n    \n    /* 3. Zero-initialize BSS memory */\n    zero_bss_segment();\n    \n    /* 4. Call static constructors and runtime libraries */\n    __libc_init_array();\n    \n    /* 5. Transfer control to the application entry */\n    main();\n}\n```"
             }
           ]
         },
@@ -1367,7 +1368,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nGPIOA->ODR |= (1 << 5);\n`"
+              "text": "```c\nGPIOA->ODR |= (1 << 5);\n```"
             },
             {
               "type": "p",
@@ -1693,7 +1694,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    ReadSensor();\n    UpdateControl();\n    RefreshDisplay();\n    SendStatus();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    ReadSensor();\n    UpdateControl();\n    RefreshDisplay();\n    SendStatus();\n}\n```"
             },
             {
               "type": "p",
@@ -1710,7 +1711,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    ReadSensor();\n    DelayMs(100); // Wait 100 ms\n    UpdateDisplay();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    ReadSensor();\n    DelayMs(100); // Wait 100 ms\n    UpdateDisplay();\n}\n```"
             },
             {
               "type": "p",
@@ -1718,7 +1719,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    ReadSensor();\n    DelayMs(10);\n\n    UpdateControl();\n    DelayMs(20);\n\n    RefreshDisplay();\n    DelayMs(100);\n\n    SendStatus();\n    DelayMs(1000);\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    ReadSensor();\n    DelayMs(10);\n\n    UpdateControl();\n    DelayMs(20);\n\n    RefreshDisplay();\n    DelayMs(100);\n\n    SendStatus();\n    DelayMs(1000);\n}\n```"
             },
             {
               "type": "p",
@@ -1756,7 +1757,8 @@
           "content": [
             {
               "type": "p",
-              "text": "<span style=\"display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);\">We have encountered this hardware before. In [The Architecture of Time](the-architecture-of-time), we explored what happens when timers themselves reach their limits \u2014 overflow, wraparound, and the edge cases hidden inside measuring time. Here, we are looking at the same hardware from another direction. Not how time can fail, but how time can organize software.</span>"
+              "text": "<span style=\"display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);\">We have encountered this hardware before. In [The Architecture of Time](the-architecture-of-time), we explored what happens when timers themselves reach their limits \u2014 overflow, wraparound, and the edge cases hidden inside measuring time. Here, we are looking at the same hardware from another direction. Not how time can fail, but how time can organize software.</span>",
+              "html": true
             }
           ]
         },
@@ -1769,7 +1771,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvolatile uint32_t system_ticks = 0;\n\nvoid Timer_IRQHandler(void)\n{\n    system_ticks++;\n}\n`"
+              "text": "```c\nvolatile uint32_t system_ticks = 0;\n\nvoid Timer_IRQHandler(void)\n{\n    system_ticks++;\n}\n```"
             },
             {
               "type": "p",
@@ -1786,7 +1788,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvoid Timer_IRQHandler(void)\n{\n    ReadSensor();\n    UpdateControl();\n    RefreshDisplay();\n    SendStatus();\n}\n`"
+              "text": "```c\nvoid Timer_IRQHandler(void)\n{\n    ReadSensor();\n    UpdateControl();\n    RefreshDisplay();\n    SendStatus();\n}\n```"
             },
             {
               "type": "p",
@@ -1803,7 +1805,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvolatile bool task_10ms = false;\nvolatile bool task_100ms = false;\nvolatile bool task_1000ms = false;\n\nvoid Timer_IRQHandler(void)\n{\n    static uint32_t tick = 0;\n    tick++;\n\n    if ((tick % 10) == 0)   task_10ms = true;\n    if ((tick % 100) == 0)  task_100ms = true;\n    if ((tick % 1000) == 0) task_1000ms = true;\n}\n\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        if (task_10ms)\n        {\n            task_10ms = false;\n            ReadSensor();\n        }\n        if (task_100ms)\n        {\n            task_100ms = false;\n            RefreshDisplay();\n        }\n        if (task_1000ms)\n        {\n            task_1000ms = false;\n            SendStatus();\n        }\n    }\n}\n`"
+              "text": "```c\nvolatile bool task_10ms = false;\nvolatile bool task_100ms = false;\nvolatile bool task_1000ms = false;\n\nvoid Timer_IRQHandler(void)\n{\n    static uint32_t tick = 0;\n    tick++;\n\n    if ((tick % 10) == 0)   task_10ms = true;\n    if ((tick % 100) == 0)  task_100ms = true;\n    if ((tick % 1000) == 0) task_1000ms = true;\n}\n\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        if (task_10ms)\n        {\n            task_10ms = false;\n            ReadSensor();\n        }\n        if (task_100ms)\n        {\n            task_100ms = false;\n            RefreshDisplay();\n        }\n        if (task_1000ms)\n        {\n            task_1000ms = false;\n            SendStatus();\n        }\n    }\n}\n```"
             },
             {
               "type": "html",
@@ -1854,7 +1856,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nuint32_t last_sensor_time = 0;\n\nwhile (1)\n{\n    uint32_t now = system_ticks;\n\n    if ((uint32_t)(now - last_sensor_time) >= 10U)\n    {\n        last_sensor_time = now;\n        ReadSensor();\n    }\n    \n    // Other non-blocking checks can run here\n}\n`"
+              "text": "```c\nuint32_t last_sensor_time = 0;\n\nwhile (1)\n{\n    uint32_t now = system_ticks;\n\n    if ((uint32_t)(now - last_sensor_time) >= 10U)\n    {\n        last_sensor_time = now;\n        ReadSensor();\n    }\n    \n    // Other non-blocking checks can run here\n}\n```"
             },
             {
               "type": "p",
@@ -1888,7 +1890,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    if (TaskDue_10ms())   RunFastTask();\n    if (TaskDue_100ms())  RunMediumTask();\n    if (TaskDue_1000ms()) RunSlowTask();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    if (TaskDue_10ms())   RunFastTask();\n    if (TaskDue_100ms())  RunMediumTask();\n    if (TaskDue_1000ms()) RunSlowTask();\n}\n```"
             },
             {
               "type": "p",
@@ -2579,7 +2581,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nMEMORY\n{\n  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K\n  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 128K\n}\n`"
+              "text": "```c\nMEMORY\n{\n  FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K\n  RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 128K\n}\n```"
             },
             {
               "type": "p",
@@ -2641,7 +2643,7 @@
             },
             {
               "type": "p",
-              "text": "`c\n.text           0x08000240      0x8a4\n *(.text)\n .text          0x08000240      0x1c8 build/main.o\n                0x080002a0                SystemInit\n .text          0x08000408      0x6dc build/gpio.o\n                0x08000420                GPIO_Init\n\n.data           0x20000000       0x18 load address 0x08000ae4\n *(.data)\n .data          0x20000000       0x18 build/main.o\n                0x20000004                system_state\n\n.bss            0x20000018       0x40\n *(.bss)\n .bss           0x20000018       0x40 build/sensor.o\n                0x20000018                sensor_buffer\n`"
+              "text": "```c\n.text           0x08000240      0x8a4\n *(.text)\n .text          0x08000240      0x1c8 build/main.o\n                0x080002a0                SystemInit\n .text          0x08000408      0x6dc build/gpio.o\n                0x08000420                GPIO_Init\n\n.data           0x20000000       0x18 load address 0x08000ae4\n *(.data)\n .data          0x20000000       0x18 build/main.o\n                0x20000004                system_state\n\n.bss            0x20000018       0x40\n *(.bss)\n .bss           0x20000018       0x40 build/sensor.o\n                0x20000018                sensor_buffer\n```"
             }
           ]
         },
@@ -2715,7 +2717,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nint main(void)\n{\n    /* One-time initialization */\n    System_Init();\n    Peripheral_Init();\n\n    /* Continuous execution */\n    while (1)\n    {\n        // Application runs here\n    }\n}\n`"
+              "text": "```c\nint main(void)\n{\n    /* One-time initialization */\n    System_Init();\n    Peripheral_Init();\n\n    /* Continuous execution */\n    while (1)\n    {\n        // Application runs here\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -2736,7 +2738,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    ReadInputs();\n    ProcessInputs();\n    UpdateOutputs();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    ReadInputs();\n    ProcessInputs();\n    UpdateOutputs();\n}\n```"
             },
             {
               "type": "p",
@@ -2761,7 +2763,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    ReadButton();\n    ReadSensor();\n    ProcessData();\n    UpdateDisplay();\n    SendCommunication();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    ReadButton();\n    ReadSensor();\n    ProcessData();\n    UpdateDisplay();\n    SendCommunication();\n}\n```"
             },
             {
               "type": "p",
@@ -2790,7 +2792,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    ReadInputs();\n    DelayMs(1000);  // wait 1 second\n    UpdateOutputs();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    ReadInputs();\n    DelayMs(1000);  // wait 1 second\n    UpdateOutputs();\n}\n```"
             },
             {
               "type": "p",
@@ -2802,7 +2804,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    WaitForSensor(); // Spin-waits for a hardware flag\n    ProcessCommunication();\n    UpdateDisplay();\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    WaitForSensor(); // Spin-waits for a hardware flag\n    ProcessCommunication();\n    UpdateDisplay();\n}\n```"
             },
             {
               "type": "p",
@@ -2819,7 +2821,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile (1)\n{\n    if (Button_IsPressed())\n    {\n        LED_Toggle();\n    }\n}\n`"
+              "text": "```c\nwhile (1)\n{\n    if (Button_IsPressed())\n    {\n        LED_Toggle();\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -2857,7 +2859,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvolatile bool data_ready = false;\n\nvoid Some_IRQHandler(void)\n{\n    data_ready = true; // Signal the event\n}\n\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        if (data_ready)\n        {\n            data_ready = false;\n            ProcessData(); // Perform heavy execution here\n        }\n    }\n}\n`"
+              "text": "```c\nvolatile bool data_ready = false;\n\nvoid Some_IRQHandler(void)\n{\n    data_ready = true; // Signal the event\n}\n\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        if (data_ready)\n        {\n            data_ready = false;\n            ProcessData(); // Perform heavy execution here\n        }\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -2972,7 +2974,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nGPIOA->ODR |= (1 << 5);\n`"
+              "text": "```c\nGPIOA->ODR |= (1 << 5);\n```"
             },
             {
               "type": "p",
@@ -3156,11 +3158,13 @@
             },
             {
               "type": "p",
-              "text": "<div style=\"font-family:'Syne',sans-serif;font-weight:700;font-size:1.0rem;color:#FFF;margin-bottom:0.75rem;\">Core Communication Protocols</div>\n<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Protocol</th>\n      <th>Style</th>\n      <th>Typical Speed</th>\n      <th>Topology</th>\n      <th>Strength</th>\n      <th>Common Use</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>UART</strong></td>\n      <td>Asynchronous, Full-Duplex</td>\n      <td>9.6 - 115.2 kbps</td>\n      <td>Point-to-Point (2 wires)</td>\n      <td>Simple, no clock line needed</td>\n      <td>Debug logs, simple telemetry</td>\n    </tr>\n    <tr>\n      <td><strong>SPI</strong></td>\n      <td>Synchronous, Full-Duplex</td>\n      <td>10 - 50+ Mbps</td>\n      <td>Master-Slave (4+ wires)</td>\n      <td>Extreme throughput, simple hardware</td>\n      <td>SD cards, displays, fast sensors</td>\n    </tr>\n    <tr>\n      <td><strong>I\u00b2C</strong></td>\n      <td>Synchronous, Half-Duplex</td>\n      <td>100 - 400 kbps</td>\n      <td>Shared Bus (2 wires)</td>\n      <td>Low pin count, hardware addressing</td>\n      <td>EEPROMs, onboard sensors</td>\n    </tr>\n    <tr>\n      <td><strong>CAN</strong></td>\n      <td>Asynchronous, Half-Duplex</td>\n      <td>125 kbps - 1 Mbps</td>\n      <td>Shared Bus (2 wires)</td>\n      <td>Noise immunity, arbitration</td>\n      <td>Automotive, industrial control</td>\n    </tr>\n  </tbody>\n</table>"
+              "text": "<div style=\"font-family:'Syne',sans-serif;font-weight:700;font-size:1.0rem;color:#FFF;margin-bottom:0.75rem;\">Core Communication Protocols</div>\n<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Protocol</th>\n      <th>Style</th>\n      <th>Typical Speed</th>\n      <th>Topology</th>\n      <th>Strength</th>\n      <th>Common Use</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>UART</strong></td>\n      <td>Asynchronous, Full-Duplex</td>\n      <td>9.6 - 115.2 kbps</td>\n      <td>Point-to-Point (2 wires)</td>\n      <td>Simple, no clock line needed</td>\n      <td>Debug logs, simple telemetry</td>\n    </tr>\n    <tr>\n      <td><strong>SPI</strong></td>\n      <td>Synchronous, Full-Duplex</td>\n      <td>10 - 50+ Mbps</td>\n      <td>Master-Slave (4+ wires)</td>\n      <td>Extreme throughput, simple hardware</td>\n      <td>SD cards, displays, fast sensors</td>\n    </tr>\n    <tr>\n      <td><strong>I\u00b2C</strong></td>\n      <td>Synchronous, Half-Duplex</td>\n      <td>100 - 400 kbps</td>\n      <td>Shared Bus (2 wires)</td>\n      <td>Low pin count, hardware addressing</td>\n      <td>EEPROMs, onboard sensors</td>\n    </tr>\n    <tr>\n      <td><strong>CAN</strong></td>\n      <td>Asynchronous, Half-Duplex</td>\n      <td>125 kbps - 1 Mbps</td>\n      <td>Shared Bus (2 wires)</td>\n      <td>Noise immunity, arbitration</td>\n      <td>Automotive, industrial control</td>\n    </tr>\n  </tbody>\n</table>",
+              "html": true
             },
             {
               "type": "p",
-              "text": "<div style=\"font-family:'Syne',sans-serif;font-weight:700;font-size:1.0rem;color:#FFF;margin-bottom:0.75rem;margin-top:1.5rem;\">Unexpected Cousins</div>\n<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Protocol</th>\n      <th>Parent Protocol</th>\n      <th>Why It Exists (Constraint)</th>\n      <th>Typical Use</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>USART</strong></td>\n      <td>UART</td>\n      <td>Adds synchronous clock line to eliminate clock drift at high speed</td>\n      <td>High-speed serial links, synchronous peripherals</td>\n    </tr>\n    <tr>\n      <td><strong>QSPI</strong></td>\n      <td>SPI</td>\n      <td>Repurposes pins into 4 bidirectional channels to increase flash throughput</td>\n      <td>Booting from external flash (Execute-in-Place)</td>\n    </tr>\n    <tr>\n      <td><strong>SMBus</strong></td>\n      <td>I\u00b2C</td>\n      <td>Enforces strict timeouts (35ms) and alert line to prevent bus lockups</td>\n      <td>Smart battery packs, PC motherboard system health</td>\n    </tr>\n    <tr>\n      <td><strong>LIN</strong></td>\n      <td>CAN</td>\n      <td>Sub-bus reducing cost using single-wire 12V and basic UART logic</td>\n      <td>Car mirrors, windows, door lock body modules</td>\n    </tr>\n    <tr>\n      <td><strong>One-Wire</strong></td>\n      <td>Custom</td>\n      <td>Ultimate pin reduction, merging data and power on a single wire</td>\n      <td>Temperature sensor networks (DS18B20), electronic keys</td>\n    </tr>\n  </tbody>\n</table>"
+              "text": "<div style=\"font-family:'Syne',sans-serif;font-weight:700;font-size:1.0rem;color:#FFF;margin-bottom:0.75rem;margin-top:1.5rem;\">Unexpected Cousins</div>\n<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Protocol</th>\n      <th>Parent Protocol</th>\n      <th>Why It Exists (Constraint)</th>\n      <th>Typical Use</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>USART</strong></td>\n      <td>UART</td>\n      <td>Adds synchronous clock line to eliminate clock drift at high speed</td>\n      <td>High-speed serial links, synchronous peripherals</td>\n    </tr>\n    <tr>\n      <td><strong>QSPI</strong></td>\n      <td>SPI</td>\n      <td>Repurposes pins into 4 bidirectional channels to increase flash throughput</td>\n      <td>Booting from external flash (Execute-in-Place)</td>\n    </tr>\n    <tr>\n      <td><strong>SMBus</strong></td>\n      <td>I\u00b2C</td>\n      <td>Enforces strict timeouts (35ms) and alert line to prevent bus lockups</td>\n      <td>Smart battery packs, PC motherboard system health</td>\n    </tr>\n    <tr>\n      <td><strong>LIN</strong></td>\n      <td>CAN</td>\n      <td>Sub-bus reducing cost using single-wire 12V and basic UART logic</td>\n      <td>Car mirrors, windows, door lock body modules</td>\n    </tr>\n    <tr>\n      <td><strong>One-Wire</strong></td>\n      <td>Custom</td>\n      <td>Ultimate pin reduction, merging data and power on a single wire</td>\n      <td>Temperature sensor networks (DS18B20), electronic keys</td>\n    </tr>\n  </tbody>\n</table>",
+              "html": true
             }
           ]
         }
@@ -3204,7 +3208,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nint main(void) {\n    // Initialize peripherals\n    SystemInit();\n    \n    while(1) {\n        // The engine of the system\n    }\n}\n`"
+              "text": "```c\nint main(void) {\n    // Initialize peripherals\n    SystemInit();\n    \n    while(1) {\n        // The engine of the system\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -3225,7 +3229,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile(1) {\n    if (ReadPin(BUTTON_PIN) == PIN_LOW) {\n        ToggleLED();\n    }\n}\n`"
+              "text": "```c\nwhile(1) {\n    if (ReadPin(BUTTON_PIN) == PIN_LOW) {\n        ToggleLED();\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -3263,7 +3267,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile(1) {\n    CheckButton();\n    CheckUART();\n    CheckADC();\n    CheckCAN();\n    UpdateLEDs();\n}\n`"
+              "text": "```c\nwhile(1) {\n    CheckButton();\n    CheckUART();\n    CheckADC();\n    CheckCAN();\n    UpdateLEDs();\n}\n```"
             },
             {
               "type": "p",
@@ -3491,7 +3495,7 @@
             },
             {
               "type": "p",
-              "text": "`c\ntypedef enum\n{\n    STATE_IDLE,\n    STATE_STARTING,\n    STATE_RUNNING,\n    STATE_FAULT\n} SystemState;\n\nSystemState current_state = STATE_IDLE;\n`"
+              "text": "```c\ntypedef enum\n{\n    STATE_IDLE,\n    STATE_STARTING,\n    STATE_RUNNING,\n    STATE_FAULT\n} SystemState;\n\nSystemState current_state = STATE_IDLE;\n```"
             },
             {
               "type": "p",
@@ -3508,7 +3512,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nswitch (current_state)\n{\n    case STATE_IDLE:\n        HandleIdle();\n        break;\n\n    case STATE_STARTING:\n        HandleStarting();\n        break;\n\n    case STATE_RUNNING:\n        HandleRunning();\n        break;\n\n    case STATE_FAULT:\n        HandleFault();\n        break;\n\n    default:\n        current_state = STATE_FAULT; // Fail-safe default\n        break;\n}\n`"
+              "text": "```c\nswitch (current_state)\n{\n    case STATE_IDLE:\n        HandleIdle();\n        break;\n\n    case STATE_STARTING:\n        HandleStarting();\n        break;\n\n    case STATE_RUNNING:\n        HandleRunning();\n        break;\n\n    case STATE_FAULT:\n        HandleFault();\n        break;\n\n    default:\n        current_state = STATE_FAULT; // Fail-safe default\n        break;\n}\n```"
             },
             {
               "type": "p",
@@ -3529,7 +3533,7 @@
             },
             {
               "type": "p",
-              "text": "`c\ncase STATE_IDLE:\n    if (start_requested)\n    {\n        current_state = STATE_STARTING;\n    }\n    break;\n`"
+              "text": "```c\ncase STATE_IDLE:\n    if (start_requested)\n    {\n        current_state = STATE_STARTING;\n    }\n    break;\n```"
             },
             {
               "type": "p",
@@ -3546,7 +3550,7 @@
             },
             {
               "type": "p",
-              "text": "`c\ncase STATE_STARTING:\n    EnableMotorRelay();\n    ResetBootTimer();\n    break;\n`"
+              "text": "```c\ncase STATE_STARTING:\n    EnableMotorRelay();\n    ResetBootTimer();\n    break;\n```"
             },
             {
               "type": "p",
@@ -3566,7 +3570,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvoid SetState(SystemState new_state)\n{\n    if (new_state == current_state)\n        return;\n\n    ExitState(current_state);       // Trigger exit logic\n    current_state = new_state;\n    EnterState(current_state);     // Trigger entry logic\n}\n`"
+              "text": "```c\nvoid SetState(SystemState new_state)\n{\n    if (new_state == current_state)\n        return;\n\n    ExitState(current_state);       // Trigger exit logic\n    current_state = new_state;\n    EnterState(current_state);     // Trigger entry logic\n}\n```"
             }
           ]
         },
@@ -3579,7 +3583,7 @@
             },
             {
               "type": "p",
-              "text": "`c\ncase STATE_STARTING:\n    EnableMotorRelay();\n    DelayMs(500); // Blocks the entire system\n    current_state = STATE_RUNNING;\n    break;\n`"
+              "text": "```c\ncase STATE_STARTING:\n    EnableMotorRelay();\n    DelayMs(500); // Blocks the entire system\n    current_state = STATE_RUNNING;\n    break;\n```"
             },
             {
               "type": "p",
@@ -3591,7 +3595,7 @@
             },
             {
               "type": "p",
-              "text": "`c\ncase STATE_STARTING:\n    if ((uint32_t)(system_ticks - startup_begin_time) >= 500U)\n    {\n        SetState(STATE_RUNNING); // Transition safely\n    }\n    break;\n`"
+              "text": "```c\ncase STATE_STARTING:\n    if ((uint32_t)(system_ticks - startup_begin_time) >= 500U)\n    {\n        SetState(STATE_RUNNING); // Transition safely\n    }\n    break;\n```"
             },
             {
               "type": "p",
@@ -3608,7 +3612,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        ProcessInputs();\n        ProcessCommunication();\n\n        if (control_task_due)\n        {\n            control_task_due = false;\n            RunStateMachine(); // Executes periodic control logic\n        }\n\n        ProcessBackgroundWork();\n    }\n}\n`"
+              "text": "```c\nint main(void)\n{\n    Initialize();\n\n    while (1)\n    {\n        ProcessInputs();\n        ProcessCommunication();\n\n        if (control_task_due)\n        {\n            control_task_due = false;\n            RunStateMachine(); // Executes periodic control logic\n        }\n\n        ProcessBackgroundWork();\n    }\n}\n```"
             },
             {
               "type": "html",
@@ -3700,7 +3704,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nwhile(1) {\n    CheckButton();\n    CheckUART();\n    CheckADC();\n    CheckCAN();\n}\n`"
+              "text": "```c\nwhile(1) {\n    CheckButton();\n    CheckUART();\n    CheckADC();\n    CheckCAN();\n}\n```"
             },
             {
               "type": "p",
@@ -4069,7 +4073,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nvoid USART1_IRQHandler(void) {\n    if (USART1->SR & USART_SR_RXNE) {\n        rx_buffer[rx_index++] = USART1->DR;\n    }\n}\n`"
+              "text": "```c\nvoid USART1_IRQHandler(void) {\n    if (USART1->SR & USART_SR_RXNE) {\n        rx_buffer[rx_index++] = USART1->DR;\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -4804,7 +4808,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nint main(void) {\n    // Initialize hardware clocks and peripherals\n    hardware_init();\n\n    while (1) {\n        // Execute code repeatedly forever\n        read_sensors();\n        update_outputs();\n    }\n}\n`"
+              "text": "```c\nint main(void) {\n    // Initialize hardware clocks and peripherals\n    hardware_init();\n\n    while (1) {\n        // Execute code repeatedly forever\n        read_sensors();\n        update_outputs();\n    }\n}\n```"
             },
             {
               "type": "p",
@@ -5327,7 +5331,7 @@
             },
             {
               "type": "p",
-              "text": "`c\nGPIOA->ODR |= (1 << 5);\n`"
+              "text": "```c\nGPIOA->ODR |= (1 << 5);\n```"
             },
             {
               "type": "p",
@@ -5446,7 +5450,7 @@
             },
             {
               "type": "p",
-              "text": "`c\n// Reading raw accelerometer data over the I2C bus\nWire.beginTransmission(0x68); // MPU6050 address\nWire.write(0x3B);             // Register for Accel X High Byte\nWire.endTransmission(false);\nWire.requestFrom(0x68, 6);    // Pull 6 bytes for X, Y, and Z\n\nint16_t rawX = (Wire.read() << 8) | Wire.read();\n`"
+              "text": "```c\n// Reading raw accelerometer data over the I2C bus\nWire.beginTransmission(0x68); // MPU6050 address\nWire.write(0x3B);             // Register for Accel X High Byte\nWire.endTransmission(false);\nWire.requestFrom(0x68, 6);    // Pull 6 bytes for X, Y, and Z\n\nint16_t rawX = (Wire.read() << 8) | Wire.read();\n```"
             }
           ]
         },

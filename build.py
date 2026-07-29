@@ -169,13 +169,15 @@ def parse_markdown_file(filepath):
             
         # Check Code block
         if line.strip().startswith('```c') or line.strip().startswith('```cpp') or line.strip().startswith('```assembly'):
+            lang_match = re.match(r'^```(\w+)', line.strip())
+            lang = lang_match.group(1) if lang_match else 'c'
             code_lines = []
             i += 1
             while i < len(lines) and not lines[i].strip().startswith('```'):
                 code_lines.append(lines[i])
                 i += 1
             i += 1 # skip closing backticks
-            code_block = '`c\n' + '\n'.join(code_lines) + '\n`'
+            code_block = f'```{lang}\n' + '\n'.join(code_lines) + '\n```'
             if current_section:
                 current_section["content"].append({
                     "type": "p",
@@ -191,10 +193,13 @@ def parse_markdown_file(filepath):
             
         p_text = '\n'.join(paragraph_lines).strip()
         if p_text and current_section:
-            current_section["content"].append({
+            block = {
                 "type": "p",
                 "text": p_text
-            })
+            }
+            if p_text.startswith('<') and p_text.endswith('>'):
+                block["html"] = True
+            current_section["content"].append(block)
             
     metadata["sections"] = sections
     closing_p = metadata.get("closing_paragraphs", [])
@@ -285,14 +290,15 @@ def build_post_html(post, all_posts_dict):
         blocks_html = []
         for b in sec["content"]:
             if b["type"] == 'p':
-                if b["text"].startswith('`c\n') and b["text"].endswith('\n`'):
-                    code_content = b["text"][3:-2]
-                    blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(code_content)}</div>')
-                elif b["text"].startswith('`cpp\n') and b["text"].endswith('\n`'):
-                    code_content = b["text"][5:-2]
+                code_match = re.match(r'^```(\w*)\n([\s\S]*?)\n```$', b["text"])
+                if code_match:
+                    code_content = code_match.group(2)
                     blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(code_content)}</div>')
                 else:
-                    blocks_html.append(f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">{parse_text_formatting(esc_html(b["text"]))}</p>')
+                    p_content = b["text"]
+                    if not b.get("html"):
+                        p_content = esc_html(p_content)
+                    blocks_html.append(f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">{parse_text_formatting(p_content)}</p>')
             elif b["type"] == 'quote':
                 blocks_html.append(f'<div class="blog-quote">{esc_html(b["text"])}</div>')
             elif b["type"] == 'code':
@@ -428,7 +434,8 @@ def main():
         {"id": "contact", "title": "Contact | PrajnaEdge", "route": "contact/"},
         {"id": "journey", "title": "Interactive Career Journey | PrajnaEdge", "route": "journey/"},
         {"id": "blogs", "title": "Explorations | PrajnaEdge", "route": "explorations/"},
-        {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/"}
+        {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/"},
+        {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"}
     ]
     
     for cfg in page_configs:

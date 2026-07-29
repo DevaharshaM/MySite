@@ -1337,5 +1337,22 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   }
 }
 
+#page-bare-metal {
+  display: none;
+  background: #171210;
+  color: #E7E5E4;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  font-family: 'DM Sans', sans-serif;
+  transition: background-color 0.5s ease;
+}
+#page-bare-metal.active {
+  display: flex !important;
+}
+
 
 

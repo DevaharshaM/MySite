@@ -5292,7 +5292,6 @@ const demoPosts = [
 function updateSeoMetadata(page) {
   const params = new URLSearchParams(window.location.search);
   // 1. Determine unique document title
-  let title = "PrajnaEdge | Devaharsha Meesarapu";
   if (page === 'about') {
     title = "About | PrajnaEdge";
   } else if (page === 'contact') {
@@ -5301,6 +5300,8 @@ function updateSeoMetadata(page) {
     title = "Interactive Career Journey | PrajnaEdge";
   } else if (page === 'demos') {
     title = "Demonstrations | PrajnaEdge";
+  } else if (page === 'bare-metal') {
+    title = "Bare Metal | PrajnaEdge";
   } else if (page === 'blogs') {
     if (selectedCategoryFilter) {
       title = `${selectedCategoryFilter} | Explorations | PrajnaEdge`;
@@ -5328,7 +5329,9 @@ function updateSeoMetadata(page) {
   const category = params.get('category');
 
   let canonicalUrl = `${base}/`;
-  if (page === 'blog-post' && (activePostId || blogId || demoId)) {
+  if (page === 'bare-metal') {
+    canonicalUrl = `${base}/bare-metal/`;
+  } else if (page === 'blog-post' && (activePostId || blogId || demoId)) {
     const activeId = activePostId || blogId || demoId;
     const activeType = activePostType || (blogId ? 'blogs' : 'demos');
     const routeCategory = activeType === 'blogs' ? 'explorations' : 'demonstrations';
@@ -5352,6 +5355,8 @@ function updateSeoMetadata(page) {
       canonicalUrl = `${base}/?page=about`;
     } else if (pageParam === 'contact') {
       canonicalUrl = `${base}/?page=contact`;
+    } else if (pageParam === 'bare-metal') {
+      canonicalUrl = `${base}/?page=bare-metal`;
     }
   }
 
@@ -5386,6 +5391,22 @@ function showPage(page) {
   const navKey = (page === 'blog-post') ? 'blogs' : page;
   const navEl = document.getElementById('nav-' + navKey);
   if (navEl) navEl.classList.add('active');
+  
+  // Custom minimal UI transition for Bare Metal transition experience
+  const nav = document.querySelector('nav');
+  if (nav) {
+    if (page === 'bare-metal') {
+      nav.style.display = 'none';
+    } else {
+      nav.style.display = 'flex';
+    }
+  }
+  
+  if (page === 'bare-metal') {
+    document.body.style.backgroundColor = '#171210';
+  } else {
+    document.body.style.backgroundColor = '#0F172A';
+  }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
@@ -5619,7 +5640,11 @@ function renderHomeTree() {
         const node = systemsTreeNodes[nodeId];
         if (node && node.explorations && node.explorations.length > 0) {
           const targetId = node.explorations[0].id;
-          openItem(targetId, 'blogs');
+          if (nodeId === 'Bare Metal') {
+            showPage('bare-metal');
+          } else {
+            openItem(targetId, 'blogs');
+          }
         } else {
           filterNodeRoute(nodeId);
         }
@@ -6057,9 +6082,43 @@ function renderJourney() {
 function setNode(i) { activeNode = i; renderJourney(); }
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+function highlightCodeLineByLine(code, lang) {
+  const lines = code.split('\n');
+  const highlightedLines = lines.map(line => {
+    const escaped = line; // Already escaped by escHtml in openItem()
+    
+    if (lang === 'assembly' || lang === 'asm') {
+      const asmRegex = /(\/\/.*|;.*|@.*)|\b(mov|ldr|str|add|sub|mul|div|cmp|b|bl|bx|blx|push|pop|nop|msr|mrs|isb|dsb|dmb|cbz|cbnz|svc)\b|\b([rR][0-9]+|[sS][pP]|[lL][rR]|[pP][cC])\b|\b(0x[0-9a-fA-F]+|[0-9]+)\b/gi;
+      return escaped.replace(asmRegex, (match, g1, g2, g3, g4) => {
+        if (g1) return `<span style="color:#64748B; font-style:italic;">${match}</span>`;
+        if (g2) return `<span style="color:#F472B6; font-weight:bold;">${match}</span>`;
+        if (g3) return `<span style="color:#F59E0B;">${match}</span>`;
+        if (g4) return `<span style="color:#34D399;">${match}</span>`;
+        return match;
+      });
+    } else {
+      const cRegex = /(\/\*[\s\S]*?\*\/)|(\/\/.*)|(&quot;.*?&quot;|&#39;.*?&#39;|".*?"|'.*?')|(#[a-zA-Z]+)|\b(void|int|char|long|short|float|double|return|const|if|else|for|while|do|switch|case|default|break|continue|typedef|struct|union|enum|volatile|extern|static|inline)\b|\b(main|SystemInit|copy_data_segment|zero_bss_segment|__libc_init_array|Reset_Handler|SystemCoreClockUpdate|uint32_t|uint16_t|uint8_t|int32_t|int16_t|int8_t|size_t)\b|\b(0x[0-9a-fA-F]+|[0-9]+)\b/g;
+      return escaped.replace(cRegex, (match, g1, g2, g3, g4, g5, g6, g7) => {
+        if (g1) return `<span style="color:#64748B; font-style:italic;">${match}</span>`;
+        if (g2) return `<span style="color:#64748B; font-style:italic;">${match}</span>`;
+        if (g3) return `<span style="color:#34D399;">${match}</span>`;
+        if (g4) return `<span style="color:#F59E0B;">${match}</span>`;
+        if (g5) return `<span style="color:#F472B6; font-weight:bold;">${match}</span>`;
+        if (g6) return `<span style="color:#3B82F6;">${match}</span>`;
+        if (g7) return `<span style="color:#34D399;">${match}</span>`;
+        return match;
+      });
+    }
+  });
+  return highlightedLines.join('\n');
+}
+
 function parseTextFormatting(text) {
   // 0a. Code blocks: ```c ... ``` -> <div class="blog-code">...</div>
-  let parsed = text.replace(/\x60\x60\x60(?:c|cpp|assembly|asm)?\n([\s\S]*?)\n\x60\x60\x60/g, '<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">$1</div>');
+  let parsed = text.replace(/\x60\x60\x60(c|cpp|assembly|asm)?\n([\s\S]*?)\n\x60\x60\x60/g, (match, lang, code) => {
+    const highlighted = highlightCodeLineByLine(code, lang);
+    return `<div class="blog-code" style="color:#7DD3FC; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1rem 1.25rem; font-family:var(--mono); font-size:0.85rem; margin:1.5rem 0; letter-spacing:0.02em; white-space:pre-wrap;">${highlighted}</div>`;
+  });
 
   // 0b. Inline code: `code` -> <code style="...">code</code>
   parsed = parsed.replace(/\x60([^\x60\n]+?)\x60/g, '<code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">$1</code>');
@@ -10837,6 +10896,11 @@ function handleUrlRouting() {
   }
   if (relPath.startsWith('journey/')) {
     showPage('journey');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('bare-metal/')) {
+    showPage('bare-metal');
     isRouting = false;
     return;
   }

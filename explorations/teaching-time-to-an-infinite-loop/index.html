@@ -294,7 +294,7 @@
     <text x="620" y="87" fill="var(--muted)" font-size="6" text-anchor="middle">Triggers ISR</text>
   </svg>
   <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-top:0.75rem; text-align:center;">The hardware timer counts clock pulses independently of the CPU core instruction pipeline.</div>
-</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Consider a simple configuration: an input clock of 1 MHz. If we set the timer's prescaler to 1, the counter increments every 1 microsecond. If we set a target compare register value of 1000, a comparator on the silicon triggers a compare match event exactly every 1000 counts—representing a precise 1 millisecond interval.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Hidden Connection: The Architecture of Time</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">&lt;span style="display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);"&gt;We have encountered this hardware before. In <a href="../../explorations/the-architecture-of-time/" onclick="openItem('the-architecture-of-time', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">The Architecture of Time</a>, we explored what happens when timers themselves reach their limits — overflow, wraparound, and the edge cases hidden inside measuring time. Here, we are looking at the same hardware from another direction. Not how time can fail, but how time can organize software.&lt;/span&gt;</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Creating a System Tick</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By configuring a hardware timer to assert an interrupt line at a periodic rate, we establish a software timebase—a system tick. Every tick, the CPU jumps to the interrupt vector to increment a global counter:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">volatile uint32_t system_ticks = 0;
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Consider a simple configuration: an input clock of 1 MHz. If we set the timer's prescaler to 1, the counter increments every 1 microsecond. If we set a target compare register value of 1000, a comparator on the silicon triggers a compare match event exactly every 1000 counts—representing a precise 1 millisecond interval.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Hidden Connection: The Architecture of Time</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><span style="display:inline-block; border-left: 2px solid var(--blue); padding-left: 0.75rem; margin: 0.5rem 0; font-style: italic; color: var(--muted);">We have encountered this hardware before. In <a href="../../explorations/the-architecture-of-time/" onclick="openItem('the-architecture-of-time', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">The Architecture of Time</a>, we explored what happens when timers themselves reach their limits — overflow, wraparound, and the edge cases hidden inside measuring time. Here, we are looking at the same hardware from another direction. Not how time can fail, but how time can organize software.</span></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Creating a System Tick</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By configuring a hardware timer to assert an interrupt line at a periodic rate, we establish a software timebase—a system tick. Every tick, the CPU jumps to the interrupt vector to increment a global counter:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">volatile uint32_t system_ticks = 0;
 
 void Timer_IRQHandler(void)
 {
@@ -602,6 +602,58 @@ while (1)
     </div>
   </section>
   <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+</div>
+
+<div class="page" id="page-bare-metal">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Bare Metal</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      Software that runs directly on hardware without an operating system.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Operating Systems</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Bare Metal
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "Every embedded application begins long before main()."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="openItem('before-main', 'blogs')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
 </div>
 
 
