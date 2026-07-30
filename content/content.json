@@ -252,8 +252,10 @@
               "text": "This simple mathematical physics makes CAN almost completely immune to common-mode noise, allowing it to communicate reliably over hundreds of meters in the most hostile environments."
             },
             {
-              "type": "p",
-              "text": "![CAN Network Topology showing CANH and CANL twisted pair with nodes and transceivers](Images/can_network.png)"
+              "type": "image",
+              "src": "../../Images/can_network.png",
+              "alt": "CAN Network Topology showing CANH and CANL twisted pair with nodes and transceivers",
+              "caption": "CAN Network Topology showing CANH and CANL twisted pair with nodes and transceivers"
             }
           ]
         },
@@ -277,8 +279,10 @@
               "text": "Because the dominant state actively drives the lines while the recessive state passively lets them float, a dominant bit (0) will always override a recessive bit (1). If one node attempts to write a recessive 1, but another node writes a dominant 0, the bus resolves to a dominant 0. This dominant/recessive physics forms the basis of CAN's collision-free, multi-master arbitration."
             },
             {
-              "type": "p",
-              "text": "![Differential Voltage Levels: Dominant vs Recessive on CANH and CANL](Images/can_differential.png)"
+              "type": "image",
+              "src": "../../Images/can_differential.png",
+              "alt": "Differential Voltage Levels: Dominant vs Recessive on CANH and CANL",
+              "caption": "Differential Voltage Levels: Dominant vs Recessive on CANH and CANL"
             }
           ]
         },
@@ -298,8 +302,10 @@
               "text": "To prevent signal reflections, we must match the cable's characteristic impedance. A standard twisted-pair cable has a characteristic impedance of 120 Ohms. Placing 120 Ohm resistors at both ends acts as an electrical sink: the incoming wave's energy is completely absorbed and converted to heat, preventing any reflections and maintaining pristine signal integrity."
             },
             {
-              "type": "p",
-              "text": "![CAN Bus Termination: Impedance Matching vs Signal Reflections](Images/can_termination.png)"
+              "type": "image",
+              "src": "../../Images/can_termination.png",
+              "alt": "CAN Bus Termination: Impedance Matching vs Signal Reflections",
+              "caption": "CAN Bus Termination: Impedance Matching vs Signal Reflections"
             }
           ]
         },
@@ -336,8 +342,10 @@
               "text": "1. Standard Frame (CAN 2.0A): Uses an 11-bit identifier, allowing up to 2,048 unique message priorities. It is the core format for basic automotive and industrial networks.\n2. Extended Frame (CAN 2.0B): Uses a 29-bit identifier, expanding the space to over 536 million unique priorities. This is achieved by splitting the ID into an 11-bit Base ID and an 18-bit Extension ID, separated by the IDE (Identifier Extension) and SRR (Substitute Remote Request) bits. If a standard and an extended frame with the same base ID compete, the standard frame wins arbitration because its IDE bit is dominant (logic 0), whereas the extended frame's IDE bit is recessive (logic 1)."
             },
             {
-              "type": "p",
-              "text": "![CAN 2.0A Standard vs CAN 2.0B Extended Frame Layouts](Images/can_frame_format.png)"
+              "type": "image",
+              "src": "../../Images/can_frame_format.png",
+              "alt": "CAN 2.0A Standard vs CAN 2.0B Extended Frame Layouts",
+              "caption": "CAN 2.0A Standard vs CAN 2.0B Extended Frame Layouts"
             }
           ]
         },
@@ -1188,8 +1196,10 @@
               "text": "By shrinking the bus to two wires, I2C eliminates the physical pin bottleneck. A master can communicate with over a hundred devices using the exact same two pins. However, this simplicity introduces a complex electrical challenge: if multiple devices share the same data and clock lines, how do we prevent them from colliding and burning out their output drivers when one tries to transmit a 1 while another transmits a 0?"
             },
             {
-              "type": "p",
-              "text": "![I2C Shared Bus Topology showing Pull-up resistors and multiple slaves](Images/i2c_bus_topology.png)"
+              "type": "image",
+              "src": "../../Images/i2c_bus_topology.png",
+              "alt": "I2C Shared Bus Topology showing Pull-up resistors and multiple slaves",
+              "caption": "I2C Shared Bus Topology showing Pull-up resistors and multiple slaves"
             }
           ]
         },
@@ -1209,8 +1219,10 @@
               "text": "This creates a 'wired-AND' logic bus. If any single device pulls the line LOW, the entire line goes LOW. The line only returns HIGH when every single device releases it. Electrical collisions are resolved safely: if two devices write conflicting states, the line simply resolves to LOW, drawing only a safe, limited current through the pull-up resistor."
             },
             {
-              "type": "p",
-              "text": "![I2C Open-Drain Transistor Circuit Schematic](Images/i2c_open_drain.png)"
+              "type": "image",
+              "src": "../../Images/i2c_open_drain.png",
+              "alt": "I2C Open-Drain Transistor Circuit Schematic",
+              "caption": "I2C Open-Drain Transistor Circuit Schematic"
             }
           ]
         },
@@ -1226,8 +1238,10 @@
               "text": "I2C exploits this stability rule to define START and STOP conditions. A START condition is signaled when SDA transitions from HIGH to LOW while SCL is HIGH. A STOP condition is signaled when SDA transitions from LOW to HIGH while SCL is HIGH. These transitions act as start-of-frame and end-of-frame markers that every peripheral monitors on the bus, resetting their internal receivers to listen for addressing."
             },
             {
-              "type": "p",
-              "text": "![I2C START and STOP Condition Waveforms](Images/i2c_start_stop.png)"
+              "type": "image",
+              "src": "../../Images/i2c_start_stop.png",
+              "alt": "I2C START and STOP Condition Waveforms",
+              "caption": "I2C START and STOP Condition Waveforms"
             }
           ]
         },
@@ -1269,8 +1283,10 @@
               "text": "Because of the open-drain wired-AND structure, both masters can drive SCL and SDA. As they transmit data bits, each master monitors the actual state of the SDA line. As long as the bus matches the bits they write, they proceed. However, if Master A writes a 1 (releasing SDA) but Master B writes a 0 (pulling SDA LOW), the bus resolves to LOW. Master A, sensing a LOW when it expected a HIGH, realizes another master is active, immediately halts its transmission, releases the bus, and falls back to receiver mode. Master B continues its transaction completely uninterrupted, unaware of the silent victory."
             },
             {
-              "type": "p",
-              "text": "![I2C Multi-Master Arbitration Timing Diagram](Images/i2c_arbitration.png)"
+              "type": "image",
+              "src": "../../Images/i2c_arbitration.png",
+              "alt": "I2C Multi-Master Arbitration Timing Diagram",
+              "caption": "I2C Multi-Master Arbitration Timing Diagram"
             }
           ]
         },
@@ -1524,8 +1540,10 @@
               "text": "The schematic below illustrates how these four lines form the baseline interface between a master and a single slave device:"
             },
             {
-              "type": "p",
-              "text": "![SPI Master-Slave Bus Interface Topology](Images/spi_bus_topology.png)"
+              "type": "image",
+              "src": "../../Images/spi_bus_topology.png",
+              "alt": "SPI Master-Slave Bus Interface Topology",
+              "caption": "SPI Master-Slave Bus Interface Topology"
             }
           ]
         },
@@ -1549,8 +1567,10 @@
               "text": "This circular data loop is illustrated below, showcasing the hardware shift register interaction during a transfer:"
             },
             {
-              "type": "p",
-              "text": "![SPI Full-Duplex Shift Register Loop](Images/spi_shift_registers.png)"
+              "type": "image",
+              "src": "../../Images/spi_shift_registers.png",
+              "alt": "SPI Full-Duplex Shift Register Loop",
+              "caption": "SPI Full-Duplex Shift Register Loop"
             }
           ]
         },
@@ -1590,8 +1610,10 @@
               "text": "By combining these two parameters, engineers can configure the interface in one of four distinct SPI Modes (0, 1, 2, or 3). The timing diagram below demonstrates how these configurations adjust the relationship between SCLK transitions and the MOSI/MISO data windows:"
             },
             {
-              "type": "p",
-              "text": "![SPI Timing Diagram illustrating CPOL and CPHA configuration modes](Images/spi_clock_modes.png)"
+              "type": "image",
+              "src": "../../Images/spi_clock_modes.png",
+              "alt": "SPI Timing Diagram illustrating CPOL and CPHA configuration modes",
+              "caption": "SPI Timing Diagram illustrating CPOL and CPHA configuration modes"
             }
           ]
         },
@@ -1950,8 +1972,10 @@
               "text": "To build a useful system, we construct a hierarchy: registers and SRAM at the very top (tapering down near the CPU core for speed), backed by main DRAM system memory, and finally persistent NOR and NAND flash for mass storage. This tiered architecture ensures the CPU is never starved of instructions while keeping persistent data accessible."
             },
             {
-              "type": "p",
-              "text": "![The Memory Hierarchy showing speed vs density trade-offs](Images/memory_hierarchy.png)"
+              "type": "image",
+              "src": "../../Images/memory_hierarchy.png",
+              "alt": "The Memory Hierarchy showing speed vs density trade-offs",
+              "caption": "The Memory Hierarchy showing speed vs density trade-offs"
             },
             {
               "type": "p",
@@ -1975,8 +1999,10 @@
               "text": "Dynamic RAM (DRAM) takes the opposite approach. It shrinks the cell down to a single transistor and a single storage capacitor (1T1C). While this allows massive densities (gigabytes on a single chip), the capacitor is a leaky reservoir. It naturally drains its charge within milliseconds, requiring a continuous refresh loop to prevent data corruption."
             },
             {
-              "type": "p",
-              "text": "![SRAM 6T vs DRAM 1T1C circuit diagram](Images/sram_vs_dram.png)"
+              "type": "image",
+              "src": "../../Images/sram_vs_dram.png",
+              "alt": "SRAM 6T vs DRAM 1T1C circuit diagram",
+              "caption": "SRAM 6T vs DRAM 1T1C circuit diagram"
             },
             {
               "type": "p",
@@ -2000,8 +2026,10 @@
               "text": "NAND Flash daisy-chains transistor arrays in a tight serial configuration. By eliminating the individual contacts needed for parallel routing, NAND achieves extraordinary densities. However, this serial chain prevents byte-level access, requiring the processor to read and write data in sequential sector blocks, ideal for mass storage filesystems."
             },
             {
-              "type": "p",
-              "text": "![NOR parallel vs NAND serial micro-architectural layouts](Images/nor_vs_nand.png)"
+              "type": "image",
+              "src": "../../Images/nor_vs_nand.png",
+              "alt": "NOR parallel vs NAND serial micro-architectural layouts",
+              "caption": "NOR parallel vs NAND serial micro-architectural layouts"
             },
             {
               "type": "p",
@@ -2021,8 +2049,10 @@
               "text": "From top to bottom, the register space is divided into proportional segments: .text (NOR Flash for execution), .data and .bss (RAM for initialized and zeroed variables), followed by the Stack (runtime context engine) and the Heap (dynamic allocation workspace)."
             },
             {
-              "type": "p",
-              "text": "![Microcontroller memory map segment boundaries](Images/embedded_memory_map.png)"
+              "type": "image",
+              "src": "../../Images/embedded_memory_map.png",
+              "alt": "Microcontroller memory map segment boundaries",
+              "caption": "Microcontroller memory map segment boundaries"
             },
             {
               "type": "p",
@@ -2109,8 +2139,10 @@
               "text": "To solve this, timers use a Prescaler (PSC). The prescaler is a programmable frequency divider. If we set the prescaler to 8399, the incoming 84 MHz clock is divided by 8400 (PSC + 1), feeding the counter a slow, manageable 10 kHz signal. The counter now increments once every 100 microseconds, wrapping in a comfortable 6.5 seconds."
             },
             {
-              "type": "p",
-              "text": "![Timer Clock Division: Clock source divided by Prescaler to drive Counter CNT](Images/timer_prescaler.png)"
+              "type": "image",
+              "src": "../../Images/timer_prescaler.png",
+              "alt": "Timer Clock Division: Clock source divided by Prescaler to drive Counter CNT",
+              "caption": "Timer Clock Division: Clock source divided by Prescaler to drive Counter CNT"
             }
           ]
         },
@@ -2126,8 +2158,10 @@
               "text": "The moment an overflow occurs, the timer hardware asserts an Update Interrupt Flag (UIF) and can trigger a CPU interrupt. By adjusting the ARR value, we dictate the exact period of this wraparound. A 10 kHz counter configured to wrap at 10,000 generates an overflow interrupt exactly once every second, creating a deterministic periodic heartbeat."
             },
             {
-              "type": "p",
-              "text": "![Timer Overflow Sequence showing Counter wrapping at ARR and generating Update Flag](Images/timer_overflow.png)"
+              "type": "image",
+              "src": "../../Images/timer_overflow.png",
+              "alt": "Timer Overflow Sequence showing Counter wrapping at ARR and generating Update Flag",
+              "caption": "Timer Overflow Sequence showing Counter wrapping at ARR and generating Update Flag"
             }
           ]
         },
@@ -2147,8 +2181,10 @@
               "text": "The moment the counter matches the compare register, the timer asserts a Compare Match flag and can toggle an output pin or trigger an event. This allows the system to schedule precise sub-millisecond events without CPU intervention."
             },
             {
-              "type": "p",
-              "text": "![Timer Compare Match Waveform showing Counter intersecting CCR to trigger Match Events](Images/timer_compare_match.png)"
+              "type": "image",
+              "src": "../../Images/timer_compare_match.png",
+              "alt": "Timer Compare Match Waveform showing Counter intersecting CCR to trigger Match Events",
+              "caption": "Timer Compare Match Waveform showing Counter intersecting CCR to trigger Match Events"
             }
           ]
         },
@@ -2177,12 +2213,16 @@
               "text": "A 50% duty cycle on a 3.3V pin outputs 3.3V half the time, averaging to 1.65V. To an LED, this appears as half brightness. To a DC motor, it translates to half speed. Timers allow us to paint analog behaviors onto digital silicon using nothing but time."
             },
             {
-              "type": "p",
-              "text": "![PWM Waveform showing Period, Pulse Width, and Amplitude](Images/pwm_waveforms.png)"
+              "type": "image",
+              "src": "../../Images/pwm_waveforms.png",
+              "alt": "PWM Waveform showing Period, Pulse Width, and Amplitude",
+              "caption": "PWM Waveform showing Period, Pulse Width, and Amplitude"
             },
             {
-              "type": "p",
-              "text": "![Comparison of 25%, 50%, and 75% Duty Cycles and resulting average voltages](Images/pwm_duty_cycle.png)"
+              "type": "image",
+              "src": "../../Images/pwm_duty_cycle.png",
+              "alt": "Comparison of 25%, 50%, and 75% Duty Cycles and resulting average voltages",
+              "caption": "Comparison of 25%, 50%, and 75% Duty Cycles and resulting average voltages"
             }
           ]
         },
@@ -2211,8 +2251,10 @@
               "text": "By subtracting the first captured value from the second, the software can measure the exact pulse width of an external signal down to the nanosecond, enabling precise sensor decoding (such as ultrasonic distance sensors or RPM tachometers) with zero CPU polling overhead."
             },
             {
-              "type": "p",
-              "text": "![Timer Input Capture timing showing CCR latching at rising/falling edges to measure width](Images/input_capture.png)"
+              "type": "image",
+              "src": "../../Images/input_capture.png",
+              "alt": "Timer Input Capture timing showing CCR latching at rising/falling edges to measure width",
+              "caption": "Timer Input Capture timing showing CCR latching at rising/falling edges to measure width"
             }
           ]
         }
@@ -2279,8 +2321,10 @@
               "text": "The Brownout Detection circuit acts as an analog sentinel. It holds the CPU's internal reset line low, forcing all digital registers and execution pipelines into safe, defined hardware default states. While the reset line is active, the system's main crystal oscillator is powered up. The oscillator requires time to stabilize, moving from thermal noise to a steady, rhythmic sine wave."
             },
             {
-              "type": "p",
-              "text": "![Power-On Sequence](Images/power_on_sequence.png)"
+              "type": "image",
+              "src": "../../Images/power_on_sequence.png",
+              "alt": "Power-On Sequence",
+              "caption": "Power-On Sequence"
             },
             {
               "type": "p",
@@ -2308,8 +2352,10 @@
               "text": "Regardless of the specific architecture, the mechanism remains conceptual: the hardware reset release forces the CPU to load its very first instruction address from a dedicated slot. The reset vector is the gateway; it points the processor directly to the code that will build the software runtime."
             },
             {
-              "type": "p",
-              "text": "![Reset Vector Flow](Images/reset_vector_flow.png)"
+              "type": "image",
+              "src": "../../Images/reset_vector_flow.png",
+              "alt": "Reset Vector Flow",
+              "caption": "Reset Vector Flow"
             },
             {
               "type": "p",
@@ -2333,8 +2379,10 @@
               "text": "Without this table, the CPU is blind to its own failures. If a memory access fault or illegal instruction occurs during early startup, the processor must instantly jump to a fault handler to prevent runaway execution. The vector table provides this safety net before any user code can run."
             },
             {
-              "type": "p",
-              "text": "![Cortex-M Vector Table](Images/cortex_m_vector_table.png)"
+              "type": "image",
+              "src": "../../Images/cortex_m_vector_table.png",
+              "alt": "Cortex-M Vector Table",
+              "caption": "Cortex-M Vector Table"
             },
             {
               "type": "p",
@@ -2358,8 +2406,10 @@
               "text": "The startup code performs a literal copy loop: it reads the initialization values from Flash and writes them to their corresponding RAM addresses. Next, it zeros out the '.bss' section in RAM, ensuring all uninitialized global variables are clean. Only when this migration is complete is the system's memory model aligned with the developer's expectations."
             },
             {
-              "type": "p",
-              "text": "![Startup Memory Initialization](Images/startup_memory_initialization.png)"
+              "type": "image",
+              "src": "../../Images/startup_memory_initialization.png",
+              "alt": "Startup Memory Initialization",
+              "caption": "Startup Memory Initialization"
             },
             {
               "type": "p",
@@ -2387,8 +2437,10 @@
               "text": "A processor without a clock is a mind without rhythm."
             },
             {
-              "type": "p",
-              "text": "![Clock Startup Chain](Images/clock_startup_chain.png)"
+              "type": "image",
+              "src": "../../Images/clock_startup_chain.png",
+              "alt": "Clock Startup Chain",
+              "caption": "Clock Startup Chain"
             },
             {
               "type": "p",
@@ -2412,8 +2464,10 @@
               "text": "The secondary bootloader lives in flash memory and provides custom system logic. It might manage dual-image bank switching for safe OTA updates, initialize external RAM, or verify the integrity of the application firmware before jumping to its entry point."
             },
             {
-              "type": "p",
-              "text": "![Bootloader Hierarchy](Images/bootloader_hierarchy.png)"
+              "type": "image",
+              "src": "../../Images/bootloader_hierarchy.png",
+              "alt": "Bootloader Hierarchy",
+              "caption": "Bootloader Hierarchy"
             },
             {
               "type": "p",
@@ -2445,8 +2499,10 @@
               "text": "Modern systems no longer ask only whether firmware exists. They ask whether it deserves to execute."
             },
             {
-              "type": "p",
-              "text": "![Secure Boot Chain of Trust](Images/secure_boot_chain_of_trust.png)"
+              "type": "image",
+              "src": "../../Images/secure_boot_chain_of_trust.png",
+              "alt": "Secure Boot Chain of Trust",
+              "caption": "Secure Boot Chain of Trust"
             },
             {
               "type": "p",
@@ -2470,8 +2526,10 @@
               "text": "At this exact moment, control shifts. The invisible machinery that brought the machine from inert silicon to an executing system recedes into the background. The first line of your main() function executes."
             },
             {
-              "type": "p",
-              "text": "![Complete Boot Process Overview](Images/complete_boot_process_overview.png)"
+              "type": "image",
+              "src": "../../Images/complete_boot_process_overview.png",
+              "alt": "Complete Boot Process Overview",
+              "caption": "Complete Boot Process Overview"
             },
             {
               "type": "p",
@@ -2517,8 +2575,10 @@
               "text": "But beneath the abstraction layers of low-level firmware, this uniformity disappears. Memory is not a single contiguous pasture; it is a highly structured, compartmentalized terrain. A microcontroller's memory space is fragmented by physical and electrical realities. Code, initialized global variables, uninitialized flags, read-only constants, stack frames, and dynamic heaps must reside in completely different areas of the silicon to function."
             },
             {
-              "type": "p",
-              "text": "![Embedded Firmware Memory Layout Diagram](Images/firmware_memory_layout.png)"
+              "type": "image",
+              "src": "../../Images/firmware_memory_layout.png",
+              "alt": "Embedded Firmware Memory Layout Diagram",
+              "caption": "Embedded Firmware Memory Layout Diagram"
             },
             {
               "type": "p",
@@ -2559,8 +2619,10 @@
               "text": "This is where the Linker enters as a cartographer. The linker compiles these fragmented objects and maps their sections into a unified, physical landscape. It decides the precise layout of the firmware\u2014stitching together the various '.text', '.data', and '.bss' fragments and matching them to the exact address boundaries of the target processor."
             },
             {
-              "type": "p",
-              "text": "![Linker to Memory Relationship Mapping](Images/linker_to_memory_relationship.png)"
+              "type": "image",
+              "src": "../../Images/linker_to_memory_relationship.png",
+              "alt": "Linker to Memory Relationship Mapping",
+              "caption": "Linker to Memory Relationship Mapping"
             },
             {
               "type": "p",
@@ -2592,8 +2654,10 @@
               "text": "By establishing these constraints, the compiler can output absolute addresses, knowing that the code and variable segments will fall safely within the silicon boundaries."
             },
             {
-              "type": "p",
-              "text": "![Microcontroller Memory Map Diagram](Images/mcu_memory_map.png)"
+              "type": "image",
+              "src": "../../Images/mcu_memory_map.png",
+              "alt": "Microcontroller Memory Map Diagram",
+              "caption": "Microcontroller Memory Map Diagram"
             },
             {
               "type": "p",
@@ -2617,8 +2681,10 @@
               "text": "To resolve this, the system executes startup assembly or C initialization routines before your main() function is reached. This startup code performs the first migration: it reads the block of initial values from Flash and copies them into their RAM destinations. It then clears the '.bss' section in RAM to zero."
             },
             {
-              "type": "p",
-              "text": "![Startup Initialization Flow Diagram](Images/startup_initialization_flow.png)"
+              "type": "image",
+              "src": "../../Images/startup_initialization_flow.png",
+              "alt": "Startup Initialization Flow Diagram",
+              "caption": "Startup Initialization Flow Diagram"
             },
             {
               "type": "p",
@@ -2956,8 +3022,10 @@
               "text": "Before sophisticated communication protocols existed, the industry needed a way to let a processor interact with voltage directly. GPIO was the solution\u2014a simple, programmable gate that allowed software to control the state of a physical pin."
             },
             {
-              "type": "p",
-              "text": "![The path from software instruction to physical voltage change](Images/GPIO.png)"
+              "type": "image",
+              "src": "../../Images/GPIO.png",
+              "alt": "The path from software instruction to physical voltage change",
+              "caption": "The path from software instruction to physical voltage change"
             },
             {
               "type": "p",
@@ -3052,8 +3120,10 @@
               "text": "When configured in synchronous mode, USART transmits a dedicated clock signal alongside the data line. Instead of oversampling and searching for start bits, the receiver simply samples the data wire on the clock edges. This eliminates clock drift issues, allowing speeds comparable to SPI while retaining UART's simple frame packaging. Yet, despite being present on almost every modern microcontroller, synchronous USART is rarely used. If an engineer is willing to route a clock line, the simplicity of UART is lost; and if they have a clock line, they almost always prefer the faster shift register architecture of SPI or the multi-slave addressing of I2C. USART remains a bridge not often crossed, operating quietly in asynchronous UART mode on most developer desks."
             },
             {
-              "type": "p",
-              "text": "![USART Timing Diagram showing Synchronous Clock CK and Data TX Alignment vs Asynchronous UART](Images/usart_timing.png)"
+              "type": "image",
+              "src": "../../Images/usart_timing.png",
+              "alt": "USART Timing Diagram showing Synchronous Clock CK and Data TX Alignment vs Asynchronous UART",
+              "caption": "USART Timing Diagram showing Synchronous Clock CK and Data TX Alignment vs Asynchronous UART"
             }
           ]
         },
@@ -3073,8 +3143,10 @@
               "text": "By leveraging this quad-width bus and Dual Data Rate (DDR) clocking\u2014sampling on both rising and falling edges\u2014QSPI increases throughput up to eightfold. This massive bandwidth allows modern microcontrollers to execute code directly from external flash memory (Execute-in-Place, or XiP), making external memory feel as responsive as internal SRAM."
             },
             {
-              "type": "p",
-              "text": "![Standard SPI (4 wires) vs Quad SPI (6 wires showing IO0-IO3 bidirectional lines)](Images/qspi_vs_spi.png)"
+              "type": "image",
+              "src": "../../Images/qspi_vs_spi.png",
+              "alt": "Standard SPI (4 wires) vs Quad SPI (6 wires showing IO0-IO3 bidirectional lines)",
+              "caption": "Standard SPI (4 wires) vs Quad SPI (6 wires showing IO0-IO3 bidirectional lines)"
             }
           ]
         },
@@ -3098,8 +3170,10 @@
               "text": "SMBus turned the cooperative conversation of I2C into a reliable, deterministic diagnostic bus for power management."
             },
             {
-              "type": "p",
-              "text": "![SMBus Topology showing pull-ups, SCL, SDA, and the SMBALERT# alert line](Images/smbus_topology.png)"
+              "type": "image",
+              "src": "../../Images/smbus_topology.png",
+              "alt": "SMBus Topology showing pull-ups, SCL, SDA, and the SMBALERT# alert line",
+              "caption": "SMBus Topology showing pull-ups, SCL, SDA, and the SMBALERT# alert line"
             }
           ]
         },
@@ -3119,8 +3193,10 @@
               "text": "LIN is a single-wire, master-slave sub-bus. It operates at low speeds (up to 20 kbps) using standard, low-cost UART frames. It runs on a single wire pulled up to 12V (battery voltage), eliminating the need for differential transceivers. Instead of complex CAN controllers, LIN runs on cheap 8-bit microcontrollers. In a car, a single CAN-enabled body controller acts as the LIN Master, managing a cluster of LIN slaves (doors, locks, mirrors) and bridging their diagnostic info back to the primary CAN backbone, saving copper, weight, and silicon cost."
             },
             {
-              "type": "p",
-              "text": "![LIN single-wire network topology with Master node, slave modules, and 12V pull-up](Images/lin_network.png)"
+              "type": "image",
+              "src": "../../Images/lin_network.png",
+              "alt": "LIN single-wire network topology with Master node, slave modules, and 12V pull-up",
+              "caption": "LIN single-wire network topology with Master node, slave modules, and 12V pull-up"
             }
           ]
         },
@@ -3140,8 +3216,10 @@
               "text": "With no clock wire, timing is critical. Communication is divided into precise time slots (e.g. 15\u00b5s to 60\u00b5s) where master and slave pull the line low for varying durations to represent 0s and 1s. Every 1-Wire device is factory-programmed with a unique, immutable 64-bit registration ID. This allows a master to communicate with dozens of sensors (like the DS18B20 digital thermometer) sharing the same single wire run, with zero manual address configuration. 1-Wire represents the ultimate realization of hardware minimalism."
             },
             {
-              "type": "p",
-              "text": "![1-Wire bus topology showing master, parasitic power slaves, DQ wire, and pull-up](Images/onewire_bus.png)"
+              "type": "image",
+              "src": "../../Images/onewire_bus.png",
+              "alt": "1-Wire bus topology showing master, parasitic power slaves, DQ wire, and pull-up",
+              "caption": "1-Wire bus topology showing master, parasitic power slaves, DQ wire, and pull-up"
             }
           ]
         },
@@ -3215,8 +3293,10 @@
               "text": "This simple `while(1)` structure is the structural spine of bare-metal computing. It keeps the CPU active, heartbeat regular, and program execution contained. In a quiet, simple machine, this loop is the perfect foundation. But it is also an empty arena, waiting for responsibilities."
             },
             {
-              "type": "p",
-              "text": "![The circular flow of the infinite while(1) loop.](Images/polling_infinite_loop.svg)"
+              "type": "image",
+              "src": "../../Images/polling_infinite_loop.svg",
+              "alt": "The circular flow of the infinite while(1) loop.",
+              "caption": "The circular flow of the infinite while(1) loop."
             }
           ]
         },
@@ -3253,8 +3333,10 @@
               "text": "In a battery-powered device, this is a disaster. Polling wastes massive amounts of power. The core is 100% active, running at full speed and drawing full current, simply to confirm that the world is quiet. The processor is trapped in a loop of wasted effort, spinning its wheels at top speed while waiting for something to happen."
             },
             {
-              "type": "p",
-              "text": "![Wasted CPU cycles: 99.9% of checks return no change, keeping core load at 100%.](Images/polling_wasted_effort.svg)"
+              "type": "image",
+              "src": "../../Images/polling_wasted_effort.svg",
+              "alt": "Wasted CPU cycles: 99.9% of checks return no change, keeping core load at 100%.",
+              "caption": "Wasted CPU cycles: 99.9% of checks return no change, keeping core load at 100%."
             }
           ]
         },
@@ -3274,8 +3356,10 @@
               "text": "Now, the central processing unit is no longer just checking the button. It must perform a sequence of duties. Each check requires time. If `CheckUART()` has to read a packet, it executes instructions. If `CheckADC()` must wait for a conversion, it spins. As we add more peripherals, the total execution time of a single pass through the loop\u2014the loop cycle time\u2014stretches."
             },
             {
-              "type": "p",
-              "text": "![The expanding loop: as more peripherals are added, loop cycle time grows significantly.](Images/polling_growing_system.svg)"
+              "type": "image",
+              "src": "../../Images/polling_growing_system.svg",
+              "alt": "The expanding loop: as more peripherals are added, loop cycle time grows significantly.",
+              "caption": "The expanding loop: as more peripherals are added, loop cycle time grows significantly."
             }
           ]
         },
@@ -3299,8 +3383,10 @@
               "text": "If the loop cycle time exceeds the arrival rate of new data, we encounter a catastrophic failure mode: missed events. If a second UART character arrives before the loop finishes its round to read the first, the hardware's internal buffer overflows, and data is permanently lost."
             },
             {
-              "type": "p",
-              "text": "![Timing timeline: showing the latency delay between an event's occurrence and its detection by the polling CPU.](Images/polling_latency_timeline.svg)"
+              "type": "image",
+              "src": "../../Images/polling_latency_timeline.svg",
+              "alt": "Timing timeline: showing the latency delay between an event's occurrence and its detection by the polling CPU.",
+              "caption": "Timing timeline: showing the latency delay between an event's occurrence and its detection by the polling CPU."
             }
           ]
         },
@@ -3403,8 +3489,10 @@
               "text": "The diagram below represents the exact structure of a single UART frame as it progresses over the physical line from left to right:"
             },
             {
-              "type": "p",
-              "text": "![UART Frame Schematic Layout](Images/uart_frame_schematic.png)"
+              "type": "image",
+              "src": "../../Images/uart_frame_schematic.png",
+              "alt": "UART Frame Schematic Layout",
+              "caption": "UART Frame Schematic Layout"
             }
           ]
         },
@@ -3754,8 +3842,10 @@
               "text": "1. **Assertion**: The peripheral drives its IRQ line to its active state (high or low).\n2. **Synchronization**: The core detects the active line and waits to finish its currently executing machine instruction (typically 1 to 5 clock cycles).\n3. **Context Saving**: The CPU automatically halts normal execution and pushes its current register states (such as the Program Counter, Link Register, Stack Pointer, and Status Register) onto the stack. This preserves the exact state of the background program.\n4. **Vector Fetch**: The processor reads the vector table to fetch the memory address of the handler function associated with the triggering IRQ.\n5. **Execution**: The Program Counter jumps to that address, and the CPU begins executing the **Interrupt Service Routine (ISR)**.\n6. **Return**: Once the handler finishes, it executes a special return instruction. The CPU pops the saved registers back off the stack, restoring the CPU state, and resumes the background program exactly where it was paused."
             },
             {
-              "type": "p",
-              "text": "![The step-by-step lifecycle of an interrupt request handoff.](Images/interrupt_flow.svg)"
+              "type": "image",
+              "src": "../../Images/interrupt_flow.svg",
+              "alt": "The step-by-step lifecycle of an interrupt request handoff.",
+              "caption": "The step-by-step lifecycle of an interrupt request handoff."
             }
           ]
         },
@@ -3771,8 +3861,10 @@
               "text": "Latency is a hardware tax composed of several parts: completing the current instruction, pushing CPU registers onto the stack (stacking), syncing clocks between the peripheral bus and core, and executing entry handler routines. In modern ARM Cortex-M processors, this hardware stacking and lookup process is heavily optimized, taking as few as 12 to 24 clock cycles. But in real-time systems, every cycle counts. If another interrupt is already running or interrupts are temporarily disabled by the driver, this latency can stretch, potentially causing missed deadlines."
             },
             {
-              "type": "p",
-              "text": "![The timing breakdown of hardware stacking and vector fetch latencies.](Images/interrupt_latency.svg)"
+              "type": "image",
+              "src": "../../Images/interrupt_latency.svg",
+              "alt": "The timing breakdown of hardware stacking and vector fetch latencies.",
+              "caption": "The timing breakdown of hardware stacking and vector fetch latencies."
             }
           ]
         },
@@ -3788,8 +3880,10 @@
               "text": "This is solved by **Interrupt Priority**. Every interrupt source is assigned a priority value. When multiple IRQ lines are asserted simultaneously, the core's hardware interrupt controller (such as the Nested Vectored Interrupt Controller, or NVIC, in ARM architectures) compares their values and runs the highest-priority handler first. If a lower-priority handler is already running when a higher-priority event arrives, the hardware executes **Preemption**\u2014instantly pausing the lower-priority ISR, pushing its registers to the stack, and running the higher-priority ISR. Only when the high-priority handler completes does the lower-priority handler resume."
             },
             {
-              "type": "p",
-              "text": "![A multi-lane timing diagram visualizing preemption and context nesting.](Images/interrupt_priority.svg)"
+              "type": "image",
+              "src": "../../Images/interrupt_priority.svg",
+              "alt": "A multi-lane timing diagram visualizing preemption and context nesting.",
+              "caption": "A multi-lane timing diagram visualizing preemption and context nesting."
             }
           ]
         },
@@ -3822,8 +3916,10 @@
               "text": "When a peripheral triggers, the processor uses the IRQ index to offset into this table, reads the 32-bit address stored there, and jumps directly to that address. You may recognize the first entries from *The First Instruction*: the Reset Vector is simply the very first interrupt address fetched by the silicon when power is applied."
             },
             {
-              "type": "p",
-              "text": "![The mapping between hardware address indexes and handler code in flash.](Images/interrupt_vector_table.svg)"
+              "type": "image",
+              "src": "../../Images/interrupt_vector_table.svg",
+              "alt": "The mapping between hardware address indexes and handler code in flash.",
+              "caption": "The mapping between hardware address indexes and handler code in flash."
             }
           ]
         },
@@ -3910,8 +4006,10 @@
               "text": "1. A hardware **Timer** counts down to zero, generating a periodic trigger pulse.\n2. The **ADC** receives this trigger and immediately starts an analog-to-digital conversion, capturing a physical signal at a precise moment without CPU delay.\n3. The **DMA Controller** receives a transfer request from the ADC, copying the digital sample straight to an SRAM buffer, bypassing the CPU.\n4. When the SRAM buffer is full, the DMA controller asserts an interrupt line to the **Interrupt Controller**.\n5. The CPU receives the **Interrupt Request**, suspends its current work, processes the array of samples in RAM, and decides on a corrective action.\n6. The CPU writes the processed result to the **UART** data register to transmit it to an external monitor."
             },
             {
-              "type": "p",
-              "text": "![Peripheral Cooperation Pipeline](Images/peripheral_cooperation.svg)"
+              "type": "image",
+              "src": "../../Images/peripheral_cooperation.svg",
+              "alt": "Peripheral Cooperation Pipeline",
+              "caption": "Peripheral Cooperation Pipeline"
             },
             {
               "type": "p",
@@ -3935,8 +4033,10 @@
               "text": "If we map this to the hardware blocks we have studied, the architecture aligns perfectly:"
             },
             {
-              "type": "p",
-              "text": "![The Lifecycle of Information](Images/information_flow.svg)"
+              "type": "image",
+              "src": "../../Images/information_flow.svg",
+              "alt": "The Lifecycle of Information",
+              "caption": "The Lifecycle of Information"
             },
             {
               "type": "p",
@@ -4080,8 +4180,10 @@
               "text": "No calculations are performed. No algorithms are run. The CPU performs no logic or control decisions. It is acting as a dumb shovel, copying data from a hardware register (`USART1->DR`) to a memory address (`rx_buffer`). Utilizing an advanced, arithmetic-logic-rich processor core simply to move individual bytes is like employing a senior software architect to carry boxes of paper from the receiving bay to the printer cupboard. It is a massive waste of computational power."
             },
             {
-              "type": "p",
-              "text": "![The CPU-driven data path: the processor acts as a middleman for every byte.](Images/dma_interrupt_path.svg)"
+              "type": "image",
+              "src": "../../Images/dma_interrupt_path.svg",
+              "alt": "The CPU-driven data path: the processor acts as a middleman for every byte.",
+              "caption": "The CPU-driven data path: the processor acts as a middleman for every byte."
             }
           ]
         },
@@ -4097,8 +4199,10 @@
               "text": "This is the purpose of **Direct Memory Access (DMA)**. A DMA controller is a dedicated, specialized hardware coprocessor designed for a single, simple duty: moving bytes. It is a bus master, capable of taking control of the microcontroller's shared memory buses to transfer data directly from peripheral registers to SRAM arrays, completely bypassing the CPU core. The CPU is freed from the data highway, delegating the physical movement of information to dedicated silicon circuits."
             },
             {
-              "type": "p",
-              "text": "![The DMA-driven data path: data bypasses the CPU completely.](Images/dma_direct_path.svg)"
+              "type": "image",
+              "src": "../../Images/dma_direct_path.svg",
+              "alt": "The DMA-driven data path: data bypasses the CPU completely.",
+              "caption": "The DMA-driven data path: data bypasses the CPU completely."
             }
           ]
         },
@@ -4114,8 +4218,10 @@
               "text": "1. **Peripheral Request**: The peripheral (e.g., UART RX buffer full) asserts a DMA request line to the DMA controller.\n2. **Bus Arbitration**: The DMA controller requests control of the system bus. The bus matrix grants access, temporarily pausing the CPU's bus access for a single clock cycle.\n3. **Memory Transfer**: The DMA controller reads the data from the peripheral register and writes it directly to the target RAM address in a single step. It automatically increments the target RAM pointer and decrements its internal transfer counter.\n4. **Completion Notification**: Only when the internal counter reaches zero (signaling that an entire block of data, such as a 512-byte packet, has been completely copied) does the DMA controller assert an IRQ line to the CPU. The CPU is interrupted exactly once at the end of the block, rather than 512 times for individual bytes."
             },
             {
-              "type": "p",
-              "text": "![The four stages of a hardware-managed DMA transfer loop.](Images/dma_anatomy.svg)"
+              "type": "image",
+              "src": "../../Images/dma_anatomy.svg",
+              "alt": "The four stages of a hardware-managed DMA transfer loop.",
+              "caption": "The four stages of a hardware-managed DMA transfer loop."
             }
           ]
         },
@@ -4140,8 +4246,10 @@
               "text": "A circular buffer is a contiguous block of RAM that wraps around on itself. The DMA controller is programmed with the buffer's start address and length. As it writes data, it moves its write pointer forward. When it reaches the end of the buffer, it automatically rolls back to the starting address, creating a seamless, infinite loop of data writing. The CPU read pointer follows behind it, processing data blocks. To prevent data corruption, the CPU must read faster than the DMA writes; if the DMA write pointer overlaps the CPU read pointer, a buffer overrun occurs, and old data is lost."
             },
             {
-              "type": "p",
-              "text": "![The circular buffer write and read pointer dynamics.](Images/dma_circular_buffer.svg)"
+              "type": "image",
+              "src": "../../Images/dma_circular_buffer.svg",
+              "alt": "The circular buffer write and read pointer dynamics.",
+              "caption": "The circular buffer write and read pointer dynamics."
             }
           ]
         },
@@ -4205,8 +4313,10 @@
               "text": "The physical world is fluid, continuous, and unbroken. If you measure the temperature of a room, it does not jump instantly from 22\u00b0C to 23\u00b0C; it transitions through an infinite number of intermediate states. The pressure of sound waves hitting a microphone, the changing angle of a steering wheel potentiometer, the terminal voltage of a discharging lithium-ion battery, and the intensity of morning light are all continuous. They exist as physical quantities that can take any value within a range, changing smoothly across time."
             },
             {
-              "type": "p",
-              "text": "![Continuous physical waveforms vs discrete computer states](Images/analog_signals.png)"
+              "type": "image",
+              "src": "../../Images/analog_signals.png",
+              "alt": "Continuous physical waveforms vs discrete computer states",
+              "caption": "Continuous physical waveforms vs discrete computer states"
             }
           ]
         },
@@ -4231,8 +4341,10 @@
               "text": "This is where we connect back to the Hardware Timer. A timer serves as the clock heartbeat of the system, asserting trigger events to dictate exactly *when* the ADC should observe. By sampling at a fast enough rate, the machine captures enough snapshots of the signal to represent its behavior across time."
             },
             {
-              "type": "p",
-              "text": "![Sampling timing trace showing periodic capture ticks](Images/sampling_process.png)"
+              "type": "image",
+              "src": "../../Images/sampling_process.png",
+              "alt": "Sampling timing trace showing periodic capture ticks",
+              "caption": "Sampling timing trace showing periodic capture ticks"
             }
           ]
         },
@@ -4248,8 +4360,10 @@
               "text": "Quantization discards the infinite sub-millivolt details, rounding the physical voltage to the closest discrete step. The tiny difference between the true analog voltage and the rounded digital level is called Quantization Error."
             },
             {
-              "type": "p",
-              "text": "![Continuous signal mapped onto discrete binary quantization levels](Images/quantization_steps.png)"
+              "type": "image",
+              "src": "../../Images/quantization_steps.png",
+              "alt": "Continuous signal mapped onto discrete binary quantization levels",
+              "caption": "Continuous signal mapped onto discrete binary quantization levels"
             }
           ]
         },
@@ -4269,8 +4383,10 @@
               "text": "By increasing resolution, we make the grid mesh finer, allowing the machine to capture a closer approximation of the physical wave."
             },
             {
-              "type": "p",
-              "text": "![Comparison of grid density for 3-bit vs 8-bit resolutions](Images/resolution_comparison.png)"
+              "type": "image",
+              "src": "../../Images/resolution_comparison.png",
+              "alt": "Comparison of grid density for 3-bit vs 8-bit resolutions",
+              "caption": "Comparison of grid density for 3-bit vs 8-bit resolutions"
             }
           ]
         },
@@ -4290,8 +4406,10 @@
               "text": "If the reference voltage fluctuates, our measurements fluctuate too. If $V_{REF}$ drops to 3.0V due to poor power supply regulation, an input of 1.5V will resolve to `2048` instead of `1861`, causing a measurement error. Precise calibration of $V_{REF}$ is the cornerstone of accurate physical observation."
             },
             {
-              "type": "p",
-              "text": "![Reference voltage acting as a calibrated measuring scale](Images/reference_voltage.png)"
+              "type": "image",
+              "src": "../../Images/reference_voltage.png",
+              "alt": "Reference voltage acting as a calibrated measuring scale",
+              "caption": "Reference voltage acting as a calibrated measuring scale"
             }
           ]
         },
@@ -4307,8 +4425,10 @@
               "text": "1. **Sample**: A physical switch closes briefly, connecting the external pin to an internal capacitor.\n2. **Hold**: The switch opens. The capacitor 'holds' the captured charge steady so the voltage doesn't change during conversion.\n3. **Convert**: A comparator compares the held voltage to a series of voltages generated by an internal DAC. Using a binary search (Successive Approximation), it tests the most significant bit first, deciding whether the signal is above or below half of $V_{REF}$, and repeats for each bit down to the LSB.\n4. **Store**: Once all bits are decided, the binary result is copied to a data register, raising an interrupt or DMA request so the CPU can read it."
             },
             {
-              "type": "p",
-              "text": "![SAR ADC hardware blocks: Sample switch, Hold capacitor, Comparator, and SAR register](Images/adc_pipeline.png)"
+              "type": "image",
+              "src": "../../Images/adc_pipeline.png",
+              "alt": "SAR ADC hardware blocks: Sample switch, Hold capacitor, Comparator, and SAR register",
+              "caption": "SAR ADC hardware blocks: Sample switch, Hold capacitor, Comparator, and SAR register"
             }
           ]
         },
@@ -4412,8 +4532,10 @@
               "text": "To speak back, the machine must take the reverse journey. It must start with a discrete binary code\u2014a neat integer stored in a CPU register\u2014and translate it back into a continuous physical voltage. This is the domain of the Digital-to-Analog Converter (DAC). Below is a conceptual representation of this symmetry:"
             },
             {
-              "type": "p",
-              "text": "![The Symmetry of ADC and DAC pathways](Images/dac_reverse_journey.svg)"
+              "type": "image",
+              "src": "../../Images/dac_reverse_journey.svg",
+              "alt": "The Symmetry of ADC and DAC pathways",
+              "caption": "The Symmetry of ADC and DAC pathways"
             },
             {
               "type": "p",
@@ -4433,8 +4555,10 @@
               "text": "Consider a simple resistor divider ladder. A binary code represents a set of instructions for a switch matrix. For instance, in a classic R-2R ladder architecture, each bit of the digital input code controls a corresponding physical switch. If a bit is 1, its switch connects a node in the resistor ladder to the Reference Voltage ($V_{REF}$). If a bit is 0, the switch connects that node to ground. The current splits symmetrically at each R-2R junction. By summing these scaled currents, the DAC generates an output current directly proportional to the digital code, which is then buffered by an operational amplifier to output a clean, stable voltage. The hardware block diagram below illustrates this pipeline:"
             },
             {
-              "type": "p",
-              "text": "![DAC Pipeline Block Diagram](Images/dac_block_diagram.svg)"
+              "type": "image",
+              "src": "../../Images/dac_block_diagram.svg",
+              "alt": "DAC Pipeline Block Diagram",
+              "caption": "DAC Pipeline Block Diagram"
             },
             {
               "type": "p",
@@ -4458,8 +4582,10 @@
               "text": "The smallest voltage change the DAC can output is called the Least Significant Bit (LSB) size. As resolution increases, the step size shrinks, transforming a coarse, jagged staircase into a smooth line. Below is a comparison of output granularity across resolutions:"
             },
             {
-              "type": "p",
-              "text": "![DAC Resolution Step Comparison](Images/dac_resolution_comparison.svg)"
+              "type": "image",
+              "src": "../../Images/dac_resolution_comparison.svg",
+              "alt": "DAC Resolution Step Comparison",
+              "caption": "DAC Resolution Step Comparison"
             },
             {
               "type": "p",
@@ -4483,8 +4609,10 @@
               "text": "If $V_{REF}$ is 3.3V, a 12-bit code of `4095` outputs exactly 3.3V, while `2048` outputs 1.65V. If $V_{REF}$ drifts or contains high-frequency electrical noise, that noise couples directly into $V_{OUT}$\u2014if the ruler expands and contracts, the measurements scale with it. Therefore, a clean, stable, and decoupled reference voltage is vital for analog precision. Below is an illustration of how $V_{REF}$ defines the output scaling boundaries:"
             },
             {
-              "type": "p",
-              "text": "![Reference Voltage Scaling](Images/dac_reference_voltage.svg)"
+              "type": "image",
+              "src": "../../Images/dac_reference_voltage.svg",
+              "alt": "Reference Voltage Scaling",
+              "caption": "Reference Voltage Scaling"
             },
             {
               "type": "p",
@@ -4504,8 +4632,10 @@
               "text": "For example, to generate a Sine Wave, engineers compute a table of sine values beforehand and load them into memory. Every time a timer overflows, a DMA (Direct Memory Access) channel automatically copies the next value from the table directly into the DAC data register without CPU intervention. By updating the DAC at a high, constant frequency, the discrete steps approximate a continuous curve. The illustrations below depict how different waveforms are constructed by sequencing discrete values:"
             },
             {
-              "type": "p",
-              "text": "![Waveform Generation](Images/dac_waveform_generation.svg)"
+              "type": "image",
+              "src": "../../Images/dac_waveform_generation.svg",
+              "alt": "Waveform Generation",
+              "caption": "Waveform Generation"
             },
             {
               "type": "p",
@@ -4525,8 +4655,10 @@
               "text": "The solution is a Reconstruction Filter. This is a low-pass analog filter placed immediately after the DAC output pin. A simple resistor-capacitor (RC) filter removes the high-frequency transitions (the sharp corners of the steps), leaving only the fundamental low-frequency analog wave. Furthermore, many physical loads (like speaker diaphragms or heavy motor coils) possess natural mechanical or inductive inertia, meaning they cannot react instantly to the steps anyway. They act as natural low-pass filters, integrating the steps into smooth physical movements. Below is a diagram of low-pass reconstruction filtering:"
             },
             {
-              "type": "p",
-              "text": "![Low-Pass Reconstruction Filter](Images/dac_illusion_continuity.svg)"
+              "type": "image",
+              "src": "../../Images/dac_illusion_continuity.svg",
+              "alt": "Low-Pass Reconstruction Filter",
+              "caption": "Low-Pass Reconstruction Filter"
             },
             {
               "type": "p",
@@ -4546,8 +4678,10 @@
               "text": "By toggling a digital pin rapidly between 0V and 3.3V at a high frequency (often tens of kilohertz) and adjusting the Duty Cycle (the ratio of HIGH time to the total period), we can represent different voltages. If we pass this PWM stream through a low-pass RC filter, the filter integrates the square pulses, smoothing the high-frequency switching into a steady DC voltage directly proportional to the duty cycle. The diagram below illustrates this integration:"
             },
             {
-              "type": "p",
-              "text": "![PWM Impostor DAC](Images/pwm_impostor_dac.svg)"
+              "type": "image",
+              "src": "../../Images/pwm_impostor_dac.svg",
+              "alt": "PWM Impostor DAC",
+              "caption": "PWM Impostor DAC"
             },
             {
               "type": "p",
@@ -4558,8 +4692,10 @@
               "text": "While PWM is cheap, simple, and highly efficient for power applications (like driving LEDs or brushless motors), it is an imperfect 'impostor' DAC. It suffers from slow response times (due to filter charging delays) and contains switching ripple noise that is difficult to filter out completely. A true DAC provides a steady, immediate voltage level without switching noise. The comparison below contrasts the two methods:"
             },
             {
-              "type": "p",
-              "text": "![PWM vs True DAC Comparison](Images/pwm_vs_dac_comparison.svg)"
+              "type": "image",
+              "src": "../../Images/pwm_vs_dac_comparison.svg",
+              "alt": "PWM vs True DAC Comparison",
+              "caption": "PWM vs True DAC Comparison"
             },
             {
               "type": "p",
@@ -4633,8 +4769,10 @@
               "text": "We assumed that power rails are perfectly flat lines, that crystal oscillators deliver a clean, unwavering heartbeat, and that software is entirely bug-free. In the clean laboratory of our minds, the machine is a pure logical construct. But when an embedded device crosses from the laboratory into the real world, it meets a hostile, chaotic physical environment. To build machines that survive, we must stop assuming the world is perfect."
             },
             {
-              "type": "p",
-              "text": "![Ideal Laboratory Power vs. Unstable Real-World Voltage Rails](Images/unstable_power_vs_stable.svg)"
+              "type": "image",
+              "src": "../../Images/unstable_power_vs_stable.svg",
+              "alt": "Ideal Laboratory Power vs. Unstable Real-World Voltage Rails",
+              "caption": "Ideal Laboratory Power vs. Unstable Real-World Voltage Rails"
             }
           ]
         },
@@ -4658,8 +4796,10 @@
               "text": "When voltage rises slowly, the silicon inside the microcontroller is in an undefined state. Transistors are partially turned on, logic gates are operating at incorrect switching thresholds, and internal registers hold random noise. If the CPU attempts to fetch and execute instructions immediately, it will read garbage from memory, branch to invalid addresses, and crash. To prevent this, microcontrollers utilize **Power-On Reset (POR)**. The POR circuit is a simple, dedicated hardware monitor that holds the CPU in a hard reset state until the supply voltage rises past a safe threshold, delaying execution until the system's power is stable and clean."
             },
             {
-              "type": "p",
-              "text": "![Power-On Reset Timing and Startup Delay](Images/power_on_reset_timing.svg)"
+              "type": "image",
+              "src": "../../Images/power_on_reset_timing.svg",
+              "alt": "Power-On Reset Timing and Startup Delay",
+              "caption": "Power-On Reset Timing and Startup Delay"
             }
           ]
         },
@@ -4679,8 +4819,10 @@
               "text": "As voltage sinks below the nominal operating limit but remains above zero, the CPU core continues to run. However, the internal SRAM cells begin to lose charge, the flash memory decoder fails to read bits reliably, and the arithmetic units compute incorrect math. The processor begins executing corrupted instructions. It might accidentally write garbage to safety-critical configuration sectors, trigger actuators incorrectly, or clear system memory. A partially functioning system is often far more dangerous than one that stops completely. To prevent this, a **Brown-Out Reset (BOR)** monitor continuously measures VCC against a fixed threshold. If the voltage drops below this safety line, the BOR hardware immediately halts the CPU, forcing it into a safe reset state before it can corrupt its own state."
             },
             {
-              "type": "p",
-              "text": "![Brown-Out Reset Voltage Threshold Protection Regions](Images/brown_out_reset_threshold.svg)"
+              "type": "image",
+              "src": "../../Images/brown_out_reset_threshold.svg",
+              "alt": "Brown-Out Reset Voltage Threshold Protection Regions",
+              "caption": "Brown-Out Reset Voltage Threshold Protection Regions"
             }
           ]
         },
@@ -4704,8 +4846,10 @@
               "text": "In these states, the processor is powered and the clock is ticking, but nothing useful is happening. The system is frozen. To recover, we need an independent observer: the **Watchdog Timer**. A watchdog is a hardware timer that runs completely separate from the main CPU. As the main software executes its control loop, it must periodically 'kick' or 'feed' the watchdog, resetting its counter. If the software crashes or hangs, the CPU fails to feed the watchdog. The counter counts down to zero (timeout) and triggers a hard hardware reset, rebooting the machine and restoring safe operation."
             },
             {
-              "type": "p",
-              "text": "![Watchdog Timer Supervision and Recovery Cycle](Images/watchdog_supervision.svg)"
+              "type": "image",
+              "src": "../../Images/watchdog_supervision.svg",
+              "alt": "Watchdog Timer Supervision and Recovery Cycle",
+              "caption": "Watchdog Timer Supervision and Recovery Cycle"
             }
           ]
         },
@@ -4790,8 +4934,10 @@
               "text": "Without software to orchestrate its behavior, a microcontroller is nothing more than expensive sand. The hardware provides the capability, but software must provide the purpose. How do we organize the instructions that bring this silicon to life?"
             },
             {
-              "type": "p",
-              "text": "![Bare Metal Firmware Structure Overview](Images/bare_metal_system_overview.svg)"
+              "type": "image",
+              "src": "../../Images/bare_metal_system_overview.svg",
+              "alt": "Bare Metal Firmware Structure Overview",
+              "caption": "Bare Metal Firmware Structure Overview"
             }
           ]
         },
@@ -4832,8 +4978,10 @@
               "text": "Every single one of these tasks is placed inside the same `while(1)` block, executed sequentially, one after another."
             },
             {
-              "type": "p",
-              "text": "![The Classic Super-Loop Task Sequence](Images/superloop_responsibilities.svg)"
+              "type": "image",
+              "src": "../../Images/superloop_responsibilities.svg",
+              "alt": "The Classic Super-Loop Task Sequence",
+              "caption": "The Classic Super-Loop Task Sequence"
             }
           ]
         },
@@ -4866,8 +5014,10 @@
               "text": "Consider what happens if we add a slow task, like reading an external temperature sensor over I2C. The sensor takes 10 milliseconds to perform a conversion. If the CPU spins in a blocking while-loop waiting for the I2C transfer to complete, the entire loop stops. During those 10 milliseconds, the buttons are not polled, the motor PWM is not updated, and serial bytes are missed. If a user presses a button during that window, the press is completely lost. The tasks are cooperatively linked: if one misbehaves, the timing of the entire device is destroyed."
             },
             {
-              "type": "p",
-              "text": "![Timing Delays and Missed Events in a Crowded Loop](Images/superloop_crowded_delay.svg)"
+              "type": "image",
+              "src": "../../Images/superloop_crowded_delay.svg",
+              "alt": "Timing Delays and Missed Events in a Crowded Loop",
+              "caption": "Timing Delays and Missed Events in a Crowded Loop"
             }
           ]
         },
@@ -4965,8 +5115,10 @@
               "text": "To solve this, chip designers split computing into two paths. A CPU is a latency-optimized engine, built with massive control logic and caches to execute one thread of complex instructions very quickly. A GPU (Graphics Processing Unit), by contrast, is a throughput-optimized engine. It features thousands of tiny, simple ALU cores designed to execute identical calculations in parallel. Instead of running one fast instruction sequence, the GPU runs millions of simple calculations simultaneously."
             },
             {
-              "type": "p",
-              "text": "![Latency-Optimized CPU vs. Throughput-Optimized GPU Workload Paradigms](Images/cpu_vs_gpu_workloads.svg)"
+              "type": "image",
+              "src": "../../Images/cpu_vs_gpu_workloads.svg",
+              "alt": "Latency-Optimized CPU vs. Throughput-Optimized GPU Workload Paradigms",
+              "caption": "Latency-Optimized CPU vs. Throughput-Optimized GPU Workload Paradigms"
             }
           ]
         },
@@ -5015,8 +5167,10 @@
               "text": "Dedicated silicon blocks are created for specific, repetitive algorithms \u2014 such as AES cryptographic encryption or H.264 video decoding \u2014 allowing these tasks to be completed instantly without waking up the general-purpose CPU."
             },
             {
-              "type": "p",
-              "text": "![Heterogeneous System-on-Chip (SoC) Component Interconnect](Images/specialized_compute_architecture.svg)"
+              "type": "image",
+              "src": "../../Images/specialized_compute_architecture.svg",
+              "alt": "Heterogeneous System-on-Chip (SoC) Component Interconnect",
+              "caption": "Heterogeneous System-on-Chip (SoC) Component Interconnect"
             }
           ]
         },
@@ -5150,8 +5304,10 @@
               "text": "Serial communication solves this by sending bits sequentially over a minimal physical path (often just one or two lines). By focusing on timing alignment on a single line, modern systems can achieve transfer rates orders of magnitude faster than historical parallel buses, using far less physical space."
             },
             {
-              "type": "p",
-              "text": "![GPIO Direct vs Protocol Structured Signaling](Images/protocols_vs_gpio_schematic.png)"
+              "type": "image",
+              "src": "../../Images/protocols_vs_gpio_schematic.png",
+              "alt": "GPIO Direct vs Protocol Structured Signaling",
+              "caption": "GPIO Direct vs Protocol Structured Signaling"
             },
             {
               "type": "p",
@@ -5309,8 +5465,10 @@
               "text": "Embedded systems exist largely to bridge that boundary."
             },
             {
-              "type": "p",
-              "text": "![Embedded systems interfaces and communication architecture](Images/Interaction.png)"
+              "type": "image",
+              "src": "../../Images/Interaction.png",
+              "alt": "Embedded systems interfaces and communication architecture",
+              "caption": "Embedded systems interfaces and communication architecture"
             },
             {
               "type": "p",

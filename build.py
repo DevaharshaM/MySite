@@ -193,13 +193,31 @@ def parse_markdown_file(filepath):
             
         p_text = '\n'.join(paragraph_lines).strip()
         if p_text and current_section:
-            block = {
-                "type": "p",
-                "text": p_text
-            }
-            if p_text.startswith('<') and p_text.endswith('>'):
-                block["html"] = True
-            current_section["content"].append(block)
+            # Check if it is an image block
+            image_match = re.match(r'^!\[([\s\S]*?)\]\(([^)]+)\)$', p_text)
+            if image_match:
+                alt = image_match.group(1).replace('\n', ' ').strip()
+                src = image_match.group(2).strip()
+                if src.startswith('Images/'):
+                    src = '../../' + src
+                elif src.startswith('content/Images/'):
+                    src = '../../Images/' + src.split('/')[-1]
+                elif src.startswith('../Images/'):
+                    src = '../../Images/' + src.split('/')[-1]
+                current_section["content"].append({
+                    "type": "image",
+                    "src": src,
+                    "alt": alt,
+                    "caption": alt
+                })
+            else:
+                block = {
+                    "type": "p",
+                    "text": p_text
+                }
+                if p_text.startswith('<') and p_text.endswith('>'):
+                    block["html"] = True
+                current_section["content"].append(block)
             
     metadata["sections"] = sections
     closing_p = metadata.get("closing_paragraphs", [])
