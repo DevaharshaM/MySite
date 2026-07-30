@@ -124,6 +124,13 @@ const systemsTreeNodes = {
       { id: "teaching-time-to-an-infinite-loop", title: "Teaching Time to an Infinite Loop" },
       { id: "when-behaviour-becomes-state", title: "When Behaviour Becomes State" }
     ]
+  },
+  "Operating Systems": {
+    title: "Operating Systems",
+    description: "The software environment that manages hardware resources and coordinates complex tasks.",
+    explorations: [
+      { id: "why-do-we-need-an-operating-system", title: "Why Do We Need an Operating System?" }
+    ]
   }
 };
 
@@ -5302,6 +5309,8 @@ function updateSeoMetadata(page) {
     title = "Demonstrations | PrajnaEdge";
   } else if (page === 'bare-metal') {
     title = "Bare Metal | PrajnaEdge";
+  } else if (page === 'operating-systems') {
+    title = "Operating Systems | PrajnaEdge";
   } else if (page === 'blogs') {
     if (selectedCategoryFilter) {
       title = `${selectedCategoryFilter} | Explorations | PrajnaEdge`;
@@ -5331,6 +5340,8 @@ function updateSeoMetadata(page) {
   let canonicalUrl = `${base}/`;
   if (page === 'bare-metal') {
     canonicalUrl = `${base}/bare-metal/`;
+  } else if (page === 'operating-systems') {
+    canonicalUrl = `${base}/operating-systems/`;
   } else if (page === 'blog-post' && (activePostId || blogId || demoId)) {
     const activeId = activePostId || blogId || demoId;
     const activeType = activePostType || (blogId ? 'blogs' : 'demos');
@@ -5395,14 +5406,14 @@ function showPage(page) {
   // Custom minimal UI transition for Bare Metal transition experience
   const nav = document.querySelector('nav');
   if (nav) {
-    if (page === 'bare-metal') {
+    if (page === 'bare-metal' || page === 'operating-systems') {
       nav.style.display = 'none';
     } else {
       nav.style.display = 'flex';
     }
   }
   
-  if (page === 'bare-metal') {
+  if (page === 'bare-metal' || page === 'operating-systems') {
     document.body.style.backgroundColor = '#171210';
   } else {
     document.body.style.backgroundColor = '#0F172A';
@@ -5584,11 +5595,12 @@ function renderHomeTree() {
         isSpecialPath = false;
         nodeId = "Bare Metal";
         label = "Bare Metal";
+      } else if (nodeId === 'OperatingSystems') {
+        isSpecialPath = false;
+        nodeId = "Operating Systems";
+        label = "Operating Systems";
       } else {
         isSpecialPath = true;
-        if (nodeId === 'OperatingSystems') {
-          label = "Operating Systems — This path has not awakened yet.";
-        }
       }
     } else if (rawId.startsWith('hotspot-branch-')) {
       isDormantBranch = true;
@@ -5637,16 +5649,18 @@ function renderHomeTree() {
         setTimeout(() => tooltip.classList.remove('active'), 2500);
       } else {
         // Active trunk node: open its first exploration directly via unified clean-path routing
-        const node = systemsTreeNodes[nodeId];
-        if (node && node.explorations && node.explorations.length > 0) {
-          const targetId = node.explorations[0].id;
-          if (nodeId === 'Bare Metal') {
-            showPage('bare-metal');
-          } else {
-            openItem(targetId, 'blogs');
-          }
+        if (nodeId === 'Bare Metal') {
+          showPage('bare-metal');
+        } else if (nodeId === 'Operating Systems') {
+          showPage('operating-systems');
         } else {
-          filterNodeRoute(nodeId);
+          const node = systemsTreeNodes[nodeId];
+          if (node && node.explorations && node.explorations.length > 0) {
+            const targetId = node.explorations[0].id;
+            openItem(targetId, 'blogs');
+          } else {
+            filterNodeRoute(nodeId);
+          }
         }
       }
     });
@@ -5965,6 +5979,11 @@ function openItem(id, type) {
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
           `;
+        } else if (nodeKey === "Operating Systems") {
+          prevHtml = `
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="showPage('operating-systems')">Return to Operating Systems</a>
+          `;
         } else if (nodeIndex > 0) {
           const prevNodeKey = nodeOrder[nodeIndex - 1];
           prevHtml = `
@@ -6003,7 +6022,15 @@ function openItem(id, type) {
         } else if (nodeKey === "Bare Metal") {
           nextHtml = `
             <span class="nav-dir-label">Next →</span>
-            <span class="nav-link locked">Another path has not awakened yet.</span>
+            <a class="nav-link active" onclick="showPage('operating-systems')">New path is awakening</a>
+          `;
+        } else if (nodeKey === "Operating Systems") {
+          nextHtml = `
+            <span class="nav-dir-label">Next →</span>
+            <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              What is a Kernel?
+              <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+            </span>
           `;
         } else {
           nextHtml = `
@@ -6128,7 +6155,9 @@ function parseTextFormatting(text) {
   
   // 1b. Markdown links: [Text](target) -> onclick or href
   parsed = parsed.replace(new RegExp('\\[([^\\]]+)\\]\\(([^)]+)\\)', 'g'), (match, label, target) => {
-    if (target.startsWith('http') || target.startsWith('mailto:') || target.startsWith('/') || target.endsWith('.html')) {
+    if (target === 'operating-systems') {
+      return `<a href="../../operating-systems/" onclick="showPage('operating-systems'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">${label}</a>`;
+    } else if (target.startsWith('http') || target.startsWith('mailto:') || target.startsWith('/') || target.endsWith('.html')) {
       return `<a href="${target}" target="_blank" rel="noopener noreferrer" style="color:var(--blue); text-decoration:underline;">${label}</a>`;
     } else {
       return `<a onclick="openItem('${target}', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">${label}</a>`;
@@ -10901,6 +10930,11 @@ function handleUrlRouting() {
   }
   if (relPath.startsWith('bare-metal/')) {
     showPage('bare-metal');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('operating-systems/')) {
+    showPage('operating-systems');
     isRouting = false;
     return;
   }

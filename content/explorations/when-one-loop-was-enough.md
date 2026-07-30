@@ -11,7 +11,7 @@ closing_paragraphs:
   - For years, one loop was enough.
   - But as embedded products grew, communication requirements multiplied, displays became graphical, networking appeared, and diagnostics expanded.
   - One processor core now carried dozens of independent responsibilities. The challenge was no longer writing code for a peripheral; it was organizing the execution of independent, parallel activities without letting one delay the other.
-  - That challenge eventually led to the development of Operating Systems.
+  - That challenge eventually led to the development of [Operating Systems](operating-systems).
 closing_quote: When a single loop must carry every burden, a single delay becomes a universal failure.
 footer: Reflections on bare-metal architectures, super-loop execution, and cooperative timing - PrajnaEdge.dev
 ---

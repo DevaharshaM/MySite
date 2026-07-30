@@ -51,6 +51,9 @@ systemsTreeNodes = {
     "the-infinite-loop-that-runs-a-machine",
     "teaching-time-to-an-infinite-loop",
     "when-behaviour-becomes-state"
+  ],
+  "Operating Systems": [
+    "why-do-we-need-an-operating-system"
   ]
 }
 
@@ -73,7 +76,9 @@ def parse_text_formatting(text):
     def link_repl(match):
         label = match.group(1)
         target = match.group(2)
-        if target.startswith('http') or target.startswith('mailto:') or target.startswith('/') or target.endswith('.html'):
+        if target == 'operating-systems':
+            return f'<a href="../../operating-systems/" onclick="showPage(\'operating-systems\'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
+        elif target.startswith('http') or target.startswith('mailto:') or target.startswith('/') or target.endswith('.html'):
             return f'<a href="{target}" target="_blank" rel="noopener noreferrer" style="color:var(--blue); text-decoration:underline;">{label}</a>'
         else:
             return f'<a href="../../explorations/{target}/" onclick="openItem(\'{target}\', \'blogs\')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
@@ -252,7 +257,7 @@ def build_navigation_html(post, all_posts_dict):
     prevExpId = post_ids[currentIndex - 1] if currentIndex > 0 else None
     nextExpId = post_ids[currentIndex + 1] if currentIndex < len(post_ids) - 1 else None
     
-    categoryIndex = node_order.index(category)
+    categoryIndex = node_order.index(category) if category in node_order else -1
     
     prev_html = ""
     if prevExpId and prevExpId in all_posts_dict:
@@ -260,6 +265,11 @@ def build_navigation_html(post, all_posts_dict):
         prev_html = f"""
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" href="../../explorations/{prevExpId}/" onclick="openItem('{prevExpId}', 'blogs')">{esc_html(prev_title)}</a>
+        """
+    elif category == "Operating Systems":
+        prev_html = """
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">Return to Operating Systems</a>
         """
     elif categoryIndex > 0:
         prev_category = node_order[categoryIndex - 1]
@@ -280,17 +290,31 @@ def build_navigation_html(post, all_posts_dict):
             <span class="nav-dir-label">Next →</span>
             <a class="nav-link active" href="../../explorations/{nextExpId}/" onclick="openItem('{nextExpId}', 'blogs')">{esc_html(next_title)}</a>
         """
-    elif categoryIndex < len(node_order) - 1:
+    elif category == "Operating Systems":
+        next_html = """
+            <span class="nav-dir-label">Next →</span>
+            <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              What is a Kernel?
+              <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+            </span>
+        """
+    elif categoryIndex != -1 and categoryIndex < len(node_order) - 1:
         next_category = node_order[categoryIndex + 1]
         next_html = f"""
             <span class="nav-dir-label">Next →</span>
             <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{next_category}')">Advance to {esc_html(next_category)}</a>
         """
     else:
-        next_html = """
-            <span class="nav-dir-label">Next →</span>
-            <span class="nav-link locked">None</span>
-        """
+        if category == "Bare Metal":
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">New path is awakening</a>
+            """
+        else:
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked">None</span>
+            """
         
     nav_html = f"""
       <div class="exploration-nav-block">
@@ -453,7 +477,8 @@ def main():
         {"id": "journey", "title": "Interactive Career Journey | PrajnaEdge", "route": "journey/"},
         {"id": "blogs", "title": "Explorations | PrajnaEdge", "route": "explorations/"},
         {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/"},
-        {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"}
+        {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"},
+        {"id": "operating-systems", "title": "Operating Systems | PrajnaEdge", "route": "operating-systems/"}
     ]
     
     for cfg in page_configs:

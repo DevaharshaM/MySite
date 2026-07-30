@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>About | PrajnaEdge</title>
+<title>Why Do We Need an Operating System? | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/about/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/why-do-we-need-an-operating-system/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -22,9 +22,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
   <!-- External Premium Stylesheet -->
-  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../../style.css" />
   <!-- External Behavior and Logic -->
-  <script src="../script.js" defer></script>
+  <script src="../../script.js" defer></script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
 <script>
@@ -63,11 +63,11 @@
       <div class="homepage-video-container">
         <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
         <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
-          <source src="../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
         </video>
         
         <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
-        <img id="final-frame" class="homepage-media" src="../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
         
         <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
         <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
@@ -187,17 +187,50 @@
   <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
-<div class="page" id="page-blog-post">
+<div class="page active" id="page-blog-post">
   <div style="padding-top:80px">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
-      <div id="blog-post-content"></div>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Why Do We Need an Operating System?</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">The transition from direct hardware control to coordinated resource management.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Bare Metal</span><span class="tag">Kernel</span><span class="tag">Complexity</span><span class="tag">Resource Management</span><span class="tag">Schedulers</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Power of Raw Silicon</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For many embedded tasks, running software directly on the metal is not just an option—it is the ideal architecture. When your application code owns the CPU, it operates with complete transparency and zero overhead.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A bare-metal system provides distinct advantages:
+* <strong>Direct Control</strong>: Every register, GPIO pin, and clock configuration is modified directly by your instructions.
+* <strong>Predictable Execution</strong>: There are no background threads, hidden interrupts, or scheduler tasks to steal CPU cycles. If a timer event fires, the handler runs immediately.
+* <strong>Minimal Footprint</strong>: With no operating system to store, the compiled binary is tiny, leaving almost the entire Flash and RAM available for your application.
+* <strong>Absolute Simplicity</strong>: Debugging is straightforward because there is only one flow of execution to trace.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the goal is to read a temperature sensor and drive a basic display, bare metal is perfect. But as systems grow, a subtle shift begins to occur.</p></div>
+    <div style="margin-bottom:2.5rem">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Conductor of the Machine</h2>
+      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">All of these coordination services — managing tasks, saving CPU states, protecting memory, and synchronizing resources — do not run in isolation.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">They are bound together into a single, unified software core that manages the interface between the hardware and the application layers.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">We call this core software the <strong>Kernel</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But how does a single piece of software manage to coordinate multiple independent programs on a processor that can only execute one instruction at a time? To understand the operating system, we must first answer the next question.</p>
+      <div class="blog-quote">The kernel is the silent conductor, turning a clash of competing processes into a symphony of execution.</div>
+    </div>
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">Return to Operating Systems</a>
+        </div>
+          <div class="nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+              What is a Kernel?
+              <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+            </span>
+        </div>
+        </div>
+      </div>
+    
+    </div>
     </div>
   </div>
   <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
-<div class="page active" id="page-about">
+<div class="page" id="page-about">
   <section id="hero">
     <div class="hero-bg"></div>
     <div class="hero-grid">
