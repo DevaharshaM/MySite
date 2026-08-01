@@ -90,7 +90,7 @@ def parse_markdown_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    parts = content.split('---')
+    parts = content.split('---', 2)
     if len(parts) < 3:
         raise ValueError(f"Invalid Front Matter in {filepath}")
     
@@ -143,6 +143,10 @@ def parse_markdown_file(filepath):
             continue
             
         if not line.strip():
+            i += 1
+            continue
+            
+        if line.strip() == '---':
             i += 1
             continue
             
