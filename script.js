@@ -129,7 +129,9 @@ const systemsTreeNodes = {
     title: "Operating Systems",
     description: "The software environment that manages hardware resources and coordinates complex tasks.",
     explorations: [
-      { id: "why-do-we-need-an-operating-system", title: "Why Do We Need an Operating System?" }
+      { id: "why-do-we-need-an-operating-system", title: "Why Do We Need an Operating System?" },
+      { id: "what-is-a-kernel", title: "The Silent Conductor" },
+      { id: "what-is-a-process", title: "When Code Comes Alive" }
     ]
   }
 };
@@ -5671,12 +5673,25 @@ function runTreeAwakeningAnimation() {
   // Cinematic video replaces the old canvas-based path animations.
 }
 
+function handleBlogsBackClick() {
+  if (selectedCategoryFilter === 'Bare Metal') {
+    showPage('bare-metal');
+  } else if (selectedCategoryFilter === 'Operating Systems') {
+    showPage('operating-systems');
+  } else {
+    clearBlogFilterAndGoHome();
+  }
+}
+
 function openDirectExplorations() {
   selectedCategoryFilter = null;
   currentSortOrder = 'newest';
   const sortSelect = document.getElementById('blogSortOrderSelect');
   if (sortSelect) sortSelect.value = 'newest';
   
+  const controlHousing = document.querySelector('#page-blogs .control-housing');
+  if (controlHousing) controlHousing.style.display = 'flex';
+
   document.getElementById('blogsBackToTreeBtn').style.display = 'none';
   document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
   document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to integration.';
@@ -5690,7 +5705,25 @@ function filterNodeRoute(category) {
   const sortSelect = document.getElementById('blogSortOrderSelect');
   if (sortSelect) sortSelect.value = 'oldest';
 
-  document.getElementById('blogsBackToTreeBtn').style.display = 'block';
+  const controlHousing = document.querySelector('#page-blogs .control-housing');
+  if (controlHousing) {
+    if (category === 'Bare Metal' || category === 'Operating Systems') {
+      controlHousing.style.display = 'none';
+    } else {
+      controlHousing.style.display = 'flex';
+    }
+  }
+
+  const backBtn = document.getElementById('blogsBackToTreeBtn');
+  if (backBtn) {
+    backBtn.style.display = 'block';
+    if (category === 'Bare Metal' || category === 'Operating Systems') {
+      backBtn.innerText = `← Return to ${category}`;
+    } else {
+      backBtn.innerText = '← Back to Systems Tree';
+    }
+  }
+
   document.getElementById('blogsPageTitle').innerText = category;
   document.getElementById('blogsPageSubtitle').innerText = systemsTreeNodes[category].description;
   renderBlogs(1);
@@ -5716,6 +5749,10 @@ function clearBlogFilter() {
   if (clearBtn) clearBtn.style.display = 'none';
   const backBtn = document.getElementById('blogsBackToTreeBtn');
   if (backBtn) backBtn.style.display = 'none';
+
+  const controlHousing = document.querySelector('#page-blogs .control-housing');
+  if (controlHousing) controlHousing.style.display = 'flex';
+
   document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
   document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to integration.';
   renderBlogs(1);
@@ -5744,6 +5781,14 @@ function handleSortChange(type) {
     currentDemoSortOrder = document.getElementById('demoSortOrderSelect').value;
     renderDemos(1);
   }
+}
+
+function parseDateString(dateStr) {
+  if (!dateStr) return 0;
+  // Clean ordinal suffixes: 1st, 2nd, 3rd, 4th -> 1, 2, 3, 4
+  const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, '$1');
+  const timestamp = Date.parse(cleaned);
+  return isNaN(timestamp) ? 0 : timestamp;
 }
 
 // ─── BLOG RENDER ENGINE ──────────────────────────────────────────────────────
@@ -5786,9 +5831,13 @@ function renderBlogs(page) {
     const publishedItems = items.filter(i => i.isPublished);
     const comingSoonItems = items.filter(i => !i.isPublished);
 
-    if (currentSortOrder === "newest") {
-      publishedItems.reverse();
-    }
+    // Sort published items by actual date
+    publishedItems.sort((a, b) => {
+      const timeA = parseDateString(a.date);
+      const timeB = parseDateString(b.date);
+      const order = (selectedCategoryFilter === 'Bare Metal' || selectedCategoryFilter === 'Operating Systems') ? 'oldest' : currentSortOrder;
+      return order === "newest" ? timeB - timeA : timeA - timeB;
+    });
 
     finalItems = [...publishedItems, ...comingSoonItems];
   } else {
@@ -5802,9 +5851,13 @@ function renderBlogs(page) {
       isPublished: true
     }));
 
-    if (currentSortOrder === "newest") {
-      processed.reverse();
-    }
+    // Sort processed by actual date
+    processed.sort((a, b) => {
+      const timeA = parseDateString(a.date);
+      const timeB = parseDateString(b.date);
+      return currentSortOrder === "newest" ? timeB - timeA : timeA - timeB;
+    });
+
     finalItems = processed;
   }
 
@@ -5851,7 +5904,11 @@ function renderDemos(page) {
   if (!container) return;
 
   let processed = demoPosts.slice();
-  if (currentDemoSortOrder === "newest") processed.reverse();
+  processed.sort((a, b) => {
+    const timeA = parseDateString(a.date);
+    const timeB = parseDateString(b.date);
+    return currentDemoSortOrder === "newest" ? timeB - timeA : timeA - timeB;
+  });
   if (selectedDemoCategoryFilter) processed = processed.filter(p => p.category === selectedDemoCategoryFilter);
 
   if (processed.length === 0) {
@@ -5979,6 +6036,11 @@ function openItem(id, type) {
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
           `;
+        } else if (nodeKey === "Bare Metal") {
+          prevHtml = `
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="showPage('bare-metal')">Return to Bare Metal</a>
+          `;
         } else if (nodeKey === "Operating Systems") {
           prevHtml = `
             <span class="nav-dir-label">← Previous</span>
@@ -6025,13 +6087,36 @@ function openItem(id, type) {
             <a class="nav-link active" onclick="showPage('operating-systems')">New path is awakening</a>
           `;
         } else if (nodeKey === "Operating Systems") {
-          nextHtml = `
-            <span class="nav-dir-label">Next →</span>
-            <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-              What is a Kernel?
-              <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-            </span>
-          `;
+          if (item.id === "why-do-we-need-an-operating-system") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                The Silent Conductor
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
+          } else if (item.id === "what-is-a-kernel") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                When Code Comes Alive
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
+          } else if (item.id === "what-is-a-process") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                Process Lifecycle
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
+          } else {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked">None</span>
+            `;
+          }
         } else {
           nextHtml = `
             <span class="nav-dir-label">Next →</span>

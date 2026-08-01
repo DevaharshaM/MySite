@@ -53,7 +53,9 @@ systemsTreeNodes = {
     "when-behaviour-becomes-state"
   ],
   "Operating Systems": [
-    "why-do-we-need-an-operating-system"
+    "why-do-we-need-an-operating-system",
+    "what-is-a-kernel",
+    "what-is-a-process"
   ]
 }
 
@@ -270,6 +272,11 @@ def build_navigation_html(post, all_posts_dict):
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" href="../../explorations/{prevExpId}/" onclick="openItem('{prevExpId}', 'blogs')">{esc_html(prev_title)}</a>
         """
+    elif category == "Bare Metal":
+        prev_html = """
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../bare-metal/" onclick="showPage('bare-metal')">Return to Bare Metal</a>
+        """
     elif category == "Operating Systems":
         prev_html = """
             <span class="nav-dir-label">← Previous</span>
@@ -295,13 +302,35 @@ def build_navigation_html(post, all_posts_dict):
             <a class="nav-link active" href="../../explorations/{nextExpId}/" onclick="openItem('{nextExpId}', 'blogs')">{esc_html(next_title)}</a>
         """
     elif category == "Operating Systems":
-        next_html = """
-            <span class="nav-dir-label">Next →</span>
-            <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-              What is a Kernel?
-              <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-            </span>
-        """
+        if post_id == "why-do-we-need-an-operating-system":
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  The Silent Conductor
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            """
+        elif post_id == "what-is-a-kernel":
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  When Code Comes Alive
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            """
+        elif post_id == "what-is-a-process":
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  Process Lifecycle
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            """
+        else:
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked">None</span>
+            """
     elif categoryIndex != -1 and categoryIndex < len(node_order) - 1:
         next_category = node_order[categoryIndex + 1]
         next_html = f"""

@@ -127,7 +127,7 @@
   <div style="padding-top:80px;min-height:100vh">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
       
-      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearBlogFilterAndGoHome()">← Back to Systems Tree</button>
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
 
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
         <div>
@@ -290,10 +290,7 @@
         </div>
           <div class="nav-next">
             <span class="nav-dir-label">Next →</span>
-            <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-              What is a Kernel?
-              <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-            </span>
+            <a class="nav-link active" href="../../explorations/what-is-a-kernel/" onclick="openItem('what-is-a-kernel', 'blogs')">The Silent Conductor</a>
         </div>
         </div>
       </div>
@@ -486,7 +483,7 @@
     </p>
     
     <!-- CTA Button -->
-    <button onclick="openItem('before-main', 'blogs')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+    <button onclick="filterNodeRoute('Bare Metal')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
       Begin
     </button>
   </div>
@@ -539,7 +536,7 @@
     </p>
     
     <!-- CTA Button -->
-    <button onclick="openItem('why-do-we-need-an-operating-system', 'blogs')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+    <button onclick="filterNodeRoute('Operating Systems')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
       Begin
     </button>
   </div>

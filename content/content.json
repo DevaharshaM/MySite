@@ -3534,6 +3534,270 @@
       }
     },
     {
+      "id": "what-is-a-kernel",
+      "category": "Operating Systems",
+      "series": "System Explorations",
+      "title": "The Silent Conductor",
+      "subtitle": "Understanding the core that coordinates every operating system.",
+      "date": "31st July, 2026",
+      "tags": [
+        "Kernel",
+        "Operating System",
+        "User Space",
+        "Kernel Space",
+        "Architecture",
+        "System Calls"
+      ],
+      "footer": "Exploring the separation of User and Kernel Space, system boundaries, and core services - PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. The Common Misconception",
+          "content": [
+            {
+              "type": "p",
+              "text": "Many beginners use the terms **Operating System** and **Kernel** interchangeably. They talk about \"compiling a new Linux operating system\" or refer to the \"Windows kernel\" as if the two words describe the exact same entity."
+            },
+            {
+              "type": "p",
+              "text": "While they are closely related, they are not the same thing:\n* **The Operating System** is the entire software ecosystem.\n* **The Kernel** is the protected core at the center of that ecosystem."
+            },
+            {
+              "type": "p",
+              "text": "To build reliable software, you must understand exactly where the Operating System ends and where the Kernel begins."
+            }
+          ]
+        },
+        {
+          "heading": "2. The Operating System Ecosystem",
+          "content": [
+            {
+              "type": "p",
+              "text": "The Operating System is the complete set of applications, libraries, user interfaces, shell environments, and system utilities that make a computer usable."
+            },
+            {
+              "type": "p",
+              "text": "When you boot your computer, what you see\u2014the graphical interface, the terminal shell, the file explorer, and the printer utility\u2014is the outer shell of the Operating System. The Kernel is the hidden engine beneath the floorboards."
+            },
+            {
+              "type": "html",
+              "html": "<div class=\"exploration-image\" style=\"background:#1E293B; border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin:2rem 0; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);\">\n  <div style=\"font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center; letter-spacing:0.05em; text-transform:uppercase;\">The Operating System Ecosystem</div>\n  <svg viewBox=\"0 0 680 320\" style=\"width:100%; height:auto; max-width:680px; font-family:var(--mono);\">\n    <!-- OS Envelope -->\n    <rect x=\"40\" y=\"30\" width=\"600\" height=\"200\" rx=\"8\" fill=\"#111827\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"50\" y=\"52\" fill=\"#3B82F6\" font-size=\"10\" font-weight=\"bold\" font-family=\"'Syne',sans-serif\">OPERATING SYSTEM BOUNDARY</text>\n\n    <!-- Shell / GUI -->\n    <rect x=\"60\" y=\"70\" width=\"560\" height=\"35\" rx=\"6\" fill=\"#1E293B\" stroke=\"rgba(148, 163, 184, 0.15)\"/>\n    <text x=\"340\" y=\"92\" fill=\"#E2E8F0\" font-size=\"10.5\" text-anchor=\"middle\">User Interface (Shell, GUI, Utilities)</text>\n\n    <!-- System Libraries -->\n    <rect x=\"60\" y=\"115\" width=\"560\" height=\"35\" rx=\"6\" fill=\"#1E293B\" stroke=\"rgba(148, 163, 184, 0.15)\"/>\n    <text x=\"340\" y=\"137\" fill=\"#E2E8F0\" font-size=\"10.5\" text-anchor=\"middle\">System Libraries (standard API runtime, libc)</text>\n\n    <!-- The Kernel (Core) -->\n    <rect x=\"60\" y=\"160\" width=\"560\" height=\"55\" rx=\"6\" fill=\"#1E1E2E\" stroke=\"#10B981\" stroke-width=\"2\"/>\n    <text x=\"340\" y=\"185\" fill=\"#10B981\" font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">THE KERNEL (Core Engine)</text>\n    <text x=\"340\" y=\"200\" fill=\"#64748B\" font-size=\"9\" text-anchor=\"middle\">Direct hardware control & resource coordination</text>\n\n    <!-- Connector to Hardware -->\n    <path d=\"M 340 230 L 340 260\" stroke=\"#10B981\" stroke-width=\"1.5\" stroke-dasharray=\"3,3\"/>\n    \n    <!-- Hardware -->\n    <rect x=\"200\" y=\"260\" width=\"280\" height=\"40\" rx=\"6\" fill=\"#0F172A\" stroke=\"#F59E0B\" stroke-width=\"1.5\"/>\n    <text x=\"340\" y=\"285\" fill=\"#FFF\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">HARDWARE (CPU, RAM, Peripherals)</text>\n  </svg>\n</div>"
+            },
+            {
+              "type": "quote",
+              "text": "**The Separation of Concerns**"
+            },
+            {
+              "type": "quote",
+              "text": "The Operating System is a collection of software that provides services to applications. At its heart lies the Kernel, the single component responsible for interacting with hardware and coordinating system resources."
+            }
+          ]
+        },
+        {
+          "heading": "3. Zooming in: The Kernel Bridge",
+          "content": [
+            {
+              "type": "p",
+              "text": "If we strip away the user interface and libraries, we are left with the Core."
+            },
+            {
+              "type": "p",
+              "text": "The Kernel acts as the absolute mediator. In modern processors, hardware is protected by privilege levels. User applications run in **User Space** (a restricted mode), whereas the Kernel runs in **Kernel Space** (a privileged supervisor mode)."
+            },
+            {
+              "type": "p",
+              "text": "Whenever a user program needs to write a log file, read a packet from the network, or allocate memory, it cannot communicate with the hardware directly. It must execute a special instruction to cross the boundary into Kernel Space."
+            },
+            {
+              "type": "html",
+              "html": "<div class=\"exploration-image\" style=\"background:#1E293B; border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin:2rem 0; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);\">\n  <div style=\"font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center; letter-spacing:0.05em; text-transform:uppercase;\">The User-Kernel Boundary</div>\n  <svg viewBox=\"0 0 600 280\" style=\"width:100%; height:auto; max-width:600px; font-family:var(--mono);\">\n    <!-- User Space Box -->\n    <rect x=\"120\" y=\"20\" width=\"360\" height=\"45\" rx=\"6\" fill=\"#111827\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"300\" y=\"47\" fill=\"#E2E8F0\" font-size=\"11\" text-anchor=\"middle\">User Space (Restricted Applications)</text>\n\n    <!-- Path down with System Call gate -->\n    <path d=\"M 300 65 L 300 120\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <circle cx=\"300\" cy=\"92\" r=\"16\" fill=\"#1E293B\" stroke=\"#E2E8F0\" stroke-width=\"1.5\"/>\n    <text x=\"300\" y=\"96\" fill=\"#FFF\" font-size=\"9\" font-weight=\"bold\" text-anchor=\"middle\">API</text>\n    <text x=\"325\" y=\"95\" fill=\"#64748B\" font-size=\"8.5\" text-anchor=\"start\">System Call Gate</text>\n\n    <!-- Kernel Space Box -->\n    <rect x=\"80\" y=\"120\" width=\"440\" height=\"65\" rx=\"6\" fill=\"#1E1E2E\" stroke=\"#10B981\" stroke-width=\"2\"/>\n    <text x=\"300\" y=\"148\" fill=\"#10B981\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">Kernel Space (Privileged Supervisor)</text>\n    <text x=\"300\" y=\"165\" fill=\"#94A3B8\" font-size=\"9.5\" text-anchor=\"middle\">Executes high-privilege hardware operations</text>\n\n    <!-- Path down to Hardware -->\n    <path d=\"M 300 185 L 300 220\" stroke=\"#10B981\" stroke-width=\"1.5\"/>\n\n    <!-- Hardware -->\n    <rect x=\"120\" y=\"220\" width=\"360\" height=\"40\" rx=\"6\" fill=\"#111827\" stroke=\"#F59E0B\" stroke-width=\"1.5\"/>\n    <text x=\"300\" y=\"245\" fill=\"#FFF\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">Hardware Layer (Registers & Physical RAM)</text>\n  </svg>\n</div>"
+            }
+          ]
+        },
+        {
+          "heading": "4. The Core Responsibilities",
+          "content": [
+            {
+              "type": "p",
+              "text": "To mediate between applications and physical hardware, the Kernel takes on several fundamental responsibilities. Each of these represents a critical service of system orchestration:"
+            },
+            {
+              "type": "p",
+              "text": "* **Process Management**: Coordinating the creation, execution, and termination of programs running in memory.\n* **Scheduling**: Slicing CPU execution time into milliseconds and allocating it to competing tasks.\n* **Memory Management**: Setting strict address boundaries for tasks, mapping virtual memory, and tracking physical RAM allocations.\n* **Device Drivers**: Abstracting complex registers behind standard, simplified read/write protocols.\n* **Interrupt Handling**: Reacting instantly to high-priority hardware alerts and physical changes on pin interfaces.\n* **File Systems**: Translating raw flash memory blocks and magnetic sectors into a structured hierarchy of directories and files.\n* **Synchronization**: Preventing concurrent tasks from modifying the exact same hardware peripheral or memory block at the same time.\n* **Inter-Process Communication (IPC)**: Setting up queues, shared memory, and mailboxes so isolated programs can exchange information securely.\n* **Timers & Clocks**: Abstracting hardware clock cycles to manage time delays, timeouts, and periodic calls.\n* **System Calls**: The secure gate through which standard software requests high-privilege execution services from the Kernel."
+            }
+          ]
+        },
+        {
+          "heading": "5. The Supervisor of Actions",
+          "content": [
+            {
+              "type": "p",
+              "text": "The Kernel can coordinate dozens of activities simultaneously, carving up execution time, protecting address spaces, and responding to system interrupts."
+            },
+            {
+              "type": "p",
+              "text": "But before a scheduler can schedule, or memory management can allocate space, the Kernel needs something to manage. It needs a basic unit of running code."
+            },
+            {
+              "type": "p",
+              "text": "The next exploration starts at this very core."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "The Unit of Execution",
+        "paragraphs": [
+          "",
+          "All of these kernel responsibilities revolve around coordinating execution, managing hardware, and isolating resources.",
+          "But before the scheduler can schedule, or memory management can allocate boundaries, the system needs a unit of execution.",
+          "It needs a representation of a running program.",
+          "The next exploration begins with the fundamental unit of running software."
+        ],
+        "quote": "The kernel orchestrates the environment, but the process does the work."
+      }
+    },
+    {
+      "id": "what-is-a-process",
+      "category": "Operating Systems",
+      "series": "System Explorations",
+      "title": "When Code Comes Alive",
+      "subtitle": "How a program becomes something the Kernel can manage.",
+      "date": "1st August, 2026",
+      "tags": [
+        "Process",
+        "Thread",
+        "Program",
+        "Kernel",
+        "CPU",
+        "Operating Systems"
+      ],
+      "footer": "Exploring the program-process-thread hierarchy, memory structure, and scheduler interfaces - PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. The Passive Blueprint",
+          "content": [
+            {
+              "type": "p",
+              "text": "When you compile your C or assembly code, the toolchain generates an ELF binary or raw hex file."
+            },
+            {
+              "type": "p",
+              "text": "But what actually runs when you power on the processor? Is it the program itself, or is it something else?\n* **A Program** is a static collection of instructions and data sitting passively on your flash memory or hard drive. It does nothing on its own.\n* **A Process** is the active, living instance of that program loaded into memory and running under the supervision of the Kernel."
+            },
+            {
+              "type": "p",
+              "text": "To understand how operating systems coordinate concurrent software, we must trace this transition from passive instructions to active execution paths."
+            }
+          ]
+        },
+        {
+          "heading": "2. The Execution Hierarchy",
+          "content": [
+            {
+              "type": "p",
+              "text": "Before we dive into the scheduling algorithms, we must establish a clear hierarchy of running software:"
+            },
+            {
+              "type": "html",
+              "html": "<div class=\"exploration-image\" style=\"background:#1E293B; border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin:2rem 0; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);\">\n  <div style=\"font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center; letter-spacing:0.05em; text-transform:uppercase;\">The Execution Hierarchy</div>\n  <svg viewBox=\"0 0 720 180\" style=\"width:100%; height:auto; max-width:720px; font-family:var(--mono);\">\n    <defs>\n      <marker id=\"arrow-blue\" viewBox=\"0 0 10 10\" refX=\"6\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n        <path d=\"M 0 1 L 10 5 L 0 9 z\" fill=\"#3B82F6\"/>\n      </marker>\n      <marker id=\"arrow-green\" viewBox=\"0 0 10 10\" refX=\"6\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n        <path d=\"M 0 1 L 10 5 L 0 9 z\" fill=\"#10B981\"/>\n      </marker>\n    </defs>\n\n    <!-- Program -->\n    <rect x=\"30\" y=\"55\" width=\"150\" height=\"50\" rx=\"6\" fill=\"#111827\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"105\" y=\"80\" fill=\"#E2E8F0\" font-size=\"10.5\" font-weight=\"bold\" text-anchor=\"middle\">PROGRAM (Passive)</text>\n    <text x=\"105\" y=\"93\" fill=\"#64748B\" font-size=\"8\" text-anchor=\"middle\">Flash / Storage</text>\n\n    <!-- Path Program -> Process -->\n    <path d=\"M 180 80 L 260 80\" stroke=\"#3B82F6\" stroke-width=\"1.5\" marker-end=\"url(#arrow-blue)\"/>\n    <text x=\"220\" y=\"72\" fill=\"#3B82F6\" font-size=\"8.5\" text-anchor=\"middle\">Load & Launch</text>\n\n    <!-- Process -->\n    <rect x=\"270\" y=\"45\" width=\"180\" height=\"70\" rx=\"6\" fill=\"#1E293B\" stroke=\"#10B981\" stroke-width=\"2\"/>\n    <text x=\"360\" y=\"73\" fill=\"#10B981\" font-size=\"11.5\" font-weight=\"bold\" text-anchor=\"middle\">PROCESS (Active)</text>\n    <text x=\"360\" y=\"89\" fill=\"#94A3B8\" font-size=\"9\" text-anchor=\"middle\">RAM Container</text>\n    <text x=\"360\" y=\"101\" fill=\"#64748B\" font-size=\"8\" text-anchor=\"middle\">Owns Isolated Resources</text>\n\n    <!-- Path Process -> Threads -->\n    <path d=\"M 450 80 L 515 80\" stroke=\"#10B981\" stroke-width=\"1.5\" marker-end=\"url(#arrow-green)\"/>\n    <text x=\"482\" y=\"72\" fill=\"#10B981\" font-size=\"8.5\" text-anchor=\"middle\">Contains</text>\n\n    <!-- Thread Stack -->\n    <rect x=\"530\" y=\"25\" width=\"160\" height=\"30\" rx=\"4\" fill=\"#111827\" stroke=\"#E2E8F0\" stroke-width=\"1\"/>\n    <text x=\"610\" y=\"43\" fill=\"#E2E8F0\" font-size=\"9.5\" text-anchor=\"middle\">Thread 1 (Path 1)</text>\n\n    <rect x=\"530\" y=\"65\" width=\"160\" height=\"30\" rx=\"4\" fill=\"#111827\" stroke=\"#E2E8F0\" stroke-width=\"1\"/>\n    <text x=\"610\" y=\"83\" fill=\"#E2E8F0\" font-size=\"9.5\" text-anchor=\"middle\">Thread 2 (Path 2)</text>\n\n    <rect x=\"530\" y=\"105\" width=\"160\" height=\"30\" rx=\"4\" fill=\"#111827\" stroke=\"#E2E8F0\" stroke-width=\"1\"/>\n    <text x=\"610\" y=\"123\" fill=\"#E2E8F0\" font-size=\"9.5\" text-anchor=\"middle\">Thread 3 (Path 3)</text>\n  </svg>\n</div>"
+            }
+          ]
+        },
+        {
+          "heading": "3. Active Execution: The Process",
+          "content": [
+            {
+              "type": "p",
+              "text": "When the Kernel loads a Program into RAM, it creates a **Process**. A Process is not simply a copy of the code; it is a complete, isolated sandbox."
+            },
+            {
+              "type": "p",
+              "text": "The Process owns all resources required for execution:\n* **Private Memory Space**: Isolated regions of RAM that other processes cannot read or modify.\n* **Resources**: File descriptors, network sockets, and hardware ports assigned to that running application.\n* **Execution State**: Status metrics tracking credentials, privileges, and context data."
+            },
+            {
+              "type": "p",
+              "text": "Within this Process sandbox runs the actual work. This is the role of the **Thread**."
+            },
+            {
+              "type": "p",
+              "text": "A Thread is the actual path of execution inside a Process. A Process represents resource ownership; a Thread represents execution state. Every Process has at least one Thread, but advanced applications can spawn multiple Threads that share the same Process memory space."
+            }
+          ]
+        },
+        {
+          "heading": "4. Inside the Container",
+          "content": [
+            {
+              "type": "p",
+              "text": "To understand the relationship between a Process and its Threads, we can look at how resources are shared inside the container:"
+            },
+            {
+              "type": "html",
+              "html": "<div class=\"exploration-image\" style=\"background:#1E293B; border:1px solid var(--border); border-radius:12px; padding:1.5rem; margin:2rem 0; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);\">\n  <div style=\"font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:1rem; text-align:center; letter-spacing:0.05em; text-transform:uppercase;\">Process vs. Thread Architecture</div>\n  <svg viewBox=\"0 0 680 320\" style=\"width:100%; height:auto; max-width:680px; font-family:var(--mono);\">\n    <!-- Process Box -->\n    <rect x=\"30\" y=\"20\" width=\"620\" height=\"280\" rx=\"8\" fill=\"#111827\" stroke=\"#10B981\" stroke-width=\"1.5\"/>\n    <text x=\"40\" y=\"40\" fill=\"#10B981\" font-size=\"10\" font-weight=\"bold\" font-family=\"'Syne',sans-serif\">PROCESS BOUNDARY (Isolated Memory)</text>\n\n    <!-- Shared Resources Row -->\n    <rect x=\"50\" y=\"60\" width=\"125\" height=\"35\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148,163,184,0.15)\"/>\n    <text x=\"112\" y=\"81\" fill=\"#94A3B8\" font-size=\"9.5\" text-anchor=\"middle\">Shared Code</text>\n\n    <rect x=\"185\" y=\"60\" width=\"125\" height=\"35\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148,163,184,0.15)\"/>\n    <text x=\"247\" y=\"81\" fill=\"#94A3B8\" font-size=\"9.5\" text-anchor=\"middle\">Shared Data</text>\n\n    <rect x=\"320\" y=\"60\" width=\"125\" height=\"35\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148,163,184,0.15)\"/>\n    <text x=\"382\" y=\"81\" fill=\"#94A3B8\" font-size=\"9.5\" text-anchor=\"middle\">Shared Heap</text>\n\n    <rect x=\"455\" y=\"60\" width=\"175\" height=\"35\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148,163,184,0.15)\"/>\n    <text x=\"542\" y=\"81\" fill=\"#94A3B8\" font-size=\"9.5\" text-anchor=\"middle\">Shared File Descriptors</text>\n\n    <!-- Thread 1 -->\n    <rect x=\"50\" y=\"115\" width=\"175\" height=\"165\" rx=\"6\" fill=\"#1E1E2E\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"137\" y=\"135\" fill=\"#3B82F6\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">Thread 1</text>\n    \n    <rect x=\"65\" y=\"155\" width=\"145\" height=\"45\" rx=\"4\" fill=\"#111827\" stroke=\"rgba(148,163,184,0.1)\"/>\n    <text x=\"137\" y=\"175\" fill=\"#FFF\" font-size=\"9\" text-anchor=\"middle\">Private Stack 1</text>\n    <text x=\"137\" y=\"188\" fill=\"#64748B\" font-size=\"7.5\" text-anchor=\"middle\">Local variables & calls</text>\n\n    <rect x=\"65\" y=\"215\" width=\"145\" height=\"45\" rx=\"4\" fill=\"#111827\" stroke=\"rgba(148,163,184,0.1)\"/>\n    <text x=\"137\" y=\"235\" fill=\"#FFF\" font-size=\"9\" text-anchor=\"middle\">Private CPU State 1</text>\n    <text x=\"137\" y=\"248\" fill=\"#64748B\" font-size=\"7.5\" text-anchor=\"middle\">Registers, PC, SP</text>\n\n    <!-- Thread 2 -->\n    <rect x=\"250\" y=\"115\" width=\"175\" height=\"165\" rx=\"6\" fill=\"#1E1E2E\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"337\" y=\"135\" fill=\"#3B82F6\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">Thread 2</text>\n    \n    <rect x=\"265\" y=\"155\" width=\"145\" height=\"45\" rx=\"4\" fill=\"#111827\" stroke=\"rgba(148,163,184,0.1)\"/>\n    <text x=\"337\" y=\"175\" fill=\"#FFF\" font-size=\"9\" text-anchor=\"middle\">Private Stack 2</text>\n    <text x=\"337\" y=\"188\" fill=\"#64748B\" font-size=\"7.5\" text-anchor=\"middle\">Local variables & calls</text>\n\n    <rect x=\"265\" y=\"215\" width=\"145\" height=\"45\" rx=\"4\" fill=\"#111827\" stroke=\"rgba(148,163,184,0.1)\"/>\n    <text x=\"337\" y=\"235\" fill=\"#FFF\" font-size=\"9\" text-anchor=\"middle\">Private CPU State 2</text>\n    <text x=\"337\" y=\"248\" fill=\"#64748B\" font-size=\"7.5\" text-anchor=\"middle\">Registers, PC, SP</text>\n\n    <!-- Thread 3 -->\n    <rect x=\"450\" y=\"115\" width=\"175\" height=\"165\" rx=\"6\" fill=\"#1E1E2E\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"537\" y=\"135\" fill=\"#3B82F6\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">Thread 3</text>\n    \n    <rect x=\"465\" y=\"155\" width=\"145\" height=\"45\" rx=\"4\" fill=\"#111827\" stroke=\"rgba(148,163,184,0.1)\"/>\n    <text x=\"537\" y=\"175\" fill=\"#FFF\" font-size=\"9\" text-anchor=\"middle\">Private Stack 3</text>\n    <text x=\"537\" y=\"188\" fill=\"#64748B\" font-size=\"7.5\" text-anchor=\"middle\">Local variables & calls</text>\n\n    <rect x=\"465\" y=\"215\" width=\"145\" height=\"45\" rx=\"4\" fill=\"#111827\" stroke=\"rgba(148,163,184,0.1)\"/>\n    <text x=\"537\" y=\"235\" fill=\"#FFF\" font-size=\"9\" text-anchor=\"middle\">Private CPU State 3</text>\n    <text x=\"537\" y=\"248\" fill=\"#64748B\" font-size=\"7.5\" text-anchor=\"middle\">Registers, PC, SP</text>\n  </svg>\n</div>"
+            }
+          ]
+        },
+        {
+          "heading": "5. The Anatomical View",
+          "content": [
+            {
+              "type": "p",
+              "text": "When the Kernel manages a Process, it maps out a strict layout within the system RAM. This structure contains both the program resources and the execution states of the threads:"
+            },
+            {
+              "type": "p",
+              "text": "* **Program Code (Text)**: The compiled machine instructions read directly from flash or disk. This region is read-only to prevent programs from modifying themselves.\n* **Stack**: A fast, private memory region allocated to each thread. It tracks active function calls, parameters, local variables, and return targets.\n* **Heap**: A large dynamic memory pool used by the application during runtime. Memory is requested via `malloc` or `new` and must be freed explicitly.\n* **Registers**: High-speed hardware CPU storage slots. When a thread is executing, it writes directly to registers. When it yields, its register state must be saved.\n* **Program Counter (PC)**: The specialized CPU register that holds the memory address of the next machine instruction to be executed by the active thread.\n* **Process State**: Flags and identifiers monitored by the Kernel that track process privileges, identity numbers, and current execution eligibility."
+            }
+          ]
+        },
+        {
+          "heading": "6. The Unit of Orchestration",
+          "content": [
+            {
+              "type": "p",
+              "text": "In the previous exploration, we saw that the Kernel coordinates system resources. Now we can see the exact target of that coordination."
+            },
+            {
+              "type": "p",
+              "text": "The Kernel does not interact with static files or programs directly. It schedules the active execution threads running within a Process sandbox. The Process acts as the boundary of resource ownership:\n* A crash inside one Process is isolated. Because Process RAM blocks are separated, one application cannot accidentally overwrite or crash another.\n* Before the Kernel can schedule clock cycles or allocate RAM space, it first needs a Process structure."
+            },
+            {
+              "type": "p",
+              "text": "The Process is the fundamental container of running code that makes multiplexed operating systems possible."
+            }
+          ]
+        },
+        {
+          "heading": "7. The Lifecycle",
+          "content": [
+            {
+              "type": "p",
+              "text": "The Kernel maintains a complete tracking directory of all active processes. But a process does not remain in the same execution state forever."
+            },
+            {
+              "type": "p",
+              "text": "As it runs instructions, waits for network packets, yields to high-priority tasks, or shuts down, its execution eligibility changes. The Kernel must continuously monitor and adjust these states to maintain high performance."
+            },
+            {
+              "type": "p",
+              "text": "The journey of execution is mapped through these changing stages."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "The Lifecycle of Execution",
+        "paragraphs": [
+          "",
+          "A process is not a static container. It is a dynamic, living entity.",
+          "As it executes instructions, handles hardware inputs, and waits for memory resources, its relationship with the CPU changes.",
+          "The Kernel must continuously track this changing behavior to decide who runs next.",
+          "The journey of execution is mapped through these changing states."
+        ],
+        "quote": "A program is a map, a process is the journey, and the thread is the step."
+      }
+    },
+    {
       "id": "when-behaviour-becomes-state",
       "category": "Bare Metal",
       "series": "System Explorations",
