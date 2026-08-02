@@ -132,7 +132,8 @@ const systemsTreeNodes = {
       { id: "why-do-we-need-an-operating-system", title: "Why Do We Need an Operating System?" },
       { id: "what-is-a-kernel", title: "The Silent Conductor" },
       { id: "what-is-a-process", title: "When Code Comes Alive" },
-      { id: "the-journey-between-moments", title: "The Journey Between Moments" }
+      { id: "the-journey-between-moments", title: "The Journey Between Moments" },
+      { id: "who-goes-next", title: "Who Goes Next?" }
     ]
   }
 };
@@ -6120,6 +6121,14 @@ function openItem(id, type) {
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
+          } else if (item.id === "who-goes-next") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                The Rules of Fairness
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
           } else {
             nextHtml = `
               <span class="nav-dir-label">Next →</span>
@@ -6133,11 +6142,18 @@ function openItem(id, type) {
           `;
         }
 
+        let navNextIdStr = ' class="nav-next"';
+        if (item.id === 'who-goes-next') {
+          navNextIdStr = ' class="nav-next" id="exploration-nav-next" style="display: none;"';
+        } else {
+          navNextIdStr = ' class="nav-next" id="exploration-nav-next"';
+        }
+
         navHtml = `
           <div class="exploration-nav-block">
             <div class="exploration-nav-grid">
               <div class="nav-prev">${prevHtml}</div>
-              <div class="nav-next">${nextHtml}</div>
+              <div${navNextIdStr}>${nextHtml}</div>
             </div>
           </div>
         `;
@@ -6168,6 +6184,9 @@ function openItem(id, type) {
   isRouting = false;
   document.querySelectorAll('.edgecase-container').forEach(container => {
     initEdgeCase(container.id);
+  });
+  document.querySelectorAll('.manthana-container').forEach(container => {
+    initManthana(container.id);
   });
 }
 // ─── JOURNEY ──────────────────────────────────────────────────────────────────
@@ -11225,3 +11244,330 @@ if (feedbackForm) {
     window.location.href = `mailto:feedback@prajnaedge.dev?subject=${emailSubject}&body=${emailBody}`;
   });
 }
+
+// ─── MANTHANA CORE INTERACTIVE LOGIC ────────────────────────────────────────
+function initManthana(containerId) {
+  if (containerId === 'who-goes-next-manthana') {
+    renderWhoGoesNextManthana();
+  }
+}
+
+function renderWhoGoesNextManthana() {
+  const container = document.getElementById('who-goes-next-manthana');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper manthana-theme';
+  
+  // Reset window variables for tracking choices
+  window.manthanaChoicesMade = new Set();
+  
+  container.innerHTML = `
+    <div class="edgecase-header">Manthana</div>
+    
+    <div style="margin-bottom: 1.5rem; line-height: 1.6; color: var(--text); font-size: 0.9rem; margin-top: 1.25rem;">
+      <p style="margin-bottom: 1rem;"><strong>The Scenario:</strong> You are the OS scheduler. The CPU core is idle, and four processes are waiting in the Ready Queue. <strong>Only one process can execute on the CPU core at a time.</strong></p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;" id="m-tasks-grid">
+        <div id="m-card-sensor" style="background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; transition: all 0.3s ease;">
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: #FFF; margin-bottom: 0.25rem;">Throttle Sensor Reader</div>
+          <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Reads throttle pedal position to adjust real-time engine fuel injection.</div>
+        </div>
+        
+        <div id="m-card-audio" style="background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; transition: all 0.3s ease;">
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: #FFF; margin-bottom: 0.25rem;">Audio Stream Decoder</div>
+          <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Decodes compressed audio packets and streams them to the speaker buffer.</div>
+        </div>
+        
+        <div id="m-card-file" style="background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; transition: all 0.3s ease;">
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: #FFF; margin-bottom: 0.25rem;">Disk Flash Logger</div>
+          <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Synchronizes running system states and sensor data to persistent flash memory.</div>
+        </div>
+        
+        <div id="m-card-diag" style="background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; transition: all 0.3s ease;">
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem; color: #FFF; margin-bottom: 0.25rem;">System Diagnostics</div>
+          <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Scans and verifies block integrity of external RAM to check for hardware issues.</div>
+        </div>
+      </div>
+
+      <!-- SYSTEM STATUS VISUALIZER -->
+      <div style="background: #0b0f19; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="font-family: var(--mono); font-size: 0.65rem; color: var(--muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em;">Interactive System Status</div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 120px 1fr; gap: 1rem; align-items: center; min-height: 100px;">
+          
+          <!-- Ready Queue Slot -->
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 8px; padding: 0.75rem; min-height: 80px; display: flex; flex-wrap: wrap; gap: 0.5rem; align-content: center; align-items: center;">
+            <div style="font-family: var(--mono); font-size: 0.55rem; color: var(--muted); width: 100%; margin-bottom: 0.25rem; text-transform: uppercase;">Ready Queue</div>
+            <div class="m-sim-badge" id="m-badge-sensor">Throttle</div>
+            <div class="m-sim-badge" id="m-badge-audio">Audio</div>
+            <div class="m-sim-badge" id="m-badge-file">Disk Log</div>
+            <div class="m-sim-badge" id="m-badge-diag">Diagnostics</div>
+          </div>
+          
+          <!-- Transition Arrow -->
+          <div style="text-align: center;">
+            <svg width="40" height="24" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2" style="display:inline-block;">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+            <div style="font-family: var(--mono); font-size: 0.55rem; color: #14b8a6; text-transform: uppercase; margin-top: 0.25rem; font-weight: bold;">Dispatch</div>
+          </div>
+          
+          <!-- CPU Slot -->
+          <div class="m-cpu-core-slot" id="m-cpu-slot">
+            <div id="cpu-slot-content">
+              <span style="font-family: var(--mono); font-size: 0.7rem; color: var(--muted);">[ CPU IDLE ]</span>
+            </div>
+            <div id="cpu-progress-container" style="width: 100%; height: 3px; background: rgba(255,255,255,0.05); position: absolute; bottom: 0; left: 0; display: none;">
+              <div id="cpu-progress-bar" style="width: 0%; height: 100%; background: #14b8a6; transition: width 0.8s linear;"></div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      
+      <p style="margin-bottom: 0.75rem;"><strong>Select a process to schedule:</strong></p>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+      <button class="edgecase-button manthana-btn" id="m-btn-sensor" onclick="handleManthanaChoice('sensor')">Throttle Sensor</button>
+      <button class="edgecase-button manthana-btn" id="m-btn-audio" onclick="handleManthanaChoice('audio')">Audio Stream</button>
+      <button class="edgecase-button manthana-btn" id="m-btn-file" onclick="handleManthanaChoice('file')">Disk Logger</button>
+      <button class="edgecase-button manthana-btn" id="m-btn-diag" onclick="handleManthanaChoice('diag')">Diagnostics</button>
+    </div>
+
+    <!-- Output response panel -->
+    <div class="edgecase-output-panel" id="m-output-panel" style="display:none; border-left: 3px solid #14b8a6; padding-left: 1rem; margin-bottom: 1.5rem;">
+      <div class="edgecase-output-title" style="color:#14b8a6;" id="m-output-title">System Event Log</div>
+      <div id="m-output-text" style="color: var(--text); line-height: 1.6; font-size: 0.875rem;"></div>
+    </div>
+
+    <!-- Concluding reflection card -->
+    <div id="m-reflection-card" style="display: none; text-align: center; margin-top: 2rem; padding: 1rem 0; border-top: 1px dashed rgba(20, 184, 166, 0.15); transition: opacity 0.5s ease;">
+      <p style="color: var(--text); font-size: 0.95rem; font-weight: 500; font-family: var(--mono); letter-spacing: 0.02em; margin-bottom: 0.4rem;">Every choice had a consequence.</p>
+      <p style="color: #14b8a6; font-size: 1.1rem; font-weight: 700; font-family: 'Syne', sans-serif;">How does the Kernel choose?</p>
+    </div>
+  `;
+}
+
+window.handleManthanaChoice = function(choice) {
+  const btns = {
+    sensor: document.getElementById('m-btn-sensor'),
+    audio: document.getElementById('m-btn-audio'),
+    file: document.getElementById('m-btn-file'),
+    diag: document.getElementById('m-btn-diag')
+  };
+  
+  const cards = {
+    sensor: document.getElementById('m-card-sensor'),
+    audio: document.getElementById('m-card-audio'),
+    file: document.getElementById('m-card-file'),
+    diag: document.getElementById('m-card-diag')
+  };
+
+  const badges = {
+    sensor: document.getElementById('m-badge-sensor'),
+    audio: document.getElementById('m-badge-audio'),
+    file: document.getElementById('m-badge-file'),
+    diag: document.getElementById('m-badge-diag')
+  };
+
+  // Disable buttons and reset queue badges to baseline
+  for (const key in btns) {
+    if (btns[key]) {
+      btns[key].disabled = true;
+      btns[key].style.opacity = '0.5';
+      btns[key].style.pointerEvents = 'none';
+      btns[key].classList.remove('active');
+    }
+    if (cards[key]) {
+      cards[key].style.borderColor = 'var(--border)';
+      cards[key].style.boxShadow = 'none';
+      cards[key].style.opacity = '0.4';
+    }
+    if (badges[key]) {
+      badges[key].className = 'm-sim-badge';
+      // Reset back to baseline text
+      if (key === 'sensor') badges[key].innerHTML = 'Throttle';
+      if (key === 'audio') badges[key].innerHTML = 'Audio';
+      if (key === 'file') badges[key].innerHTML = 'Disk Log';
+      if (key === 'diag') badges[key].innerHTML = 'Diagnostics';
+    }
+  }
+
+  // Highlight selected card
+  if (cards[choice]) {
+    cards[choice].style.borderColor = '#14b8a6';
+    cards[choice].style.boxShadow = '0 0 10px rgba(20, 184, 166, 0.2)';
+    cards[choice].style.opacity = '1';
+  }
+
+  // Animate selected badge moving out of the Ready Queue
+  if (badges[choice]) {
+    badges[choice].classList.add('scheduled-out');
+  }
+
+  // Animating to CPU slot
+  const cpuSlot = document.getElementById('m-cpu-slot');
+  const cpuContent = document.getElementById('cpu-slot-content');
+  const progContainer = document.getElementById('cpu-progress-container');
+  const progressBar = document.getElementById('cpu-progress-bar');
+  const panel = document.getElementById('m-output-panel');
+
+  if (panel) panel.style.display = 'none';
+  
+  if (cpuSlot) {
+    // Reset core active class
+    cpuSlot.className = 'm-cpu-core-slot';
+  }
+
+  if (progContainer) progContainer.style.display = 'block';
+  if (progressBar) {
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+    progressBar.offsetHeight; // Force reflow
+    progressBar.style.transition = 'width 0.8s linear';
+    progressBar.style.width = '100%';
+  }
+
+  const choiceNames = {
+    sensor: 'Throttle Sensor',
+    audio: 'Audio Stream',
+    file: 'Disk Logger',
+    diag: 'Diagnostics'
+  };
+
+  const choiceColors = {
+    sensor: '#34d399',
+    audio: '#60a5fa',
+    file: '#fbbf24',
+    diag: '#94a3b8'
+  };
+
+  if (cpuContent) {
+    cpuContent.innerHTML = `
+      <span style="font-family:var(--mono); font-size:0.7rem; color:#14b8a6; animation: pulse 1s infinite; font-weight: bold;">
+        SCHEDULING...
+      </span>
+    `;
+  }
+
+  setTimeout(() => {
+    // Re-enable control buttons
+    for (const key in btns) {
+      if (btns[key]) {
+        btns[key].disabled = false;
+        btns[key].style.opacity = '1';
+        btns[key].style.pointerEvents = 'auto';
+      }
+    }
+    if (btns[choice]) btns[choice].classList.add('active');
+
+    // Update CPU core slot style and text
+    if (cpuSlot) {
+      cpuSlot.classList.add(`active-${choice}`);
+    }
+    if (cpuContent) {
+      cpuContent.innerHTML = `
+        <span style="font-family: var(--mono); font-size:0.75rem; color:${choiceColors[choice]}; font-weight:bold; letter-spacing:0.05em;">
+          RUNNING: ${choiceNames[choice].toUpperCase()}
+        </span>
+      `;
+    }
+    if (progContainer) progContainer.style.display = 'none';
+
+    // Update remaining queue badges with their high-visibility warning status!
+    for (const key in badges) {
+      if (key !== choice && badges[key]) {
+        if (key === 'sensor') {
+          badges[key].classList.add('warning-active');
+          badges[key].innerHTML = '⚠ Sensor Missed';
+        } else if (key === 'audio') {
+          badges[key].classList.add('warning-active');
+          badges[key].innerHTML = '⚠ Audio Glitch';
+        } else if (key === 'file') {
+          badges[key].classList.add('warning-active');
+          badges[key].innerHTML = '⚠ Log Overflow';
+        } else if (key === 'diag') {
+          badges[key].classList.add('warning-active', 'starved');
+          badges[key].innerHTML = '⚠ Diag Starved';
+        }
+      }
+    }
+
+    // Display System Event Consequence Output
+    if (panel) {
+      panel.style.display = 'block';
+      panel.style.borderColor = choiceColors[choice];
+      const outputTitle = document.getElementById('m-output-title');
+      if (outputTitle) {
+        outputTitle.style.color = choiceColors[choice];
+        outputTitle.innerHTML = `System Event Log`;
+      }
+      
+      const outputText = document.getElementById('m-output-text');
+      if (outputText) {
+        let eventHtml = '';
+        if (choice === 'sensor') {
+          eventHtml = `
+            <div style="font-family: var(--mono); font-weight: bold; color: #EF6868; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+              <span>⚠ Audio Buffer Underrun</span>
+            </div>
+            <p style="color: var(--text); font-size: 0.8rem; margin: 0;">Audio decoding failed to supply buffer frames in time. Output stream stuttered.</p>
+          `;
+        } else if (choice === 'audio') {
+          eventHtml = `
+            <div style="font-family: var(--mono); font-weight: bold; color: #EF6868; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+              <span>⚠ Sensor Deadline Missed</span>
+            </div>
+            <p style="color: var(--text); font-size: 0.8rem; margin: 0;">Throttle pedal position reading delayed beyond the critical 5ms real-time execution window.</p>
+          `;
+        } else if (choice === 'file') {
+          eventHtml = `
+            <div style="font-family: var(--mono); font-weight: bold; color: #EF6868; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+              <span>⚠ Sensor Deadline Missed</span>
+              <span style="color: #fbbf24; font-size: 0.95rem;">| ⚠ Audio Buffer Underrun</span>
+            </div>
+            <p style="color: var(--text); font-size: 0.8rem; margin: 0;">Synchronous flash write blocked CPU execution. Real-time deadlines missed and audio stuttered.</p>
+          `;
+        } else if (choice === 'diag') {
+          eventHtml = `
+            <div style="font-family: var(--mono); font-weight: bold; color: #EF6868; font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+              <span>⚠ Sensor Missed</span>
+              <span style="color: #fbbf24; font-size: 0.95rem;">| ⚠ Audio Glitch</span>
+            </div>
+            <p style="color: var(--text); font-size: 0.8rem; margin: 0;">Diagnostics locked CPU execution core. Time-critical loops starved completely.</p>
+          `;
+        }
+        outputText.innerHTML = eventHtml;
+      }
+    }
+
+    // Record attempt
+    if (!window.manthanaChoicesMade) {
+      window.manthanaChoicesMade = new Set();
+    }
+    window.manthanaChoicesMade.add(choice);
+
+    // After exploring at least 2 choices, reveal lesson reflection and Next exploration button!
+    if (window.manthanaChoicesMade.size >= 2) {
+      const refCard = document.getElementById('m-reflection-card');
+      if (refCard) {
+        refCard.style.display = 'block';
+        refCard.style.opacity = '0';
+        setTimeout(() => {
+          refCard.style.opacity = '1';
+        }, 50);
+      }
+
+      const nextNav = document.getElementById('exploration-nav-next');
+      if (nextNav) {
+        nextNav.style.display = 'block';
+        nextNav.style.opacity = '0';
+        nextNav.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+          nextNav.style.opacity = '1';
+        }, 50);
+      }
+    }
+  }, 800);
+};

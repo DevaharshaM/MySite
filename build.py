@@ -56,7 +56,8 @@ systemsTreeNodes = {
     "why-do-we-need-an-operating-system",
     "what-is-a-kernel",
     "what-is-a-process",
-    "the-journey-between-moments"
+    "the-journey-between-moments",
+    "who-goes-next"
   ]
 }
 
@@ -342,6 +343,14 @@ def build_navigation_html(post, all_posts_dict):
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
+        elif post_id == "who-goes-next":
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  The Rules of Fairness
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            """
         else:
             next_html = """
                 <span class="nav-dir-label">Next →</span>
@@ -365,11 +374,17 @@ def build_navigation_html(post, all_posts_dict):
                 <span class="nav-link locked">None</span>
             """
         
+    nav_next_id_str = ' class="nav-next"'
+    if post_id == "who-goes-next":
+        nav_next_id_str = ' class="nav-next" id="exploration-nav-next" style="display: none;"'
+    else:
+        nav_next_id_str = ' class="nav-next" id="exploration-nav-next"'
+
     nav_html = f"""
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">
           <div class="nav-prev">{prev_html}</div>
-          <div class="nav-next">{next_html}</div>
+          <div{nav_next_id_str}>{next_html}</div>
         </div>
       </div>
     """

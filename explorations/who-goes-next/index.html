@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>When Machines Learned to Observe | PrajnaEdge</title>
+<title>Who Goes Next? | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/when-machines-learned-to-observe/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/who-goes-next/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -192,93 +192,112 @@
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
       <div id="blog-post-content">
-    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Coordination</div>
-    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">When Machines Learned to Observe</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How reality became numbers.</p>
-    <div class="tags" style="margin-bottom:3rem"><span class="tag">ADC</span><span class="tag">Sampling</span><span class="tag">Quantization</span><span class="tag">Resolution</span><span class="tag">Hardware Pipeline</span></div>
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Who Goes Next?</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Understanding who decides which Process gets the processor.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Process</span><span class="tag">Scheduler</span><span class="tag">Kernel</span><span class="tag">Operating System</span><span class="tag">Manthana</span></div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Analog World</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The physical world is fluid, continuous, and unbroken. If you measure the temperature of a room, it does not jump instantly from 22°C to 23°C; it transitions through an infinite number of intermediate states. The pressure of sound waves hitting a microphone, the changing angle of a steering wheel potentiometer, the terminal voltage of a discharging lithium-ion battery, and the intensity of morning light are all continuous. They exist as physical quantities that can take any value within a range, changing smoothly across time.</p><div class="blog-img-wrap"><img src="../../Images/analog_signals.png" alt="Continuous physical waveforms vs discrete computer states"><div class="blog-img-caption">Continuous physical waveforms vs discrete computer states</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Why Computers Cannot Directly Understand Analog Signals</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A digital processor, by contrast, is a machine of absolute division. Inside its silicon core, electricity is gated into binary states: a transistor is either fully conducting or cut off, representing a logical 1 or 0. A processor cannot store 'a slightly warm voltage' or 'a loud sound wave' in its registers. It understands only precise digital numbers. To bridge this gap between continuous physical reality and discrete computation, the system needs an interface that translates raw, infinitely variable analog signals into finite, structured digital words. This interface is the Analog-to-Digital Converter (ADC).</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Sampling: Freezing Time</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The first step of this translation is Sampling. Since a computer cannot observe the world constantly, it must observe it at discrete moments. Sampling is the process of reading the analog voltage of a signal at precise, regular intervals.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is where we connect back to the Hardware Timer. A timer serves as the clock heartbeat of the system, asserting trigger events to dictate exactly *when* the ADC should observe. By sampling at a fast enough rate, the machine captures enough snapshots of the signal to represent its behavior across time.</p><div class="blog-img-wrap"><img src="../../Images/sampling_process.png" alt="Sampling timing trace showing periodic capture ticks"><div class="blog-img-caption">Sampling timing trace showing periodic capture ticks</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Quantization: Slicing the Continuous</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Freezing time via sampling is only half the battle. At each sampling moment, the voltage level is still a continuous value with infinite decimal possibilities. A computer has a finite number of bits to represent this value, so it must map this infinite voltage to the nearest level on a pre-defined digital staircase. This mapping process is called Quantization.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Quantization discards the infinite sub-millivolt details, rounding the physical voltage to the closest discrete step. The tiny difference between the true analog voltage and the rounded digital level is called Quantization Error.</p><div class="blog-img-wrap"><img src="../../Images/quantization_steps.png" alt="Continuous signal mapped onto discrete binary quantization levels"><div class="blog-img-caption">Continuous signal mapped onto discrete binary quantization levels</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Resolution: The Fineness of the Mesh</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How close can our digital staircase approximate reality? That depends on the ADC's Resolution. Resolution refers to the number of binary bits the converter uses to represent the signal, which dictates the number of steps on our measurement staircase.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">- A <strong>3-bit ADC</strong> has only $2^3 = 8$ steps. The staircase is coarse, jagged, and introduces substantial quantization noise.
-- An <strong>8-bit ADC</strong> provides $2^8 = 256$ steps, which is sufficient for basic sensing but still relatively coarse.
-- A <strong>12-bit ADC</strong> provides $2^{12} = 4096$ steps, offering a fine mesh that captures small changes with minimal noise.
-- A <strong>16-bit ADC</strong> offers $2^{16} = 65,536$ steps, resolving microvolt fluctuations for high-fidelity audio or medical instrumentation.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By increasing resolution, we make the grid mesh finer, allowing the machine to capture a closer approximation of the physical wave.</p><div class="blog-img-wrap"><img src="../../Images/resolution_comparison.png" alt="Comparison of grid density for 3-bit vs 8-bit resolutions"><div class="blog-img-caption">Comparison of grid density for 3-bit vs 8-bit resolutions</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Reference Voltage: The Calibration Ruler</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To assign digital numbers to analog voltages, the ADC needs a ruler. This ruler is the Reference Voltage ($V_{REF}$). The reference voltage defines the maximum physical voltage the ADC can measure, which corresponds to the maximum digital count.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If we have a 12-bit ADC (0 to 4095) with a $V_{REF}$ of 3.3V:
-- An input of 0.0V resolves to <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0</code>.
-- An input of 3.3V resolves to <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">4095</code>.
-- An input of 1.65V resolves to exactly <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">2048</code>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the reference voltage fluctuates, our measurements fluctuate too. If $V_{REF}$ drops to 3.0V due to poor power supply regulation, an input of 1.5V will resolve to <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">2048</code> instead of <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">1861</code>, causing a measurement error. Precise calibration of $V_{REF}$ is the cornerstone of accurate physical observation.</p><div class="blog-img-wrap"><img src="../../Images/reference_voltage.png" alt="Reference voltage acting as a calibrated measuring scale"><div class="blog-img-caption">Reference voltage acting as a calibrated measuring scale</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. The Conversion Pipeline: Sample, Hold, Convert, Store</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does the physical conversion happen? Most microcontrollers use a Successive Approximation Register (SAR) ADC. The hardware processes each sample through a four-stage pipeline:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">1. <strong>Sample</strong>: A physical switch closes briefly, connecting the external pin to an internal capacitor.
-2. <strong>Hold</strong>: The switch opens. The capacitor 'holds' the captured charge steady so the voltage doesn't change during conversion.
-3. <strong>Convert</strong>: A comparator compares the held voltage to a series of voltages generated by an internal DAC. Using a binary search (Successive Approximation), it tests the most significant bit first, deciding whether the signal is above or below half of $V_{REF}$, and repeats for each bit down to the LSB.
-4. <strong>Store</strong>: Once all bits are decided, the binary result is copied to a data register, raising an interrupt or DMA request so the CPU can read it.</p><div class="blog-img-wrap"><img src="../../Images/adc_pipeline.png" alt="SAR ADC hardware blocks: Sample switch, Hold capacitor, Comparator, and SAR register"><div class="blog-img-caption">SAR ADC hardware blocks: Sample switch, Hold capacitor, Comparator, and SAR register</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. Accuracy vs Precision</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In embedded sensing, engineers often confuse two critical terms: Accuracy and Precision. They are not the same.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">- <strong>Accuracy</strong> is how close a measurement is to the true physical value. An accurate system has minimal calibration offset.
-- <strong>Precision</strong> is how consistent and repeatable the measurements are when the same input is read multiple times. A precise system has low noise.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A system can be highly precise but inaccurate (giving highly repeatable, low-noise readings that are calibrated incorrectly) or highly accurate but imprecise (averaging to the correct value but showing substantial noise on each individual sample). Below is a visual representation of these states:</p><div style="background:#0F172A; padding:1.25rem; border:1px solid var(--border); border-radius:8px; display:flex; justify-content:center; align-items:center; margin:1.5rem 0;">
-            <svg width="640" height="170" viewBox="0 0 640 170" style="background:transparent; overflow:visible; width:100%; max-width:640px;">
-              <!-- 1. Low Accuracy, Low Precision -->
-              <g transform="translate(70, 75)">
-                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
-                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
-                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
-                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
-                <circle cx="-25" cy="-20" r="3" fill="#EF6868"/>
-                <circle cx="15" cy="-35" r="3" fill="#EF6868"/>
-                <circle cx="-10" cy="30" r="3" fill="#EF6868"/>
-                <circle cx="35" cy="20" r="3" fill="#EF6868"/>
-                <circle cx="-30" cy="15" r="3" fill="#EF6868"/>
-                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Imprecise & Inaccurate</text>
-              </g>
-              <!-- 2. Low Accuracy, High Precision -->
-              <g transform="translate(230, 75)">
-                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
-                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
-                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
-                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
-                <circle cx="-25" cy="-25" r="3" fill="#EF6868"/>
-                <circle cx="-27" cy="-22" r="3" fill="#EF6868"/>
-                <circle cx="-23" cy="-26" r="3" fill="#EF6868"/>
-                <circle cx="-26" cy="-28" r="3" fill="#EF6868"/>
-                <circle cx="-22" cy="-21" r="3" fill="#EF6868"/>
-                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Precise & Inaccurate</text>
-              </g>
-              <!-- 3. High Accuracy, Low Precision -->
-              <g transform="translate(390, 75)">
-                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
-                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
-                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
-                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
-                <circle cx="-12" cy="-10" r="3" fill="#10B981"/>
-                <circle cx="10" cy="-8" r="3" fill="#10B981"/>
-                <circle cx="-5" cy="12" r="3" fill="#10B981"/>
-                <circle cx="14" cy="10" r="3" fill="#10B981"/>
-                <circle cx="2" cy="-14" r="3" fill="#10B981"/>
-                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Imprecise & Accurate</text>
-              </g>
-              <!-- 4. High Accuracy, High Precision -->
-              <g transform="translate(550, 75)">
-                <circle cx="0" cy="0" r="45" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="2"/>
-                <circle cx="0" cy="0" r="30" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1.5"/>
-                <circle cx="0" cy="0" r="15" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
-                <circle cx="0" cy="0" r="2" fill="var(--blue)"/>
-                <circle cx="0" cy="0" r="3" fill="#10B981"/>
-                <circle cx="-2" cy="1" r="3" fill="#10B981"/>
-                <circle cx="1" cy="-2" r="3" fill="#10B981"/>
-                <circle cx="2" cy="2" r="3" fill="#10B981"/>
-                <circle cx="-1" cy="-1" r="3" fill="#10B981"/>
-                <text x="0" y="65" fill="var(--muted)" font-family="var(--mono)" font-size="0.65rem" text-anchor="middle">Precise & Accurate</text>
-              </g>
-            </svg>
-          </div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. Capturing Reality</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Let's observe these conversion behaviors. In the interactive panel below, modify signal frequency, resolution, and sampling rate to watch how an analog signal is sliced and rounded into digital numbers.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">10. The Cost of Observation</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">What happens when our observation parameters are configured incorrectly? In the simulator below, adjust the reference voltage, resolution, and sample rate to induce signal clipping, aliasing (undersampling), or high quantization stepping.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">11. Real Embedded Applications</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">ADCs are the sensory organs of embedded silicon. They monitor the health of battery cells in electric vehicles, translate analog temperature sensors (like thermistors or RTDs) into precise degrees, decode phase currents for brushless DC motor control, digitize microphone voice data in smart assistants, and capture cardiac electrical potentials in medical ECG monitors. Without the ADC, a processor is deaf, blind, and isolated from physical reality.</p></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Introducing the Scheduler</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To coordinate this competition, the operating system kernel relies on a core component: the <strong>Scheduler</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The Scheduler is the gatekeeper of execution. Its role is simple to state, yet highly complex to engineer: it decides which process in the Ready queue receives CPU time, and when. At this stage, we do not care *how* it makes this decision (which algorithm it uses). We only care about its role as the manager of execution.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Operating systems divide this task into three distinct types of schedulers, each operating on a different timescale and handling a different state of the process lifecycle.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. Long-Term Scheduler (Job Scheduler)</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   <strong>The Question:</strong> *Which programs on disk should become active processes in memory?*
+*   <strong>The Purpose:</strong> When you start a program, it doesn't instantly run on the CPU. The Long-Term Scheduler determines if the system has enough RAM and resources to allocate a new process. It controls the <strong>degree of multiprogramming</strong>—the total number of active processes residing in memory. It runs slowly, only when new tasks are created.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Medium-Term Scheduler (Swapping Coordinator)</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   <strong>The Question:</strong> *Which processes should temporarily leave memory to free up RAM?*
+*   <strong>The Purpose:</strong> If too many processes are running, the system runs out of physical memory, leading to thrashing. The Medium-Term Scheduler temporarily removes inactive or blocked processes from RAM and writes their state to a swap space on disk. This is called <strong>Swapping</strong>. When memory pressure drops, it swaps them back into RAM.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Short-Term Scheduler (CPU Scheduler)</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   <strong>The Question:</strong> *Among the ready processes in RAM, who gets the CPU next?*
+*   <strong>The Purpose:</strong> This is the primary scheduler. It operates at microsecond speeds. Whenever a running process yields, finishes, or gets interrupted, the Short-Term Scheduler instantly selects the next process from the Ready Queue and dispatches it onto the CPU.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Summary: Schedulers in the Lifecycle</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The diagram below visualizes exactly where these three schedulers sit and operate across the process lifecycle states:</p><div class="svg-container" style="margin: 2.5rem 0; text-align: center;">
+  <svg viewBox="0 0 800 360" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#94a3b8" />
+      </marker>
+      <linearGradient id="grad-state" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e293b" />
+        <stop offset="100%" stop-color="#0f172a" />
+      </linearGradient>
+    </defs>
+
+    <!-- Title -->
+    <text x="30" y="35" fill="#ffffff" font-size="14" font-weight="bold">The Scheduler Taxonomy inside the Process Lifecycle</text>
+    
+    <!-- STATES -->
+    <!-- New -->
+    <rect x="40" y="160" width="80" height="40" rx="6" fill="url(#grad-state)" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="80" y="184" fill="#94a3b8" font-size="11" font-weight="bold" text-anchor="middle">NEW</text>
+
+    <!-- Ready -->
+    <rect x="240" y="160" width="100" height="40" rx="6" fill="url(#grad-state)" stroke="#3b82f6" stroke-width="1.5" />
+    <text x="290" y="184" fill="#3b82f6" font-size="11" font-weight="bold" text-anchor="middle">READY</text>
+
+    <!-- Running -->
+    <rect x="470" y="160" width="100" height="40" rx="6" fill="url(#grad-state)" stroke="#10b981" stroke-width="1.5" />
+    <text x="520" y="184" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">RUNNING</text>
+
+    <!-- Terminated -->
+    <rect x="670" y="160" width="90" height="40" rx="6" fill="url(#grad-state)" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="715" y="184" fill="#94a3b8" font-size="11" font-weight="bold" text-anchor="middle">TERMINATED</text>
+
+    <!-- Waiting -->
+    <rect x="350" y="270" width="100" height="40" rx="6" fill="url(#grad-state)" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="400" y="294" fill="#f59e0b" font-size="11" font-weight="bold" text-anchor="middle">WAITING</text>
+
+    <!-- Swapped Out -->
+    <rect x="220" y="60" width="140" height="40" rx="6" fill="url(#grad-state)" stroke="#a855f7" stroke-width="1.5" />
+    <text x="290" y="84" fill="#a855f7" font-size="11" font-weight="bold" text-anchor="middle">SWAPPED OUT</text>
+
+    <!-- CONNECTORS -->
+    <!-- New -> Ready -->
+    <line x1="120" y1="180" x2="232" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+    
+    <!-- Ready -> Running -->
+    <line x1="340" y1="180" x2="462" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <!-- Running -> Terminated -->
+    <line x1="570" y1="180" x2="662" y2="180" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <!-- Running -> Waiting -->
+    <path d="M 520,200 L 450,265" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <!-- Waiting -> Ready -->
+    <path d="M 370,270 L 300,205" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <!-- Running -> Ready (Interrupt) -->
+    <path d="M 520,160 Q 405,120 290,160" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrow)" />
+
+    <!-- Ready -> Swapped Out (Swap Out) -->
+    <path d="M 270,160 L 270,108" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+    <!-- Swapped Out -> Ready (Swap In) -->
+    <path d="M 310,100 L 310,152" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <!-- SCHEDULERS OVERLAYS (Sea-Green Badges) -->
+    
+    <!-- LTS Overlay -->
+    <rect x="135" y="195" width="90" height="24" rx="4" fill="#14b8a6" />
+    <text x="180" y="211" fill="#fff" font-size="9" font-weight="bold" text-anchor="middle">LTS (Long-Term)</text>
+
+    <!-- STS Overlay -->
+    <rect x="365" y="195" width="90" height="24" rx="4" fill="#14b8a6" />
+    <text x="410" y="211" fill="#fff" font-size="9" font-weight="bold" text-anchor="middle">STS (Short-Term)</text>
+
+    <!-- MTS Overlay -->
+    <rect x="330" y="105" width="95" height="24" rx="4" fill="#14b8a6" />
+    <text x="377" y="121" fill="#fff" font-size="9" font-weight="bold" text-anchor="middle">MTS (Medium-Term)</text>
+  </svg>
+</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Manthana</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><div id="who-goes-next-manthana" class="manthana-container"></div></p></div>
     <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Sensory Handshake</h2>
-      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">Timers taught machines when to pay attention. ADCs taught machines how to translate reality into something computation could understand.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">Yet observing reality is only half the story. Once a machine has observed its environment and decided on a course of action, it must eventually speak back—driving physical outputs and painting analog actions onto the physical world.</p>
-      <div class="blog-quote">A processor without an ADC is a brain without senses—trapped in a silent chamber of its own logical abstractions.</div>
+      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem"></h2>
+      
+      <div class="blog-quote"></div>
     </div>
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">
           <div class="nav-prev">
             <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../explorations/the-architecture-of-time/" onclick="openItem('the-architecture-of-time', 'blogs')">The Architecture of Time</a>
+            <a class="nav-link active" href="../../explorations/the-journey-between-moments/" onclick="openItem('the-journey-between-moments', 'blogs')">The Journey Between Moments</a>
         </div>
-          <div class="nav-next" id="exploration-nav-next">
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" href="../../explorations/when-machines-learned-to-speak-back/" onclick="openItem('when-machines-learned-to-speak-back', 'blogs')">When Machines Learned to Speak Back</a>
-        </div>
+          <div class="nav-next" id="exploration-nav-next" style="display: none;">
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  The Rules of Fairness
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            </div>
         </div>
       </div>
     

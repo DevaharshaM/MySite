@@ -756,6 +756,104 @@ footer{padding:3rem 2.5rem;text-align:center;border-top:1px solid var(--border);
   border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
+/* ─── MANTHANA SEA-GREEN ACCENTS OVERRIDES ────────────────────────────────── */
+.manthana-theme {
+  border-color: rgba(20, 184, 166, 0.2) !important;
+}
+.manthana-theme .edgecase-header::before {
+  content: "⬢";
+  color: #14b8a6 !important;
+}
+.edgecase-button.manthana-btn {
+  background: rgba(20, 184, 166, 0.1);
+  color: #14b8a6;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+}
+.edgecase-button.manthana-btn:hover {
+  background: #14b8a6;
+  color: #FFF;
+  border-color: #14b8a6;
+  transform: translateY(-1px);
+}
+.edgecase-button.manthana-btn.active {
+  background: #14b8a6;
+  color: #FFF;
+  border-color: #14b8a6;
+  box-shadow: 0 0 10px rgba(20, 184, 166, 0.3);
+}
+
+/* ─── MANTHANA INTERACTIVE SIMULATOR STYLES ───────────────────────────────── */
+.m-sim-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  opacity: 1;
+  max-width: 320px;
+  overflow: hidden;
+}
+
+.m-sim-badge.scheduled-out {
+  max-width: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  border-width: 0 !important;
+  opacity: 0 !important;
+}
+
+.m-sim-badge.warning-active {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #EF6868 !important;
+}
+
+.m-sim-badge.warning-active.starved {
+  background: rgba(148, 163, 184, 0.1) !important;
+  border-color: rgba(148, 163, 184, 0.3) !important;
+  color: #94a3b8 !important;
+}
+
+.m-cpu-core-slot {
+  min-height: 80px;
+  border-radius: 8px;
+  background: #0f172a;
+  border: 1px dashed rgba(20, 184, 166, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  padding: 0.5rem;
+  position: relative;
+}
+
+.m-cpu-core-slot.active-sensor {
+  border-color: #34d399;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.15);
+}
+.m-cpu-core-slot.active-audio {
+  border-color: #60a5fa;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.15);
+}
+.m-cpu-core-slot.active-file {
+  border-color: #fbbf24;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.15);
+}
+.m-cpu-core-slot.active-diag {
+  border-color: #94a3b8;
+  box-shadow: 0 0 12px rgba(148, 163, 184, 0.15);
+}
+
 .text-corrupted {
   color: #EF6868;
   font-weight: 700;
