@@ -55,7 +55,8 @@ systemsTreeNodes = {
   "Operating Systems": [
     "why-do-we-need-an-operating-system",
     "what-is-a-kernel",
-    "what-is-a-process"
+    "what-is-a-process",
+    "the-journey-between-moments"
   ]
 }
 
@@ -88,6 +89,12 @@ def parse_text_formatting(text):
     parsed = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', link_repl, parsed)
     return parsed
 
+def strip_quotes(val):
+    val = val.strip()
+    if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+        return val[1:-1].strip()
+    return val
+
 def parse_markdown_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
@@ -108,6 +115,7 @@ def parse_markdown_file(filepath):
         # Check multiline list items
         if (line.startswith('  - ') or line.startswith(' - ')) and current_key:
             val = line.split('-', 1)[1].strip()
+            val = strip_quotes(val)
             if current_key in metadata:
                 if isinstance(metadata[current_key], list):
                     metadata[current_key].append(val)
@@ -122,9 +130,9 @@ def parse_markdown_file(filepath):
             key = key.strip()
             val = val.strip()
             if val.startswith('[') and val.endswith(']'):
-                metadata[key] = [item.strip() for item in val[1:-1].split(',')]
+                metadata[key] = [strip_quotes(item) for item in val[1:-1].split(',')]
             else:
-                metadata[key] = val
+                metadata[key] = strip_quotes(val)
                 current_key = key
                 
     # Parse Body Content
@@ -322,7 +330,15 @@ def build_navigation_html(post, all_posts_dict):
             next_html = """
                 <span class="nav-dir-label">Next →</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  Process Lifecycle
+                  The Journey Between Moments
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            """
+        elif post_id == "the-journey-between-moments":
+            next_html = """
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  Who Goes Next?
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """

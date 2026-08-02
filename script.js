@@ -131,7 +131,8 @@ const systemsTreeNodes = {
     explorations: [
       { id: "why-do-we-need-an-operating-system", title: "Why Do We Need an Operating System?" },
       { id: "what-is-a-kernel", title: "The Silent Conductor" },
-      { id: "what-is-a-process", title: "When Code Comes Alive" }
+      { id: "what-is-a-process", title: "When Code Comes Alive" },
+      { id: "the-journey-between-moments", title: "The Journey Between Moments" }
     ]
   }
 };
@@ -6107,7 +6108,15 @@ function openItem(id, type) {
             nextHtml = `
               <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Process Lifecycle
+                The Journey Between Moments
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
+          } else if (item.id === "the-journey-between-moments") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                Who Goes Next?
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
