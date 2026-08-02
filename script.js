@@ -5785,6 +5785,30 @@ function handleSortChange(type) {
   }
 }
 
+function getBlogChronoIndex(id) {
+  const nodeOrder = ["Matter", "Computation", "Interaction", "Coordination", "Integration", "Bare Metal", "Operating Systems"];
+  let index = 0;
+  for (let i = 0; i < nodeOrder.length; i++) {
+    const node = systemsTreeNodes[nodeOrder[i]];
+    if (node && node.explorations) {
+      for (let j = 0; j < node.explorations.length; j++) {
+        if (node.explorations[j].id === id) {
+          return index;
+        }
+        index++;
+      }
+    }
+  }
+  const bpIndex = blogPosts.findIndex(p => p.id === id);
+  if (bpIndex !== -1) return bpIndex;
+  return 999;
+}
+
+function getDemoChronoIndex(id) {
+  const dpIndex = demoPosts.findIndex(p => p.id === id);
+  return dpIndex !== -1 ? dpIndex : 999;
+}
+
 function parseDateString(dateStr) {
   if (!dateStr) return 0;
   // Clean ordinal suffixes: 1st, 2nd, 3rd, 4th -> 1, 2, 3, 4
@@ -5833,12 +5857,17 @@ function renderBlogs(page) {
     const publishedItems = items.filter(i => i.isPublished);
     const comingSoonItems = items.filter(i => !i.isPublished);
 
-    // Sort published items by actual date
+    // Sort published items by actual date, fallback to chronological tree sequence index
     publishedItems.sort((a, b) => {
       const timeA = parseDateString(a.date);
       const timeB = parseDateString(b.date);
       const order = (selectedCategoryFilter === 'Bare Metal' || selectedCategoryFilter === 'Operating Systems') ? 'oldest' : currentSortOrder;
-      return order === "newest" ? timeB - timeA : timeA - timeB;
+      if (timeA !== timeB) {
+        return order === "newest" ? timeB - timeA : timeA - timeB;
+      }
+      const indexA = getBlogChronoIndex(a.id);
+      const indexB = getBlogChronoIndex(b.id);
+      return order === "newest" ? indexB - indexA : indexA - indexB;
     });
 
     finalItems = [...publishedItems, ...comingSoonItems];
@@ -5853,11 +5882,16 @@ function renderBlogs(page) {
       isPublished: true
     }));
 
-    // Sort processed by actual date
+    // Sort processed by actual date, fallback to chronological tree sequence index
     processed.sort((a, b) => {
       const timeA = parseDateString(a.date);
       const timeB = parseDateString(b.date);
-      return currentSortOrder === "newest" ? timeB - timeA : timeA - timeB;
+      if (timeA !== timeB) {
+        return currentSortOrder === "newest" ? timeB - timeA : timeA - timeB;
+      }
+      const indexA = getBlogChronoIndex(a.id);
+      const indexB = getBlogChronoIndex(b.id);
+      return currentSortOrder === "newest" ? indexB - indexA : indexA - indexB;
     });
 
     finalItems = processed;
@@ -5909,7 +5943,12 @@ function renderDemos(page) {
   processed.sort((a, b) => {
     const timeA = parseDateString(a.date);
     const timeB = parseDateString(b.date);
-    return currentDemoSortOrder === "newest" ? timeB - timeA : timeA - timeB;
+    if (timeA !== timeB) {
+      return currentDemoSortOrder === "newest" ? timeB - timeA : timeA - timeB;
+    }
+    const indexA = getDemoChronoIndex(a.id);
+    const indexB = getDemoChronoIndex(b.id);
+    return currentDemoSortOrder === "newest" ? indexB - indexA : indexA - indexB;
   });
   if (selectedDemoCategoryFilter) processed = processed.filter(p => p.category === selectedDemoCategoryFilter);
 
