@@ -63,6 +63,8 @@ The moment the counter matches the compare register, the timer asserts a Compare
 
 Let's experiment with these core concepts. In the simulator below, configure the clock source, prescaler division, counter size, and compare match values to see how physical frequencies translate into structured temporal events.
 
+<div id="timer-builder" class="edgecase-container"></div>
+
 ## 7. Pulse Width Modulation: Painting with Time
 
 Compare match logic unlocks a powerful technique: Pulse Width Modulation (PWM). If we configure a timer pin to go HIGH on counter reset (0) and go LOW when the counter matches the Compare Value (CCR), we generate a repeating digital pulse train.
@@ -78,6 +80,8 @@ A 50% duty cycle on a 3.3V pin outputs 3.3V half the time, averaging to 1.65V. T
 ## 8. PWM Simulator: Painting with Time
 
 Adjust the frequency and duty cycle below to see how pulse widths map directly to average output voltages, controlling LED intensity and motor velocity.
+
+<div id="pwm-painter" class="edgecase-container"></div>
 
 ## 9. Input Capture: Measuring the World
 

@@ -80,6 +80,8 @@ By combining these two parameters, engineers can configure the interface in one 
 
 ![SPI Timing Diagram illustrating CPOL and CPHA configuration modes](Images/spi_clock_modes.png)
 
+<div id="spi-shared-rhythm" class="edgecase-container"></div>
+
 ## 6. Bus Expansion and the Chip Select Problem
 
 Unlike network protocols that use digital addresses embedded inside data packets, SPI addresses devices physically. If a master wishes to communicate with multiple slave devices on a shared bus, it can do so in one of two configurations: independent slave routing or daisy-chaining.
@@ -89,6 +91,8 @@ In the independent configuration, the master shares the SCLK, MOSI, and MISO lin
 In the daisy-chain configuration, the master routes a single CS and SCLK to all slaves, but loops the MISO of one slave into the MOSI of the next, forming one giant, multi-byte shift register loop. While this saves IO pins, it introduces timing delays, as the master must shift data through every single slave in the chain to update a single register, and requires that all slaves support daisy-chain formatting in their silicon.
 
 Physical addressing introduces silent bugs. If a glitch or transient voltage spike pulls a CS line low when it should remain high, multiple slaves will attempt to drive the MISO trace simultaneously. This results in bus contention, creating excessive current draw, heating, and corrupted data—a silent failure state that cannot be detected by the protocol itself since SPI lacks any built-in error detection or flow control.
+
+<div id="spi-silent-conversation" class="edgecase-container"></div>
 
 ## 7. The Trade-Offs of Raw Speed
 

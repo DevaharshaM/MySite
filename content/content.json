@@ -327,6 +327,10 @@
             {
               "type": "p",
               "text": "If Node A writes a recessive 1, but Node B writes a dominant 0, the bus becomes dominant. When Node A reads the bus, it notices the mismatch: it wrote a 1, but it sees a 0. Knowing that another node with a higher priority (a lower numerical ID) is transmitting, Node A immediately falls silent, dropping out of arbitration. Node B continues uninterrupted. This arbitration is completely non-destructive: the winning message is delivered without a single bit of corruption."
+            },
+            {
+              "type": "edgecase",
+              "id": "can-conversation-of-dominance"
             }
           ]
         },
@@ -380,6 +384,10 @@
             {
               "type": "p",
               "text": "This Message RAM contains the configuration for receive and transmit buffers, filters, and FIFO queues. Because the CAN peripheral's hardware controller reads and writes to this RAM region directly via DMA (Direct Memory Access), the firmware developer must carefully define the start address and offsets of these buffers in linker scripts or configuration registers. A misalignment of a single word in the Message RAM boundary causes the CAN hardware to generate a bus fault or corrupt frame routing. To write robust CAN drivers, you must understand the exact physical layout of your microcontroller's memory map."
+            },
+            {
+              "type": "edgecase",
+              "id": "can-journey-of-a-frame"
             }
           ]
         }
@@ -1255,6 +1263,10 @@
             {
               "type": "p",
               "text": "The 9th clock cycle is reserved for a hardware handshake: the Acknowledge (ACK) bit. During the 9th clock tick, the master releases the SDA line (letting it float HIGH). The slave device matching the address must actively pull the SDA line LOW. If the slave pulls SDA LOW, it is an ACK\u2014the transaction continues. If the slave is missing, busy, or has crashed, the line remains HIGH (a Not-Acknowledge, or NACK), signaling the master to stop."
+            },
+            {
+              "type": "edgecase",
+              "id": "i2c-shared-bus"
             }
           ]
         },
@@ -1304,6 +1316,10 @@
             {
               "type": "p",
               "text": "When we need to scale to longer distances, high noise immunity, and multi-master robustness without master-slave dependencies, we must look beyond single-ended voltage sharing to differential, arbitrated networks\u2014leading us to the design of the Controller Area Network (CAN)."
+            },
+            {
+              "type": "edgecase",
+              "id": "i2c-bus-arbitration"
             }
           ]
         }
@@ -1455,6 +1471,174 @@
           "Embedded systems rarely let you forget that complexity completely."
         ],
         "quote": "The deeper you go into real systems, the more software starts disappearing."
+      }
+    },
+    {
+      "id": "remembering-the-moment",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "Remembering the Moment",
+      "subtitle": "How the Kernel preserves a Process between interruptions.",
+      "date": "4th August, 2026",
+      "tags": [
+        "Kernel",
+        "Process",
+        "PCB",
+        "Memory",
+        "Operating Systems"
+      ],
+      "sections": [
+        {
+          "heading": "1. The Bookmark Analogy",
+          "content": [
+            {
+              "type": "p",
+              "text": "Imagine reading a large, complex textbook. Suddenly, the phone rings."
+            },
+            {
+              "type": "p",
+              "text": "You cannot simply close the book and walk away. If you do, you will lose your place and have to search through hundreds of pages to find where you left off. Instead, you perform a simple action: you place a bookmark on the page."
+            },
+            {
+              "type": "p",
+              "text": "The bookmark doesn't contain the story of the book. It is simply a tiny record that preserves your exact place, allowing you to close the book, take the call, and later open the textbook to continue reading as if you had never been interrupted."
+            },
+            {
+              "type": "p",
+              "text": "The Kernel needs a bookmark for every process."
+            }
+          ]
+        },
+        {
+          "heading": "2. The dedicated Record: PCB",
+          "content": [
+            {
+              "type": "p",
+              "text": "To solve this problem, the Kernel creates a dedicated tracking record for every process the moment it is born."
+            },
+            {
+              "type": "p",
+              "text": "Whenever a process is interrupted, the Kernel does not simply wipe the CPU core's state. Instead, it copies the process's current execution status into this tracking record. When the process is selected to run again, the Kernel reads this record, restores the state, and points the CPU back to the exact instruction where it was paused."
+            },
+            {
+              "type": "p",
+              "text": "This dedicated record is called the **Process Control Block (PCB)**."
+            }
+          ]
+        },
+        {
+          "heading": "3. The Preservation Loop",
+          "content": [
+            {
+              "type": "p",
+              "text": "The lifecycle of preemption and state preservation operates in a continuous loop:"
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"custom-diagram-wrapper\" style=\"margin: 2.5rem 0; text-align: center;\">\n  <svg viewBox=\"0 0 800 240\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width: 100%; height: auto; display: block; margin: 0 auto; background: #0b0f19; border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\">\n    <defs>\n      <linearGradient id=\"lineGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n        <stop offset=\"0%\" stop-color=\"#3B82F6\" stop-opacity=\"0.8\"/>\n        <stop offset=\"100%\" stop-color=\"#10B981\" stop-opacity=\"0.8\"/>\n      </linearGradient>\n      <marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"6\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n        <path d=\"M 0 1 L 10 5 L 0 9 z\" fill=\"rgba(148, 163, 184, 0.4)\"/>\n      </marker>\n    </defs>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Path Flow Loop -->\n    <path d=\"M 120 70 L 230 70\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n    <path d=\"M 370 70 L 480 70\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n    <path d=\"M 550 95 L 550 145\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n    <path d=\"M 480 170 L 370 170\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n    <path d=\"M 230 170 L 120 170\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />\n    <path d=\"M 50 145 L 50 95\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"2\" marker-end=\"url(#arrow)\" />",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- 1. Running State -->\n    <g transform=\"translate(10, 45)\">\n      <rect x=\"0\" y=\"0\" width=\"110\" height=\"50\" rx=\"6\" fill=\"rgba(59, 130, 246, 0.12)\" stroke=\"#3B82F6\" stroke-width=\"1.5\" />\n      <text x=\"55\" y=\"24\" fill=\"#3B82F6\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\">1. RUNNING</text>\n      <text x=\"55\" y=\"38\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"9\" text-anchor=\"middle\">Process on CPU</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- 2. Interrupt -->\n    <g transform=\"translate(240, 45)\">\n      <rect x=\"0\" y=\"0\" width=\"120\" height=\"50\" rx=\"6\" fill=\"rgba(239, 68, 68, 0.12)\" stroke=\"#EF4444\" stroke-width=\"1.5\" />\n      <text x=\"60\" y=\"24\" fill=\"#EF4444\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\">2. INTERRUPT</text>\n      <text x=\"60\" y=\"38\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"9\" text-anchor=\"middle\">CPU Preempted</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- 3. Kernel Intervention -->\n    <g transform=\"translate(490, 45)\">\n      <rect x=\"0\" y=\"0\" width=\"120\" height=\"50\" rx=\"6\" fill=\"rgba(139, 92, 246, 0.12)\" stroke=\"#8B5CF6\" stroke-width=\"1.5\" />\n      <text x=\"60\" y=\"24\" fill=\"#8B5CF6\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\">3. KERNEL</text>\n      <text x=\"60\" y=\"38\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"9\" text-anchor=\"middle\">Intervenes</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- 4. Save State to PCB -->\n    <g transform=\"translate(490, 145)\">\n      <rect x=\"0\" y=\"0\" width=\"120\" height=\"50\" rx=\"6\" fill=\"rgba(16, 185, 129, 0.12)\" stroke=\"#10B981\" stroke-width=\"1.5\" />\n      <text x=\"60\" y=\"24\" fill=\"#10B981\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\">4. SAVE TO PCB</text>\n      <text x=\"60\" y=\"38\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"9\" text-anchor=\"middle\">Freeze Progress</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- 5. Schedule/Restore -->\n    <g transform=\"translate(240, 145)\">\n      <rect x=\"0\" y=\"0\" width=\"120\" height=\"50\" rx=\"6\" fill=\"rgba(245, 158, 11, 0.12)\" stroke=\"#F59E0B\" stroke-width=\"1.5\" />\n      <text x=\"60\" y=\"24\" fill=\"#F59E0B\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\">5. RESTORE</text>\n      <text x=\"60\" y=\"38\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"9\" text-anchor=\"middle\">Reload State</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- 6. Resume Execution -->\n    <g transform=\"translate(10, 145)\">\n      <rect x=\"0\" y=\"0\" width=\"110\" height=\"50\" rx=\"6\" fill=\"rgba(59, 130, 246, 0.12)\" stroke=\"#3B82F6\" stroke-width=\"1.5\" />\n      <text x=\"55\" y=\"24\" fill=\"#3B82F6\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"10\" text-anchor=\"middle\">6. RESUME</text>\n      <text x=\"55\" y=\"38\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"9\" text-anchor=\"middle\">Run from Pause</text>\n    </g>\n  </svg>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "4. Inside the PCB",
+          "content": [
+            {
+              "type": "p",
+              "text": "What information must a \"bookmark\" store to preserve a process? Rather than capturing the entire memory footprint of the program, the PCB holds key metadata fields:"
+            },
+            {
+              "type": "html",
+              "html": "<div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 2rem 0;\">\n  \n  <div class=\"panel-box\" style=\"margin-bottom:0;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#3B82F6; margin-bottom:0.4rem;\">Process ID (PID)</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      A unique integer assigned by the OS to identify the process across the entire system.\n    </div>\n  </div>\n\n  <div class=\"panel-box\" style=\"margin-bottom:0;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#10B981; margin-bottom:0.4rem;\">Process State</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      Tracks where the process sits in its lifecycle: Running, Ready to execute, or Waiting on hardware resources.\n    </div>\n  </div>\n\n  <div class=\"panel-box\" style=\"margin-bottom:0;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#F59E0B; margin-bottom:0.4rem;\">Program Counter (PC)</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      The memory address pointer indicating exactly which machine instruction the process must execute next.\n    </div>\n  </div>\n\n  <div class=\"panel-box\" style=\"margin-bottom:0;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#EF4444; margin-bottom:0.4rem;\">Registers</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      Temporary numeric slots inside the CPU holding scratch variables and arithmetic offsets at the split-second of preemption.\n    </div>\n  </div>\n\n  <div class=\"panel-box\" style=\"margin-bottom:0;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#A78BFA; margin-bottom:0.4rem;\">Stack Pointer</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      Locates the current nested layer of function calls and local variables stored in transient RAM.\n    </div>\n  </div>\n\n  <div class=\"panel-box\" style=\"margin-bottom:0;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#38BDF8; margin-bottom:0.4rem;\">Memory Management Info</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      Maps the boundaries of the process's private memory range (pages, segment tables) to protect it from other tasks.\n    </div>\n  </div>\n\n  <div class=\"panel-box\" style=\"margin-bottom:0; grid-column: span 1;\">\n    <div style=\"font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#F43F5E; margin-bottom:0.4rem;\">System Resources</div>\n    <div style=\"font-size:0.8rem; color:var(--muted); line-height:1.45;\">\n      Tracks active resources allocated to the task, including open file descriptors, network sockets, or active peripheral channels.\n    </div>\n  </div>\n\n</div>"
+            }
+          ]
+        },
+        {
+          "heading": "5. Where Does the PCB Live?",
+          "content": [
+            {
+              "type": "p",
+              "text": "A running user process executes instructions within its own memory bounds. But a process is not permitted to touch or modify its own \"bookmark.\" If it could, a bug inside a program could overwrite its own state or access the bookmarks of other programs, compromising security."
+            },
+            {
+              "type": "p",
+              "text": "Therefore, **PCBs live entirely inside Kernel Memory**."
+            },
+            {
+              "type": "p",
+              "text": "When a process executes, it sits in User Space. But the moment an interrupt triggers, control swaps to Supervisor Mode, and the Kernel saves the state into its own protected region of RAM:"
+            },
+            {
+              "type": "html",
+              "html": "<div style=\"background:#0b0f19; padding:1.5rem; border:1px solid rgba(148, 163, 184, 0.08); border-radius:12px; display:flex; flex-direction:column; align-items:center; margin:2.5rem 0;\">\n  <div style=\"font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:1.5rem; text-align:center; letter-spacing:0.05em;\">PHYSICAL RAM LAYOUT</div>\n  <svg viewBox=\"0 0 720 220\" style=\"width:100%; height:auto; max-width:640px; font-family:var(--mono);\">\n    \n    <!-- Outer RAM Container -->\n    <rect x=\"20\" y=\"20\" width=\"680\" height=\"150\" rx=\"8\" fill=\"none\" stroke=\"rgba(148, 163, 184, 0.2)\" stroke-width=\"2\"/>\n    \n    <!-- Kernel Space Partition -->\n    <rect x=\"30\" y=\"30\" width=\"220\" height=\"130\" rx=\"6\" fill=\"rgba(139, 92, 246, 0.08)\" stroke=\"#8B5CF6\" stroke-width=\"1.5\"/>\n    <text x=\"140\" y=\"55\" fill=\"#8B5CF6\" font-family=\"'Syne',sans-serif\" font-weight=\"bold\" font-size=\"11\" text-anchor=\"middle\">KERNEL MEMORY</text>\n    \n    <!-- Nested PCBs -->\n    <rect x=\"50\" y=\"75\" width=\"180\" height=\"22\" rx=\"3\" fill=\"rgba(16, 185, 129, 0.12)\" stroke=\"#10B981\" stroke-width=\"1\"/>\n    <text x=\"140\" y=\"89\" fill=\"#10B981\" font-size=\"9\" text-anchor=\"middle\">PCB 1 (P1 Bookmark)</text>\n    \n    <rect x=\"50\" y=\"105\" width=\"180\" height=\"22\" rx=\"3\" fill=\"rgba(16, 185, 129, 0.12)\" stroke=\"#10B981\" stroke-width=\"1\"/>\n    <text x=\"140\" y=\"119\" fill=\"#10B981\" font-size=\"9\" text-anchor=\"middle\">PCB 2 (P2 Bookmark)</text>\n    \n    <rect x=\"50\" y=\"132\" width=\"180\" height=\"22\" rx=\"3\" fill=\"rgba(16, 185, 129, 0.12)\" stroke=\"#10B981\" stroke-width=\"1\"/>\n    <text x=\"140\" y=\"146\" fill=\"#10B981\" font-size=\"9\" text-anchor=\"middle\">PCB 3 (P3 Bookmark)</text>\n\n    <!-- User Space Partition -->\n    <rect x=\"270\" y=\"30\" width=\"420\" height=\"130\" rx=\"6\" fill=\"rgba(59, 130, 246, 0.05)\" stroke=\"#3B82F6\" stroke-width=\"1.5\"/>\n    <text x=\"480\" y=\"55\" fill=\"#3B82F6\" font-family=\"'Syne',sans-serif\" font-weight=\"bold\" font-size=\"11\" text-anchor=\"middle\">USER SPACE (PROCESS MEMORY)</text>\n    \n    <!-- User Processes -->\n    <rect x=\"290\" y=\"75\" width=\"110\" height=\"75\" rx=\"4\" fill=\"rgba(59, 130, 246, 0.12)\" stroke=\"#3B82F6\" stroke-width=\"1\"/>\n    <text x=\"345\" y=\"110\" fill=\"#E2E8F0\" font-size=\"9\" text-anchor=\"middle\">Process 1 RAM</text>\n    <text x=\"345\" y=\"125\" fill=\"var(--muted)\" font-size=\"8\" text-anchor=\"middle\">(Private Space)</text>\n\n    <rect x=\"420\" y=\"75\" width=\"110\" height=\"75\" rx=\"4\" fill=\"rgba(59, 130, 246, 0.12)\" stroke=\"#3B82F6\" stroke-width=\"1\"/>\n    <text x=\"475\" y=\"110\" fill=\"#E2E8F0\" font-size=\"9\" text-anchor=\"middle\">Process 2 RAM</text>\n    <text x=\"475\" y=\"125\" fill=\"var(--muted)\" font-size=\"8\" text-anchor=\"middle\">(Private Space)</text>\n\n    <rect x=\"550\" y=\"75\" width=\"120\" height=\"75\" rx=\"4\" fill=\"rgba(59, 130, 246, 0.12)\" stroke=\"#3B82F6\" stroke-width=\"1\"/>\n    <text x=\"610\" y=\"110\" fill=\"#E2E8F0\" font-size=\"9\" text-anchor=\"middle\">Process 3 RAM</text>\n    <text x=\"610\" y=\"125\" fill=\"var(--muted)\" font-size=\"8\" text-anchor=\"middle\">(Private Space)</text>\n    \n    <!-- Physical RAM Label -->\n    <text x=\"360\" y=\"200\" fill=\"var(--muted)\" font-size=\"10\" text-anchor=\"middle\">Protected Hardware Memory Boundaries</text>\n  </svg>\n</div>"
+            }
+          ]
+        },
+        {
+          "heading": "6. The Limit of Memory",
+          "content": [
+            {
+              "type": "p",
+              "text": "The Process Control Block ensures that no task is lost. Because of these bookmarks, the Kernel has the power to capture the exact state of any execution line."
+            },
+            {
+              "type": "p",
+              "text": "But memory alone does not bring a process back to life. Having a bookmark inside a book does not open the page or begin the reading."
+            },
+            {
+              "type": "p",
+              "text": "The Kernel now remembers every process."
+            },
+            {
+              "type": "p",
+              "text": "But remembering alone does not resume execution."
+            },
+            {
+              "type": "p",
+              "text": "How does one running process... become another?"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
       }
     },
     {
@@ -1614,6 +1798,10 @@
               "src": "../../Images/spi_clock_modes.png",
               "alt": "SPI Timing Diagram illustrating CPOL and CPHA configuration modes",
               "caption": "SPI Timing Diagram illustrating CPOL and CPHA configuration modes"
+            },
+            {
+              "type": "edgecase",
+              "id": "spi-shared-rhythm"
             }
           ]
         },
@@ -1635,6 +1823,10 @@
             {
               "type": "p",
               "text": "Physical addressing introduces silent bugs. If a glitch or transient voltage spike pulls a CS line low when it should remain high, multiple slaves will attempt to drive the MISO trace simultaneously. This results in bus contention, creating excessive current draw, heating, and corrupted data\u2014a silent failure state that cannot be detected by the protocol itself since SPI lacks any built-in error detection or flow control."
+            },
+            {
+              "type": "edgecase",
+              "id": "spi-silent-conversation"
             }
           ]
         },
@@ -2194,6 +2386,10 @@
             {
               "type": "p",
               "text": "Let's experiment with these core concepts. In the simulator below, configure the clock source, prescaler division, counter size, and compare match values to see how physical frequencies translate into structured temporal events."
+            },
+            {
+              "type": "edgecase",
+              "id": "timer-builder"
             }
           ]
         },
@@ -2232,6 +2428,10 @@
             {
               "type": "p",
               "text": "Adjust the frequency and duty cycle below to see how pulse widths map directly to average output voltages, controlling LED intensity and motor velocity."
+            },
+            {
+              "type": "edgecase",
+              "id": "pwm-painter"
             }
           ]
         },
@@ -3393,6 +3593,107 @@
       }
     },
     {
+      "id": "the-rules-of-fairness",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "The Rules of Fairness",
+      "subtitle": "How the Kernel turns difficult choices into predictable decisions.",
+      "date": "3rd August, 2026",
+      "tags": [
+        "Kernel",
+        "Scheduling",
+        "Policies",
+        "Architecture"
+      ],
+      "sections": [
+        {
+          "heading": "Policies vs. Mechanisms",
+          "content": [
+            {
+              "type": "p",
+              "text": "To understand how a scheduler works, we must distinguish between two related concepts:"
+            },
+            {
+              "type": "p",
+              "text": "*   **The Mechanism (The Scheduler):** This is the code that performs the transition from one Process to another. The technical details of this transition, known as a **Context Switch**, will be explored later in our Operating Systems journey.\n*   **The Policy (The Ruleset):** This is the algorithm or set of rules that determines *which* process from the Ready Queue should be selected next."
+            },
+            {
+              "type": "p",
+              "text": "The mechanism is universal\u2014it remains the same regardless of what programs you are running. The policy is configurable\u2014it changes depending on what goals the system is trying to optimize."
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"custom-diagram-wrapper\" style=\"margin: 2.5rem 0; text-align: center;\">\n  <svg viewBox=\"0 0 800 240\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width: 100%; height: auto; display: block; margin: 0 auto; background: #0b0f19; border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\">\n    <!-- Gradients -->\n    <defs>\n      <linearGradient id=\"policyGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">\n        <stop offset=\"0%\" stop-color=\"#14b8a6\" stop-opacity=\"0.2\"/>\n        <stop offset=\"100%\" stop-color=\"#0d9488\" stop-opacity=\"0.05\"/>\n      </linearGradient>\n      <linearGradient id=\"schedulerGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">\n        <stop offset=\"0%\" stop-color=\"#3b82f6\" stop-opacity=\"0.2\"/>\n        <stop offset=\"100%\" stop-color=\"#1d4ed8\" stop-opacity=\"0.05\"/>\n      </linearGradient>\n      <linearGradient id=\"cpuGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">\n        <stop offset=\"0%\" stop-color=\"#8b5cf6\" stop-opacity=\"0.25\"/>\n        <stop offset=\"100%\" stop-color=\"#6d28d9\" stop-opacity=\"0.05\"/>\n      </linearGradient>\n    </defs>\n    <!-- Connectors -->\n    <!-- Ready Queue to Policy -->\n    <path d=\"M 180 120 L 250 120\" stroke=\"rgba(148, 163, 184, 0.15)\" stroke-width=\"2\" fill=\"none\" stroke-dasharray=\"4\"/>\n    <polygon points=\"250,120 242,115 242,125\" fill=\"rgba(148, 163, 184, 0.25)\"/>\n    <!-- Policy to Scheduler -->\n    <path d=\"M 410 120 L 460 120\" stroke=\"rgba(20, 184, 166, 0.4)\" stroke-width=\"2\" fill=\"none\"/>\n    <polygon points=\"460,120 452,115 452,125\" fill=\"#14b8a6\"/>\n    <!-- Scheduler to CPU -->\n    <path d=\"M 610 120 L 660 120\" stroke=\"rgba(59, 130, 246, 0.4)\" stroke-width=\"2\" fill=\"none\"/>\n    <polygon points=\"660,120 652,115 652,125\" fill=\"#3b82f6\"/>\n    <!-- Ready Queue (Left) -->\n    <g transform=\"translate(30, 60)\">\n      <rect x=\"0\" y=\"0\" width=\"150\" height=\"120\" rx=\"8\" fill=\"rgba(30, 41, 59, 0.3)\" stroke=\"rgba(148, 163, 184, 0.12)\" stroke-width=\"1.5\"/>\n      <text x=\"75\" y=\"25\" fill=\"#64748B\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">READY QUEUE</text>\n      <!-- Queue elements -->\n      <g transform=\"translate(15, 45)\">\n        <rect x=\"0\" y=\"0\" width=\"35\" height=\"50\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148, 163, 184, 0.2)\" stroke-width=\"1\"/>\n        <text x=\"17.5\" y=\"28\" fill=\"#E2E8F0\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"11\" text-anchor=\"middle\">P1</text>\n      </g>\n      <g transform=\"translate(60, 45)\">\n        <rect x=\"0\" y=\"0\" width=\"35\" height=\"50\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148, 163, 184, 0.2)\" stroke-width=\"1\"/>\n        <text x=\"17.5\" y=\"28\" fill=\"#E2E8F0\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"11\" text-anchor=\"middle\">P2</text>\n      </g>\n      <g transform=\"translate(105, 45)\">\n        <rect x=\"0\" y=\"0\" width=\"35\" height=\"50\" rx=\"4\" fill=\"#1E293B\" stroke=\"rgba(148, 163, 184, 0.2)\" stroke-width=\"1\"/>\n        <text x=\"17.5\" y=\"28\" fill=\"#E2E8F0\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"11\" text-anchor=\"middle\">P3</text>\n      </g>\n    </g>\n    <!-- Scheduling Policy (Center-Left) -->\n    <g transform=\"translate(260, 60)\">\n      <rect x=\"0\" y=\"0\" width=\"150\" height=\"120\" rx=\"8\" fill=\"url(#policyGrad)\" stroke=\"rgba(20, 184, 166, 0.3)\" stroke-width=\"1.5\"/>\n      <text x=\"75\" y=\"25\" fill=\"#14b8a6\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">SCHEDULING POLICY</text>\n      <text x=\"75\" y=\"55\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">The Ruleset</text>\n      <rect x=\"25\" y=\"75\" width=\"100\" height=\"26\" rx=\"4\" fill=\"rgba(20, 184, 166, 0.1)\" stroke=\"rgba(20, 184, 166, 0.2)\" stroke-width=\"1\"/>\n      <text x=\"75\" y=\"91\" fill=\"#14b8a6\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" text-anchor=\"middle\">Determines \"How\"</text>\n    </g>\n    <!-- Scheduler (Center-Right) -->\n    <g transform=\"translate(470, 60)\">\n      <rect x=\"0\" y=\"0\" width=\"140\" height=\"120\" rx=\"8\" fill=\"url(#schedulerGrad)\" stroke=\"rgba(59, 130, 246, 0.3)\" stroke-width=\"1.5\"/>\n      <text x=\"70\" y=\"25\" fill=\"#3b82f6\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">SCHEDULER</text>\n      <text x=\"70\" y=\"55\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"13\" font-weight=\"bold\" text-anchor=\"middle\">The Mechanism</text>\n      <rect x=\"20\" y=\"75\" width=\"100\" height=\"26\" rx=\"4\" fill=\"rgba(59, 130, 246, 0.1)\" stroke=\"rgba(59, 130, 246, 0.2)\" stroke-width=\"1\"/>\n      <text x=\"70\" y=\"91\" fill=\"#3b82f6\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" text-anchor=\"middle\">Executes Choice</text>\n    </g>\n    <!-- CPU Core (Right) -->\n    <g transform=\"translate(670, 60)\">\n      <rect x=\"0\" y=\"0\" width=\"100\" height=\"120\" rx=\"8\" fill=\"url(#cpuGrad)\" stroke=\"rgba(139, 92, 246, 0.4)\" stroke-width=\"1.5\"/>\n      <!-- CPU Inner Details -->\n      <rect x=\"10\" y=\"10\" width=\"80\" height=\"100\" rx=\"6\" fill=\"none\" stroke=\"rgba(139, 92, 246, 0.15)\" stroke-width=\"1\" stroke-dasharray=\"3\"/>\n      <text x=\"50\" y=\"55\" fill=\"#a78bfa\" font-family=\"'Syne', sans-serif\" font-weight=\"bold\" font-size=\"14\" text-anchor=\"middle\">CPU</text>\n      <text x=\"50\" y=\"75\" fill=\"#64748B\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"9\" text-anchor=\"middle\">ACTIVE CORE</text>\n    </g>\n  </svg>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "Why Multiple Policies Exist",
+          "content": [
+            {
+              "type": "p",
+              "text": "There is no single \"correct\" policy because there is no single engineering goal. Different computer systems prioritize different objectives:"
+            },
+            {
+              "type": "p",
+              "text": "*   **Fairness:** Ensuring that every active process eventually gets a turn on the processor. No process should starve in memory indefinitely.\n*   **Responsiveness:** Prioritizing user interaction. A text editor or cursor should respond within milliseconds, even if heavy background calculations are running.\n*   **Throughput:** Maximizing the total number of processes completed per hour. This is vital for servers running background data-processing batches.\n*   **Real-Time Behaviour:** Guaranteeing that critical tasks execute within strict deadlines. An engine controller sensor loop must run on time, no matter what."
+            },
+            {
+              "type": "p",
+              "text": "A scheduling policy is an expression of what a system values most."
+            }
+          ]
+        },
+        {
+          "heading": "Four Classic Scheduling Policies",
+          "content": [
+            {
+              "type": "p",
+              "text": "Modern operating systems like Linux, Windows, or macOS use highly sophisticated scheduling architectures. However, these complex production schedulers are built upon a small set of classic, foundational concepts."
+            },
+            {
+              "type": "p",
+              "text": "Before we can understand how modern schedulers combine these ideas, we must first understand the four classic policies that represent the historical foundations of scheduling:"
+            },
+            {
+              "type": "p",
+              "text": "### 1. First-Come, First-Served (FCFS)\n*   **The Idea:** \"Respect arrival.\"\n*   The scheduler selects whichever process arrived first in the Ready Queue. It runs until it yields or terminates."
+            },
+            {
+              "type": "p",
+              "text": "### 2. Shortest Job First (SJF)\n*   **The Idea:** \"Finish quickly.\"\n*   The scheduler examines all ready processes and runs the one with the shortest estimated execution duration first."
+            },
+            {
+              "type": "p",
+              "text": "### 3. Priority Scheduling\n*   **The Idea:** \"Protect what matters most.\"\n*   Each process is assigned a priority value. The scheduler always executes the process with the highest priority first."
+            },
+            {
+              "type": "p",
+              "text": "### 4. Round Robin (RR)\n*   **The Idea:** \"Everyone deserves a turn.\"\n*   The scheduler gives each process a tiny, fixed slice of execution time (a quantum). When time runs out, the process is preempted and sent to the back of the queue."
+            },
+            {
+              "type": "p",
+              "text": "These classic policies introduced different ways of thinking about fairness. Each solved a particular engineering problem, but each also revealed new, unforeseen limitations."
+            },
+            {
+              "type": "p",
+              "text": "Before we understand how modern operating systems schedule processes, we must first understand these foundations."
+            },
+            {
+              "type": "p",
+              "text": "Let's begin with the simplest scheduling rule."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
       "id": "the-tyranny-of-waiting",
       "category": "Coordination",
       "series": "The Architecture of Time",
@@ -3654,6 +3955,10 @@
             {
               "type": "p",
               "text": "Use the interactive conversation builder below to explore how letters are encoded into ASCII, packed into serial UART frames, and transmitted as electrical voltages. Toggle the advanced mode to simulate mismatched configurations and observe how timing errors corrupt the signal."
+            },
+            {
+              "type": "edgecase",
+              "id": "uart-conversation-builder"
             }
           ]
         }
@@ -4658,6 +4963,10 @@
             {
               "type": "p",
               "text": "By delegating the movement of information to the DMA controller, the processor returns to its true calling: computation. Instead of burning millions of cycles copying data registers, the CPU can now spend its capacity running digital filters, executing control algorithms, computing fast Fourier transforms, or parsing complex protocol layers. The processor is no longer a physical packer of bytes; it is once again the intelligent coordinator of the machine."
+            },
+            {
+              "type": "edgecase",
+              "id": "overworked-processor"
             }
           ]
         },
@@ -4858,6 +5167,10 @@
             {
               "type": "p",
               "text": "Let's observe these conversion behaviors. In the interactive panel below, modify signal frequency, resolution, and sampling rate to watch how an analog signal is sliced and rounded into digital numbers."
+            },
+            {
+              "type": "edgecase",
+              "id": "capturing-reality"
             }
           ]
         },
@@ -4867,6 +5180,10 @@
             {
               "type": "p",
               "text": "What happens when our observation parameters are configured incorrectly? In the simulator below, adjust the reference voltage, resolution, and sample rate to induce signal clipping, aliasing (undersampling), or high quantization stepping."
+            },
+            {
+              "type": "edgecase",
+              "id": "cost-of-observation"
             }
           ]
         },
@@ -5108,6 +5425,10 @@
             {
               "type": "p",
               "text": "Let's observe these conversion behaviors. In the interactive panel below, modify reference voltage, DAC resolution, and digital input codes to watch how digital values translate into analog voltages on a meter."
+            },
+            {
+              "type": "edgecase",
+              "id": "painting-with-voltage"
             }
           ]
         },
@@ -5117,6 +5438,10 @@
             {
               "type": "p",
               "text": "How does sequence timing and low-pass filtering shape the output waveform? In the simulator below, adjust the waveform type, update rate, resolution, and low-pass reconstruction filter cutoff to see how a continuous curve is painted."
+            },
+            {
+              "type": "edgecase",
+              "id": "illusion-of-smoothness"
             }
           ]
         },
@@ -5606,6 +5931,310 @@
           "This is the end of the beginning. What we do next with these foundations is where the real story begins."
         ],
         "quote": "Silicon did not change; the problems did. We shaped the gates to match the math."
+      }
+    },
+    {
+      "id": "when-one-rule-was-enough",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When One Rule Was Enough",
+      "subtitle": "Understanding Non-Preemptive Scheduling",
+      "date": "3rd August, 2026",
+      "tags": [
+        "Kernel",
+        "Scheduling",
+        "Non-Preemptive",
+        "FCFS",
+        "SJF",
+        "Priority"
+      ],
+      "sections": [
+        {
+          "heading": "The Non-Preemptive Execution Flow",
+          "content": [
+            {
+              "type": "p",
+              "text": "To visualize this philosophy, consider the lifecycle of execution. Once a process is selected from the Ready Queue, it enters the running state and remains there. The CPU cannot swap it out mid-way."
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"custom-diagram-wrapper\" style=\"margin: 2.5rem 0; text-align: center;\">\n  <svg viewBox=\"0 0 800 120\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width: 100%; height: auto; display: block; margin: 0 auto; background: #0b0f19; border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\">\n    <defs>\n      <linearGradient id=\"flowGrad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">\n        <stop offset=\"0%\" stop-color=\"#3b82f6\" stop-opacity=\"0.25\"/>\n        <stop offset=\"100%\" stop-color=\"#8b5cf6\" stop-opacity=\"0.05\"/>\n      </linearGradient>\n    </defs>\n    <!-- Connectors -->\n    <path d=\"M 150 60 L 220 60\" stroke=\"rgba(148, 163, 184, 0.15)\" stroke-width=\"2\" fill=\"none\"/>\n    <polygon points=\"220,60 212,55 212,65\" fill=\"rgba(148, 163, 184, 0.25)\"/>\n    <path d=\"M 370 60 L 440 60\" stroke=\"rgba(148, 163, 184, 0.15)\" stroke-width=\"2\" fill=\"none\"/>\n    <polygon points=\"440,60 432,55 432,65\" fill=\"rgba(148, 163, 184, 0.25)\"/>\n    <path d=\"M 590 60 L 660 60\" stroke=\"rgba(148, 163, 184, 0.15)\" stroke-width=\"2\" fill=\"none\"/>\n    <polygon points=\"660,60 652,55 652,65\" fill=\"rgba(148, 163, 184, 0.25)\"/>\n    <!-- Ready Queue State -->\n    <g transform=\"translate(20, 30)\">\n      <rect x=\"0\" y=\"0\" width=\"130\" height=\"60\" rx=\"6\" fill=\"rgba(30, 41, 59, 0.3)\" stroke=\"rgba(148, 163, 184, 0.12)\" stroke-width=\"1.5\"/>\n      <text x=\"65\" y=\"25\" fill=\"#64748B\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">READY QUEUE</text>\n      <text x=\"65\" y=\"45\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"12\" text-anchor=\"middle\">Processes Wait</text>\n    </g>\n    <!-- Running State -->\n    <g transform=\"translate(240, 30)\">\n      <rect x=\"0\" y=\"0\" width=\"130\" height=\"60\" rx=\"6\" fill=\"url(#flowGrad)\" stroke=\"rgba(59, 130, 246, 0.3)\" stroke-width=\"1.5\"/>\n      <text x=\"65\" y=\"25\" fill=\"#3b82f6\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">CPU RUNNING</text>\n      <text x=\"65\" y=\"45\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"12\" text-anchor=\"middle\">Active Process</text>\n    </g>\n    <!-- Non-Preemptive Guard -->\n    <g transform=\"translate(460, 30)\">\n      <rect x=\"0\" y=\"0\" width=\"130\" height=\"60\" rx=\"6\" fill=\"rgba(139, 92, 246, 0.1)\" stroke=\"rgba(139, 92, 246, 0.2)\" stroke-width=\"1.5\"/>\n      <text x=\"65\" y=\"25\" fill=\"#a78bfa\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">NO INTERRUPT</text>\n      <text x=\"65\" y=\"45\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"12\" text-anchor=\"middle\">Runs to Finish</text>\n    </g>\n    <!-- Finished State -->\n    <g transform=\"translate(680, 30)\">\n      <rect x=\"0\" y=\"0\" width=\"100\" height=\"60\" rx=\"6\" fill=\"rgba(16, 185, 129, 0.1)\" stroke=\"rgba(16, 185, 129, 0.2)\" stroke-width=\"1.5\"/>\n      <text x=\"50\" y=\"25\" fill=\"#10b981\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\" letter-spacing=\"0.05em\">COMPLETED</text>\n      <text x=\"50\" y=\"45\" fill=\"#E2E8F0\" font-family=\"'DM Sans', sans-serif\" font-size=\"12\" text-anchor=\"middle\">Yields CPU</text>\n    </g>\n  </svg>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "Three Classic Non-Preemptive Policies",
+          "content": [
+            {
+              "type": "p",
+              "text": "When the kernel does not interrupt, the only choice it makes is *who starts next*. This choice is guided by one of three classic rules:"
+            },
+            {
+              "type": "p",
+              "text": "*   **First-Come, First-Served (FCFS):** The simplest possible rule. Whichever process enters the Ready Queue first is run first, regardless of how long it takes or its importance.\n*   **Shortest Job First (SJF):** The scheduler searches the Ready Queue and executes the process with the shortest estimated burst time first.\n*   **Priority Scheduling:** Each process is tagged with an integer representing its priority. The scheduler always starts the process with the highest priority next."
+            }
+          ]
+        },
+        {
+          "heading": "Investigating Scheduling Behavior",
+          "content": [
+            {
+              "type": "p",
+              "text": "To see how these rules change the behavior of a system, let's trace them using a single, identical set of processes."
+            },
+            {
+              "type": "edgecase",
+              "id": "non-preemptive-scheduler"
+            }
+          ]
+        },
+        {
+          "heading": "The Key Metrics: Turnaround vs. Waiting",
+          "content": [
+            {
+              "type": "p",
+              "text": "When evaluating these schedulers, engineers look at two primary performance metrics:"
+            },
+            {
+              "type": "p",
+              "text": "*   **Turnaround Time ($TAT$):** The total elapsed time from when a process first arrives in the queue to when it completely finishes execution ($TAT = \\text{Completion Time} - \\text{Arrival Time}$).\n*   **Waiting Time ($WT$):** The total time a process spends sitting in the Ready Queue waiting to execute ($WT = \\text{Turnaround Time} - \\text{Burst Time}$)."
+            },
+            {
+              "type": "p",
+              "text": "As you simulated above:\n*   **FCFS** scheduled processes exactly in arrival sequence, resulting in an average waiting time of **4.67 units**.\n*   **SJF** reduced average waiting time to **3.67 units** by running the shorter $P_3$ before $P_2$.\n*   **Priority** prioritized the urgent $P_2$ over $P_3$, resulting in an average waiting time of **4.67 units**."
+            }
+          ]
+        },
+        {
+          "heading": "The EdgeCase: Emergency Arrival",
+          "content": [
+            {
+              "type": "p",
+              "text": "These non-preemptive rules worked well for early batch-processing computers. But what happens in a real-time system when an critical task suddenly wakes up?"
+            },
+            {
+              "type": "p",
+              "text": "Select the **EdgeCase** simulation tab above. In this scenario, we use the exact same process table, but we introduce one addition: at Time = 1, an emergency process ($P_{EM}$) with priority 0 (highest) arrives."
+            },
+            {
+              "type": "p",
+              "text": "Observe the timeline:\n*   At Time = 0, $P_1$ begins running.\n*   At Time = 1, $P_{EM}$ arrives. It is the most critical process in the system.\n*   But because the scheduler is **non-preemptive**, $P_1$ cannot be interrupted. $P_{EM}$ is forced to wait in the Ready Queue for **5 full time units** until $P_1$ finishes at Time = 6."
+            },
+            {
+              "type": "p",
+              "text": "This is the fundamental limitation of non-preemptive scheduling: **long-running tasks block critical work, and the kernel is powerless to stop them.**"
+            },
+            {
+              "type": "p",
+              "text": "The early policies were simple and predictable. But when a system must react to user inputs or critical hardware interrupts, waiting is no longer an option."
+            },
+            {
+              "type": "p",
+              "text": "Should the CPU continue executing a long task, or should it force it to yield?"
+            },
+            {
+              "type": "p",
+              "text": "Let's find out how the kernel breaks the rule of non-preemption."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
+      "id": "when-waiting-was-too-expensive",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When Waiting Was Too Expensive",
+      "subtitle": "Why Operating Systems Learned to Interrupt",
+      "date": "4th August, 2026",
+      "tags": [
+        "Kernel",
+        "Scheduling",
+        "Preemption",
+        "Round Robin",
+        "Context Switch"
+      ],
+      "sections": [
+        {
+          "heading": "1. The Dilemma: A Split-Second Threat",
+          "content": [
+            {
+              "type": "p",
+              "text": "Consider a modern embedded controller managing an electric vehicle. The CPU is currently executing a long-running, low-priority background calculation\u2014such as updating the state of charge logger on a flash memory card (a task requiring 50 milliseconds of CPU execution time)."
+            },
+            {
+              "type": "p",
+              "text": "Suddenly, at millisecond 1, a critical safety event occurs: the vehicle's radar module detects an obstacle and transmits an emergency braking request over the CAN bus."
+            },
+            {
+              "type": "p",
+              "text": "Under a non-preemptive scheduling policy:\n*   The emergency brake process is released and enters the Ready Queue.\n*   But because the CPU is locked into the flash logging task, the operating system cannot intervene.\n*   The brake task must wait 49 milliseconds for the flash write to complete before it can run."
+            },
+            {
+              "type": "p",
+              "text": "At highway speeds, a 49-millisecond delay in brake engagement translates to several feet of stopping distance. In safety-critical engineering, waiting is a luxury we cannot afford."
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"custom-diagram-wrapper\" style=\"margin: 2rem 0; text-align: center;\">\n  <svg viewBox=\"0 0 800 160\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width: 100%; height: auto; display: block; margin: 0 auto; background: #0b0f19; border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\">\n    <!-- Background grid lines -->\n    <line x1=\"50\" y1=\"90\" x2=\"750\" y2=\"90\" stroke=\"rgba(148,163,184,0.12)\" stroke-width=\"2\" />\n    <line x1=\"50\" y1=\"80\" x2=\"50\" y2=\"100\" stroke=\"rgba(148,163,184,0.2)\" stroke-width=\"1.5\" />\n    <text x=\"50\" y=\"118\" fill=\"var(--muted)\" font-family=\"var(--mono)\" font-size=\"9\" text-anchor=\"middle\">t = 0 (Start)</text>\n    <line x1=\"120\" y1=\"80\" x2=\"120\" y2=\"100\" stroke=\"#EF4444\" stroke-width=\"1.5\" />\n    <text x=\"120\" y=\"118\" fill=\"#EF4444\" font-family=\"var(--mono)\" font-size=\"9\" text-anchor=\"middle\">t = 1 (Brake Event)</text>\n    <line x1=\"750\" y1=\"80\" x2=\"750\" y2=\"100\" stroke=\"rgba(148,163,184,0.2)\" stroke-width=\"1.5\" />\n    <text x=\"750\" y=\"118\" fill=\"var(--muted)\" font-family=\"var(--mono)\" font-size=\"9\" text-anchor=\"middle\">t = 50 (Finish)</text>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Logging Block -->\n    <rect x=\"50\" y=\"30\" width=\"700\" height=\"40\" rx=\"4\" fill=\"#3B82F6\" opacity=\"0.15\" stroke=\"#3B82F6\" stroke-width=\"1.5\" />\n    <text x=\"400\" y=\"55\" fill=\"#3B82F6\" font-family=\"'DM Sans', sans-serif\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">Flash Data Logger Running (50 ms Burst)</text>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Delay Indicator -->\n    <path d=\"M 120 70 L 740 70\" fill=\"none\" stroke=\"#EF4444\" stroke-width=\"1.5\" stroke-dasharray=\"3,3\" />\n    <polygon points=\"740,70 732,65 732,75\" fill=\"#EF4444\" />\n    <text x=\"430\" y=\"80\" fill=\"#EF4444\" font-family=\"'IBM Plex Mono', monospace\" font-size=\"10\" text-anchor=\"middle\">Danger: 49 ms Uninterruptible Delay</text>\n  </svg>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "2. The Breakthrough: Preemption",
+          "content": [
+            {
+              "type": "p",
+              "text": "To resolve this dilemma, operating systems had to evolve the capability to strip a process of its CPU allocation. Instead of waiting for a process to yield control voluntarily, the Kernel must be able to suspend it mid-execution."
+            },
+            {
+              "type": "p",
+              "text": "This capability is known as **Preemptive Scheduling**."
+            },
+            {
+              "type": "p",
+              "text": "When a high-priority process enters the Ready Queue, the scheduler compares its priority against the currently executing task. If the newly arrived task is more urgent, the Kernel interrupts the running process, saves its state, and swaps it out, granting the CPU core to the urgent process immediately."
+            },
+            {
+              "type": "p",
+              "text": "The execution flow changes from a continuous block to a dynamic, interrupted timeline:"
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"custom-diagram-wrapper\" style=\"margin: 2.5rem 0; text-align: center;\">\n  <svg viewBox=\"0 0 800 130\" xmlns=\"http://www.w3.org/2000/svg\" style=\"max-width: 100%; height: auto; display: block; margin: 0 auto; background: #0b0f19; border: 1px solid rgba(148, 163, 184, 0.08); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\">\n    <defs>\n      <marker id=\"arrow\" viewBox=\"0 0 10 10\" refX=\"6\" refY=\"5\" markerWidth=\"6\" markerHeight=\"6\" orient=\"auto-start-reverse\">\n        <path d=\"M 0 1 L 10 5 L 0 9 z\" fill=\"rgba(148, 163, 184, 0.4)\"/>\n      </marker>\n    </defs>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- State Flow -->\n    <g transform=\"translate(40, 35)\">\n      <rect x=\"0\" y=\"0\" width=\"130\" height=\"50\" rx=\"6\" fill=\"rgba(59, 130, 246, 0.15)\" stroke=\"#3B82F6\" stroke-width=\"1.5\" />\n      <text x=\"65\" y=\"30\" fill=\"#FFF\" font-family=\"'DM Sans', sans-serif\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">1. P1 Executing</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<path d=\"M 170 60 L 220 60\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\" />",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<g transform=\"translate(230, 35)\">\n      <rect x=\"0\" y=\"0\" width=\"130\" height=\"50\" rx=\"6\" fill=\"rgba(239, 68, 68, 0.15)\" stroke=\"#EF4444\" stroke-width=\"1.5\" />\n      <text x=\"65\" y=\"30\" fill=\"#FFF\" font-family=\"'DM Sans', sans-serif\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">2. P2 Arrives</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<path d=\"M 360 60 L 410 60\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\" />",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<g transform=\"translate(420, 35)\">\n      <rect x=\"0\" y=\"0\" width=\"140\" height=\"50\" rx=\"6\" fill=\"rgba(245, 158, 11, 0.15)\" stroke=\"#F59E0B\" stroke-width=\"1.5\" />\n      <text x=\"70\" y=\"30\" fill=\"#FFF\" font-family=\"'DM Sans', sans-serif\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">3. Kernel Preempts P1</text>\n    </g>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<path d=\"M 560 60 L 610 60\" stroke=\"rgba(148, 163, 184, 0.3)\" stroke-width=\"1.5\" marker-end=\"url(#arrow)\" />",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<g transform=\"translate(620, 35)\">\n      <rect x=\"0\" y=\"0\" width=\"140\" height=\"50\" rx=\"6\" fill=\"rgba(16, 185, 129, 0.15)\" stroke=\"#10B981\" stroke-width=\"1.5\" />\n      <text x=\"70\" y=\"30\" fill=\"#FFF\" font-family=\"'DM Sans', sans-serif\" font-size=\"11\" font-weight=\"bold\" text-anchor=\"middle\">4. P2 Runs / P1 Paused</text>\n    </g>\n  </svg>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "3. Comparison: Before vs. After",
+          "content": [
+            {
+              "type": "p",
+              "text": "How does preemption change the temporal landscape of a system? Let's compare the execution flow under both paradigms:"
+            },
+            {
+              "type": "html",
+              "html": "<div style=\"background:#0b0f19; padding:1.5rem; border:1px solid rgba(148, 163, 184, 0.08); border-radius:12px; display:flex; flex-direction:column; align-items:center; margin:2.5rem 0;\">\n  <div style=\"font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:1.5rem; text-align:center; letter-spacing:0.05em;\">SCHEDULING COMPARISON (TIME = 0 TO 10)</div>\n  <svg viewBox=\"0 0 720 280\" style=\"width:100%; height:auto; max-width:640px; font-family:var(--mono);\">\n    \n    <!-- NON-PREEMPTIVE TRACK -->\n    <text x=\"10\" y=\"30\" fill=\"#FFF\" font-family=\"'Syne',sans-serif\" font-weight=\"bold\" font-size=\"11\">Non-Preemptive Execution</text>\n    <line x1=\"50\" y1=\"65\" x2=\"650\" y2=\"65\" stroke=\"rgba(148,163,184,0.15)\" stroke-width=\"2\"/>\n    \n    <!-- P1 Block -->\n    <rect x=\"50\" y=\"45\" width=\"480\" height=\"30\" rx=\"3\" fill=\"#3B82F6\" opacity=\"0.8\"/>\n    <text x=\"290\" y=\"64\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">P1 (Flash Logger - Running)</text>\n    \n    <!-- P2 Block -->\n    <rect x=\"530\" y=\"45\" width=\"120\" height=\"30\" rx=\"3\" fill=\"#10B981\" opacity=\"0.8\"/>\n    <text x=\"590\" y=\"64\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">P2 (Brake)</text>\n    \n    <line x1=\"170\" y1=\"40\" x2=\"170\" y2=\"90\" stroke=\"#EF4444\" stroke-width=\"1.5\" stroke-dasharray=\"2,2\"/>\n    <text x=\"175\" y=\"35\" fill=\"#EF4444\" font-size=\"8\">P2 Arrives (t=2)</text>\n    <path d=\"M 170 82 C 280 100, 420 100, 530 82\" fill=\"none\" stroke=\"#EF4444\" stroke-width=\"1.2\" stroke-dasharray=\"3,3\"/>\n    <text x=\"350\" y=\"98\" fill=\"#EF4444\" font-size=\"8\" text-anchor=\"middle\">P2 Waits in Queue (6 units delay)</text>\n    \n    <!-- PREEMPTIVE TRACK -->\n    <text x=\"10\" y=\"160\" fill=\"#FFF\" font-family=\"'Syne',sans-serif\" font-weight=\"bold\" font-size=\"11\">Preemptive Execution (Interrupted)</text>\n    <line x1=\"50\" y1=\"195\" x2=\"650\" y2=\"195\" stroke=\"rgba(148,163,184,0.15)\" stroke-width=\"2\"/>\n    \n    <!-- P1 Part A -->\n    <rect x=\"50\" y=\"175\" width=\"120\" height=\"30\" rx=\"3\" fill=\"#3B82F6\" opacity=\"0.8\"/>\n    <text x=\"110\" y=\"194\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">P1 (Part A)</text>\n    \n    <!-- P2 Block -->\n    <rect x=\"170\" y=\"175\" width=\"180\" height=\"30\" rx=\"3\" fill=\"#10B981\" opacity=\"0.8\"/>\n    <text x=\"260\" y=\"194\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">P2 (Brake Runs)</text>\n    \n    <!-- P1 Part B -->\n    <rect x=\"350\" y=\"175\" width=\"300\" height=\"30\" rx=\"3\" fill=\"#3B82F6\" opacity=\"0.5\" stroke=\"#3B82F6\" stroke-dasharray=\"3,3\"/>\n    <text x=\"500\" y=\"194\" fill=\"#fff\" font-size=\"10\" font-weight=\"bold\" text-anchor=\"middle\">P1 Resumed (Part B)</text>\n    \n    <line x1=\"170\" y1=\"170\" x2=\"170\" y2=\"220\" stroke=\"#10B981\" stroke-width=\"1.5\" stroke-dasharray=\"2,2\"/>\n    <text x=\"175\" y=\"165\" fill=\"#10B981\" font-size=\"8\">Preemption Event (t=2)</text>\n    <text x=\"260\" y=\"220\" fill=\"#10B981\" font-size=\"8\" text-anchor=\"middle\">No Delay: Brake executes immediately</text>\n\n    <!-- Time Labels -->\n    <text x=\"50\" y=\"250\" fill=\"var(--muted)\" font-size=\"9\" text-anchor=\"middle\">0</text>\n    <text x=\"170\" y=\"250\" fill=\"var(--muted)\" font-size=\"9\" text-anchor=\"middle\">2</text>\n    <text x=\"350\" y=\"250\" fill=\"var(--muted)\" font-size=\"9\" text-anchor=\"middle\">5</text>\n    <text x=\"650\" y=\"250\" fill=\"var(--muted)\" font-size=\"9\" text-anchor=\"middle\">10</text>\n  </svg>\n</div>"
+            }
+          ]
+        },
+        {
+          "heading": "4. Preemptive Scheduling Policies",
+          "content": [
+            {
+              "type": "p",
+              "text": "When we add the power of interruption, three core scheduling policies emerge:"
+            },
+            {
+              "type": "p",
+              "text": "1.  **Shortest Remaining Time First (SRTF):** The preemptive variation of SJF. If a new process arrives with a remaining execution time shorter than the current process's remaining time, the current process is immediately interrupted and replaced.\n2.  **Preemptive Priority Scheduling:** If a newly arrived process possesses a higher priority value than the currently executing process, the Kernel suspends the running task to run the higher-priority task immediately.\n3.  **Round Robin (RR):** The scheduling policy designed specifically for time-sharing systems. Each process is granted a small, fixed window of CPU time called a **Time Quantum** (or time slice). When the quantum expires, a hardware timer triggers an interrupt. The Kernel preempts the running process, moves it to the back of the Ready Queue, and starts the next process in line."
+            }
+          ]
+        },
+        {
+          "heading": "5. EdgeCase: Preemptive Trade-offs",
+          "content": [
+            {
+              "type": "p",
+              "text": "The rules are different. The workload is the same. Which scheduling policy handles it best?"
+            },
+            {
+              "type": "edgecase",
+              "id": "preemptive-simulator"
+            }
+          ]
+        },
+        {
+          "heading": "6. The Consequence of Interruption",
+          "content": [
+            {
+              "type": "p",
+              "text": "Preemptive scheduling guarantees that urgent tasks execute without delay. But the power to interrupt a process mid-execution introduces a profound dilemma."
+            },
+            {
+              "type": "p",
+              "text": "If the Kernel forces a running task to yield control of the CPU halfway through its execution, how can it ensure that none of its progress is lost? When the CPU is redirected to a new process, the numbers currently in execution and the nested pathways of memory will be overwritten."
+            },
+            {
+              "type": "p",
+              "text": "This leaves us with one fundamental question:"
+            },
+            {
+              "type": "p",
+              "text": "**If a process can be interrupted halfway through execution... how can it later continue exactly where it stopped?**"
+            },
+            {
+              "type": "p",
+              "text": "Interrupting a process was never the difficult part."
+            },
+            {
+              "type": "p",
+              "text": "Remembering it..."
+            },
+            {
+              "type": "p",
+              "text": "was."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
       }
     },
     {

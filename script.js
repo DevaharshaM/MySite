@@ -133,7 +133,11 @@ const systemsTreeNodes = {
       { id: "what-is-a-kernel", title: "The Silent Conductor" },
       { id: "what-is-a-process", title: "When Code Comes Alive" },
       { id: "the-journey-between-moments", title: "The Journey Between Moments" },
-      { id: "who-goes-next", title: "Who Goes Next?" }
+      { id: "who-goes-next", title: "Who Goes Next?" },
+      { id: "the-rules-of-fairness", title: "The Rules of Fairness" },
+      { id: "when-one-rule-was-enough", title: "When One Rule Was Enough" },
+      { id: "when-waiting-was-too-expensive", title: "When Waiting Was Too Expensive" },
+      { id: "remembering-the-moment", title: "Remembering the Moment" }
     ]
   }
 };
@@ -5652,19 +5656,12 @@ function renderHomeTree() {
         tooltip.style.top = `${y}px`;
         setTimeout(() => tooltip.classList.remove('active'), 2500);
       } else {
-        // Active trunk node: open its first exploration directly via unified clean-path routing
         if (nodeId === 'Bare Metal') {
           showPage('bare-metal');
         } else if (nodeId === 'Operating Systems') {
           showPage('operating-systems');
         } else {
-          const node = systemsTreeNodes[nodeId];
-          if (node && node.explorations && node.explorations.length > 0) {
-            const targetId = node.explorations[0].id;
-            openItem(targetId, 'blogs');
-          } else {
-            filterNodeRoute(nodeId);
-          }
+          filterNodeRoute(nodeId);
         }
       }
     });
@@ -6039,8 +6036,11 @@ function openItem(id, type) {
   let sectionsHtml = item.sections.map(sec => {
     let blocks = sec.content.map(b => {
       if (b.type === 'p') {
-        let textContent = b.html ? b.text : escHtml(b.text);
-        return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${parseTextFormatting(textContent)}</p>`;
+        if (b.html) {
+          return b.text;
+        } else {
+          return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${parseTextFormatting(escHtml(b.text))}</p>`;
+        }
       }
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
@@ -6074,28 +6074,28 @@ function openItem(id, type) {
         let prevHtml = '';
         if (prevExp && prevExp.id) {
           prevHtml = `
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">← ${escHtml(prevExp.title)}</a>
           `;
         } else if (nodeKey === "Bare Metal") {
           prevHtml = `
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" onclick="showPage('bare-metal')">Return to Bare Metal</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" onclick="showPage('bare-metal')">← Return to Bare Metal</a>
           `;
         } else if (nodeKey === "Operating Systems") {
           prevHtml = `
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" onclick="showPage('operating-systems')">Return to Operating Systems</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" onclick="showPage('operating-systems')">← Return to Operating Systems</a>
           `;
         } else if (nodeIndex > 0) {
           const prevNodeKey = nodeOrder[nodeIndex - 1];
           prevHtml = `
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" onclick="filterNodeRoute('${prevNodeKey}')">Return to ${escHtml(prevNodeKey)}</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" onclick="filterNodeRoute('${prevNodeKey}')">← Return to ${escHtml(prevNodeKey)}</a>
           `;
         } else {
           prevHtml = `
-            <span class="nav-dir-label">← Previous</span>
+            <span class="nav-dir-label">Previous</span>
             <span class="nav-link locked">None</span>
           `;
         }
@@ -6104,14 +6104,14 @@ function openItem(id, type) {
         if (nextExp) {
           if (nextExp.id) {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
-              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)} →</a>
             `;
           } else {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                ${escHtml(nextExp.title)}
+                ${escHtml(nextExp.title)} →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
@@ -6119,64 +6119,79 @@ function openItem(id, type) {
         } else if (nodeIndex !== -1 && nodeIndex < nodeOrder.length - 1) {
           const nextNodeKey = nodeOrder[nodeIndex + 1];
           nextHtml = `
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" onclick="filterNodeRoute('${nextNodeKey}')">Continue to ${escHtml(nextNodeKey)}</a>
+            <span class="nav-dir-label">Next</span>
+            <a class="nav-link active" onclick="filterNodeRoute('${nextNodeKey}')">Continue to ${escHtml(nextNodeKey)} →</a>
           `;
         } else if (nodeKey === "Bare Metal") {
           nextHtml = `
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" onclick="showPage('operating-systems')">New path is awakening</a>
+            <span class="nav-dir-label">Next</span>
+            <a class="nav-link active" onclick="showPage('operating-systems')">New path is awakening →</a>
           `;
         } else if (nodeKey === "Operating Systems") {
           if (item.id === "why-do-we-need-an-operating-system") {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                The Silent Conductor
+                The Silent Conductor →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "what-is-a-kernel") {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                When Code Comes Alive
+                When Code Comes Alive →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "what-is-a-process") {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                The Journey Between Moments
+                The Journey Between Moments →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "the-journey-between-moments") {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Who Goes Next?
+                Who Goes Next? →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "who-goes-next") {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('the-rules-of-fairness', 'blogs')">The Rules of Fairness →</a>
+            `;
+          } else if (item.id === "the-rules-of-fairness") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('when-one-rule-was-enough', 'blogs')">When One Rule Was Enough →</a>
+            `;
+          } else if (item.id === "when-one-rule-was-enough") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('when-waiting-was-too-expensive', 'blogs')">When Waiting Was Too Expensive →</a>
+            `;
+          } else if (item.id === "remembering-the-moment") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                The Rules of Fairness
+                Context Switching →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else {
             nextHtml = `
-              <span class="nav-dir-label">Next →</span>
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked">None</span>
             `;
           }
         } else {
           nextHtml = `
-            <span class="nav-dir-label">Next →</span>
+            <span class="nav-dir-label">Next</span>
             <span class="nav-link locked">None</span>
           `;
         }
@@ -6408,6 +6423,10 @@ function initEdgeCase(containerId) {
     renderIllusionOfSmoothness();
   } else if (containerId === 'overworked-processor') {
     renderOverworkedProcessor();
+  } else if (containerId === 'non-preemptive-scheduler') {
+    renderNonPreemptiveScheduler();
+  } else if (containerId === 'preemptive-simulator') {
+    renderPreemptiveSimulator();
   }
 }
 
@@ -11283,6 +11302,855 @@ if (feedbackForm) {
     window.location.href = `mailto:feedback@prajnaedge.dev?subject=${emailSubject}&body=${emailBody}`;
   });
 }
+// ─── NON-PREEMPTIVE SCHEDULER INTERACTIVE SIMULATOR ──────────────────────────
+function renderNonPreemptiveScheduler() {
+  const container = document.getElementById('non-preemptive-scheduler');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let activeTab = 'fcfs';
+  let currentTime = 0;
+  let isPlaying = false;
+  let intervalId = null;
+  let processes = [];
+  let readyQueue = [];
+  let activeProcess = null;
+  let completedList = [];
+  let ganttHistory = [];
+
+  const colors = {
+    P1: '#3B82F6',
+    P2: '#10B981',
+    P3: '#F59E0B',
+    PEM: '#EF4444'
+  };
+
+  function initSimulation() {
+    currentTime = 0;
+    isPlaying = false;
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    readyQueue = [];
+    activeProcess = null;
+    completedList = [];
+    ganttHistory = [];
+
+    // Define base workload
+    const baseWorkload = [
+      { id: 'P1', arrival: 0, burst: 6, priority: 2, hasArrived: false },
+      { id: 'P2', arrival: 1, burst: 5, priority: 1, hasArrived: false },
+      { id: 'P3', arrival: 2, burst: 2, priority: 3, hasArrived: false }
+    ];
+
+    if (activeTab === 'edgecase') {
+      // Add Emergency Process
+      baseWorkload.push({ id: 'PEM', arrival: 1, burst: 2, priority: 0, hasArrived: false });
+    }
+
+    processes = baseWorkload;
+
+    const playBtn = document.getElementById('btn-sched-play');
+    if (playBtn) {
+      playBtn.textContent = 'Start Simulation';
+      playBtn.disabled = false;
+    }
+
+    updateUI();
+  }
+
+  function updateUI() {
+    // 1. Render Table Rows
+    const tableBody = document.getElementById('sched-table-body');
+    if (tableBody) {
+      tableBody.innerHTML = processes.map(p => {
+        const isEmergency = p.id === 'PEM';
+        return `
+          <tr style="border-bottom:1px solid var(--border); ${isEmergency ? 'color:#EF4444; background:rgba(239,68,68,0.05); font-weight:bold;' : ''}">
+            <td style="padding:0.5rem; display:flex; align-items:center; gap:0.4rem;">
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${colors[p.id]};"></span>
+              ${p.id} ${isEmergency ? '(Emergency)' : ''}
+            </td>
+            <td style="padding:0.5rem;">${p.arrival}</td>
+            <td style="padding:0.5rem;">${p.burst}</td>
+            <td style="padding:0.5rem; text-align:right;">${p.priority}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 2. Ready Queue
+    const queueContainer = document.getElementById('visual-ready-queue');
+    if (queueContainer) {
+      if (readyQueue.length === 0) {
+        queueContainer.innerHTML = '<span style="color:var(--muted); font-size:0.75rem; font-family:var(--mono);">// Queue Empty</span>';
+      } else {
+        queueContainer.innerHTML = readyQueue.map(p => `
+          <div style="width:32px; height:32px; border-radius:50%; background:${colors[p.id]}; color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:0.75rem; font-weight:bold; box-shadow:0 0 10px rgba(0,0,0,0.5);">${p.id}</div>
+        `).join('');
+      }
+    }
+
+    // 3. Status Labels
+    const timeVal = document.getElementById('lbl-sched-time');
+    if (timeVal) timeVal.textContent = currentTime;
+
+    const cpuVal = document.getElementById('lbl-sched-cpu');
+    if (cpuVal) {
+      if (activeProcess) {
+        cpuVal.innerHTML = `<span style="color:${colors[activeProcess.id]}; font-weight:bold;">${activeProcess.id} (Running)</span>`;
+      } else {
+        cpuVal.innerHTML = `<span style="color:var(--muted);">IDLE</span>`;
+      }
+    }
+
+    // 4. Gantt Chart SVG
+    const svg = document.getElementById('sched-gantt-svg');
+    if (svg) {
+      const axisWidth = 700;
+      const startX = 50;
+      const scale = 15;
+      const unitWidth = axisWidth / scale;
+
+      let svgContent = `
+        <!-- Timeline Background Axis Line -->
+        <line x1="${startX}" y1="85" x2="${startX + axisWidth}" y2="85" stroke="rgba(148,163,184,0.15)" stroke-width="2" />
+      `;
+
+      // Draw Grid Ticks and Labels (0 to 15)
+      for (let i = 0; i <= scale; i++) {
+        const x = startX + i * unitWidth;
+        svgContent += `
+          <line x1="${x}" y1="85" x2="${x}" y2="92" stroke="rgba(148,163,184,0.25)" stroke-width="1.5" />
+          <text x="${x}" y="108" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="middle">${i}</text>
+        `;
+      }
+
+      // Draw Completed Gantt Blocks
+      ganttHistory.forEach(block => {
+        const x = startX + block.start * unitWidth;
+        const width = (block.end - block.start) * unitWidth;
+        svgContent += `
+          <rect x="${x}" y="25" width="${width}" height="40" rx="4" fill="${colors[block.id]}" opacity="0.85" />
+          <text x="${x + width/2}" y="49" fill="#fff" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="bold" text-anchor="middle">${block.id}</text>
+        `;
+      });
+
+      // Draw Active Block (Growing in real time)
+      if (activeProcess) {
+        const x = startX + activeProcess.startTime * unitWidth;
+        const width = (currentTime - activeProcess.startTime) * unitWidth;
+        if (width > 0) {
+          svgContent += `
+            <rect x="${x}" y="25" width="${width}" height="40" rx="4" fill="${colors[activeProcess.id]}" opacity="0.85" />
+            <text x="${x + width/2}" y="49" fill="#fff" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="bold" text-anchor="middle">${activeProcess.id}</text>
+          `;
+        }
+      }
+
+      svg.innerHTML = svgContent;
+    }
+
+    // 5. Metrics Report
+    const metricsBody = document.getElementById('sched-metrics-body');
+    if (metricsBody) {
+      metricsBody.innerHTML = processes.map(p => {
+        const comp = completedList.find(c => c.id === p.id);
+        const isEmergency = p.id === 'PEM';
+        return `
+          <tr style="border-bottom:1px solid var(--border); ${isEmergency ? 'color:#EF4444; background:rgba(239,68,68,0.05);' : ''}">
+            <td style="padding:0.5rem; font-weight:bold; display:flex; align-items:center; gap:0.4rem;">
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${colors[p.id]};"></span>
+              ${p.id}
+            </td>
+            <td style="padding:0.5rem;">${comp ? comp.completionTime : '-'}</td>
+            <td style="padding:0.5rem;">${comp ? comp.turnaroundTime : '-'}</td>
+            <td style="padding:0.5rem; text-align:right;">${comp ? comp.waitingTime : '-'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 6. Metrics Average Row
+    const metricsAvg = document.getElementById('sched-metrics-avg');
+    if (metricsAvg) {
+      if (completedList.length === processes.length) {
+        const totalTAT = completedList.reduce((sum, p) => sum + p.turnaroundTime, 0);
+        const totalWT = completedList.reduce((sum, p) => sum + p.waitingTime, 0);
+        const avgTAT = (totalTAT / processes.length).toFixed(2);
+        const avgWT = (totalWT / processes.length).toFixed(2);
+        metricsAvg.innerHTML = `<strong>Averages:</strong> Turnaround Time = <strong>${avgTAT} units</strong> | Waiting Time = <strong>${avgWT} units</strong>`;
+      } else {
+        metricsAvg.textContent = 'Awaiting completion of simulation...';
+      }
+    }
+  }
+
+  function tick() {
+    // 1. Arrivals
+    processes.forEach(p => {
+      if (p.arrival === currentTime && !p.hasArrived) {
+        p.hasArrived = true;
+        p.remainingTime = p.burst;
+        readyQueue.push(p);
+      }
+    });
+
+    const hadActiveProcessAtStart = (activeProcess !== null);
+
+    // 2. Selection if IDLE
+    if (!hadActiveProcessAtStart && readyQueue.length > 0) {
+      if (activeTab === 'fcfs') {
+        readyQueue.sort((a, b) => a.arrival - b.arrival);
+      } else if (activeTab === 'sjf') {
+        readyQueue.sort((a, b) => {
+          if (a.burst !== b.burst) return a.burst - b.burst;
+          return a.arrival - b.arrival;
+        });
+      } else if (activeTab === 'priority' || activeTab === 'edgecase') {
+        readyQueue.sort((a, b) => {
+          if (a.priority !== b.priority) return a.priority - b.priority;
+          return a.arrival - b.arrival;
+        });
+      }
+
+      const selected = readyQueue.shift();
+      selected.startTime = currentTime;
+      activeProcess = selected;
+    }
+
+    // 3. Decrement currently running during this tick
+    if (activeProcess) {
+      activeProcess.remainingTime--;
+      if (activeProcess.remainingTime === 0) {
+        activeProcess.completionTime = currentTime + 1;
+        activeProcess.turnaroundTime = activeProcess.completionTime - activeProcess.arrival;
+        activeProcess.waitingTime = activeProcess.turnaroundTime - activeProcess.burst;
+        completedList.push(activeProcess);
+        ganttHistory.push({
+          id: activeProcess.id,
+          start: activeProcess.startTime,
+          end: currentTime + 1
+        });
+        activeProcess = null;
+      }
+    }
+
+    currentTime++;
+
+    // 4. End Check
+    if (completedList.length === processes.length) {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+      isPlaying = false;
+      const playBtn = document.getElementById('btn-sched-play');
+      if (playBtn) {
+        playBtn.textContent = 'Simulation Complete';
+        playBtn.disabled = true;
+      }
+    }
+
+    updateUI();
+  }
+
+  // Set up container DOM structure
+  container.innerHTML = `
+    <div class="edgecase-header">Interactive Simulator: Classic Scheduling Policies</div>
+    <div class="edgecase-subheader">Compare Non-Preemptive Schedulers on a Unified Workload</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Select a policy tab to run the simulation, inspect Gantt chart generation, and analyze resulting execution metrics.
+    </div>
+
+    <!-- TABS SELECTOR -->
+    <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+      <button class="node-btn active" id="btn-tab-fcfs" style="padding: 0.5rem 1rem; font-size: 0.8rem;">FCFS (First-Come)</button>
+      <button class="node-btn" id="btn-tab-sjf" style="padding: 0.5rem 1rem; font-size: 0.8rem;">SJF (Shortest Job)</button>
+      <button class="node-btn" id="btn-tab-priority" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Priority Scheduling</button>
+      <button class="node-btn" id="btn-tab-edgecase" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.3); color: #EF4444;">EdgeCase: Emergency</button>
+    </div>
+
+    <!-- MAIN GRID LAYOUT -->
+    <div style="display:grid; grid-template-columns: 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+      
+      <!-- PROCESS TABLE PANEL -->
+      <div class="panel-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.75rem;">Shared Workload Table</div>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem; font-family:var(--mono);">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+              <th style="padding:0.4rem 0.5rem;">Process</th>
+              <th style="padding:0.4rem 0.5rem;">Arrival Time</th>
+              <th style="padding:0.4rem 0.5rem;">Burst Time</th>
+              <th style="padding:0.4rem 0.5rem; text-align:right;">Priority</th>
+            </tr>
+          </thead>
+          <tbody id="sched-table-body">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CONTROLS & LIVE STATS -->
+      <div class="panel-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div style="display:flex; gap:0.5rem;">
+          <button id="btn-sched-play" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem; border-color:var(--blue); background:var(--blue-glow); color:var(--blue);">Start Simulation</button>
+          <button id="btn-sched-step" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem;">Step Forward</button>
+          <button id="btn-sched-reset" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem;">Reset</button>
+        </div>
+        <div style="display:flex; gap:1.5rem; font-family:var(--mono); font-size:0.85rem;">
+          <div>Time: <span id="lbl-sched-time" style="color:#fff; font-weight:bold;">0</span></div>
+          <div>CPU: <span id="lbl-sched-cpu" style="font-weight:bold; color:var(--muted);">IDLE</span></div>
+        </div>
+      </div>
+
+      <!-- READY QUEUE VISUALIZER -->
+      <div class="panel-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.75rem;">Ready Queue</div>
+        <div id="visual-ready-queue" style="display:flex; gap:0.5rem; min-height:40px; align-items:center; background:rgba(15,23,42,0.5); border:1px dashed var(--border); border-radius:6px; padding:0.5rem;">
+          <!-- Circles for ready queue -->
+        </div>
+      </div>
+
+      <!-- GANTT CHART VISUALIZER -->
+      <div class="pipeline-step">Gantt Chart Timeline</div>
+      <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem; border-radius:8px;">
+        <svg id="sched-gantt-svg" viewBox="0 0 800 120" style="width:100%; height:auto; overflow:visible;">
+          <!-- Timeline SVG rendered dynamically -->
+        </svg>
+      </div>
+
+      <!-- METRICS REPORT -->
+      <div class="panel-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.75rem;">Execution Metrics</div>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem; font-family:var(--mono);">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+              <th style="padding:0.4rem 0.5rem;">Process</th>
+              <th style="padding:0.4rem 0.5rem;">Completion ($C$)</th>
+              <th style="padding:0.4rem 0.5rem;">Turnaround ($TAT$)</th>
+              <th style="padding:0.4rem 0.5rem; text-align:right;">Waiting ($WT$)</th>
+            </tr>
+          </thead>
+          <tbody id="sched-metrics-body">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+        <div id="sched-metrics-avg" style="margin-top:0.75rem; font-size:0.8rem; font-family:var(--mono); color:var(--muted); text-align:right; border-top:1px solid var(--border); padding-top:0.5rem;">
+          <!-- Average times -->
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  // Attach Event Listeners
+  const playBtn = document.getElementById('btn-sched-play');
+  const stepBtn = document.getElementById('btn-sched-step');
+  const resetBtn = document.getElementById('btn-sched-reset');
+
+  if (playBtn) {
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        clearInterval(intervalId);
+        intervalId = null;
+        isPlaying = false;
+        playBtn.textContent = 'Resume Simulation';
+      } else {
+        isPlaying = true;
+        playBtn.textContent = 'Pause Simulation';
+        intervalId = setInterval(tick, 1000);
+      }
+    });
+  }
+
+  if (stepBtn) {
+    stepBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        clearInterval(intervalId);
+        intervalId = null;
+        isPlaying = false;
+        if (playBtn) playBtn.textContent = 'Resume Simulation';
+      }
+      tick();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', initSimulation);
+  }
+
+  // Setup tab selections
+  const tabs = ['fcfs', 'sjf', 'priority', 'edgecase'];
+  tabs.forEach(tName => {
+    const tabBtn = document.getElementById(`btn-tab-${tName}`);
+    if (tabBtn) {
+      tabBtn.addEventListener('click', () => {
+        tabs.forEach(x => {
+          const b = document.getElementById(`btn-tab-${x}`);
+          if (b) b.classList.remove('active');
+        });
+        tabBtn.classList.add('active');
+        activeTab = tName;
+        initSimulation();
+      });
+    }
+  });
+
+  // Run initial setup
+  initSimulation();
+}
+
+function renderPreemptiveSimulator() {
+  const container = document.getElementById('preemptive-simulator');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let activeTab = 'srtf';
+  let currentTime = 0;
+  let isPlaying = false;
+  let intervalId = null;
+  let processes = [];
+  let readyQueue = [];
+  let activeProcess = null;
+  let completedList = [];
+  let ganttHistory = [];
+  let quantumLeft = 0;
+
+  const colors = {
+    P1: '#3B82F6',
+    P2: '#10B981',
+    P3: '#F59E0B'
+  };
+
+  function initSimulation() {
+    currentTime = 0;
+    isPlaying = false;
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    readyQueue = [];
+    activeProcess = null;
+    completedList = [];
+    ganttHistory = [];
+    quantumLeft = 0;
+
+    // Shared Workload
+    processes = [
+      { id: 'P1', arrival: 0, burst: 6, priority: 2, hasArrived: false, remainingTime: 6, startTime: -1, completionTime: -1, turnaroundTime: -1, waitingTime: -1 },
+      { id: 'P2', arrival: 1, burst: 4, priority: 1, hasArrived: false, remainingTime: 4, startTime: -1, completionTime: -1, turnaroundTime: -1, waitingTime: -1 },
+      { id: 'P3', arrival: 2, burst: 2, priority: 3, hasArrived: false, remainingTime: 2, startTime: -1, completionTime: -1, turnaroundTime: -1, waitingTime: -1 }
+    ];
+
+    const playBtn = document.getElementById('btn-preempt-play');
+    if (playBtn) {
+      playBtn.textContent = 'Start Simulation';
+      playBtn.disabled = false;
+    }
+
+    updateUI();
+  }
+
+  function getGanttBlocks(ticks) {
+    if (ticks.length === 0) return [];
+    const blocks = [];
+    let currentBlock = { id: ticks[0].id, start: ticks[0].time, end: ticks[0].time + 1 };
+    for (let i = 1; i < ticks.length; i++) {
+      const t = ticks[i];
+      if (t.id === currentBlock.id && t.time === currentBlock.end) {
+        currentBlock.end = t.time + 1;
+      } else {
+        blocks.push(currentBlock);
+        currentBlock = { id: t.id, start: t.time, end: t.time + 1 };
+      }
+    }
+    blocks.push(currentBlock);
+    return blocks;
+  }
+
+  function updateUI() {
+    // 1. Shared Workload Table
+    const tableBody = document.getElementById('preempt-table-body');
+    if (tableBody) {
+      tableBody.innerHTML = processes.map(p => `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem; display:flex; align-items:center; gap:0.4rem;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${colors[p.id]};"></span>
+            ${p.id}
+          </td>
+          <td style="padding:0.5rem;">${p.arrival}</td>
+          <td style="padding:0.5rem;">${p.burst}</td>
+          <td style="padding:0.5rem; text-align:right;">${p.priority}</td>
+        </tr>
+      `).join('');
+    }
+
+    // 2. Ready Queue
+    const queueContainer = document.getElementById('preempt-ready-queue');
+    if (queueContainer) {
+      if (readyQueue.length === 0) {
+        queueContainer.innerHTML = '<span style="color:var(--muted); font-size:0.75rem; font-family:var(--mono);">// Queue Empty</span>';
+      } else {
+        queueContainer.innerHTML = readyQueue.map(p => `
+          <div style="width:32px; height:32px; border-radius:50%; background:${colors[p.id]}; color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:0.75rem; font-weight:bold; box-shadow:0 0 10px rgba(0,0,0,0.5);">${p.id}</div>
+        `).join('');
+      }
+    }
+
+    // 3. Status Labels
+    const timeVal = document.getElementById('lbl-preempt-time');
+    if (timeVal) timeVal.textContent = currentTime;
+
+    const cpuVal = document.getElementById('lbl-preempt-cpu');
+    if (cpuVal) {
+      if (activeProcess) {
+        cpuVal.innerHTML = `<span style="color:${colors[activeProcess.id]}; font-weight:bold;">${activeProcess.id} (Running)</span>`;
+      } else {
+        cpuVal.innerHTML = `<span style="color:var(--muted);">IDLE</span>`;
+      }
+    }
+
+    // 4. Gantt Chart SVG
+    const svg = document.getElementById('preempt-gantt-svg');
+    if (svg) {
+      const axisWidth = 700;
+      const startX = 50;
+      const scale = 12;
+      const unitWidth = axisWidth / scale;
+
+      let svgContent = `
+        <!-- Timeline Background Axis Line -->
+        <line x1="${startX}" y1="85" x2="${startX + axisWidth}" y2="85" stroke="rgba(148,163,184,0.15)" stroke-width="2" />
+      `;
+
+      // Draw Grid Ticks and Labels (0 to 12)
+      for (let i = 0; i <= scale; i++) {
+        const x = startX + i * unitWidth;
+        svgContent += `
+          <line x1="${x}" y1="85" x2="${x}" y2="92" stroke="rgba(148,163,184,0.25)" stroke-width="1.5" />
+          <text x="${x}" y="108" fill="var(--muted)" font-family="var(--mono)" font-size="9" text-anchor="middle">${i}</text>
+        `;
+      }
+
+      // Draw Collapsed Gantt Blocks
+      const blocks = getGanttBlocks(ganttHistory);
+      blocks.forEach(block => {
+        const x = startX + block.start * unitWidth;
+        const width = (block.end - block.start) * unitWidth;
+        svgContent += `
+          <rect x="${x}" y="25" width="${width}" height="40" rx="4" fill="${colors[block.id]}" opacity="0.85" />
+          <text x="${x + width/2}" y="49" fill="#fff" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="bold" text-anchor="middle">${block.id}</text>
+        `;
+      });
+
+      svg.innerHTML = svgContent;
+    }
+
+    // 5. Metrics Report
+    const metricsBody = document.getElementById('preempt-metrics-body');
+    if (metricsBody) {
+      metricsBody.innerHTML = processes.map(p => {
+        const comp = completedList.find(c => c.id === p.id);
+        return `
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem; font-weight:bold; display:flex; align-items:center; gap:0.4rem;">
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${colors[p.id]};"></span>
+              ${p.id}
+            </td>
+            <td style="padding:0.5rem;">${comp ? comp.completionTime : '-'}</td>
+            <td style="padding:0.5rem;">${comp ? comp.turnaroundTime : '-'}</td>
+            <td style="padding:0.5rem; text-align:right;">${comp ? comp.waitingTime : '-'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 6. Metrics Average Row
+    const metricsAvg = document.getElementById('preempt-metrics-avg');
+    if (metricsAvg) {
+      if (completedList.length === processes.length) {
+        const totalTAT = completedList.reduce((sum, p) => sum + p.turnaroundTime, 0);
+        const totalWT = completedList.reduce((sum, p) => sum + p.waitingTime, 0);
+        const avgTAT = (totalTAT / processes.length).toFixed(2);
+        const avgWT = (totalWT / processes.length).toFixed(2);
+        metricsAvg.innerHTML = `<strong>Averages:</strong> Turnaround Time = <strong>${avgTAT} units</strong> | Waiting Time = <strong>${avgWT} units</strong>`;
+      } else {
+        metricsAvg.textContent = 'Awaiting completion of simulation...';
+      }
+    }
+  }
+
+  function tick() {
+    // 1. Arrivals
+    processes.forEach(p => {
+      if (p.arrival === currentTime && !p.hasArrived) {
+        p.hasArrived = true;
+        p.remainingTime = p.burst;
+        readyQueue.push(p);
+      }
+    });
+
+    // 2. Round Robin Yield check (quantum expired at start of this tick slice)
+    if (activeTab === 'rr' && activeProcess && quantumLeft === 0) {
+      readyQueue.push(activeProcess);
+      activeProcess = null;
+    }
+
+    const hadActiveProcessAtStart = (activeProcess !== null);
+
+    // 3. Selection / Preemption check
+    if (!hadActiveProcessAtStart && readyQueue.length > 0) {
+      if (activeTab === 'srtf') {
+        readyQueue.sort((a, b) => {
+          if (a.remainingTime !== b.remainingTime) return a.remainingTime - b.remainingTime;
+          return a.arrival - b.arrival;
+        });
+        const selected = readyQueue.shift();
+        activeProcess = selected;
+        if (activeProcess.startTime === -1) {
+          activeProcess.startTime = currentTime;
+        }
+      } else if (activeTab === 'priority') {
+        readyQueue.sort((a, b) => {
+          if (a.priority !== b.priority) return a.priority - b.priority;
+          return a.arrival - b.arrival;
+        });
+        const selected = readyQueue.shift();
+        activeProcess = selected;
+        if (activeProcess.startTime === -1) {
+          activeProcess.startTime = currentTime;
+        }
+      } else if (activeTab === 'rr') {
+        const selected = readyQueue.shift();
+        activeProcess = selected;
+        quantumLeft = 2; // quantum = 2
+        if (activeProcess.startTime === -1) {
+          activeProcess.startTime = currentTime;
+        }
+      }
+    } else if (hadActiveProcessAtStart && readyQueue.length > 0) {
+      // Preemption checks
+      if (activeTab === 'srtf') {
+        readyQueue.sort((a, b) => {
+          if (a.remainingTime !== b.remainingTime) return a.remainingTime - b.remainingTime;
+          return a.arrival - b.arrival;
+        });
+        const shortest = readyQueue[0];
+        if (shortest.remainingTime < activeProcess.remainingTime) {
+          // Preempt!
+          readyQueue.push(activeProcess);
+          readyQueue.shift();
+          activeProcess = shortest;
+          if (activeProcess.startTime === -1) {
+            activeProcess.startTime = currentTime;
+          }
+        }
+      } else if (activeTab === 'priority') {
+        readyQueue.sort((a, b) => {
+          if (a.priority !== b.priority) return a.priority - b.priority;
+          return a.arrival - b.arrival;
+        });
+        const highest = readyQueue[0];
+        if (highest.priority < activeProcess.priority) {
+          // Preempt!
+          readyQueue.push(activeProcess);
+          readyQueue.shift();
+          activeProcess = highest;
+          if (activeProcess.startTime === -1) {
+            activeProcess.startTime = currentTime;
+          }
+        }
+      }
+    }
+
+    // 4. Execution during this tick slice [currentTime, currentTime + 1]
+    if (activeProcess) {
+      activeProcess.remainingTime--;
+      ganttHistory.push({ time: currentTime, id: activeProcess.id });
+
+      if (activeTab === 'rr') {
+        quantumLeft--;
+      }
+
+      if (activeProcess.remainingTime === 0) {
+        activeProcess.completionTime = currentTime + 1;
+        activeProcess.turnaroundTime = activeProcess.completionTime - activeProcess.arrival;
+        activeProcess.waitingTime = activeProcess.turnaroundTime - activeProcess.burst;
+        completedList.push(activeProcess);
+        activeProcess = null;
+        quantumLeft = 0;
+      }
+    }
+
+    currentTime++;
+
+    // 5. End Check
+    if (completedList.length === processes.length) {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+      isPlaying = false;
+      const playBtn = document.getElementById('btn-preempt-play');
+      if (playBtn) {
+        playBtn.textContent = 'Simulation Complete';
+        playBtn.disabled = true;
+      }
+    }
+
+    updateUI();
+  }
+
+  // Setup DOM Content
+  container.innerHTML = `
+    <div class="edgecase-header">Interactive Simulator: Preemptive Scheduling Policies</div>
+    <div class="edgecase-subheader">Compare Classic Preemptive Schedulers on a Unified Workload</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Select a policy tab to run the simulation, inspect Gantt chart generation, and analyze resulting execution metrics.
+    </div>
+
+    <!-- TABS SELECTOR -->
+    <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+      <button class="node-btn active" id="btn-preempt-tab-srtf" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Shortest Remaining Time First (SRTF)</button>
+      <button class="node-btn" id="btn-preempt-tab-priority" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Preemptive Priority</button>
+      <button class="node-btn" id="btn-preempt-tab-rr" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color:var(--blue); color:var(--blue);">Round Robin (q=2)</button>
+    </div>
+
+    <!-- MAIN GRID LAYOUT -->
+    <div style="display:grid; grid-template-columns: 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+      
+      <!-- PROCESS TABLE PANEL -->
+      <div class="panel-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.75rem;">Shared Workload Table</div>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem; font-family:var(--mono);">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+              <th style="padding:0.4rem 0.5rem;">Process</th>
+              <th style="padding:0.4rem 0.5rem;">Arrival Time</th>
+              <th style="padding:0.4rem 0.5rem;">Burst Time</th>
+              <th style="padding:0.4rem 0.5rem; text-align:right;">Priority</th>
+            </tr>
+          </thead>
+          <tbody id="preempt-table-body">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CONTROLS & LIVE STATS -->
+      <div class="panel-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div style="display:flex; gap:0.5rem;">
+          <button id="btn-preempt-play" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem; border-color:var(--blue); background:var(--blue-glow); color:var(--blue);">Start Simulation</button>
+          <button id="btn-preempt-step" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem;">Step Forward</button>
+          <button id="btn-preempt-reset" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem;">Reset</button>
+        </div>
+        <div style="display:flex; gap:1.5rem; font-family:var(--mono); font-size:0.85rem;">
+          <div>Time: <span id="lbl-preempt-time" style="color:#fff; font-weight:bold;">0</span></div>
+          <div>CPU: <span id="lbl-preempt-cpu" style="font-weight:bold; color:var(--muted);">IDLE</span></div>
+        </div>
+      </div>
+
+      <!-- READY QUEUE VISUALIZER -->
+      <div class="panel-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.75rem;">Ready Queue</div>
+        <div id="preempt-ready-queue" style="display:flex; gap:0.5rem; min-height:40px; align-items:center; background:rgba(15,23,42,0.5); border:1px dashed var(--border); border-radius:6px; padding:0.5rem;">
+          <!-- Circles for ready queue -->
+        </div>
+      </div>
+
+      <!-- GANTT CHART VISUALIZER -->
+      <div class="pipeline-step">Gantt Chart Timeline</div>
+      <div class="edgecase-visual" style="background:#0F172A; padding:1.25rem; border-radius:8px;">
+        <svg id="preempt-gantt-svg" viewBox="0 0 800 120" style="width:100%; height:auto; overflow:visible;">
+          <!-- Timeline SVG rendered dynamically -->
+        </svg>
+      </div>
+
+      <!-- METRICS REPORT -->
+      <div class="panel-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:#fff; margin-bottom:0.75rem;">Execution Metrics</div>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem; font-family:var(--mono);">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+              <th style="padding:0.4rem 0.5rem;">Process</th>
+              <th style="padding:0.4rem 0.5rem;">Completion ($C$)</th>
+              <th style="padding:0.4rem 0.5rem;">Turnaround ($TAT$)</th>
+              <th style="padding:0.4rem 0.5rem; text-align:right;">Waiting ($WT$)</th>
+            </tr>
+          </thead>
+          <tbody id="preempt-metrics-body">
+            <!-- Dynamic rows -->
+          </tbody>
+        </table>
+        <div id="preempt-metrics-avg" style="margin-top:0.75rem; font-size:0.8rem; font-family:var(--mono); color:var(--muted); text-align:right; border-top:1px solid var(--border); padding-top:0.5rem;">
+          <!-- Average times -->
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  // Attach Event Listeners
+  const playBtn = document.getElementById('btn-preempt-play');
+  const stepBtn = document.getElementById('btn-preempt-step');
+  const resetBtn = document.getElementById('btn-preempt-reset');
+
+  if (playBtn) {
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        clearInterval(intervalId);
+        intervalId = null;
+        isPlaying = false;
+        playBtn.textContent = 'Resume Simulation';
+      } else {
+        isPlaying = true;
+        playBtn.textContent = 'Pause Simulation';
+        intervalId = setInterval(tick, 1000);
+      }
+    });
+  }
+
+  if (stepBtn) {
+    stepBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        clearInterval(intervalId);
+        intervalId = null;
+        isPlaying = false;
+        if (playBtn) playBtn.textContent = 'Resume Simulation';
+      }
+      tick();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', initSimulation);
+  }
+
+  // Setup tab selections
+  const tabs = ['srtf', 'priority', 'rr'];
+  tabs.forEach(tName => {
+    const tabBtn = document.getElementById(`btn-preempt-tab-${tName}`);
+    if (tabBtn) {
+      tabBtn.addEventListener('click', () => {
+        tabs.forEach(x => {
+          const b = document.getElementById(`btn-preempt-tab-${x}`);
+          if (b) b.classList.remove('active');
+        });
+        tabBtn.classList.add('active');
+        activeTab = tName;
+        initSimulation();
+      });
+    }
+  });
+
+  // Run initial setup
+  initSimulation();
+}
 
 // ─── MANTHANA CORE INTERACTIVE LOGIC ────────────────────────────────────────
 function initManthana(containerId) {
@@ -11600,7 +12468,7 @@ window.handleManthanaChoice = function(choice) {
 
       const nextNav = document.getElementById('exploration-nav-next');
       if (nextNav) {
-        nextNav.style.display = 'block';
+        nextNav.style.display = 'flex';
         nextNav.style.opacity = '0';
         nextNav.style.transition = 'opacity 0.5s ease';
         setTimeout(() => {

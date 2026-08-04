@@ -82,6 +82,8 @@ A circular buffer is a contiguous block of RAM that wraps around on itself. The 
 
 By delegating the movement of information to the DMA controller, the processor returns to its true calling: computation. Instead of burning millions of cycles copying data registers, the CPU can now spend its capacity running digital filters, executing control algorithms, computing fast Fourier transforms, or parsing complex protocol layers. The processor is no longer a physical packer of bytes; it is once again the intelligent coordinator of the machine.
 
+<div id="overworked-processor" class="edgecase-container"></div>
+
 ## 9. Real Embedded Examples
 
 DMA is the silent backbone of modern consumer and industrial electronics. In audio systems, DMA feeds samples to the DAC codec continuously to prevent audio glitching. In smartphones, DMA streams pixel arrays from the camera sensor directly to RAM buffers. In automotive ECUs, DMA collects CAN messages in background SRAM blocks, allowing the processor to query network messages on-demand without dealing with frame-level reception interrupts.

@@ -149,9 +149,13 @@ A system can be highly precise but inaccurate (giving highly repeatable, low-noi
 
 Let's observe these conversion behaviors. In the interactive panel below, modify signal frequency, resolution, and sampling rate to watch how an analog signal is sliced and rounded into digital numbers.
 
+<div id="capturing-reality" class="edgecase-container"></div>
+
 ## 10. The Cost of Observation
 
 What happens when our observation parameters are configured incorrectly? In the simulator below, adjust the reference voltage, resolution, and sample rate to induce signal clipping, aliasing (undersampling), or high quantization stepping.
+
+<div id="cost-of-observation" class="edgecase-container"></div>
 
 ## 11. Real Embedded Applications
 

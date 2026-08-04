@@ -57,7 +57,11 @@ systemsTreeNodes = {
     "what-is-a-kernel",
     "what-is-a-process",
     "the-journey-between-moments",
-    "who-goes-next"
+    "who-goes-next",
+    "the-rules-of-fairness",
+    "when-one-rule-was-enough",
+    "when-waiting-was-too-expensive",
+    "remembering-the-moment"
   ]
 }
 
@@ -231,13 +235,20 @@ def parse_markdown_file(filepath):
                     "caption": alt
                 })
             else:
-                block = {
-                    "type": "p",
-                    "text": p_text
-                }
-                if p_text.startswith('<') and p_text.endswith('>'):
-                    block["html"] = True
-                current_section["content"].append(block)
+                edgecase_match = re.match(r'^<div id="([^"]+)" class="edgecase-container"></div>$', p_text)
+                if edgecase_match:
+                    current_section["content"].append({
+                        "type": "edgecase",
+                        "id": edgecase_match.group(1)
+                    })
+                else:
+                    block = {
+                        "type": "p",
+                        "text": p_text
+                    }
+                    if p_text.startswith('<') and p_text.endswith('>'):
+                        block["html"] = True
+                    current_section["content"].append(block)
             
     metadata["sections"] = sections
     closing_p = metadata.get("closing_paragraphs", [])
@@ -278,28 +289,28 @@ def build_navigation_html(post, all_posts_dict):
     if prevExpId and prevExpId in all_posts_dict:
         prev_title = all_posts_dict[prevExpId]["title"]
         prev_html = f"""
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../explorations/{prevExpId}/" onclick="openItem('{prevExpId}', 'blogs')">{esc_html(prev_title)}</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" href="../../explorations/{prevExpId}/" onclick="openItem('{prevExpId}', 'blogs')">← {esc_html(prev_title)}</a>
         """
     elif category == "Bare Metal":
         prev_html = """
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../bare-metal/" onclick="showPage('bare-metal')">Return to Bare Metal</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" href="../../bare-metal/" onclick="showPage('bare-metal')">← Return to Bare Metal</a>
         """
     elif category == "Operating Systems":
         prev_html = """
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">Return to Operating Systems</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">← Return to Operating Systems</a>
         """
     elif categoryIndex > 0:
         prev_category = node_order[categoryIndex - 1]
         prev_html = f"""
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{prev_category}')">Return to {esc_html(prev_category)}</a>
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{prev_category}')">← Return to {esc_html(prev_category)}</a>
         """
     else:
         prev_html = """
-            <span class="nav-dir-label">← Previous</span>
+            <span class="nav-dir-label">Previous</span>
             <span class="nav-link locked">None</span>
         """
         
@@ -307,70 +318,70 @@ def build_navigation_html(post, all_posts_dict):
     if nextExpId and nextExpId in all_posts_dict:
         next_title = all_posts_dict[nextExpId]["title"]
         next_html = f"""
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" href="../../explorations/{nextExpId}/" onclick="openItem('{nextExpId}', 'blogs')">{esc_html(next_title)}</a>
+            <span class="nav-dir-label">Next</span>
+            <a class="nav-link active" href="../../explorations/{nextExpId}/" onclick="openItem('{nextExpId}', 'blogs')">{esc_html(next_title)} →</a>
         """
     elif category == "Operating Systems":
         if post_id == "why-do-we-need-an-operating-system":
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  The Silent Conductor
+                  The Silent Conductor →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
         elif post_id == "what-is-a-kernel":
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  When Code Comes Alive
+                  When Code Comes Alive →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
         elif post_id == "what-is-a-process":
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  The Journey Between Moments
+                  The Journey Between Moments →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
         elif post_id == "the-journey-between-moments":
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  Who Goes Next?
+                  Who Goes Next? →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
-        elif post_id == "who-goes-next":
+        elif post_id == "remembering-the-moment":
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  The Rules of Fairness
+                  Context Switching →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
         else:
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked">None</span>
             """
     elif categoryIndex != -1 and categoryIndex < len(node_order) - 1:
         next_category = node_order[categoryIndex + 1]
         next_html = f"""
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{next_category}')">Advance to {esc_html(next_category)}</a>
+            <span class="nav-dir-label">Next</span>
+            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{next_category}')">Advance to {esc_html(next_category)} →</a>
         """
     else:
         if category == "Bare Metal":
             next_html = """
-                <span class="nav-dir-label">Next →</span>
-                <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">New path is awakening</a>
+                <span class="nav-dir-label">Next</span>
+                <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">New path is awakening →</a>
             """
         else:
             next_html = """
-                <span class="nav-dir-label">Next →</span>
+                <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked">None</span>
             """
         
@@ -402,15 +413,19 @@ def build_post_html(post, all_posts_dict):
                     blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(code_content)}</div>')
                 else:
                     p_content = b["text"]
-                    if not b.get("html"):
+                    if b.get("html"):
+                        blocks_html.append(p_content)
+                    else:
                         p_content = esc_html(p_content)
-                    blocks_html.append(f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">{parse_text_formatting(p_content)}</p>')
+                        blocks_html.append(f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">{parse_text_formatting(p_content)}</p>')
             elif b["type"] == 'quote':
                 blocks_html.append(f'<div class="blog-quote">{esc_html(b["text"])}</div>')
             elif b["type"] == 'code':
                 blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(b["text"])}</div>')
             elif b["type"] == 'html':
                 blocks_html.append(b["html"])
+            elif b["type"] == 'edgecase':
+                blocks_html.append(f'<div id="{esc_html(b["id"])}" class="edgecase-container"></div>')
             elif b["type"] in ('image', 'img'):
                 caption_html = f'<div class="blog-img-caption">{esc_html(b["caption"])}</div>' if b.get("caption") else ""
                 blocks_html.append(f'<div class="blog-img-wrap"><img src="{esc_html(b["src"])}" alt="{esc_html(b.get("alt", ""))}">{caption_html}</div>')

@@ -107,9 +107,13 @@ While PWM is cheap, simple, and highly efficient for power applications (like dr
 
 Let's observe these conversion behaviors. In the interactive panel below, modify reference voltage, DAC resolution, and digital input codes to watch how digital values translate into analog voltages on a meter.
 
+<div id="painting-with-voltage" class="edgecase-container"></div>
+
 ## 10. The Illusion of Smoothness
 
 How does sequence timing and low-pass filtering shape the output waveform? In the simulator below, adjust the waveform type, update rate, resolution, and low-pass reconstruction filter cutoff to see how a continuous curve is painted.
+
+<div id="illusion-of-smoothness" class="edgecase-container"></div>
 
 ## 11. Real Embedded Applications
 

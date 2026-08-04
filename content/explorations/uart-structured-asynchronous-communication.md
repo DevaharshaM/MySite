@@ -51,3 +51,5 @@ UART does not synchronize processors. It synchronizes expectations. A microcontr
 ## 4. Interactive: Build a UART Conversation
 
 Use the interactive conversation builder below to explore how letters are encoded into ASCII, packed into serial UART frames, and transmitted as electrical voltages. Toggle the advanced mode to simulate mismatched configurations and observe how timing errors corrupt the signal.
+
+<div id="uart-conversation-builder" class="edgecase-container"></div>

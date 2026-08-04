@@ -70,6 +70,8 @@ Every CAN frame begins with an Identifier (ID), which serves two purposes: it de
 
 If Node A writes a recessive 1, but Node B writes a dominant 0, the bus becomes dominant. When Node A reads the bus, it notices the mismatch: it wrote a 1, but it sees a 0. Knowing that another node with a higher priority (a lower numerical ID) is transmitting, Node A immediately falls silent, dropping out of arbitration. Node B continues uninterrupted. This arbitration is completely non-destructive: the winning message is delivered without a single bit of corruption.
 
+<div id="can-conversation-of-dominance" class="edgecase-container"></div>
+
 ## 6. Frame Architectures: CAN 2.0A vs CAN 2.0B
 
 As networks grew, the original 11-bit identifier space (CAN 2.0A) proved too small for complex systems. To expand this, engineers introduced the Extended CAN frame (CAN 2.0B).
@@ -94,3 +96,5 @@ In our earlier journey through [The Hidden Geography of Firmware](the-hidden-geo
 In high-performance microcontrollers (such as the STM32H7 or microcontrollers containing Bosch's M_CAN IP), CAN frames are not handled directly in general-purpose CPU registers. Instead, they are written to and read from a dedicated region of memory called Message RAM.
 
 This Message RAM contains the configuration for receive and transmit buffers, filters, and FIFO queues. Because the CAN peripheral's hardware controller reads and writes to this RAM region directly via DMA (Direct Memory Access), the firmware developer must carefully define the start address and offsets of these buffers in linker scripts or configuration registers. A misalignment of a single word in the Message RAM boundary causes the CAN hardware to generate a bus fault or corrupt frame routing. To write robust CAN drivers, you must understand the exact physical layout of your microcontroller's memory map.
+
+<div id="can-journey-of-a-frame" class="edgecase-container"></div>

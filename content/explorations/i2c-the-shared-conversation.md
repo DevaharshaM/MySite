@@ -53,6 +53,8 @@ Immediately following a START condition, the master transmits a 9-bit address fr
 
 The 9th clock cycle is reserved for a hardware handshake: the Acknowledge (ACK) bit. During the 9th clock tick, the master releases the SDA line (letting it float HIGH). The slave device matching the address must actively pull the SDA line LOW. If the slave pulls SDA LOW, it is an ACK—the transaction continues. If the slave is missing, busy, or has crashed, the line remains HIGH (a Not-Acknowledge, or NACK), signaling the master to stop.
 
+<div id="i2c-shared-bus" class="edgecase-container"></div>
+
 ## 6. Slowing the Master: Clock Stretching
 
 SPI is a 'blind' protocol: the master drives SCLK regardless of whether the slave has processed the data. If the slave lags behind, data is lost. I2C solves this flow-control problem using clock stretching.
@@ -74,3 +76,5 @@ Let's review the journey: UART taught us to align clock phases through a timing 
 Yet I2C has limits. The pull-up resistors create an RC time constant with the parasitic capacitance of the wires: as the bus gets longer or more devices are added, the rising edge of SCL/SDA becomes slow and rounded, limiting speeds (typically 400 kHz to 3.4 MHz) and distances to a few meters. Furthermore, in high-noise environments like automotive engines or industrial floors, common-mode noise can easily flip single-ended logic levels.
 
 When we need to scale to longer distances, high noise immunity, and multi-master robustness without master-slave dependencies, we must look beyond single-ended voltage sharing to differential, arbitrated networks—leading us to the design of the Controller Area Network (CAN).
+
+<div id="i2c-bus-arbitration" class="edgecase-container"></div>
