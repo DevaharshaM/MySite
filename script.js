@@ -137,7 +137,9 @@ const systemsTreeNodes = {
       { id: "the-rules-of-fairness", title: "The Rules of Fairness" },
       { id: "when-one-rule-was-enough", title: "When One Rule Was Enough" },
       { id: "when-waiting-was-too-expensive", title: "When Waiting Was Too Expensive" },
-      { id: "remembering-the-moment", title: "Remembering the Moment" }
+      { id: "remembering-the-moment", title: "Remembering the Moment" },
+      { id: "the-great-swap", title: "The Great Swap" },
+      { id: "scheduling-in-the-wild", title: "Scheduling in the Wild" }
     ]
   }
 };
@@ -6175,11 +6177,11 @@ function openItem(id, type) {
               <span class="nav-dir-label">Next</span>
               <a class="nav-link active" onclick="openItem('when-waiting-was-too-expensive', 'blogs')">When Waiting Was Too Expensive →</a>
             `;
-          } else if (item.id === "remembering-the-moment") {
+          } else if (item.id === "scheduling-in-the-wild") {
             nextHtml = `
               <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Context Switching →
+                Real-Time Scheduling →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
@@ -6427,6 +6429,8 @@ function initEdgeCase(containerId) {
     renderNonPreemptiveScheduler();
   } else if (containerId === 'preemptive-simulator') {
     renderPreemptiveSimulator();
+  } else if (containerId === 'swap-edgecase') {
+    renderSwapSimulator();
   }
 }
 
@@ -12152,10 +12156,629 @@ function renderPreemptiveSimulator() {
   initSimulation();
 }
 
+function renderSwapSimulator() {
+  const container = document.getElementById('swap-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let currentTime = 0;
+  let isPlaying = false;
+  let intervalId = null;
+  let stepMode = 'running'; // 'running', 'paused_for_choice', 'animating_save', 'success', 'failure'
+  let selectedChoice = null; // 'store', 'forget'
+  
+  let p1State = 'READY';
+  let p2State = 'READY';
+  let p1PC = 0x0010;
+  let p2PC = 0x1000;
+  let cpuOwner = 'IDLE';
+  let cpuPC = '-';
+  let cpuRegisters = { R0: '-', R1: '-', SP: '-' };
+  
+  let pcb1 = { PC: '-', R0: '-', R1: '-', SP: '-' };
+  let pcb2 = { PC: '-', R0: '-', R1: '-', SP: '-' };
+  
+  let logs = [];
+  let saveAnimationPercent = 0;
+  let saveAnimationInterval = null;
+
+  function log(msg) {
+    logs.push(msg);
+    if (logs.length > 25) logs.shift();
+  }
+
+  function initSimulation() {
+    currentTime = 0;
+    isPlaying = false;
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    if (saveAnimationInterval) {
+      clearInterval(saveAnimationInterval);
+      saveAnimationInterval = null;
+    }
+    stepMode = 'running';
+    selectedChoice = null;
+    p1State = 'READY';
+    p2State = 'READY';
+    p1PC = 0x0010;
+    p2PC = 0x1000;
+    cpuOwner = 'IDLE';
+    cpuPC = '-';
+    cpuRegisters = { R0: '-', R1: '-', SP: '-' };
+    pcb1 = { PC: '-', R0: '-', R1: '-', SP: '-' };
+    pcb2 = { PC: '-', R0: '-', R1: '-', SP: '-' };
+    logs = ["// Kernel initialized. Process P1 and P2 loaded.", "// Ready Queue: [P1]"];
+    saveAnimationPercent = 0;
+    
+    updateUI();
+  }
+
+  function updateUI() {
+    const timeVal = document.getElementById('swap-lbl-time');
+    if (timeVal) timeVal.textContent = currentTime;
+
+    const cpuVal = document.getElementById('swap-lbl-cpu');
+    if (cpuVal) {
+      if (cpuOwner === 'P1') {
+        cpuVal.innerHTML = '<span style="color:#3B82F6; font-weight:bold;">P1 (Running)</span>';
+      } else if (cpuOwner === 'P2') {
+        cpuVal.innerHTML = '<span style="color:#10B981; font-weight:bold;">P2 (Running)</span>';
+      } else {
+        cpuVal.innerHTML = '<span style="color:var(--muted);">IDLE</span>';
+      }
+    }
+
+    const cpuPCVal = document.getElementById('swap-cpu-pc');
+    if (cpuPCVal) cpuPCVal.textContent = typeof cpuPC === 'number' ? '0x' + cpuPC.toString(16).toUpperCase() : cpuPC;
+
+    const cpuR0Val = document.getElementById('swap-cpu-r0');
+    if (cpuR0Val) cpuR0Val.textContent = cpuRegisters.R0;
+
+    const cpuR1Val = document.getElementById('swap-cpu-r1');
+    if (cpuR1Val) cpuR1Val.textContent = cpuRegisters.R1;
+
+    const cpuSPVal = document.getElementById('swap-cpu-sp');
+    if (cpuSPVal) cpuSPVal.textContent = cpuRegisters.SP;
+
+    const pcb1PC = document.getElementById('pcb1-pc');
+    if (pcb1PC) pcb1PC.textContent = typeof pcb1.PC === 'number' ? '0x' + pcb1.PC.toString(16).toUpperCase() : pcb1.PC;
+    const pcb1R0 = document.getElementById('pcb1-r0');
+    if (pcb1R0) pcb1R0.textContent = pcb1.R0;
+    const pcb1R1 = document.getElementById('pcb1-r1');
+    if (pcb1R1) pcb1R1.textContent = pcb1.R1;
+    const pcb1SP = document.getElementById('pcb1-sp');
+    if (pcb1SP) pcb1SP.textContent = pcb1.SP;
+
+    const pcb2PC = document.getElementById('pcb2-pc');
+    if (pcb2PC) pcb2PC.textContent = typeof pcb2.PC === 'number' ? '0x' + pcb2.PC.toString(16).toUpperCase() : pcb2.PC;
+    const pcb2R0 = document.getElementById('pcb2-r0');
+    if (pcb2R0) pcb2R0.textContent = pcb2.R0;
+    const pcb2R1 = document.getElementById('pcb2-r1');
+    if (pcb2R1) pcb2R1.textContent = pcb2.R1;
+    const pcb2SP = document.getElementById('pcb2-sp');
+    if (pcb2SP) pcb2SP.textContent = pcb2.SP;
+
+    // 4. Pipelines state render
+    const readyContainer = document.getElementById('pipeline-ready');
+    if (readyContainer) {
+      let html = '';
+      if (p1State === 'READY') {
+        html += `<div class="panel-box" style="margin:0; border-color:#3B82F6; background:rgba(59,130,246,0.05); padding:0.4rem; display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-weight:bold; color:#3B82F6;">P1</span>
+          <span style="font-size:0.7rem; color:var(--muted); font-family:var(--mono);">PC: 0x${p1PC.toString(16).toUpperCase()}</span>
+        </div>`;
+      }
+      if (p2State === 'READY') {
+        html += `<div class="panel-box" style="margin:0; border-color:#10B981; background:rgba(16,185,129,0.05); padding:0.4rem; display:flex; align-items:center; justify-content:space-between;">
+          <span style="font-weight:bold; color:#10B981;">P2</span>
+          <span style="font-size:0.7rem; color:var(--muted); font-family:var(--mono);">PC: 0x${p2PC.toString(16).toUpperCase()}</span>
+        </div>`;
+      }
+      if (html === '') html = '<span style="color:var(--muted); font-size:0.75rem; font-family:var(--mono);">// Queue Empty</span>';
+      readyContainer.innerHTML = html;
+    }
+
+    const runningContainer = document.getElementById('pipeline-running');
+    if (runningContainer) {
+      if (cpuOwner === 'P1') {
+        runningContainer.innerHTML = `
+          <div class="panel-box" style="margin:0; border-color:#3B82F6; background:rgba(59,130,246,0.1); padding:0.5rem; text-align:center; box-shadow:0 0 15px rgba(59,130,246,0.15); animation:pulse 2s infinite;">
+            <div style="font-weight:bold; color:#3B82F6; font-size:1.1rem; margin-bottom:0.25rem;">P1</div>
+            <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono);">Executing...</div>
+          </div>
+        `;
+      } else if (cpuOwner === 'P2') {
+        runningContainer.innerHTML = `
+          <div class="panel-box" style="margin:0; border-color:#10B981; background:rgba(16,185,129,0.1); padding:0.5rem; text-align:center; box-shadow:0 0 15px rgba(16,185,129,0.15); animation:pulse 2s infinite;">
+            <div style="font-weight:bold; color:#10B981; font-size:1.1rem; margin-bottom:0.25rem;">P2</div>
+            <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono);">Executing...</div>
+          </div>
+        `;
+      } else {
+        runningContainer.innerHTML = '<span style="color:var(--muted); font-size:0.75rem; font-family:var(--mono);">// CPU Core Idle</span>';
+      }
+    }
+
+    const waitingContainer = document.getElementById('pipeline-waiting');
+    if (waitingContainer) {
+      let html = '';
+      if (p1State === 'WAITING') {
+        html += `<div class="panel-box" style="margin:0; border-color:#3B82F6; background:rgba(59,130,246,0.03); padding:0.4rem; display:flex; align-items:center; justify-content:space-between; opacity:0.8;">
+          <span style="font-weight:bold; color:#3B82F6;">P1</span>
+          <span style="font-size:0.65rem; color:#A78BFA; border:1px solid #A78BFA; border-radius:3px; padding:1px 3px;">WAITING</span>
+        </div>`;
+      }
+      if (p2State === 'WAITING') {
+        html += `<div class="panel-box" style="margin:0; border-color:#10B981; background:rgba(16,185,129,0.03); padding:0.4rem; display:flex; align-items:center; justify-content:space-between; opacity:0.8;">
+          <span style="font-weight:bold; color:#10B981;">P2</span>
+          <span style="font-size:0.65rem; color:#A78BFA; border:1px solid #A78BFA; border-radius:3px; padding:1px 3px;">WAITING</span>
+        </div>`;
+      }
+      if (html === '') html = '<span style="color:var(--muted); font-size:0.75rem; font-family:var(--mono);">// None Waiting</span>';
+      waitingContainer.innerHTML = html;
+    }
+
+    const completedContainer = document.getElementById('pipeline-completed');
+    if (completedContainer) {
+      let html = '';
+      if (p1State === 'COMPLETED') {
+        html += `<div style="font-weight:bold; color:#3B82F6; font-size:0.8rem; margin-bottom:0.25rem;">✓ P1 success (EXIT)</div>`;
+      }
+      if (p2State === 'COMPLETED') {
+        html += `<div style="font-weight:bold; color:#10B981; font-size:0.8rem; margin-bottom:0.25rem;">✓ P2 success (EXIT)</div>`;
+      }
+      if (p1State === 'CRASHED') {
+        html += `<div style="font-weight:bold; color:#EF4444; font-size:0.8rem; margin-bottom:0.25rem;">⚡ P1 CRASHED</div>`;
+      }
+      if (html === '') html = '<span style="color:var(--muted); font-size:0.75rem; font-family:var(--mono);">// None Completed</span>';
+      completedContainer.innerHTML = html;
+    }
+
+    // Save PCB Animation Panel Overlay
+    const pcb1Container = document.getElementById('pcb1-container-box');
+    const pcbAnimationOverlay = document.getElementById('pcb-animation-overlay');
+    if (pcb1Container && pcbAnimationOverlay) {
+      if (stepMode === 'animating_save') {
+        pcb1Container.style.borderColor = '#10B981';
+        pcbAnimationOverlay.style.display = 'block';
+        pcbAnimationOverlay.innerHTML = `
+          <div style="font-size:0.7rem; color:#10B981; font-weight:bold; margin-bottom:0.2rem; text-transform:uppercase; letter-spacing:0.05em;">
+            Saving Context...
+          </div>
+          <div style="font-size:0.6rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.3rem;">
+            PC, Registers, SP &rarr; PCB 1
+          </div>
+          <div style="height:3px; background:#1E293B; border-radius:2px; overflow:hidden; width:80%; margin:0 auto;">
+            <div style="height:100%; background:#10B981; width:${saveAnimationPercent}%; transition:width 0.1s;"></div>
+          </div>
+        `;
+      } else {
+        pcb1Container.style.borderColor = 'var(--border)';
+        pcbAnimationOverlay.style.display = 'none';
+      }
+    }
+
+    // Critical Error Visual Overlay Banner
+    const errorBanner = document.getElementById('swap-error-banner');
+    if (errorBanner) {
+      if (stepMode === 'failure') {
+        errorBanner.style.display = 'block';
+      } else {
+        errorBanner.style.display = 'none';
+      }
+    }
+
+    const choicesPanel = document.getElementById('swap-choices-panel');
+    if (choicesPanel) {
+      if (stepMode === 'paused_for_choice') {
+        choicesPanel.style.display = 'block';
+      } else {
+        choicesPanel.style.display = 'none';
+      }
+    }
+
+    const terminal = document.getElementById('swap-console-log');
+    if (terminal) {
+      terminal.innerHTML = logs.map(line => {
+        if (line.includes('CRITICAL ERROR') || line.includes('Fault') || line.includes('CRASH')) {
+          return `<div style="color:#EF4444; margin-bottom:0.25rem;">${line}</div>`;
+        } else if (line.includes('successfully') || line.includes('Success') || line.includes('resumes')) {
+          return `<div style="color:#10B981; margin-bottom:0.25rem;">${line}</div>`;
+        } else if (line.includes('INTERRUPT')) {
+          return `<div style="color:#F59E0B; margin-bottom:0.25rem; font-weight:bold;">${line}</div>`;
+        } else if (line.includes('//')) {
+          return `<div style="color:var(--muted); margin-bottom:0.25rem;">${line}</div>`;
+        } else {
+          return `<div style="color:#E2E8F0; margin-bottom:0.25rem;">${line}</div>`;
+        }
+      }).join('');
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    const playBtn = document.getElementById('swap-btn-play');
+    if (playBtn) {
+      if (stepMode === 'paused_for_choice' || stepMode === 'animating_save') {
+        playBtn.disabled = true;
+        playBtn.textContent = 'Decide Below';
+      } else if (stepMode === 'success') {
+        playBtn.disabled = true;
+        playBtn.textContent = 'Success!';
+      } else if (stepMode === 'failure') {
+        playBtn.disabled = true;
+        playBtn.textContent = 'Crash Shutdown';
+      } else {
+        playBtn.disabled = false;
+        playBtn.textContent = isPlaying ? 'Pause' : 'Start Simulation';
+      }
+    }
+  }
+
+  function handleDecision(choice) {
+    selectedChoice = choice;
+    isPlaying = true;
+    
+    if (choice === 'store') {
+      stepMode = 'animating_save';
+      saveAnimationPercent = 0;
+      log(">> Decision: Store state into PCB 1 & Switch to P2.");
+      log("t = 3: Saving execution context...");
+      
+      saveAnimationInterval = setInterval(() => {
+        saveAnimationPercent += 10;
+        updateUI();
+        
+        if (saveAnimationPercent >= 100) {
+          clearInterval(saveAnimationInterval);
+          saveAnimationInterval = null;
+          stepMode = 'running';
+          
+          pcb1 = { PC: p1PC, R0: cpuRegisters.R0, R1: cpuRegisters.R1, SP: cpuRegisters.SP };
+          log(`PCB 1 updated: { PC: 0x${pcb1.PC.toString(16).toUpperCase()}, R0: ${pcb1.R0}, R1: ${pcb1.R1}, SP: ${pcb1.SP} }`);
+          
+          p1State = 'WAITING';
+          log("P1 state -> WAITING. Swapped out to Waiting Queue.");
+          
+          p2State = 'RUNNING';
+          cpuOwner = 'P2';
+          cpuPC = p2PC;
+          cpuRegisters = { R0: 100, R1: 200, SP: '0x7F00' };
+          log(`t = 4: CPU Swapped. Loading P2 context. PC = 0x${cpuPC.toString(16).toUpperCase()}.`);
+          
+          currentTime = 4;
+          updateUI();
+          
+          if (isPlaying) {
+            intervalId = setInterval(step, 1000);
+          }
+        }
+      }, 80);
+    } else {
+      stepMode = 'running';
+      log(">> Decision: Switch directly without storing P1's state.");
+      log("t = 3: Bypassing PCB save routine.");
+      
+      p1State = 'WAITING';
+      log("P1 state -> WAITING. Swapped out to Waiting Queue.");
+      
+      p2State = 'RUNNING';
+      cpuOwner = 'P2';
+      cpuPC = p2PC;
+      cpuRegisters = { R0: 100, R1: 200, SP: '0x7F00' };
+      log(`t = 4: CPU Swapped. P2 loaded. PC = 0x${cpuPC.toString(16).toUpperCase()}. P1's unsaved registers are lost!`);
+      
+      currentTime = 4;
+      updateUI();
+      
+      if (isPlaying) {
+        intervalId = setInterval(step, 1000);
+      }
+    }
+  }
+
+  function step() {
+    if (stepMode === 'paused_for_choice' || stepMode === 'animating_save' || stepMode === 'success' || stepMode === 'failure') return;
+
+    if (currentTime === 0) {
+      cpuOwner = 'P1';
+      p1State = 'RUNNING';
+      cpuPC = p1PC;
+      cpuRegisters = { R0: 10, R1: 20, SP: '0x3F00' };
+      log("t = 0: Scheduler dispatches P1. P1 state -> RUNNING. CPU loads PC = 0x0010.");
+      currentTime = 1;
+    } else if (currentTime === 1) {
+      p1PC += 4;
+      cpuPC = p1PC;
+      cpuRegisters = { R0: 12, R1: 24, SP: '0x3F02' };
+      log(`t = 1: P1 executes. PC increments to 0x${p1PC.toString(16).toUpperCase()}. Registers modified (R0=12, R1=24).`);
+      currentTime = 2;
+    } else if (currentTime === 2) {
+      p1PC += 4;
+      cpuPC = p1PC;
+      cpuRegisters = { R0: 15, R1: 30, SP: '0x3F04' };
+      log(`t = 2: P1 executes. PC increments to 0x${p1PC.toString(16).toUpperCase()}. Registers modified (R0=15, R1=30).`);
+      currentTime = 3;
+    } else if (currentTime === 3) {
+      p2State = 'READY';
+      log("t = 3: INTERRUPT! High Priority Process P2 arrives. Control returned to Kernel.");
+      log("Kernel must perform context switch. Deciding state saving policy...");
+      stepMode = 'paused_for_choice';
+      isPlaying = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    } else if (currentTime === 4) {
+      p2PC += 4;
+      cpuPC = p2PC;
+      cpuRegisters = { R0: 102, R1: 204, SP: '0x7F02' };
+      log(`t = 4: P2 executes. PC increments to 0x${p2PC.toString(16).toUpperCase()}. Registers modified (R0=102, R1=204).`);
+      currentTime = 5;
+    } else if (currentTime === 5) {
+      p2PC += 4;
+      cpuPC = p2PC;
+      cpuRegisters = { R0: 105, R1: 210, SP: '0x7F04' };
+      log(`t = 5: P2 executes. PC increments to 0x${p2PC.toString(16).toUpperCase()}. Registers modified (R0=105, R1=210).`);
+      currentTime = 6;
+    } else if (currentTime === 6) {
+      p2State = 'COMPLETED';
+      cpuOwner = 'IDLE';
+      cpuPC = '-';
+      cpuRegisters = { R0: '-', R1: '-', SP: '-' };
+      log("t = 6: P2 completes execution successfully. P2 state -> EXIT.");
+      
+      // Move P1 from WAITING to READY
+      p1State = 'READY';
+      log("P1 state transitions: WAITING -> READY. P1 queued for execution.");
+      
+      currentTime = 7;
+    } else if (currentTime === 7) {
+      if (selectedChoice === 'store') {
+        log("t = 7: Scheduler reschedules P1. Restoring state from PCB 1.");
+        
+        p1State = 'RUNNING';
+        cpuOwner = 'P1';
+        cpuPC = pcb1.PC;
+        cpuRegisters = { R0: pcb1.R0, R1: pcb1.R1, SP: pcb1.SP };
+        
+        log(`P1 restored successfully. CPU reloaded with PC = 0x${cpuPC.toString(16).toUpperCase()}, R0 = ${cpuRegisters.R0}, SP = ${cpuRegisters.SP}. P1 resumes.`);
+        currentTime = 8;
+      } else {
+        log("t = 7: Scheduler attempts to resume P1. Reading registers...");
+        log("CRITICAL ERROR: PCB 1 has no saved context!");
+        
+        cpuPC = 'INVALID (CRASH)';
+        cpuRegisters = { R0: 'CORRUPTED', R1: 'CORRUPTED', SP: 'CORRUPTED' };
+        p1State = 'CRASHED';
+        stepMode = 'failure';
+        
+        log("Hardware Fault: CPU cannot load Program Counter. Registers lost. Execution cannot resume.");
+        isPlaying = false;
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+      }
+    } else if (currentTime === 8) {
+      p1PC += 4;
+      cpuPC = p1PC;
+      cpuRegisters = { R0: 18, R1: 36, SP: '0x3F06' };
+      log(`t = 8: P1 executes. PC increments to 0x${p1PC.toString(16).toUpperCase()}. Registers modified (R0=18, R1=36).`);
+      currentTime = 9;
+    } else if (currentTime === 9) {
+      p1PC += 4;
+      cpuPC = p1PC;
+      log(`t = 9: P1 executes final instruction. PC increments to 0x${p1PC.toString(16).toUpperCase()}.`);
+      currentTime = 10;
+    } else if (currentTime === 10) {
+      p1State = 'COMPLETED';
+      cpuOwner = 'IDLE';
+      cpuPC = '-';
+      cpuRegisters = { R0: '-', R1: '-', SP: '-' };
+      stepMode = 'success';
+      log("t = 10: P1 completes execution successfully. P1 state -> EXIT.");
+      isPlaying = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    updateUI();
+  }
+
+  // Setup DOM content template
+  container.innerHTML = `
+    <div class="edgecase-header">Interactive Simulator: The Moment of the Swap</div>
+    <div class="edgecase-subheader">Decide the Kernel's State Preservation Policy During an Interrupt</div>
+    <div style="font-size:0.75rem; color:var(--muted); font-family:var(--mono); margin-bottom:1.5rem;">
+      Start the simulation to watch Process P1 run. At time index 3, P2 arrives. Choose whether to save P1 context or swap directly, and the system will execute your choice automatically.
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+      
+      <!-- CPU CORE DASHBOARD -->
+      <div class="panel-box" style="margin:0; position:relative;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:#fff; margin-bottom:0.75rem; border-bottom:1px solid var(--border); padding-bottom:0.3rem;">CPU Registers (Physical Core)</div>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem; font-family:var(--mono);">
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:0.4rem; color:var(--muted);">PC (Program Counter)</td>
+              <td id="swap-cpu-pc" style="padding:0.4rem; text-align:right; font-weight:bold; color:#A5F3FC;">-</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:0.4rem; color:var(--muted);">R0 (Scratch register)</td>
+              <td id="swap-cpu-r0" style="padding:0.4rem; text-align:right; color:#E2E8F0;">-</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:0.4rem; color:var(--muted);">R1 (Scratch register)</td>
+              <td id="swap-cpu-r1" style="padding:0.4rem; text-align:right; color:#E2E8F0;">-</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:0.4rem; color:var(--muted);">SP (Stack Pointer)</td>
+              <td id="swap-cpu-sp" style="padding:0.4rem; text-align:right; color:#A78BFA;">-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Visual Error Overlay -->
+        <div id="swap-error-banner" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.95); border-radius:8px; border:2px solid #EF4444; padding:1.5rem; text-align:center; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-weight:bold; color:#EF4444; font-size:1.1rem; margin-bottom:0.5rem;">⚡ CRITICAL HARDWARE FAULT</div>
+          <div style="font-size:0.8rem; color:#fff; font-weight:bold; margin-bottom:0.4rem; font-family:var(--mono);">Program Counter Missing / Registers Lost</div>
+          <div style="font-size:0.75rem; color:var(--muted); line-height:1.4;">
+            The CPU registers were overwritten by P2. Because P1's state was not saved, execution cannot resume. P1 has crashed.
+          </div>
+        </div>
+      </div>
+
+      <!-- KERNEL MEMORY SPACE (PCBS) -->
+      <div class="panel-box" style="margin:0; position:relative;" id="pcb1-container-box">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.95rem; color:#8B5CF6; margin-bottom:0.75rem; border-bottom:1px solid var(--border); padding-bottom:0.3rem;">Kernel Memory Space (Protected RAM)</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; font-family:var(--mono); font-size:0.75rem;">
+          
+          <!-- PCB 1 -->
+          <div style="border:1px solid var(--border); border-radius:4px; padding:0.4rem; background:rgba(139,92,246,0.03);">
+            <div style="font-weight:bold; color:#10B981; margin-bottom:0.25rem;">PCB 1 (P1 Bookmark)</div>
+            <div>PC: <span id="pcb1-pc" style="color:#A5F3FC;">-</span></div>
+            <div>R0: <span id="pcb1-r0">-</span></div>
+            <div>R1: <span id="pcb1-r1">-</span></div>
+            <div>SP: <span id="pcb1-sp" style="color:#A78BFA;">-</span></div>
+          </div>
+
+          <!-- PCB 2 -->
+          <div style="border:1px solid var(--border); border-radius:4px; padding:0.4rem; background:rgba(139,92,246,0.03);">
+            <div style="font-weight:bold; color:#10B981; margin-bottom:0.25rem;">PCB 2 (P2 Bookmark)</div>
+            <div>PC: <span id="pcb2-pc" style="color:#A5F3FC;">-</span></div>
+            <div>R0: <span id="pcb2-r0">-</span></div>
+            <div>R1: <span id="pcb2-r1">-</span></div>
+            <div>SP: <span id="pcb2-sp" style="color:#A78BFA;">-</span></div>
+          </div>
+
+        </div>
+
+        <!-- PCB Animation Loader -->
+        <div id="pcb-animation-overlay" style="display:none; position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(15,23,42,0.9); border-radius:8px; border:2px dashed #10B981; padding:1.5rem; text-align:center; box-sizing:border-box; display:flex; flex-direction:column; justify-content:center;">
+          <!-- Save animation renders here dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PROCESS STATE PIPELINE -->
+    <div class="pipeline-step">Process State Pipeline</div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+      
+      <!-- READY LANE -->
+      <div class="panel-box" style="border-style:dashed; margin:0;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:#fff; margin-bottom:0.5rem; text-align:center;">READY</div>
+        <div id="pipeline-ready" style="display:flex; flex-direction:column; gap:0.4rem; min-height:60px; justify-content:center;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- RUNNING LANE -->
+      <div class="panel-box" style="border-color:var(--blue); background:rgba(59, 130, 246, 0.02); margin:0;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:var(--blue); margin-bottom:0.5rem; text-align:center;">RUNNING</div>
+        <div id="pipeline-running" style="display:flex; flex-direction:column; gap:0.4rem; min-height:60px; justify-content:center;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- WAITING LANE -->
+      <div class="panel-box" style="border-color:#A78BFA; background:rgba(167,139,250,0.02); margin:0;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:#A78BFA; margin-bottom:0.5rem; text-align:center;">WAITING</div>
+        <div id="pipeline-waiting" style="display:flex; flex-direction:column; gap:0.4rem; min-height:60px; justify-content:center;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- COMPLETED/CRASHED LANE -->
+      <div class="panel-box" style="margin:0;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem; text-align:center;">EXIT</div>
+        <div id="pipeline-completed" style="display:flex; flex-direction:column; gap:0.4rem; min-height:60px; justify-content:center; align-items:center; text-align:center; font-family:var(--mono);">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CHOICES PANEL -->
+    <div id="swap-choices-panel" class="panel-box" style="display:none; border-color:var(--blue); background:rgba(59,130,246,0.05); padding:1rem; margin-bottom:1.5rem; text-align:center; margin: 0 0 1.5rem 0;">
+      <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; color:#fff; margin-bottom:0.5rem;">CRITICAL CHOICE REQUIRED</div>
+      <div style="font-size:0.8rem; color:var(--muted); margin-bottom:1rem; max-width:550px; margin-left:auto; margin-right:auto;">
+        Control returned to Kernel. P1 is running, but higher priority process P2 has arrived. Choose the context switch policy.
+      </div>
+      <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <button id="choice-store-btn" class="node-btn" style="border-color:#10B981; color:#10B981; background:rgba(16,185,129,0.1); padding:0.5rem 1.25rem;">Store & Switch (Save P1 state to PCB 1)</button>
+        <button id="choice-forget-btn" class="node-btn" style="border-color:#EF4444; color:#EF4444; background:rgba(239,68,68,0.1); padding:0.5rem 1.25rem;">Forget & Switch (Direct jump to P2)</button>
+      </div>
+    </div>
+
+    <!-- SYSTEM CONTROL PANEL -->
+    <div class="panel-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; margin: 0 0 1.5rem 0;">
+      <div style="display:flex; gap:0.5rem;">
+        <button id="swap-btn-play" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem; border-color:var(--blue); background:var(--blue-glow); color:var(--blue);">Start Simulation</button>
+        <button id="swap-btn-reset" class="node-btn" style="padding:0.4rem 0.85rem; font-size:0.75rem;">Reset</button>
+      </div>
+      <div style="display:flex; gap:1.5rem; font-family:var(--mono); font-size:0.85rem;">
+        <div>Time: <span id="swap-lbl-time" style="color:#fff; font-weight:bold;">0</span></div>
+        <div>CPU: <span id="swap-lbl-cpu" style="font-weight:bold; color:var(--muted);">IDLE</span></div>
+      </div>
+    </div>
+
+    <!-- TERMINAL SCREEN -->
+    <div class="pipeline-step">System Log Console</div>
+    <div id="swap-console-log" style="background:#090d16; border:1px solid var(--border); border-radius:8px; padding:1rem; min-height:180px; max-height:260px; overflow-y:auto; font-family:var(--mono); font-size:0.75rem; line-height:1.5; color:#E2E8F0; text-align:left;">
+      <!-- Console lines -->
+    </div>
+  `;
+
+  // Attach event listeners
+  const playBtn = document.getElementById('swap-btn-play');
+  const resetBtn = document.getElementById('swap-btn-reset');
+  const choiceStoreBtn = document.getElementById('choice-store-btn');
+  const choiceForgetBtn = document.getElementById('choice-forget-btn');
+
+  if (playBtn) {
+    playBtn.addEventListener('click', () => {
+      if (isPlaying) {
+        clearInterval(intervalId);
+        intervalId = null;
+        isPlaying = false;
+        playBtn.textContent = 'Resume Simulation';
+      } else {
+        isPlaying = true;
+        playBtn.textContent = 'Pause Simulation';
+        intervalId = setInterval(step, 1000);
+      }
+      updateUI();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', initSimulation);
+  }
+
+  if (choiceStoreBtn) {
+    choiceStoreBtn.addEventListener('click', () => handleDecision('store'));
+  }
+
+  if (choiceForgetBtn) {
+    choiceForgetBtn.addEventListener('click', () => handleDecision('forget'));
+  }
+
+  initSimulation();
+}
+
 // ─── MANTHANA CORE INTERACTIVE LOGIC ────────────────────────────────────────
 function initManthana(containerId) {
   if (containerId === 'who-goes-next-manthana') {
     renderWhoGoesNextManthana();
+  } else if (containerId === 'wild-scheduling-manthana') {
+    renderWildSchedulingManthana();
   }
 }
 
@@ -12478,3 +13101,222 @@ window.handleManthanaChoice = function(choice) {
     }
   }, 800);
 };
+
+// ─── SCHEDULING IN THE WILD MANTHANA ────────────────────────────────────────
+function renderWildSchedulingManthana() {
+  const container = document.getElementById('wild-scheduling-manthana');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper manthana-theme';
+
+  const scenarios = [
+    {
+      title: "Scenario 1: Engine Braking Controller",
+      icon: "⚙️",
+      desc: "A vehicle control unit must throttle the engine when sensors report drive-shaft lockup. The response must occur within 100 microseconds. A delay of even 1 millisecond causes mechanical crash.",
+      choices: [
+        { id: "linux", text: "Linux CFS (Fairness)" },
+        { id: "windows", text: "Windows Dynamic (Interactive Boost)" },
+        { id: "android", text: "Android EAS (Energy & Power Efficiency)" },
+        { id: "macos", text: "macOS QoS (Service Class Priority)" },
+        { id: "rtos", text: "RTOS (Deterministic Deadline Priority)" }
+      ],
+      bestChoice: "rtos",
+      explanations: {
+        rtos: "<strong>Recommended Choice.</strong> Real-Time Operating Systems (RTOS) value determinism above all else. Meeting hard deadlines is a safety-critical constraint; fairness and power consumption are completely secondary.",
+        linux: "Linux CFS aims for resource fairness, which means safety-critical tasks could be preempted or delayed to give CPU time to background tasks. In a vehicle braking controller, this latency is fatal.",
+        windows: "Windows Dynamic Priority boosts interactive applications, but it cannot guarantee execution within a hard microsecond window. The lack of determinism makes it unsuitable.",
+        android: "Android EAS is optimized to conserve battery by scaling work across big.LITTLE cores. Power conservation is irrelevant here—immediate, predictable reaction is required.",
+        macos: "macOS QoS guarantees scheduling preferences for interactive threads, but it is not a hard real-time scheduler. It cannot guarantee deterministic response deadlines."
+      }
+    },
+    {
+      title: "Scenario 2: Desktop Video Editing Suite",
+      icon: "🎬",
+      desc: "Rendering a 4K video stream requires maximum CPU core throughput. At the same time, the editor's timeline preview must remain fluid and responsive when scrubbing through clips.",
+      choices: [
+        { id: "linux", text: "Linux CFS (Fairness)" },
+        { id: "windows", text: "Windows Dynamic (Interactive Boost)" },
+        { id: "android", text: "Android EAS (Energy & Power Efficiency)" },
+        { id: "macos", text: "macOS QoS (Service Class Priority)" },
+        { id: "rtos", text: "RTOS (Deterministic Deadline Priority)" }
+      ],
+      bestChoice: "windows",
+      explanations: {
+        windows: "<strong>Highly Suitable.</strong> Windows Dynamic Priority is designed for interactive workstations. It temporarily boosts the GUI timeline thread priority so scrub actions feel instant, while letting background render threads run during idle slices.",
+        macos: "<strong>Highly Suitable.</strong> macOS QoS allows developers to tag UI tasks as 'User Interactive' and rendering tasks as 'Utility' or 'Background'. The scheduler naturally balances core resources to prevent UI stutter.",
+        linux: "<strong>Suitable.</strong> Linux CFS ensures that background render threads receive a fair share of CPU time without completely starving the video editing interface. However, it lacks a default 'foreground boost' mechanism like Windows.",
+        android: "Android EAS is optimized for battery-powered mobile cores and would throttle background rendering to save power, dragging out render times on a desktop workstation.",
+        rtos: "RTOS scheduling is designed for deterministic microsecond control loops. Applying it here would run the rendering or timeline at high priority, completely starving other system services."
+      }
+    },
+    {
+      title: "Scenario 3: Smartphone User Interface",
+      icon: "📱",
+      desc: "A user is scrolling their social media feed. The UI must render at 120Hz without stutter. Simultaneously, background threads are downloading metadata, and the system must maximize battery life.",
+      choices: [
+        { id: "linux", text: "Linux CFS (Fairness)" },
+        { id: "windows", text: "Windows Dynamic (Interactive Boost)" },
+        { id: "android", text: "Android EAS (Energy & Power Efficiency)" },
+        { id: "macos", text: "macOS QoS (Service Class Priority)" },
+        { id: "rtos", text: "RTOS (Deterministic Deadline Priority)" }
+      ],
+      bestChoice: "android",
+      explanations: {
+        android: "<strong>Recommended Choice.</strong> Android's Energy Aware Scheduling (EAS) uses energy models of the hardware cores. It schedules touch UI tasks to high-performance cores instantly for 120Hz smooth scroll, and puts downloads on low-power cores to save battery.",
+        macos: "<strong>Highly Suitable.</strong> macOS QoS (and iOS) prioritizes 'User Interactive' tasks on performance cores, shifting background syncs to efficiency cores to protect power and thermals.",
+        linux: "Standard Linux CFS schedules processes fairly without factoring in the thermodynamic and power profiles of individual CPU cores, which leads to high battery drain on mobile.",
+        windows: "Windows Dynamic Priority boosts interactive applications but lacks a native hardware-energy aware core selection model optimized for mobile battery life.",
+        rtos: "RTOS scheduling would guarantee deadlines but would not optimize for energy efficiency, leading to rapid battery exhaustion on mobile hardware."
+      }
+    },
+    {
+      title: "Scenario 4: Cloud Database Server",
+      icon: "💾",
+      desc: "A database server is hosting thousands of active client read/write query tasks. No single query should stall, and total CPU throughput across all concurrent connections must be maximized.",
+      choices: [
+        { id: "linux", text: "Linux CFS (Fairness)" },
+        { id: "windows", text: "Windows Dynamic (Interactive Boost)" },
+        { id: "android", text: "Android EAS (Energy & Power Efficiency)" },
+        { id: "macos", text: "macOS QoS (Service Class Priority)" },
+        { id: "rtos", text: "RTOS (Deterministic Deadline Priority)" }
+      ],
+      bestChoice: "linux",
+      explanations: {
+        linux: "<strong>Recommended Choice.</strong> Linux CFS is the gold standard for server workloads. By maintaining resource fairness, it ensures all database query tasks get proportional CPU time, maximizing server throughput and preventing client starvation.",
+        windows: "Windows Dynamic Priority boosts foreground/interactive tasks. In a server context, there is no foreground UI, and dynamic priority shifts can cause background query threads to starve.",
+        android: "Android EAS is designed to conserve battery by steering work to low-power cores. A database server wants to exploit maximum power and performance, not throttle throughput.",
+        macos: "macOS QoS is optimized for client apps with distinct UI and background threads. It is not designed to balance thousands of identical, competing database server query threads.",
+        rtos: "RTOS scheduling prioritizes strict tasks, leading to starvation of low-priority query threads. It degrades database throughput in favor of microsecond latency guarantees."
+      }
+    }
+  ];
+
+  let currentIdx = 0;
+  let selectedId = null;
+
+  function renderScenario() {
+    const sc = scenarios[currentIdx];
+    const progress = (currentIdx / scenarios.length) * 100;
+    
+    let choicesHtml = sc.choices.map(ch => {
+      let extraStyle = "";
+      if (selectedId === ch.id) {
+        if (ch.id === sc.bestChoice) {
+          extraStyle = "border-color: #14B8A6; background: rgba(20, 180, 166, 0.1); color: #14B8A6;";
+        } else {
+          extraStyle = "border-color: #F59E0B; background: rgba(245, 158, 11, 0.1); color: #F59E0B;";
+        }
+      }
+      return `<button class="node-btn" style="width: 100%; text-align: left; padding: 0.6rem 1rem; margin-bottom: 0.5rem; ${extraStyle}" onclick="window.chooseWildScenario('${ch.id}')">${ch.text}</button>`;
+    }).join('');
+
+    let explainHtml = "";
+    if (selectedId) {
+      explainHtml = `
+        <div class="panel-box" style="margin-top: 1.5rem; border-color: ${selectedId === sc.bestChoice ? '#14B8A6' : '#F59E0B'}; background: rgba(15,23,42,0.6); padding: 1rem; animation: fadeIn 0.3s ease;">
+          <div style="font-weight: bold; color: ${selectedId === sc.bestChoice ? '#14B8A6' : '#F59E0B'}; margin-bottom: 0.5rem; font-size: 0.9rem;">
+            ✦ Trade-off Analysis
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5;">
+            ${sc.explanations[selectedId]}
+          </div>
+        </div>
+      `;
+    }
+
+    let nextBtnStyle = "opacity: 0.5; pointer-events: none;";
+    if (selectedId) {
+      nextBtnStyle = "opacity: 1; pointer-events: auto;";
+    }
+
+    let footerHtml = "";
+    if (currentIdx < scenarios.length - 1) {
+      footerHtml = `<button class="node-btn" style="padding: 0.4rem 1.25rem; ${nextBtnStyle}" onclick="window.nextWildScenario()">Next Scenario →</button>`;
+    } else {
+      footerHtml = `<button class="node-btn" style="border-color: #14B8A6; color: #14B8A6; background: rgba(20, 180, 166, 0.1); padding: 0.4rem 1.25rem; ${nextBtnStyle}" onclick="window.completeWildScenarios()">Complete Reflection</button>`;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header">Manthana: Scheduling in the Wild</div>
+      <div class="edgecase-subheader">Reflect on real-world engineering constraints to choose a suitable scheduling philosophy</div>
+
+      <!-- PROGRESS BAR -->
+      <div style="height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 1.5rem; width: 100%;">
+        <div style="height: 100%; background: var(--blue); width: ${progress}%; transition: width 0.3s ease;"></div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}">
+        <!-- SCENARIO CARD -->
+        <div class="panel-box" style="margin:0; background: rgba(30, 41, 59, 0.2);">
+          <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${sc.icon}</div>
+          <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: #fff; margin-bottom: 0.5rem;">
+            ${sc.title}
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5; margin-bottom: 1rem;">
+            ${sc.desc}
+          </div>
+          ${explainHtml}
+        </div>
+
+        <!-- CHOICES CARD -->
+        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.55rem; text-transform: uppercase; letter-spacing: 0.05em;">
+              Select Scheduler Philosophy:
+            </div>
+            ${choicesHtml}
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+            <span style="font-family: var(--mono); font-size: 0.75rem; color: var(--muted);">Scenario ${currentIdx + 1} of ${scenarios.length}</span>
+            ${footerHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  window.chooseWildScenario = function(id) {
+    selectedId = id;
+    renderScenario();
+  };
+
+  window.nextWildScenario = function() {
+    if (!selectedId) return;
+    currentIdx++;
+    selectedId = null;
+    renderScenario();
+  };
+
+  window.completeWildScenarios = function() {
+    if (!selectedId) return;
+    
+    container.innerHTML = `
+      <div class="edgecase-header" style="color: #14B8A6;">✓ Reflection Complete</div>
+      <div class="edgecase-subheader">All scenarios analyzed successfully.</div>
+      <div style="height: 4px; background: #14B8A6; border-radius: 2px; width: 100%; margin-bottom: 1.5rem;"></div>
+
+      <div class="panel-box" style="text-align: left; margin: 0 0 1.5rem 0; padding: 1.25rem; background: rgba(20, 180, 166, 0.02); border-color: #14B8A6;">
+        <div style="font-family: 'Syne', sans-serif; font-weight: 700; color: #fff; font-size: 0.95rem; margin-bottom: 0.75rem;">Engineering Takeaway</div>
+        <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5; margin-bottom: 1rem;">
+          You have successfully mapped real-world scenarios to scheduling architectures. You observed that:
+          <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
+            <li style="margin-bottom: 0.4rem;"><strong>RTOS</strong> is mandatory when timelines demand absolute <em>microsecond determinism</em> (e.g. brakes).</li>
+            <li style="margin-bottom: 0.4rem;"><strong>Windows Dynamic / macOS QoS</strong> balance interactive interfaces with massive background loads.</li>
+            <li style="margin-bottom: 0.4rem;"><strong>Android EAS</strong> schedules work dynamically to save power on asymmetric battery-powered cores.</li>
+            <li style="margin-bottom: 0.4rem;"><strong>Linux CFS</strong> shares execution time fairly to maximize throughput on servers.</li>
+          </ul>
+        </div>
+        <button class="node-btn" style="border-color: var(--blue); color: var(--blue); background: var(--blue-glow); padding: 0.4rem 1.25rem;" onclick="window.resetWildScenarios()">Restart Reflection</button>
+      </div>
+    `;
+  };
+
+  window.resetWildScenarios = function() {
+    currentIdx = 0;
+    selectedId = null;
+    renderScenario();
+  };
+
+  renderScenario();
+}

@@ -1642,6 +1642,126 @@
       }
     },
     {
+      "id": "scheduling-in-the-wild",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "Scheduling in the Wild",
+      "subtitle": "How today's operating systems decide who runs next.",
+      "date": "5th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Scheduling",
+        "Linux CFS",
+        "Windows Dynamic",
+        "macOS QoS",
+        "Android EAS",
+        "RTOS"
+      ],
+      "sections": [
+        {
+          "heading": "1. The Evolution of Scheduling",
+          "content": [
+            {
+              "type": "p",
+              "text": "The algorithms we studied earlier\u2014First-Come First-Served (FCFS), Shortest Job First (SJF), Priority Scheduling, and Round Robin\u2014were not discarded. They became the engineering foundation upon which today's schedulers evolved."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin: 2rem 0; font-family: var(--mono); font-size: 0.8rem;\">\n  <div style=\"border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;\">\n    <strong>FCFS</strong><br><span style=\"color: var(--muted); font-size: 0.7rem;\">Order of Arrival</span>\n  </div>\n  <div style=\"color: var(--blue);\">\u2193</div>\n  <div style=\"border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;\">\n    <strong>SJF / SRTF</strong><br><span style=\"color: var(--muted); font-size: 0.7rem;\">Shortest Job First</span>\n  </div>\n  <div style=\"color: var(--blue);\">\u2193</div>\n  <div style=\"border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;\">\n    <strong>Priority Scheduling</strong><br><span style=\"color: var(--muted); font-size: 0.7rem;\">Static Urgency Levels</span>\n  </div>\n  <div style=\"color: var(--blue);\">\u2193</div>\n  <div style=\"border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;\">\n    <strong>Round Robin</strong><br><span style=\"color: var(--muted); font-size: 0.7rem;\">Time-Slicing Rotation</span>\n  </div>\n  <div style=\"color: var(--blue);\">\u2193</div>\n  <div style=\"border: 1px solid var(--blue); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.1); width: 220px; text-align: center; border-color: var(--blue);\">\n    <strong>Modern Hybrid Schedulers</strong><br><span style=\"color: #A5F3FC; font-size: 0.7rem;\">Dynamic Multi-Level Feedback</span>\n  </div>\n  <div style=\"color: var(--blue);\">\u2193</div>\n  <div style=\"border: 2px solid #10B981; border-radius: 6px; padding: 0.6rem 1rem; background: rgba(16, 185, 129, 0.1); width: 220px; text-align: center; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);\">\n    <strong style=\"color: #10B981;\">Today's Operating Systems</strong><br><span style=\"color: var(--text); font-size: 0.7rem;\">Linux, Windows, macOS, Android</span>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "2. Why Simple Rules Were No Longer Enough",
+          "content": [
+            {
+              "type": "p",
+              "text": "No single, simple scheduling rule can simultaneously satisfy the competing demands of modern computing. Optimizing for one metric almost always degrades another."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 2rem 0; text-align: center; @media(max-width:640px){grid-template-columns:1fr;}\">\n  <div class=\"panel-box\" style=\"margin: 0; padding: 0.8rem;\">\n    <div style=\"font-weight: bold; color: #3B82F6; font-size: 0.85rem; margin-bottom: 0.3rem;\">Fairness vs. Responsiveness</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">\n      Giving every background task equal execution time (Fairness) stalls the foreground thread rendering the user's cursor movements (Responsiveness).\n    </div>\n  </div>\n  <div class=\"panel-box\" style=\"margin: 0; padding: 0.8rem;\">\n    <div style=\"font-weight: bold; color: #10B981; font-size: 0.85rem; margin-bottom: 0.3rem;\">Throughput vs. Battery Life</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">\n      Running the CPU at max frequency to finish computational workloads faster (Throughput) drains the battery cells and generates extreme heat (Battery Life).\n    </div>\n  </div>\n  <div class=\"panel-box\" style=\"margin: 0; padding: 0.8rem;\">\n    <div style=\"font-weight: bold; color: #F59E0B; font-size: 0.85rem; margin-bottom: 0.3rem;\">Determinism vs. Multi-core</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">\n      Guaranteeing that an operation finishes under a microsecond deadline (Real-Time) conflicts with loading it dynamically across multiple cores (Multi-core CPUs).\n    </div>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "3. Today's Operating Systems",
+          "content": [
+            {
+              "type": "p",
+              "text": "Because different devices serve different markets, their operating systems implement vastly different scheduling philosophies."
+            },
+            {
+              "type": "p",
+              "text": "### Linux: Completely Fair Scheduler (CFS)\n*   **Goal**: Fairness across thousands of concurrent processes.\n*   **Philosophy**: Instead of managing fixed-priority queues, Linux CFS estimates how much CPU execution time every process has already received. The scheduler then selects the process that has received the least CPU time."
+            },
+            {
+              "type": "p",
+              "text": "### Windows: Dynamic Priority Scheduling\n*   **Goal**: Instantaneous response for interactive applications.\n*   **Philosophy**: Windows dynamically boosts the priority of foreground threads (such as clicking a button or typing). Background tasks are temporarily throttled, then boosted once interactive tasks go idle."
+            },
+            {
+              "type": "p",
+              "text": "### macOS: Quality of Service (QoS) based Scheduling\n*   **Goal**: Silky smooth user experience and interface animations.\n*   **Philosophy**: Threads are categorized by purpose\u2014*User Interactive*, *User Initiated*, *Utility*, or *Background*. The scheduler allocates cores and execution windows according to this class structure."
+            },
+            {
+              "type": "p",
+              "text": "### Android: Energy Aware Scheduling (EAS)\n*   **Goal**: High performance combined with long battery life.\n*   **Philosophy**: Built on top of the Linux scheduler, EAS estimates the energy consumption of different CPU cores (BIG.little architectures) before dispatching a thread, keeping low-demand work on low-power cores."
+            },
+            {
+              "type": "p",
+              "text": "### RTOS (Real-Time Operating Systems)\n*   **Goal**: Absolute deterministic execution.\n*   **Philosophy**: Meeting strict deadlines is more important than fairness. An RTOS will starve all other work on the machine to guarantee that a safety-critical task completes on time."
+            }
+          ]
+        },
+        {
+          "heading": "4. Manthana: The Scheduling Trade-off",
+          "content": [
+            {
+              "type": "p",
+              "text": "Every operating system values something different. If you were designing this system... which scheduling philosophy would you choose?"
+            },
+            {
+              "type": "p",
+              "text": "<div id=\"wild-scheduling-manthana\" class=\"manthana-container\"></div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "5. Reflection",
+          "content": [
+            {
+              "type": "p",
+              "text": "The classic scheduling policies taught us how a single processor shares its time. Modern schedulers taught us how to make better decisions under competing constraints."
+            },
+            {
+              "type": "p",
+              "text": "But we have operated under a silent assumption: that there is only one processor, executing one instruction stream at a time."
+            },
+            {
+              "type": "p",
+              "text": "Today's computers rarely think with a single core."
+            },
+            {
+              "type": "p",
+              "text": "They think with many."
+            },
+            {
+              "type": "p",
+              "text": "And when multiple processors begin working simultaneously, sharing time is no longer the only challenge. The new frontier is sharing memory, coordinating state, and ensuring that processors working in parallel do not step on each other's feet."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
       "id": "spi-shared-rhythm-of-machines",
       "category": "Interaction",
       "series": "System Explorations",
@@ -2746,6 +2866,70 @@
           "The developer sees main(). The system experiences a much longer story."
         ],
         "quote": "The first instruction is rarely the one written by the developer. It is the one that teaches the machine how to become itself."
+      }
+    },
+    {
+      "id": "the-great-swap",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "The Great Swap",
+      "subtitle": "How the Kernel swaps the running mind of the CPU.",
+      "date": "5th August, 2026",
+      "tags": [
+        "Kernel",
+        "Process",
+        "PCB",
+        "Context Switching",
+        "Operating Systems"
+      ],
+      "sections": [
+        {
+          "heading": "1. EdgeCase: The Choice of the Kernel",
+          "content": [
+            {
+              "type": "p",
+              "text": "Below is a live CPU core executing a task. A high-priority process is about to arrive, triggering an interrupt."
+            },
+            {
+              "type": "p",
+              "text": "As the Kernel, you must decide how to handle the execution state of the currently running process before starting the new one."
+            },
+            {
+              "type": "edgecase",
+              "id": "swap-edgecase"
+            }
+          ]
+        },
+        {
+          "heading": "2. The Technical Term: Context Switching",
+          "content": [
+            {
+              "type": "p",
+              "text": "The operation you just experienced is called a **Context Switch**."
+            },
+            {
+              "type": "p",
+              "text": "The \"context\" refers to the execution state of the process\u2014the program counter, stack pointer, and current registers holding active values. Swapping this context is the foundational mechanism that allows operating systems to support multitasking."
+            },
+            {
+              "type": "p",
+              "text": "Without it, CPU sharing would be impossible, and a single crashed or frozen process would lock up the entire system."
+            },
+            {
+              "type": "p",
+              "text": "Classic scheduling policies taught us the fundamental ideas of how to distribute execution time. But modern operating systems no longer rely on a single, simple rule."
+            },
+            {
+              "type": "p",
+              "text": "How do Linux, Windows, macOS, and Android decide which Process runs next?"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
       }
     },
     {
