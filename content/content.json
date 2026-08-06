@@ -1474,6 +1474,200 @@
       }
     },
     {
+      "id": "one-brain-wasnt-enough",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "One Brain Wasn't Enough",
+      "subtitle": "How computing learned to think in parallel.",
+      "date": "6th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Multicore",
+        "Concurrence",
+        "Parallelism",
+        "Shared Resources"
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      },
+      "heading": "The Parallel Shift",
+      "paragraphs": "",
+      "- \"Processes were no longer just wait-listed in line to share the spotlight of one CPU. They began running side-by-side. And when processors run tasks in parallel, a new question arises": "how do separate execution threads collaborate without corrupting the machine?\"",
+      "quote": "Two minds can solve twice as much work\u2014but only if they learn how to share thoughts without shouting over one another.",
+      "sections": [
+        {
+          "heading": "1. The Single-Core Assumption",
+          "content": [
+            {
+              "type": "p",
+              "text": "Historically, a CPU was a singular brain. To run multiple programs at the same time, the operating system had to perform a delicate illusion of multitasking. It sliced CPU execution time into tiny fragments, switching rapidly between processes so that human eyes perceived simultaneous behavior."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 2.5rem 0; font-family: var(--mono);\">\n  <div style=\"font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;\">Our Previous Assumption: The Single-Core Timeline</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: rgba(30, 41, 59, 0.2); width: 100%; max-width: 550px; justify-content: space-between; flex-wrap: wrap;\">\n    <!-- Ready Queue -->\n    <div style=\"display: flex; flex-direction: column; gap: 0.5rem; align-items: center;\">\n      <div style=\"font-size: 0.75rem; color: var(--muted); font-weight: 500;\">Ready Queue</div>\n      <div style=\"display: flex; gap: 0.5rem;\">\n        <div style=\"border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; background: var(--surface2); opacity: 0.6; font-size: 0.75rem; font-family: var(--mono);\">P3 <span style=\"font-size:0.6rem; color:var(--muted);\">READY</span></div>\n        <div style=\"border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; background: var(--surface2); opacity: 0.8; font-size: 0.75rem; font-family: var(--mono);\">P2 <span style=\"font-size:0.6rem; color:var(--muted);\">READY</span></div>\n      </div>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Time-Sharing Arrow -->\n    <div style=\"color: var(--blue); font-size: 1.5rem;\">\u2794</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Active Core -->\n    <div style=\"border: 1px dashed var(--blue); border-radius: 8px; padding: 1rem; background: var(--blue-glow); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 160px;\">\n      <div style=\"font-size: 0.65rem; color: var(--blue); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;\">Active CPU Core</div>\n      <div style=\"border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem 1rem; background: var(--surface); color: #FFF; font-weight: bold; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); font-size: 0.85rem; font-family: var(--mono);\">P1 <span style=\"font-size:0.75rem; color:#10B981; font-weight:bold; margin-left:0.25rem;\">RUNNING</span></div>\n      <div style=\"font-size: 0.6rem; color: var(--muted);\">Executing...</div>\n    </div>\n  </div>\n</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "For decades, the goal of systems engineering was to make this single brain run faster."
+            }
+          ]
+        },
+        {
+          "heading": "2. The Physical Ceiling",
+          "content": [
+            {
+              "type": "p",
+              "text": "We scaled computing power by increasing the clock frequency (gigahertz) of single processors. But around the mid-2000s, this approach hit a physical ceiling:"
+            },
+            {
+              "type": "p",
+              "text": "*   **The Thermal Wall**: Higher speeds generate exponentially more heat. A single silicon chip running at 10 GHz would consume as much energy and generate as much heat as a small cooking surface, melting its own silicon structure.\n*   **The Voltage Boundary**: We could no longer decrease transistor operating voltage without causing electric leakage (quantum tunneling) across microscopic gates."
+            },
+            {
+              "type": "p",
+              "text": "To continue making computers faster, engineers could no longer make the single brain run quicker. Instead, they had to pack **multiple distinct processor cores** onto a single silicon chip."
+            }
+          ]
+        },
+        {
+          "heading": "3. Parallel Minds",
+          "content": [
+            {
+              "type": "p",
+              "text": "The transition to multicore architectures changed the rules of software execution. In a multicore system, true physical parallelism replaces the time-shared illusion of multitasking."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}\">",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- SINGLE CORE COLUMN -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);\">\n    <div style=\"text-align: center; margin-bottom: 1.5rem;\">\n      <div style=\"font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: #FFF; margin-bottom: 0.5rem;\">Single Core</div>\n      <div style=\"font-size: 0.75rem; color: var(--muted); font-family: var(--mono);\">SEQUENTIAL TIME-SHARING</div>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Schematic Diagram -->\n    <div style=\"display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.2rem 1rem; background: rgba(15, 23, 42, 0.4); border-radius: 6px; border: 1px solid rgba(148, 163, 184, 0.05); min-height: 180px; justify-content: center;\">\n      <div style=\"font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem;\">Core State</div>\n      <!-- Active -->\n      <div style=\"border: 1px solid var(--blue); background: var(--blue-glow); padding: 0.5rem; border-radius: 4px; font-family: var(--mono); font-size: 0.75rem; text-align: center; width: 100%;\">\n        <span style=\"color: var(--blue); font-weight: bold;\">CORE 0:</span> <span style=\"color: #FFF; font-weight: bold;\">P1</span> <span style=\"font-size: 0.65rem; color: #10B981; font-weight: bold; margin-left: 0.25rem;\">[RUNNING]</span>\n      </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem; margin-top: 0.5rem;\">Ready Queue</div>\n      <!-- Queued -->\n      <div style=\"font-size: 0.7rem; color: var(--muted); font-family: var(--mono); display: flex; gap: 0.5rem; justify-content: center; width: 100%;\">\n        <div style=\"border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.8; font-size: 0.7rem;\">P2 <span style=\"font-size:0.6rem; color:var(--muted);\">[READY]</span></div>\n        <div style=\"border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.6; font-size: 0.7rem;\">P3 <span style=\"font-size:0.6rem; color:var(--muted);\">[READY]</span></div>\n      </div>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"margin-top: 1.25rem; font-size: 0.75rem; color: var(--text); line-height: 1.5; text-align: center;\">\n      One active Process at a time. The operating system must perform context switches to rotate core execution.\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- MULTI-CORE COLUMN -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--blue);\">\n    <div style=\"text-align: center; margin-bottom: 1.5rem;\">\n      <div style=\"font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--blue); margin-bottom: 0.5rem;\">Multi-Core</div>\n      <div style=\"font-size: 0.75rem; color: var(--blue); font-family: var(--mono);\">SIMULTANEOUS PROCESSING</div>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Schematic Diagram -->\n    <div style=\"display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.2rem 1rem; background: rgba(59, 130, 246, 0.02); border-radius: 6px; border: 1px solid var(--blue-glow); min-height: 180px; justify-content: center; width: 100%;\">\n      <div style=\"font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem;\">Core States</div>\n      <!-- Parallel Cores Box -->\n      <div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%;\">\n        <div style=\"border: 1px solid var(--blue); padding: 0.6rem 0.5rem; border-radius: 4px; text-align: center; background: var(--surface);\">\n          <div style=\"font-size: 0.55rem; color: var(--muted); font-family: var(--mono); margin-bottom: 0.25rem;\">CORE 0</div>\n          <div style=\"font-family: var(--mono); font-size: 0.75rem; font-weight: bold; color: #FFF;\">P1 <span style=\"font-size: 0.65rem; color: #10B981; font-weight: bold; display: block; margin-top: 0.15rem;\">[RUNNING]</span></div>\n        </div>\n        <div style=\"border: 1px solid #14B8A6; padding: 0.6rem 0.5rem; border-radius: 4px; text-align: center; background: var(--surface);\">\n          <div style=\"font-size: 0.55rem; color: var(--muted); font-family: var(--mono); margin-bottom: 0.25rem;\">CORE 1</div>\n          <div style=\"font-family: var(--mono); font-size: 0.75rem; font-weight: bold; color: #FFF;\">P2 <span style=\"font-size: 0.65rem; color: #10B981; font-weight: bold; display: block; margin-top: 0.15rem;\">[RUNNING]</span></div>\n        </div>\n      </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem; margin-top: 0.5rem;\">Ready Queue</div>\n      <!-- Unscheduled -->\n      <div style=\"font-size: 0.7rem; color: var(--muted); font-family: var(--mono); display: flex; gap: 0.5rem; justify-content: center; width: 100%;\">\n        <div style=\"border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.8; font-size: 0.7rem;\">P3 <span style=\"font-size:0.6rem; color:var(--muted);\">[READY]</span></div>\n        <div style=\"border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.6; font-size: 0.7rem;\">P4 <span style=\"font-size:0.6rem; color:var(--muted);\">[READY]</span></div>\n      </div>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"margin-top: 1.25rem; font-size: 0.75rem; color: var(--text); line-height: 1.5; text-align: center;\">\n      Multiple Processes executing simultaneously. Parallel cores execute instruction streams independently.\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "4. The Shared Frontier",
+          "content": [
+            {
+              "type": "p",
+              "text": "In a single-core environment, processes execute one by one, isolated by the operating system."
+            },
+            {
+              "type": "p",
+              "text": "But in a multicore system where processes run side-by-side, we face a new engineering bottleneck: **collaborative processing.** Processes often need to work together on parts of the same application."
+            },
+            {
+              "type": "p",
+              "text": "Imagine two parallel cores processing a single task: Core 0 computes a sensor state value, and Core 1 must read that state value to control an actuator."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 3rem 0; font-family: var(--mono);\">\n  <div style=\"font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;\">The Collaborative Dilemma: Shared Resources</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"position: relative; border: 1px solid var(--border); border-radius: 8px; padding: 2rem 1.5rem; background: rgba(30, 41, 59, 0.15); width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; gap: 2rem;\">\n    <!-- Active Cores -->\n    <div style=\"display: flex; justify-content: space-between; width: 100%; max-width: 450px; z-index: 2;\">\n      <!-- Core 0 -->\n      <div style=\"border: 1px solid var(--blue); border-radius: 6px; padding: 0.75rem; background: var(--surface); text-align: center; width: 140px; box-shadow: 0 0 10px rgba(59,130,246,0.15);\">\n        <div style=\"font-size: 0.6rem; color: var(--blue); font-weight: bold; margin-bottom: 0.25rem;\">CORE 0 (P1)</div>\n        <div style=\"font-size: 0.75rem; color: #FFF; font-weight: bold;\">Writes: X = 42</div>\n      </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Core 1 -->\n      <div style=\"border: 1px solid #F59E0B; border-radius: 6px; padding: 0.75rem; background: var(--surface); text-align: center; width: 140px; box-shadow: 0 0 10px rgba(245,158,11,0.15);\">\n        <div style=\"font-size: 0.6rem; color: #F59E0B; font-weight: bold; margin-bottom: 0.25rem;\">CORE 1 (P2)</div>\n        <div style=\"font-size: 0.75rem; color: #FFF; font-weight: bold;\">Reads: X</div>\n      </div>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Shared memory cell -->\n    <div style=\"border: 2px solid var(--border); border-radius: 50%; width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--surface2); z-index: 2; margin-top: 1rem; box-shadow: 0 0 15px rgba(255,255,255,0.03);\">\n      <div style=\"font-size: 0.55rem; color: var(--muted); font-weight: bold; text-transform: uppercase;\">Shared RAM</div>\n      <div style=\"font-size: 1.1rem; color: var(--text); font-weight: bold; margin-top: 0.1rem;\">[ X ]</div>\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.5; text-align: center; max-width: 500px; padding: 0 1rem;\">\n    Because Core 0 and Core 1 execute independently, how can P2 safely read X only after P1 has finished writing it, without accessing corrupted or stale memory?\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "5. Reflection",
+          "content": [
+            {
+              "type": "p",
+              "text": "We have broken the single-processor assumption. Processes now run side-by-side across parallel cores."
+            },
+            {
+              "type": "p",
+              "text": "But this independence breeds a new coordination puzzle."
+            },
+            {
+              "type": "p",
+              "text": "**How do Processes running at the same time exchange information?**"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "remembering-the-moment",
       "category": "Operating Systems",
       "series": "Operating Systems",
@@ -6229,6 +6423,141 @@
         "paragraphs": [],
         "quote": ""
       }
+    },
+    {
+      "id": "when-silence-wasnt-an-option",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When Silence Wasn't an Option",
+      "subtitle": "How independent Processes learned to exchange information.",
+      "date": "6th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "IPC",
+        "Pipes",
+        "Message Queues",
+        "Shared Memory",
+        "Sockets"
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      },
+      "heading": "The Collaborative System",
+      "paragraphs": "",
+      "- \"Shared memory bypasses this boundary to achieve direct hardware speeds, but it introduces a far more dangerous coordination question": "when there is no kernel referee, how do we coordinate who writes and reads?\"",
+      "quote": "Sharing information is the first step toward cooperation\u2014but without synchronization, sharing leads directly to chaos.",
+      "sections": [
+        {
+          "heading": "1. The Virtual Barrier",
+          "content": [
+            {
+              "type": "p",
+              "text": "By default, every Process runs in its own private sandbox. Its virtual address space is mapped to distinct physical RAM sectors. If a process attempts to reach outside its sandboxed address space directly, the hardware triggers a memory fault."
+            },
+            {
+              "type": "p",
+              "text": "To exchange information, processes cannot simply read each other's variables. They must use structured communication paths."
+            }
+          ]
+        },
+        {
+          "heading": "2. Inter-Process Communication (IPC)",
+          "content": [
+            {
+              "type": "p",
+              "text": "To bypass the virtual memory boundary safely, processes must request the Kernel to act as a secure mediator. The Kernel allocates dedicated transit memory, receives data from one process, and delivers it securely to another. This channel is known as **Inter-Process Communication (IPC)**."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2.5rem 0; font-family: var(--mono);\">\n  <div style=\"font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;\">IPC: The Kernel Mediator</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: rgba(30, 41, 59, 0.2); width: 100%; max-width: 500px; gap: 1rem;\">\n    <!-- Process A -->\n    <div style=\"border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); color: #FFF; font-size: 0.75rem; text-align: center; width: 100px;\">\n      <strong>Process A</strong>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"color: var(--blue); font-size: 1.25rem;\">&rarr;</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Kernel IPC -->\n    <div style=\"border: 1px dashed var(--blue); border-radius: 6px; padding: 0.5rem 0.75rem; background: var(--blue-glow); color: var(--blue); font-size: 0.7rem; font-weight: bold; text-align: center; width: 150px;\">\n      Kernel IPC<br><span style=\"font-size: 0.6rem; color: var(--muted);\">Buffer / Message Queue</span>\n    </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"color: var(--blue); font-size: 1.25rem;\">&rarr;</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- Process B -->\n    <div style=\"border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); color: #FFF; font-size: 0.75rem; text-align: center; width: 100px;\">\n      <strong>Process B</strong>\n    </div>\n  </div>\n</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "Depending on performance constraints and communication patterns, developers choose between different IPC mechanisms."
+            }
+          ]
+        },
+        {
+          "heading": "3. The Toolkit of Exchange",
+          "content": [
+            {
+              "type": "p",
+              "text": "Modern operating systems provide four main ways to exchange data across process boundaries:"
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}\">",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- PIPE PANEL -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);\">\n    <div>\n      <div style=\"display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;\">\n        <span style=\"font-size: 1.25rem;\">\ud83d\udcdf</span>\n        <strong style=\"font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;\">Pipe</strong>\n      </div>\n      <!-- Pipe Visual -->\n      <div style=\"background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;\">\n        <div style=\"border: 2px solid var(--blue); border-radius: 4px; height: 24px; width: 85%; display: flex; align-items: center; justify-content: space-around; overflow: hidden; background: var(--surface2);\">\n          <div style=\"width: 10px; height: 10px; border-radius: 50%; background: var(--blue);\"></div>\n          <div style=\"width: 10px; height: 10px; border-radius: 50%; background: var(--blue); opacity: 0.7;\"></div>\n          <div style=\"width: 10px; height: 10px; border-radius: 50%; background: var(--blue); opacity: 0.4;\"></div>\n        </div>\n      </div>\n      <div style=\"font-size: 0.75rem; color: var(--text); line-height: 1.45;\">\n        A unidirectional, raw byte stream buffer. Process A writes data into the write end, and Process B reads it from the read end in First-In, First-Out (FIFO) order. Once read, data is emptied.\n      </div>\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- MESSAGE QUEUE PANEL -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);\">\n    <div>\n      <div style=\"display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;\">\n        <span style=\"font-size: 1.25rem;\">\ud83d\udce5</span>\n        <strong style=\"font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;\">Message Queue</strong>\n      </div>\n      <!-- Queue Visual -->\n      <div style=\"background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; gap: 0.5rem;\">\n        <div style=\"border: 1px solid var(--border); border-radius: 3px; padding: 0.2rem 0.4rem; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono); color: #FFF;\">Msg 1</div>\n        <div style=\"border: 1px solid var(--border); border-radius: 3px; padding: 0.2rem 0.4rem; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono); color: #FFF; opacity: 0.8;\">Msg 2</div>\n        <div style=\"border: 1px solid var(--border); border-radius: 3px; padding: 0.2rem 0.4rem; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono); color: #FFF; opacity: 0.5;\">Msg 3</div>\n      </div>\n      <div style=\"font-size: 0.75rem; color: var(--text); line-height: 1.45;\">\n        A kernel-managed list of structured messages. Processes can push message blocks into the queue asynchronously and read them when ready, maintaining discrete envelopes.\n      </div>\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- SHARED MEMORY PANEL -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);\">\n    <div>\n      <div style=\"display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;\">\n        <span style=\"font-size: 1.25rem;\">\ud83d\udcbe</span>\n        <strong style=\"font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;\">Shared Memory</strong>\n      </div>\n      <!-- Shared Memory Visual -->\n      <div style=\"background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;\">\n        <div style=\"border: 1px solid var(--blue); border-radius: 6px; width: 90%; height: 80%; padding: 0.3rem 0.5rem; background: var(--blue-glow); display: flex; align-items: center; justify-content: space-between;\">\n          <span style=\"font-size: 0.55rem; color: var(--blue); font-family: var(--mono);\">Proc A</span>\n          <span style=\"border: 1px solid var(--blue); border-radius: 4px; padding: 0.2rem 0.4rem; background: var(--surface); color: #FFF; font-size: 0.65rem; font-family: var(--mono); font-weight: bold;\">Shared RAM</span>\n          <span style=\"font-size: 0.55rem; color: var(--blue); font-family: var(--mono);\">Proc B</span>\n        </div>\n      </div>\n      <div style=\"font-size: 0.75rem; color: var(--text); line-height: 1.45;\">\n        Bypasses Kernel transfer loops. The OS maps the same physical RAM block into the virtual spaces of both processes, enabling speed matches of hardware RAM access.\n      </div>\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- SOCKET PANEL -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);\">\n    <div>\n      <div style=\"display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;\">\n        <span style=\"font-size: 1.25rem;\">\ud83c\udf10</span>\n        <strong style=\"font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;\">Socket</strong>\n      </div>\n      <!-- Socket Visual -->\n      <div style=\"background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;\">\n        <div style=\"display: flex; align-items: center; gap: 0.75rem; width: 100%; justify-content: center;\">\n          <div style=\"border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono);\">A</div>\n          <div style=\"border-top: 2px dotted var(--blue); width: 40px;\"></div>\n          <div style=\"border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono);\">B</div>\n        </div>\n      </div>\n      <div style=\"font-size: 0.75rem; color: var(--text); line-height: 1.45;\">\n        A network endpoint connection. Processes read/write streams using socket bindings, enabling communication locally or across host computers via IP protocols.\n      </div>\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "4. EdgeCase: Visualizing IPC",
+          "content": [
+            {
+              "type": "p",
+              "text": "Use the interactive simulator below to observe the mechanics of raw byte streams (Pipes) versus discrete structured messages (Message Queues)."
+            },
+            {
+              "type": "edgecase",
+              "id": "ipc-edgecase"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "when-waiting-was-too-expensive",

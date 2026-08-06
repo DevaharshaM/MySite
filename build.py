@@ -63,7 +63,9 @@ systemsTreeNodes = {
     "when-waiting-was-too-expensive",
     "remembering-the-moment",
     "the-great-swap",
-    "scheduling-in-the-wild"
+    "scheduling-in-the-wild",
+    "one-brain-wasnt-enough",
+    "when-silence-wasnt-an-option"
   ]
 }
 
@@ -356,11 +358,11 @@ def build_navigation_html(post, all_posts_dict):
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
-        elif post_id == "scheduling-in-the-wild":
+        elif post_id == "when-silence-wasnt-an-option":
             next_html = """
                 <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  Real-Time Scheduling →
+                  Synchronization →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """

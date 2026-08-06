@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Scheduling in the Wild | PrajnaEdge</title>
+<title>When Silence Wasn't an Option | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/scheduling-in-the-wild/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/when-silence-wasnt-an-option/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -193,64 +193,98 @@
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
       <div id="blog-post-content">
     <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
-    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Scheduling in the Wild</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How today's operating systems decide who runs next.</p>
-    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Scheduling</span><span class="tag">Linux CFS</span><span class="tag">Windows Dynamic</span><span class="tag">macOS QoS</span><span class="tag">Android EAS</span><span class="tag">RTOS</span></div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">When Silence Wasn't an Option</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How independent Processes learned to exchange information.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">IPC</span><span class="tag">Pipes</span><span class="tag">Message Queues</span><span class="tag">Shared Memory</span><span class="tag">Sockets</span></div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Evolution of Scheduling</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The algorithms we studied earlier—First-Come First-Served (FCFS), Shortest Job First (SJF), Priority Scheduling, and Round Robin—were not discarded. They became the engineering foundation upon which today's schedulers evolved.</p><div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin: 2rem 0; font-family: var(--mono); font-size: 0.8rem;">
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>FCFS</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Order of Arrival</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>SJF / SRTF</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Shortest Job First</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>Priority Scheduling</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Static Urgency Levels</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>Round Robin</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Time-Slicing Rotation</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--blue); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.1); width: 220px; text-align: center; border-color: var(--blue);">
-    <strong>Modern Hybrid Schedulers</strong><br><span style="color: #A5F3FC; font-size: 0.7rem;">Dynamic Multi-Level Feedback</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 2px solid #10B981; border-radius: 6px; padding: 0.6rem 1rem; background: rgba(16, 185, 129, 0.1); width: 220px; text-align: center; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);">
-    <strong style="color: #10B981;">Today's Operating Systems</strong><br><span style="color: var(--text); font-size: 0.7rem;">Linux, Windows, macOS, Android</span>
-  </div>
-</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Why Simple Rules Were No Longer Enough</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">No single, simple scheduling rule can simultaneously satisfy the competing demands of modern computing. Optimizing for one metric almost always degrades another.</p><div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 2rem 0; text-align: center; @media(max-width:640px){grid-template-columns:1fr;}">
-  <div class="panel-box" style="margin: 0; padding: 0.8rem;">
-    <div style="font-weight: bold; color: #3B82F6; font-size: 0.85rem; margin-bottom: 0.3rem;">Fairness vs. Responsiveness</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
-      Giving every background task equal execution time (Fairness) stalls the foreground thread rendering the user's cursor movements (Responsiveness).
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Virtual Barrier</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By default, every Process runs in its own private sandbox. Its virtual address space is mapped to distinct physical RAM sectors. If a process attempts to reach outside its sandboxed address space directly, the hardware triggers a memory fault.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To exchange information, processes cannot simply read each other's variables. They must use structured communication paths.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Inter-Process Communication (IPC)</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To bypass the virtual memory boundary safely, processes must request the Kernel to act as a secure mediator. The Kernel allocates dedicated transit memory, receives data from one process, and delivers it securely to another. This channel is known as <strong>Inter-Process Communication (IPC)</strong>.</p><div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2.5rem 0; font-family: var(--mono);">
+  <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">IPC: The Kernel Mediator</div><div style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: rgba(30, 41, 59, 0.2); width: 100%; max-width: 500px; gap: 1rem;">
+    <!-- Process A -->
+    <div style="border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); color: #FFF; font-size: 0.75rem; text-align: center; width: 100px;">
+      <strong>Process A</strong>
+    </div><div style="color: var(--blue); font-size: 1.25rem;">&rarr;</div><!-- Kernel IPC -->
+    <div style="border: 1px dashed var(--blue); border-radius: 6px; padding: 0.5rem 0.75rem; background: var(--blue-glow); color: var(--blue); font-size: 0.7rem; font-weight: bold; text-align: center; width: 150px;">
+      Kernel IPC<br><span style="font-size: 0.6rem; color: var(--muted);">Buffer / Message Queue</span>
+    </div><div style="color: var(--blue); font-size: 1.25rem;">&rarr;</div><!-- Process B -->
+    <div style="border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); color: #FFF; font-size: 0.75rem; text-align: center; width: 100px;">
+      <strong>Process B</strong>
     </div>
   </div>
-  <div class="panel-box" style="margin: 0; padding: 0.8rem;">
-    <div style="font-weight: bold; color: #10B981; font-size: 0.85rem; margin-bottom: 0.3rem;">Throughput vs. Battery Life</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
-      Running the CPU at max frequency to finish computational workloads faster (Throughput) drains the battery cells and generates extreme heat (Battery Life).
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Depending on performance constraints and communication patterns, developers choose between different IPC mechanisms.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Toolkit of Exchange</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Modern operating systems provide four main ways to exchange data across process boundaries:</p><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}"><!-- PIPE PANEL -->
+  <div class="panel-box" style="margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <span style="font-size: 1.25rem;">📟</span>
+        <strong style="font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;">Pipe</strong>
+      </div>
+      <!-- Pipe Visual -->
+      <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+        <div style="border: 2px solid var(--blue); border-radius: 4px; height: 24px; width: 85%; display: flex; align-items: center; justify-content: space-around; overflow: hidden; background: var(--surface2);">
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--blue);"></div>
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--blue); opacity: 0.7;"></div>
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--blue); opacity: 0.4;"></div>
+        </div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text); line-height: 1.45;">
+        A unidirectional, raw byte stream buffer. Process A writes data into the write end, and Process B reads it from the read end in First-In, First-Out (FIFO) order. Once read, data is emptied.
+      </div>
     </div>
-  </div>
-  <div class="panel-box" style="margin: 0; padding: 0.8rem;">
-    <div style="font-weight: bold; color: #F59E0B; font-size: 0.85rem; margin-bottom: 0.3rem;">Determinism vs. Multi-core</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
-      Guaranteeing that an operation finishes under a microsecond deadline (Real-Time) conflicts with loading it dynamically across multiple cores (Multi-core CPUs).
+  </div><!-- MESSAGE QUEUE PANEL -->
+  <div class="panel-box" style="margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <span style="font-size: 1.25rem;">📥</span>
+        <strong style="font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;">Message Queue</strong>
+      </div>
+      <!-- Queue Visual -->
+      <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem; gap: 0.5rem;">
+        <div style="border: 1px solid var(--border); border-radius: 3px; padding: 0.2rem 0.4rem; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono); color: #FFF;">Msg 1</div>
+        <div style="border: 1px solid var(--border); border-radius: 3px; padding: 0.2rem 0.4rem; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono); color: #FFF; opacity: 0.8;">Msg 2</div>
+        <div style="border: 1px solid var(--border); border-radius: 3px; padding: 0.2rem 0.4rem; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono); color: #FFF; opacity: 0.5;">Msg 3</div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text); line-height: 1.45;">
+        A kernel-managed list of structured messages. Processes can push message blocks into the queue asynchronously and read them when ready, maintaining discrete envelopes.
+      </div>
     </div>
-  </div>
-</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Today's Operating Systems</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because different devices serve different markets, their operating systems implement vastly different scheduling philosophies.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### Linux: Completely Fair Scheduler (CFS)
-*   <strong>Goal</strong>: Fairness across thousands of concurrent processes.
-*   <strong>Philosophy</strong>: Instead of managing fixed-priority queues, Linux CFS estimates how much CPU execution time every process has already received. The scheduler then selects the process that has received the least CPU time.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### Windows: Dynamic Priority Scheduling
-*   <strong>Goal</strong>: Instantaneous response for interactive applications.
-*   <strong>Philosophy</strong>: Windows dynamically boosts the priority of foreground threads (such as clicking a button or typing). Background tasks are temporarily throttled, then boosted once interactive tasks go idle.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### macOS: Quality of Service (QoS) based Scheduling
-*   <strong>Goal</strong>: Silky smooth user experience and interface animations.
-*   <strong>Philosophy</strong>: Threads are categorized by purpose—*User Interactive*, *User Initiated*, *Utility*, or *Background*. The scheduler allocates cores and execution windows according to this class structure.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### Android: Energy Aware Scheduling (EAS)
-*   <strong>Goal</strong>: High performance combined with long battery life.
-*   <strong>Philosophy</strong>: Built on top of the Linux scheduler, EAS estimates the energy consumption of different CPU cores (BIG.little architectures) before dispatching a thread, keeping low-demand work on low-power cores.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### RTOS (Real-Time Operating Systems)
-*   <strong>Goal</strong>: Absolute deterministic execution.
-*   <strong>Philosophy</strong>: Meeting strict deadlines is more important than fairness. An RTOS will starve all other work on the machine to guarantee that a safety-critical task completes on time.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Manthana: The Scheduling Trade-off</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every operating system values something different. If you were designing this system... which scheduling philosophy would you choose?</p><div id="wild-scheduling-manthana" class="manthana-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Reflection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The classic scheduling policies taught us how a single processor shares its time. Modern schedulers taught us how to make better decisions under competing constraints.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But we have operated under a silent assumption: that there is only one processor, executing one instruction stream at a time.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Today's computers rarely think with a single core.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">They think with many.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">And when multiple processors begin working simultaneously, sharing time is no longer the only challenge. The new frontier is sharing memory, coordinating state, and ensuring that processors working in parallel do not step on each other's feet.</p></div>
+  </div><!-- SHARED MEMORY PANEL -->
+  <div class="panel-box" style="margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <span style="font-size: 1.25rem;">💾</span>
+        <strong style="font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;">Shared Memory</strong>
+      </div>
+      <!-- Shared Memory Visual -->
+      <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+        <div style="border: 1px solid var(--blue); border-radius: 6px; width: 90%; height: 80%; padding: 0.3rem 0.5rem; background: var(--blue-glow); display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.55rem; color: var(--blue); font-family: var(--mono);">Proc A</span>
+          <span style="border: 1px solid var(--blue); border-radius: 4px; padding: 0.2rem 0.4rem; background: var(--surface); color: #FFF; font-size: 0.65rem; font-family: var(--mono); font-weight: bold;">Shared RAM</span>
+          <span style="font-size: 0.55rem; color: var(--blue); font-family: var(--mono);">Proc B</span>
+        </div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text); line-height: 1.45;">
+        Bypasses Kernel transfer loops. The OS maps the same physical RAM block into the virtual spaces of both processes, enabling speed matches of hardware RAM access.
+      </div>
+    </div>
+  </div><!-- SOCKET PANEL -->
+  <div class="panel-box" style="margin: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+        <span style="font-size: 1.25rem;">🌐</span>
+        <strong style="font-family: 'Syne', sans-serif; font-size: 1rem; color: #FFF;">Socket</strong>
+      </div>
+      <!-- Socket Visual -->
+      <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(148, 163, 184, 0.05); border-radius: 6px; padding: 0.8rem; height: 75px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; width: 100%; justify-content: center;">
+          <div style="border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono);">A</div>
+          <div style="border-top: 2px dotted var(--blue); width: 40px;"></div>
+          <div style="border: 1px solid var(--border); border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; background: var(--surface2); font-size: 0.6rem; font-family: var(--mono);">B</div>
+        </div>
+      </div>
+      <div style="font-size: 0.75rem; color: var(--text); line-height: 1.45;">
+        A network endpoint connection. Processes read/write streams using socket bindings, enabling communication locally or across host computers via IP protocols.
+      </div>
+    </div>
+  </div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. EdgeCase: Visualizing IPC</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Use the interactive simulator below to observe the mechanics of raw byte streams (Pipes) versus discrete structured messages (Message Queues).</p><div id="ipc-edgecase" class="edgecase-container"></div></div>
     <div style="margin-bottom:2.5rem">
       <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem"></h2>
       
@@ -261,12 +295,15 @@
         <div class="exploration-nav-grid">
           <div class="nav-prev">
             <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../explorations/the-great-swap/" onclick="openItem('the-great-swap', 'blogs')">← The Great Swap</a>
+            <a class="nav-link active" href="../../explorations/one-brain-wasnt-enough/" onclick="openItem('one-brain-wasnt-enough', 'blogs')">← One Brain Wasn't Enough</a>
         </div>
           <div class="nav-next" id="exploration-nav-next">
-            <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" href="../../explorations/one-brain-wasnt-enough/" onclick="openItem('one-brain-wasnt-enough', 'blogs')">One Brain Wasn't Enough →</a>
-        </div>
+                <span class="nav-dir-label">Next</span>
+                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                  Synchronization →
+                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+                </span>
+            </div>
         </div>
       </div>
     

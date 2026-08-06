@@ -139,7 +139,9 @@ const systemsTreeNodes = {
       { id: "when-waiting-was-too-expensive", title: "When Waiting Was Too Expensive" },
       { id: "remembering-the-moment", title: "Remembering the Moment" },
       { id: "the-great-swap", title: "The Great Swap" },
-      { id: "scheduling-in-the-wild", title: "Scheduling in the Wild" }
+      { id: "scheduling-in-the-wild", title: "Scheduling in the Wild" },
+      { id: "one-brain-wasnt-enough", title: "One Brain Wasn't Enough" },
+      { id: "when-silence-wasnt-an-option", title: "When Silence Wasn't an Option" }
     ]
   }
 };
@@ -6180,8 +6182,18 @@ function openItem(id, type) {
           } else if (item.id === "scheduling-in-the-wild") {
             nextHtml = `
               <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('one-brain-wasnt-enough', 'blogs')">One Brain Wasn't Enough →</a>
+            `;
+          } else if (item.id === "one-brain-wasnt-enough") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('when-silence-wasnt-an-option', 'blogs')">When Silence Wasn't an Option →</a>
+            `;
+          } else if (item.id === "when-silence-wasnt-an-option") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Real-Time Scheduling →
+                Synchronization →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
@@ -6431,6 +6443,8 @@ function initEdgeCase(containerId) {
     renderPreemptiveSimulator();
   } else if (containerId === 'swap-edgecase') {
     renderSwapSimulator();
+  } else if (containerId === 'ipc-edgecase') {
+    renderIpcEdgeCase();
   }
 }
 
@@ -13319,4 +13333,283 @@ function renderWildSchedulingManthana() {
   };
 
   renderScenario();
+}
+
+// ─── IPC EDGECASE SIMULATOR ────────────────────────────────────────
+function renderIpcEdgeCase() {
+  const container = document.getElementById('ipc-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let activeTab = 'pipe'; // 'pipe' or 'queue'
+  
+  // Pipe State
+  let pipeBuffer = [];
+  const pipeMax = 5;
+  let pipeWriteIndex = 0;
+  const pipeData = ['H', 'E', 'L', 'P', '!'];
+  let pipeInbox = [];
+  let pipeIntervalId = null;
+  let pipeAutoplay = false;
+
+  // Queue State
+  let queueBuffer = [];
+  const queueMax = 3;
+  let queueMsgIndex = 0;
+  const queueData = [
+    { id: 1, type: "LOG", payload: "User: Admin Login" },
+    { id: 2, type: "CMD", payload: "DB: Read Record #4" },
+    { id: 3, type: "SYS", payload: "Core: Thermal Check" },
+    { id: 4, type: "ALERT", payload: "RAM: Usage 92%" }
+  ];
+  let queueInbox = [];
+  let queueIntervalId = null;
+  let queueAutoplay = false;
+
+  function render() {
+    let tabHtml = `
+      <div style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1.5rem; justify-content: center;">
+        <button class="node-btn" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-color: ${activeTab === 'pipe' ? 'var(--blue)' : 'var(--border)'}; color: ${activeTab === 'pipe' ? 'var(--blue)' : 'var(--muted)'}; background: ${activeTab === 'pipe' ? 'var(--blue-glow)' : 'transparent'};" onclick="window.setIpcTab('pipe')">📟 Visualizing Pipe</button>
+        <button class="node-btn" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-color: ${activeTab === 'queue' ? 'var(--blue)' : 'var(--border)'}; color: ${activeTab === 'queue' ? 'var(--blue)' : 'var(--muted)'}; background: ${activeTab === 'queue' ? 'var(--blue-glow)' : 'transparent'};" onclick="window.setIpcTab('queue')">📥 Visualizing Message Queue</button>
+      </div>
+    `;
+
+    if (activeTab === 'pipe') {
+      let slotsHtml = "";
+      for (let i = 0; i < pipeMax; i++) {
+        let val = pipeBuffer[i] || "";
+        slotsHtml += `
+          <div style="border: 1px solid ${val ? 'var(--blue)' : 'var(--border)'}; border-radius: 4px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: ${val ? 'var(--blue-glow)' : 'var(--surface2)'}; font-family: var(--mono); font-size: 0.85rem; font-weight: bold; color: #FFF; transition: all 0.2s ease;">
+            ${val}
+          </div>
+        `;
+      }
+
+      let writeBtnStyle = pipeBuffer.length >= pipeMax ? "opacity: 0.5; pointer-events: none;" : "";
+      let readBtnStyle = pipeBuffer.length === 0 ? "opacity: 0.5; pointer-events: none;" : "";
+
+      container.innerHTML = `
+        ${tabHtml}
+        <div class="edgecase-header">Sequential Byte Stream: Pipe</div>
+        <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Processes write and read a continuous, unstructured sequence of raw bytes. Once read, bytes disappear.</div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 2fr 1.2fr; gap: 1rem; align-items: center; text-align: center; margin-bottom: 1.5rem; @media(max-width:640px){grid-template-columns: 1fr;}">
+          <!-- SENDER -->
+          <div class="panel-box" style="margin: 0; padding: 1rem; border-color: var(--border);">
+            <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Process A (Write)</div>
+            <div style="font-size: 0.75rem; color: var(--text); line-height: 1.4; margin-bottom: 1rem;">
+              Next byte to write:<br>
+              <span style="font-family: var(--mono); font-weight: bold; font-size: 1.2rem; color: #FFF;">'${pipeData[pipeWriteIndex % pipeData.length]}'</span>
+            </div>
+            <button class="node-btn" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; width: 100%; ${writeBtnStyle}" onclick="window.writePipeByte()">Write Byte</button>
+          </div>
+
+          <!-- PIPE -->
+          <div class="panel-box" style="margin: 0; padding: 1.25rem; border-color: var(--blue); background: rgba(30, 41, 59, 0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px;">
+            <div style="font-size: 0.6rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.75rem;">Kernel Buffer (${pipeBuffer.length}/${pipeMax} bytes)</div>
+            
+            <div style="display: flex; gap: 0.5rem; justify-content: center; width: 100%;">
+              ${slotsHtml}
+            </div>
+
+            <div style="font-size: 0.65rem; color: var(--muted); font-family: var(--mono); margin-top: 1rem;">FIFO Stream: First in, first out</div>
+          </div>
+
+          <!-- RECEIVER -->
+          <div class="panel-box" style="margin: 0; padding: 1rem; border-color: var(--border);">
+            <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Process B (Read)</div>
+            <div style="font-size: 0.75rem; color: var(--text); line-height: 1.4; margin-bottom: 1rem;">
+              Inbox Buffer:<br>
+              <span style="font-family: var(--mono); font-weight: bold; font-size: 0.9rem; color: #10B981; overflow-wrap: break-word; display: block; min-height: 20px;">
+                ${pipeInbox.length > 0 ? pipeInbox.map(b => `'${b}'`).join(' ') : '[empty]'}
+              </span>
+            </div>
+            <button class="node-btn" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; width: 100%; ${readBtnStyle}" onclick="window.readPipeByte()">Read Byte</button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--blue); background: var(--blue-glow);" onclick="window.togglePipeAutoplay()">
+            ${pipeAutoplay ? "Pause Autoplay" : "Autoplay Flow"}
+          </button>
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border);" onclick="window.resetPipeSimulator()">Reset Simulator</button>
+        </div>
+      `;
+    } else {
+      let msgsHtml = "";
+      if (queueBuffer.length === 0) {
+        msgsHtml = `<div style="font-size: 0.75rem; color: var(--muted); font-style: italic;">Queue is empty</div>`;
+      } else {
+        msgsHtml = queueBuffer.map((msg, idx) => {
+          return `
+            <div style="border: 1px solid var(--blue); border-radius: 4px; padding: 0.4rem 0.6rem; background: var(--surface2); width: 100%; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 0.7rem; animation: fadeIn 0.2s ease;">
+              <span style="border: 1px solid var(--blue); border-radius: 3px; padding: 1px 3px; background: var(--blue-glow); color: var(--blue); font-size: 0.55rem; font-weight: bold;">${msg.type}</span>
+              <span style="color: #FFF; font-weight: 500;">${msg.payload}</span>
+              <span style="color: var(--muted); font-size: 0.6rem;">Slot ${idx}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      let postBtnStyle = queueBuffer.length >= queueMax ? "opacity: 0.5; pointer-events: none;" : "";
+      let consumeBtnStyle = queueBuffer.length === 0 ? "opacity: 0.5; pointer-events: none;" : "";
+
+      container.innerHTML = `
+        ${tabHtml}
+        <div class="edgecase-header">Structured Envelope Queue: Message Queue</div>
+        <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Processes write and read discrete, structured messages. The receiver consumes a complete packet at a time.</div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr 1.2fr; gap: 1rem; align-items: center; text-align: center; margin-bottom: 1.5rem; @media(max-width:640px){grid-template-columns: 1fr;}">
+          <!-- SENDER -->
+          <div class="panel-box" style="margin: 0; padding: 1rem; border-color: var(--border);">
+            <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Process A (Post)</div>
+            <div style="font-size: 0.75rem; color: var(--text); line-height: 1.4; margin-bottom: 1rem; min-height: 52px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <span style="font-size: 0.6rem; color: var(--muted); margin-bottom: 0.25rem;">Next Message:</span>
+              <span style="border: 1px solid var(--blue); border-radius: 3px; padding: 1px 4px; background: var(--blue-glow); color: var(--blue); font-size: 0.55rem; font-weight: bold; font-family: var(--mono); margin-bottom: 0.2rem;">
+                ${queueData[queueMsgIndex % queueData.length].type}
+              </span>
+              <span style="font-family: var(--mono); font-weight: 500; font-size: 0.75rem; color: #FFF; text-align: center;">
+                "${queueData[queueMsgIndex % queueData.length].payload}"
+              </span>
+            </div>
+            <button class="node-btn" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; width: 100%; ${postBtnStyle}" onclick="window.postQueueMessage()">Post Message</button>
+          </div>
+
+          <!-- MESSAGE QUEUE -->
+          <div class="panel-box" style="margin: 0; padding: 1.25rem; border-color: var(--blue); background: rgba(30, 41, 59, 0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; gap: 0.4rem;">
+            <div style="font-size: 0.6rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Kernel Queue (${queueBuffer.length}/${queueMax} slots)</div>
+            ${msgsHtml}
+          </div>
+
+          <!-- RECEIVER -->
+          <div class="panel-box" style="margin: 0; padding: 1rem; border-color: var(--border);">
+            <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Process B (Consume)</div>
+            <div style="font-size: 0.75rem; color: var(--text); line-height: 1.4; margin-bottom: 1rem; min-height: 52px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+              <span style="font-size: 0.6rem; color: var(--muted); margin-bottom: 0.25rem;">Last Consumed:</span>
+              ${queueInbox.length > 0 ? `
+                <span style="border: 1px solid #10B981; border-radius: 3px; padding: 1px 4px; background: rgba(16,185,129,0.1); color: #10B981; font-size: 0.55rem; font-weight: bold; font-family: var(--mono); margin-bottom: 0.2rem;">
+                  ${queueInbox[queueInbox.length - 1].type}
+                </span>
+                <span style="font-family: var(--mono); font-weight: 500; font-size: 0.75rem; color: #10B981; text-align: center;">
+                  "${queueInbox[queueInbox.length - 1].payload}"
+                </span>
+              ` : `
+                <span style="font-family: var(--mono); font-weight: bold; font-size: 0.8rem; color: var(--muted);">[none]</span>
+              `}
+            </div>
+            <button class="node-btn" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; width: 100%; ${consumeBtnStyle}" onclick="window.consumeQueueMessage()">Consume Msg</button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--blue); background: var(--blue-glow);" onclick="window.toggleQueueAutoplay()">
+            ${queueAutoplay ? "Pause Autoplay" : "Autoplay Flow"}
+          </button>
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border);" onclick="window.resetQueueSimulator()">Reset Simulator</button>
+        </div>
+      `;
+    }
+  }
+
+  window.setIpcTab = function(tab) {
+    activeTab = tab;
+    if (pipeIntervalId) clearInterval(pipeIntervalId);
+    if (queueIntervalId) clearInterval(queueIntervalId);
+    pipeAutoplay = false;
+    queueAutoplay = false;
+    render();
+  };
+
+  window.writePipeByte = function() {
+    if (pipeBuffer.length >= pipeMax) return;
+    const nextByte = pipeData[pipeWriteIndex % pipeData.length];
+    pipeBuffer.push(nextByte);
+    pipeWriteIndex++;
+    render();
+  };
+
+  window.readPipeByte = function() {
+    if (pipeBuffer.length === 0) return;
+    const readByte = pipeBuffer.shift();
+    pipeInbox.push(readByte);
+    if (pipeInbox.length > 8) pipeInbox.shift();
+    render();
+  };
+
+  window.togglePipeAutoplay = function() {
+    pipeAutoplay = !pipeAutoplay;
+    if (pipeAutoplay) {
+      pipeIntervalId = setInterval(() => {
+        if (!document.getElementById('ipc-edgecase')) {
+          clearInterval(pipeIntervalId);
+          return;
+        }
+        if (pipeBuffer.length < pipeMax && (Math.random() > 0.4 || pipeBuffer.length === 0)) {
+          window.writePipeByte();
+        } else {
+          window.readPipeByte();
+        }
+      }, 1000);
+    } else {
+      if (pipeIntervalId) clearInterval(pipeIntervalId);
+    }
+    render();
+  };
+
+  window.resetPipeSimulator = function() {
+    pipeBuffer = [];
+    pipeWriteIndex = 0;
+    pipeInbox = [];
+    pipeAutoplay = false;
+    if (pipeIntervalId) clearInterval(pipeIntervalId);
+    render();
+  };
+
+  window.postQueueMessage = function() {
+    if (queueBuffer.length >= queueMax) return;
+    const nextMsg = queueData[queueMsgIndex % queueData.length];
+    queueBuffer.push(nextMsg);
+    queueMsgIndex++;
+    render();
+  };
+
+  window.consumeQueueMessage = function() {
+    if (queueBuffer.length === 0) return;
+    const msg = queueBuffer.shift();
+    queueInbox.push(msg);
+    if (queueInbox.length > 3) queueInbox.shift();
+    render();
+  };
+
+  window.toggleQueueAutoplay = function() {
+    queueAutoplay = !queueAutoplay;
+    if (queueAutoplay) {
+      queueIntervalId = setInterval(() => {
+        if (!document.getElementById('ipc-edgecase')) {
+          clearInterval(queueIntervalId);
+          return;
+        }
+        if (queueBuffer.length < queueMax && (Math.random() > 0.5 || queueBuffer.length === 0)) {
+          window.postQueueMessage();
+        } else {
+          window.consumeQueueMessage();
+        }
+      }, 1200);
+    } else {
+      if (queueIntervalId) clearInterval(queueIntervalId);
+    }
+    render();
+  };
+
+  window.resetQueueSimulator = function() {
+    queueBuffer = [];
+    queueMsgIndex = 0;
+    queueInbox = [];
+    queueAutoplay = false;
+    if (queueIntervalId) clearInterval(queueIntervalId);
+    render();
+  };
+
+  render();
 }

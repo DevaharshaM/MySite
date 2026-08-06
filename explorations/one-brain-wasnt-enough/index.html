@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Scheduling in the Wild | PrajnaEdge</title>
+<title>One Brain Wasn't Enough | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/scheduling-in-the-wild/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/one-brain-wasnt-enough/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -193,64 +193,97 @@
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
       <div id="blog-post-content">
     <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
-    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Scheduling in the Wild</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How today's operating systems decide who runs next.</p>
-    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Scheduling</span><span class="tag">Linux CFS</span><span class="tag">Windows Dynamic</span><span class="tag">macOS QoS</span><span class="tag">Android EAS</span><span class="tag">RTOS</span></div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">One Brain Wasn't Enough</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How computing learned to think in parallel.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Multicore</span><span class="tag">Concurrence</span><span class="tag">Parallelism</span><span class="tag">Shared Resources</span></div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Evolution of Scheduling</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The algorithms we studied earlier—First-Come First-Served (FCFS), Shortest Job First (SJF), Priority Scheduling, and Round Robin—were not discarded. They became the engineering foundation upon which today's schedulers evolved.</p><div style="display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin: 2rem 0; font-family: var(--mono); font-size: 0.8rem;">
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>FCFS</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Order of Arrival</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>SJF / SRTF</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Shortest Job First</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>Priority Scheduling</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Static Urgency Levels</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.03); width: 220px; text-align: center;">
-    <strong>Round Robin</strong><br><span style="color: var(--muted); font-size: 0.7rem;">Time-Slicing Rotation</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 1px solid var(--blue); border-radius: 6px; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.1); width: 220px; text-align: center; border-color: var(--blue);">
-    <strong>Modern Hybrid Schedulers</strong><br><span style="color: #A5F3FC; font-size: 0.7rem;">Dynamic Multi-Level Feedback</span>
-  </div>
-  <div style="color: var(--blue);">↓</div>
-  <div style="border: 2px solid #10B981; border-radius: 6px; padding: 0.6rem 1rem; background: rgba(16, 185, 129, 0.1); width: 220px; text-align: center; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);">
-    <strong style="color: #10B981;">Today's Operating Systems</strong><br><span style="color: var(--text); font-size: 0.7rem;">Linux, Windows, macOS, Android</span>
-  </div>
-</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Why Simple Rules Were No Longer Enough</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">No single, simple scheduling rule can simultaneously satisfy the competing demands of modern computing. Optimizing for one metric almost always degrades another.</p><div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 2rem 0; text-align: center; @media(max-width:640px){grid-template-columns:1fr;}">
-  <div class="panel-box" style="margin: 0; padding: 0.8rem;">
-    <div style="font-weight: bold; color: #3B82F6; font-size: 0.85rem; margin-bottom: 0.3rem;">Fairness vs. Responsiveness</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
-      Giving every background task equal execution time (Fairness) stalls the foreground thread rendering the user's cursor movements (Responsiveness).
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Single-Core Assumption</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Historically, a CPU was a singular brain. To run multiple programs at the same time, the operating system had to perform a delicate illusion of multitasking. It sliced CPU execution time into tiny fragments, switching rapidly between processes so that human eyes perceived simultaneous behavior.</p><div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 2.5rem 0; font-family: var(--mono);">
+  <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Our Previous Assumption: The Single-Core Timeline</div><div style="display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: rgba(30, 41, 59, 0.2); width: 100%; max-width: 550px; justify-content: space-between; flex-wrap: wrap;">
+    <!-- Ready Queue -->
+    <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+      <div style="font-size: 0.75rem; color: var(--muted); font-weight: 500;">Ready Queue</div>
+      <div style="display: flex; gap: 0.5rem;">
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; background: var(--surface2); opacity: 0.6; font-size: 0.75rem; font-family: var(--mono);">P3 <span style="font-size:0.6rem; color:var(--muted);">READY</span></div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; background: var(--surface2); opacity: 0.8; font-size: 0.75rem; font-family: var(--mono);">P2 <span style="font-size:0.6rem; color:var(--muted);">READY</span></div>
+      </div>
+    </div><!-- Time-Sharing Arrow -->
+    <div style="color: var(--blue); font-size: 1.5rem;">➔</div><!-- Active Core -->
+    <div style="border: 1px dashed var(--blue); border-radius: 8px; padding: 1rem; background: var(--blue-glow); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 160px;">
+      <div style="font-size: 0.65rem; color: var(--blue); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Active CPU Core</div>
+      <div style="border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem 1rem; background: var(--surface); color: #FFF; font-weight: bold; box-shadow: 0 0 10px rgba(59, 130, 246, 0.2); font-size: 0.85rem; font-family: var(--mono);">P1 <span style="font-size:0.75rem; color:#10B981; font-weight:bold; margin-left:0.25rem;">RUNNING</span></div>
+      <div style="font-size: 0.6rem; color: var(--muted);">Executing...</div>
     </div>
   </div>
-  <div class="panel-box" style="margin: 0; padding: 0.8rem;">
-    <div style="font-weight: bold; color: #10B981; font-size: 0.85rem; margin-bottom: 0.3rem;">Throughput vs. Battery Life</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
-      Running the CPU at max frequency to finish computational workloads faster (Throughput) drains the battery cells and generates extreme heat (Battery Life).
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For decades, the goal of systems engineering was to make this single brain run faster.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Physical Ceiling</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We scaled computing power by increasing the clock frequency (gigahertz) of single processors. But around the mid-2000s, this approach hit a physical ceiling:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   <strong>The Thermal Wall</strong>: Higher speeds generate exponentially more heat. A single silicon chip running at 10 GHz would consume as much energy and generate as much heat as a small cooking surface, melting its own silicon structure.
+*   <strong>The Voltage Boundary</strong>: We could no longer decrease transistor operating voltage without causing electric leakage (quantum tunneling) across microscopic gates.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To continue making computers faster, engineers could no longer make the single brain run quicker. Instead, they had to pack <strong>multiple distinct processor cores</strong> onto a single silicon chip.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Parallel Minds</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The transition to multicore architectures changed the rules of software execution. In a multicore system, true physical parallelism replaces the time-shared illusion of multitasking.</p><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}"><!-- SINGLE CORE COLUMN -->
+  <div class="panel-box" style="margin: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--border);">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: #FFF; margin-bottom: 0.5rem;">Single Core</div>
+      <div style="font-size: 0.75rem; color: var(--muted); font-family: var(--mono);">SEQUENTIAL TIME-SHARING</div>
+    </div><!-- Schematic Diagram -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.2rem 1rem; background: rgba(15, 23, 42, 0.4); border-radius: 6px; border: 1px solid rgba(148, 163, 184, 0.05); min-height: 180px; justify-content: center;">
+      <div style="font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem;">Core State</div>
+      <!-- Active -->
+      <div style="border: 1px solid var(--blue); background: var(--blue-glow); padding: 0.5rem; border-radius: 4px; font-family: var(--mono); font-size: 0.75rem; text-align: center; width: 100%;">
+        <span style="color: var(--blue); font-weight: bold;">CORE 0:</span> <span style="color: #FFF; font-weight: bold;">P1</span> <span style="font-size: 0.65rem; color: #10B981; font-weight: bold; margin-left: 0.25rem;">[RUNNING]</span>
+      </div><div style="font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem; margin-top: 0.5rem;">Ready Queue</div>
+      <!-- Queued -->
+      <div style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono); display: flex; gap: 0.5rem; justify-content: center; width: 100%;">
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.8; font-size: 0.7rem;">P2 <span style="font-size:0.6rem; color:var(--muted);">[READY]</span></div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.6; font-size: 0.7rem;">P3 <span style="font-size:0.6rem; color:var(--muted);">[READY]</span></div>
+      </div>
+    </div><div style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--text); line-height: 1.5; text-align: center;">
+      One active Process at a time. The operating system must perform context switches to rotate core execution.
     </div>
-  </div>
-  <div class="panel-box" style="margin: 0; padding: 0.8rem;">
-    <div style="font-weight: bold; color: #F59E0B; font-size: 0.85rem; margin-bottom: 0.3rem;">Determinism vs. Multi-core</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">
-      Guaranteeing that an operation finishes under a microsecond deadline (Real-Time) conflicts with loading it dynamically across multiple cores (Multi-core CPUs).
+  </div><!-- MULTI-CORE COLUMN -->
+  <div class="panel-box" style="margin: 0; padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between; border-color: var(--blue);">
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <div style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--blue); margin-bottom: 0.5rem;">Multi-Core</div>
+      <div style="font-size: 0.75rem; color: var(--blue); font-family: var(--mono);">SIMULTANEOUS PROCESSING</div>
+    </div><!-- Schematic Diagram -->
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.2rem 1rem; background: rgba(59, 130, 246, 0.02); border-radius: 6px; border: 1px solid var(--blue-glow); min-height: 180px; justify-content: center; width: 100%;">
+      <div style="font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem;">Core States</div>
+      <!-- Parallel Cores Box -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; width: 100%;">
+        <div style="border: 1px solid var(--blue); padding: 0.6rem 0.5rem; border-radius: 4px; text-align: center; background: var(--surface);">
+          <div style="font-size: 0.55rem; color: var(--muted); font-family: var(--mono); margin-bottom: 0.25rem;">CORE 0</div>
+          <div style="font-family: var(--mono); font-size: 0.75rem; font-weight: bold; color: #FFF;">P1 <span style="font-size: 0.65rem; color: #10B981; font-weight: bold; display: block; margin-top: 0.15rem;">[RUNNING]</span></div>
+        </div>
+        <div style="border: 1px solid #14B8A6; padding: 0.6rem 0.5rem; border-radius: 4px; text-align: center; background: var(--surface);">
+          <div style="font-size: 0.55rem; color: var(--muted); font-family: var(--mono); margin-bottom: 0.25rem;">CORE 1</div>
+          <div style="font-family: var(--mono); font-size: 0.75rem; font-weight: bold; color: #FFF;">P2 <span style="font-size: 0.65rem; color: #10B981; font-weight: bold; display: block; margin-top: 0.15rem;">[RUNNING]</span></div>
+        </div>
+      </div><div style="font-size: 0.6rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; align-self: flex-start; margin-left: 0.2rem; margin-top: 0.5rem;">Ready Queue</div>
+      <!-- Unscheduled -->
+      <div style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono); display: flex; gap: 0.5rem; justify-content: center; width: 100%;">
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.8; font-size: 0.7rem;">P3 <span style="font-size:0.6rem; color:var(--muted);">[READY]</span></div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.5rem; background: var(--surface2); opacity: 0.6; font-size: 0.7rem;">P4 <span style="font-size:0.6rem; color:var(--muted);">[READY]</span></div>
+      </div>
+    </div><div style="margin-top: 1.25rem; font-size: 0.75rem; color: var(--text); line-height: 1.5; text-align: center;">
+      Multiple Processes executing simultaneously. Parallel cores execute instruction streams independently.
     </div>
+  </div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Shared Frontier</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In a single-core environment, processes execute one by one, isolated by the operating system.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But in a multicore system where processes run side-by-side, we face a new engineering bottleneck: <strong>collaborative processing.</strong> Processes often need to work together on parts of the same application.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Imagine two parallel cores processing a single task: Core 0 computes a sensor state value, and Core 1 must read that state value to control an actuator.</p><div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; margin: 3rem 0; font-family: var(--mono);">
+  <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">The Collaborative Dilemma: Shared Resources</div><div style="position: relative; border: 1px solid var(--border); border-radius: 8px; padding: 2rem 1.5rem; background: rgba(30, 41, 59, 0.15); width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; gap: 2rem;">
+    <!-- Active Cores -->
+    <div style="display: flex; justify-content: space-between; width: 100%; max-width: 450px; z-index: 2;">
+      <!-- Core 0 -->
+      <div style="border: 1px solid var(--blue); border-radius: 6px; padding: 0.75rem; background: var(--surface); text-align: center; width: 140px; box-shadow: 0 0 10px rgba(59,130,246,0.15);">
+        <div style="font-size: 0.6rem; color: var(--blue); font-weight: bold; margin-bottom: 0.25rem;">CORE 0 (P1)</div>
+        <div style="font-size: 0.75rem; color: #FFF; font-weight: bold;">Writes: X = 42</div>
+      </div><!-- Core 1 -->
+      <div style="border: 1px solid #F59E0B; border-radius: 6px; padding: 0.75rem; background: var(--surface); text-align: center; width: 140px; box-shadow: 0 0 10px rgba(245,158,11,0.15);">
+        <div style="font-size: 0.6rem; color: #F59E0B; font-weight: bold; margin-bottom: 0.25rem;">CORE 1 (P2)</div>
+        <div style="font-size: 0.75rem; color: #FFF; font-weight: bold;">Reads: X</div>
+      </div>
+    </div><!-- Shared memory cell -->
+    <div style="border: 2px solid var(--border); border-radius: 50%; width: 90px; height: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--surface2); z-index: 2; margin-top: 1rem; box-shadow: 0 0 15px rgba(255,255,255,0.03);">
+      <div style="font-size: 0.55rem; color: var(--muted); font-weight: bold; text-transform: uppercase;">Shared RAM</div>
+      <div style="font-size: 1.1rem; color: var(--text); font-weight: bold; margin-top: 0.1rem;">[ X ]</div>
+    </div>
+  </div><div style="font-size: 0.75rem; color: var(--muted); line-height: 1.5; text-align: center; max-width: 500px; padding: 0 1rem;">
+    Because Core 0 and Core 1 execute independently, how can P2 safely read X only after P1 has finished writing it, without accessing corrupted or stale memory?
   </div>
-</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Today's Operating Systems</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because different devices serve different markets, their operating systems implement vastly different scheduling philosophies.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### Linux: Completely Fair Scheduler (CFS)
-*   <strong>Goal</strong>: Fairness across thousands of concurrent processes.
-*   <strong>Philosophy</strong>: Instead of managing fixed-priority queues, Linux CFS estimates how much CPU execution time every process has already received. The scheduler then selects the process that has received the least CPU time.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### Windows: Dynamic Priority Scheduling
-*   <strong>Goal</strong>: Instantaneous response for interactive applications.
-*   <strong>Philosophy</strong>: Windows dynamically boosts the priority of foreground threads (such as clicking a button or typing). Background tasks are temporarily throttled, then boosted once interactive tasks go idle.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### macOS: Quality of Service (QoS) based Scheduling
-*   <strong>Goal</strong>: Silky smooth user experience and interface animations.
-*   <strong>Philosophy</strong>: Threads are categorized by purpose—*User Interactive*, *User Initiated*, *Utility*, or *Background*. The scheduler allocates cores and execution windows according to this class structure.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### Android: Energy Aware Scheduling (EAS)
-*   <strong>Goal</strong>: High performance combined with long battery life.
-*   <strong>Philosophy</strong>: Built on top of the Linux scheduler, EAS estimates the energy consumption of different CPU cores (BIG.little architectures) before dispatching a thread, keeping low-demand work on low-power cores.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">### RTOS (Real-Time Operating Systems)
-*   <strong>Goal</strong>: Absolute deterministic execution.
-*   <strong>Philosophy</strong>: Meeting strict deadlines is more important than fairness. An RTOS will starve all other work on the machine to guarantee that a safety-critical task completes on time.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Manthana: The Scheduling Trade-off</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every operating system values something different. If you were designing this system... which scheduling philosophy would you choose?</p><div id="wild-scheduling-manthana" class="manthana-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Reflection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The classic scheduling policies taught us how a single processor shares its time. Modern schedulers taught us how to make better decisions under competing constraints.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But we have operated under a silent assumption: that there is only one processor, executing one instruction stream at a time.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Today's computers rarely think with a single core.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">They think with many.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">And when multiple processors begin working simultaneously, sharing time is no longer the only challenge. The new frontier is sharing memory, coordinating state, and ensuring that processors working in parallel do not step on each other's feet.</p></div>
+</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Reflection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have broken the single-processor assumption. Processes now run side-by-side across parallel cores.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But this independence breeds a new coordination puzzle.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>How do Processes running at the same time exchange information?</strong></p></div>
     <div style="margin-bottom:2.5rem">
       <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem"></h2>
       
@@ -261,11 +294,11 @@
         <div class="exploration-nav-grid">
           <div class="nav-prev">
             <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../explorations/the-great-swap/" onclick="openItem('the-great-swap', 'blogs')">← The Great Swap</a>
+            <a class="nav-link active" href="../../explorations/scheduling-in-the-wild/" onclick="openItem('scheduling-in-the-wild', 'blogs')">← Scheduling in the Wild</a>
         </div>
           <div class="nav-next" id="exploration-nav-next">
             <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" href="../../explorations/one-brain-wasnt-enough/" onclick="openItem('one-brain-wasnt-enough', 'blogs')">One Brain Wasn't Enough →</a>
+            <a class="nav-link active" href="../../explorations/when-silence-wasnt-an-option/" onclick="openItem('when-silence-wasnt-an-option', 'blogs')">When Silence Wasn't an Option →</a>
         </div>
         </div>
       </div>
