@@ -6009,6 +6009,147 @@
       }
     },
     {
+      "id": "when-nobody-could-move",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When Nobody Could Move",
+      "subtitle": "Why sometimes the safest system comes to a complete stop.",
+      "date": "7th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Synchronization",
+        "Mutexes",
+        "Deadlocks",
+        "Process Management"
+      ],
+      "sections": [
+        {
+          "heading": "1. The Standstill",
+          "content": [
+            {
+              "type": "p",
+              "text": "<div id=\"deadlock-manthana\" class=\"manthana-container manthana-theme\"></div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "2. The Deadlock",
+          "content": [
+            {
+              "type": "p",
+              "text": "You just observed synchronization prevent progress."
+            },
+            {
+              "type": "p",
+              "text": "A **Deadlock** is a state where two or more processes are unable to execute because each is waiting for a resource held by another."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: var(--mono); font-size: 0.8rem; width: 100%;\">\n  <div style=\"font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;\">The Deadlock Loop</div>\n  <div style=\"display: flex; align-items: center; justify-content: center; gap: 1.5rem; border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; background: rgba(30, 41, 59, 0.25); max-width: 520px; width: 100%;\">\n    <div style=\"text-align: center; border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem; width: 100px;\">\n      <div style=\"color: #FFF; font-weight: bold;\">Process 1</div>\n      <div style=\"font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;\">Holds Mutex A</div>\n    </div>\n    <div style=\"font-size: 1.2rem; color: var(--blue);\">\u2794</div>\n    <div style=\"text-align: center; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; width: 100px;\">\n      <div style=\"color: var(--text);\">Mutex B</div>\n      <div style=\"font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;\">Held by P2</div>\n    </div>\n    <div style=\"font-size: 1.2rem; color: var(--blue);\">\u2794</div>\n    <div style=\"text-align: center; border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem; width: 100px;\">\n      <div style=\"color: #FFF; font-weight: bold;\">Process 2</div>\n      <div style=\"font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;\">Holds Mutex B</div>\n    </div>\n    <div style=\"font-size: 1.2rem; color: var(--blue);\">\u2794</div>\n    <div style=\"text-align: center; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; width: 100px;\">\n      <div style=\"color: var(--text);\">Mutex A</div>\n      <div style=\"font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;\">Held by P1</div>\n    </div>\n    <div style=\"font-size: 1.2rem; color: var(--blue);\">\u2794 (Back to P1)</div>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "3. Coffman Conditions",
+          "content": [
+            {
+              "type": "p",
+              "text": "A Deadlock can only occur if all four **Coffman Conditions** are met simultaneously:"
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 2rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}\">\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.2rem; border-color: var(--border);\">\n    <div style=\"font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;\">1. Mutual Exclusion</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">Only one process can hold a resource at a time. Other processes requesting it must wait.</div>\n  </div>\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.2rem; border-color: var(--border);\">\n    <div style=\"font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;\">2. Hold and Wait</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">A process holding allocated resources can request additional resources without releasing its current keys.</div>\n  </div>\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.2rem; border-color: var(--border);\">\n    <div style=\"font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;\">3. No Preemption</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">Resources cannot be forcibly confiscated from a process; they must be released voluntarily.</div>\n  </div>\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.2rem; border-color: var(--border);\">\n    <div style=\"font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;\">4. Circular Wait</div>\n    <div style=\"font-size: 0.75rem; color: var(--muted); line-height: 1.4;\">Process A waits for a resource held by B, which waits for a resource held by C, which waits for a resource held by A.</div>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "4. Mitigation Strategies",
+          "content": [
+            {
+              "type": "p",
+              "text": "Engineers resolve or bypass Deadlocks using three general approaches:"
+            },
+            {
+              "type": "p",
+              "text": "### 4.1 Prevention"
+            },
+            {
+              "type": "p",
+              "text": "Prevention strategies eliminate one of the four Coffman conditions to make deadlocks mathematically impossible."
+            },
+            {
+              "type": "p",
+              "text": "One common Prevention strategy is to eliminate **Circular Wait**. By enforcing a strict lock acquisition order, the system guarantees that a circular dependency can never form."
+            },
+            {
+              "type": "p",
+              "text": "#### 4.1.1 EdgeCase: Lock Ordering"
+            },
+            {
+              "type": "p",
+              "text": "Watch how Lock Ordering prevents deadlocks. By requiring all processes to acquire Mutex A before Mutex B, Process 2 is suspended immediately at the first step, allowing Process 1 to complete and unlock the hardware."
+            },
+            {
+              "type": "edgecase",
+              "id": "deadlock-edgecase"
+            },
+            {
+              "type": "p",
+              "text": "### 4.2 Avoidance"
+            },
+            {
+              "type": "p",
+              "text": "Instead of preventing deadlocks by restricting behaviour, can the Operating System simply predict whether granting a resource request would eventually become dangerous? This naturally introduces the **Banker's Algorithm**."
+            },
+            {
+              "type": "p",
+              "text": "Imagine a banker lending money. A banker never gives away all available money simply because someone asks. Instead, the banker first asks:"
+            },
+            {
+              "type": "quote",
+              "text": "*\"If I approve this request, will everyone still be able to finish?\"*"
+            },
+            {
+              "type": "p",
+              "text": "If the answer is yes, approve the request. If the answer is no, make the process wait. This is exactly the philosophy behind resource Avoidance."
+            },
+            {
+              "type": "p",
+              "text": "#### 4.2.1 EdgeCase: Banker's Algorithm"
+            },
+            {
+              "type": "p",
+              "text": "Watch how the OS dynamically checks resource safety. When a process requests resources, the OS pauses and simulates the future path. If a safe sequence exists, it grants the request (Green Path). If it leads to a dead-end, it makes the process wait (Red Path)."
+            },
+            {
+              "type": "edgecase",
+              "id": "bankers-edgecase"
+            },
+            {
+              "type": "p",
+              "text": "### 4.3 Detection & Recovery"
+            },
+            {
+              "type": "p",
+              "text": "Some operating systems choose to allow deadlocks to occur and run periodic checks to identify wait-loops. Recovery happens only after a deadlock has already occurred, using practical techniques such as:"
+            },
+            {
+              "type": "p",
+              "text": "*   Terminating a waiting process\n*   Rolling back work\n*   Reclaiming resources\n*   Restarting the subsystem\n*   Allowing a hardware watchdog timer to reset the system in embedded products"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
       "id": "when-one-loop-was-enough",
       "category": "Integration",
       "series": "System Explorations",
@@ -6423,6 +6564,174 @@
         "paragraphs": [],
         "quote": ""
       }
+    },
+    {
+      "id": "when-sharing-became-dangerous",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When Sharing Became Dangerous",
+      "subtitle": "Why communication alone was never enough.",
+      "date": "7th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Synchronization",
+        "Semaphores",
+        "Mutexes",
+        "Race Conditions"
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      },
+      "heading": "The Eternal Wait",
+      "paragraphs": "",
+      "- \"But our journey through process coordination reveals one final, silent hazard": "what happens when Process A locks Resource 1 and waits for Resource 2, while Process B locks Resource 2 and waits for Resource 1?\"",
+      "quote": "Two threads in perfect harmony can freeze a system in absolute silence if they wait on each other's keys.",
+      "sections": [
+        {
+          "heading": "1. The Parallel Race",
+          "content": [
+            {
+              "type": "p",
+              "text": "<div id=\"sharing-dangerous-manthana\" class=\"manthana-container manthana-theme\"></div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "2. The Race Condition",
+          "content": [
+            {
+              "type": "p",
+              "text": "You just observed the same program producing different results."
+            },
+            {
+              "type": "p",
+              "text": "The hardware did not change."
+            },
+            {
+              "type": "p",
+              "text": "The code did not change."
+            },
+            {
+              "type": "p",
+              "text": "Only the execution order changed."
+            },
+            {
+              "type": "p",
+              "text": "This phenomenon is known as a **Race Condition**."
+            },
+            {
+              "type": "p",
+              "text": "Because a simple operation like `Counter++` is not atomic, the CPU compiles it into three distinct operations:"
+            },
+            {
+              "type": "p",
+              "text": "1.  **Read**: Load `Counter` from RAM into a local CPU register.\n2.  **Increment**: Add `1` to the local register value.\n3.  **Write**: Write the register value back to the RAM address."
+            },
+            {
+              "type": "p",
+              "text": "If two cores interleave these instructions in time, they clash:"
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: var(--mono); font-size: 0.8rem;\">\n  <div style=\"font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;\">Interleaved Instruction Execution</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; align-items: center; justify-content: center; width: 100%;\">\n    <div style=\"display: flex; flex-direction: column; gap: 0.5rem; border: 1px solid var(--border); padding: 1.25rem; border-radius: 8px; background: rgba(30, 41, 59, 0.25); width: 100%; max-width: 520px;\">\n      <div style=\"display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; color: var(--muted); font-size: 0.7rem; font-weight: bold;\">\n        <span>TIME</span>\n        <span>PROCESS A</span>\n        <span>PROCESS B</span>\n        <span>RAM</span>\n      </div>\n      <div style=\"display: flex; justify-content: space-between; font-size: 0.75rem;\">\n        <span style=\"color: var(--muted);\">T1</span>\n        <span style=\"color: var(--blue);\">Read Counter (100)</span>\n        <span style=\"color: var(--muted);\">-</span>\n        <span style=\"color: #FFF; font-weight: bold;\">100</span>\n      </div>\n      <div style=\"display: flex; justify-content: space-between; font-size: 0.75rem;\">\n        <span style=\"color: var(--muted);\">T2</span>\n        <span style=\"color: var(--muted);\">-</span>\n        <span style=\"color: #F59E0B;\">Read Counter (100)</span>\n        <span style=\"color: #FFF; font-weight: bold;\">100</span>\n      </div>\n      <div style=\"display: flex; justify-content: space-between; font-size: 0.75rem;\">\n        <span style=\"color: var(--muted);\">T3</span>\n        <span style=\"color: var(--blue);\">Increment & Write (101)</span>\n        <span style=\"color: var(--muted);\">-</span>\n        <span style=\"color: var(--blue); font-weight: bold;\">101</span>\n      </div>\n      <div style=\"display: flex; justify-content: space-between; font-size: 0.75rem;\">\n        <span style=\"color: var(--muted);\">T4</span>\n        <span style=\"color: var(--muted);\">-</span>\n        <span style=\"color: #F59E0B;\">Increment & Write (101)</span>\n        <span style=\"color: #F59E0B; font-weight: bold;\">101 (Lost Update)</span>\n      </div>\n    </div>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "3. Synchronization",
+          "content": [
+            {
+              "type": "p",
+              "text": "To solve this clashing, the Kernel must enforce coordination rules. We call this **Synchronization**."
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: flex; justify-content: center; margin: 2rem 0;\">\n  <div style=\"display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; background: rgba(30, 41, 59, 0.25); max-width: 480px; width: 100%;\">\n    <div style=\"font-size: 1.5rem; color: var(--blue);\">\ud83d\udee1\ufe0f</div>\n    <div style=\"text-align: left; font-size: 0.75rem; color: var(--text); line-height: 1.4;\">\n      <strong>Mutual Exclusion:</strong> A synchronization boundary that guarantees only one CPU core accesses a specific shared memory variable or peripheral address at a time.\n    </div>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "4. Semaphore",
+          "content": [
+            {
+              "type": "p",
+              "text": "A **Semaphore** is a Kernel-managed tool consisting of an integer counter and a blocked queue:"
+            },
+            {
+              "type": "p",
+              "text": "*   **Counting Semaphore**: Manages a pool of multiple resources. Processes decrement the counter to acquire a resource and increment it to return it. If the counter is `0`, the requesting process is blocked.\n*   **Binary Semaphore**: Restricted to `0` or `1`, acting as an on/off gate."
+            }
+          ]
+        },
+        {
+          "heading": "5. EdgeCase: Counting Semaphore",
+          "content": [
+            {
+              "type": "p",
+              "text": "Watch how a Counting Semaphore of capacity 2 manages access to a shared connection pool. If slots are full, processes wait automatically in the queue."
+            },
+            {
+              "type": "edgecase",
+              "id": "sharing-dangerous-semaphore-edgecase"
+            }
+          ]
+        },
+        {
+          "heading": "6. Mutex",
+          "content": [
+            {
+              "type": "p",
+              "text": "A **Mutex** (Mutual Exclusion Lock) is a binary lock with **ownership**. Only the thread that locks it can unlock it."
+            },
+            {
+              "type": "p",
+              "text": "In embedded architectures, this is critical. Writing to a physical peripheral register (like setting configuration registers on an EEPROM chip or flash block) must be performed by exactly one process without interruption. An interrupted register write would corrupt the hardware state."
+            }
+          ]
+        },
+        {
+          "heading": "7. EdgeCase: Mutex Lock",
+          "content": [
+            {
+              "type": "p",
+              "text": "Watch Process 1 and Process 2 write to a single EEPROM. When Process 1 locks the Mutex, Process 2 is automatically suspended until Process 1 unlocks the resource."
+            },
+            {
+              "type": "edgecase",
+              "id": "sharing-dangerous-mutex-edgecase"
+            }
+          ]
+        },
+        {
+          "heading": "8. Comparison",
+          "content": [
+            {
+              "type": "p",
+              "text": "Choosing the correct synchronization boundary depends on the specific engineering requirement:"
+            },
+            {
+              "type": "p",
+              "text": "<div style=\"display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2.5rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}\">\n  <!-- SEMAPHORE CARD -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.5rem; border-color: var(--border); display: flex; flex-direction: column; justify-content: space-between;\">\n    <div>\n      <div style=\"font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; color: #FFF; margin-bottom: 0.75rem;\">When should I use a Semaphore?</div>\n      <div style=\"font-size: 0.75rem; color: var(--text); line-height: 1.6;\">\n        <ul style=\"margin: 0.5rem 0 1rem 1rem; padding: 0; list-style-type: disc;\">\n          <li style=\"margin-bottom: 0.4rem;\">Resource pools</li>\n          <li style=\"margin-bottom: 0.4rem;\">Producer\u2013Consumer signalling</li>\n          <li style=\"margin-bottom: 0.4rem;\">Limited shared resources</li>\n        </ul>\n        <div style=\"font-weight: bold; margin-bottom: 0.25rem; color: var(--muted);\">Example:</div>\n        <span style=\"display: block; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); line-height: 1.4;\">\n          \u2022 DMA channels<br>\n          \u2022 Connection pools<br>\n          \u2022 Task notifications\n        </span>\n      </div>\n    </div>\n  </div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "<!-- MUTEX CARD -->\n  <div class=\"panel-box\" style=\"margin: 0; padding: 1.5rem; border-color: var(--blue); display: flex; flex-direction: column; justify-content: space-between;\">\n    <div>\n      <div style=\"font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem; color: var(--blue); margin-bottom: 0.75rem;\">When should I use a Mutex?</div>\n      <div style=\"font-size: 0.75rem; color: var(--text); line-height: 1.6;\">\n        <ul style=\"margin: 0.5rem 0 1rem 1rem; padding: 0; list-style-type: disc;\">\n          <li style=\"margin-bottom: 0.4rem;\">Exclusive ownership</li>\n          <li style=\"margin-bottom: 0.4rem;\">Protecting one critical resource</li>\n          <li style=\"margin-bottom: 0.4rem;\">Lock\u2013Unlock ownership</li>\n        </ul>\n        <div style=\"font-weight: bold; margin-bottom: 0.25rem; color: var(--muted);\">Example:</div>\n        <span style=\"display: block; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); line-height: 1.4;\">\n          \u2022 EEPROM<br>\n          \u2022 SPI peripheral<br>\n          \u2022 I\u00b2C bus<br>\n          \u2022 Configuration file\n        </span>\n      </div>\n    </div>\n  </div>\n</div>",
+              "html": true
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "when-silence-wasnt-an-option",

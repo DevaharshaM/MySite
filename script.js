@@ -141,7 +141,9 @@ const systemsTreeNodes = {
       { id: "the-great-swap", title: "The Great Swap" },
       { id: "scheduling-in-the-wild", title: "Scheduling in the Wild" },
       { id: "one-brain-wasnt-enough", title: "One Brain Wasn't Enough" },
-      { id: "when-silence-wasnt-an-option", title: "When Silence Wasn't an Option" }
+      { id: "when-silence-wasnt-an-option", title: "When Silence Wasn't an Option" },
+      { id: "when-sharing-became-dangerous", title: "When Sharing Became Dangerous" },
+      { id: "when-nobody-could-move", title: "When Nobody Could Move" }
     ]
   }
 };
@@ -6040,10 +6042,19 @@ function openItem(id, type) {
   let sectionsHtml = item.sections.map(sec => {
     let blocks = sec.content.map(b => {
       if (b.type === 'p') {
+        let txt = b.text;
+        if (txt.startsWith('#### ')) {
+          let headingText = txt.slice(5).trim();
+          return `<h4 style="font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">${parseTextFormatting(escHtml(headingText))}</h4>`;
+        }
+        if (txt.startsWith('### ')) {
+          let headingText = txt.slice(4).trim();
+          return `<h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">${parseTextFormatting(escHtml(headingText))}</h3>`;
+        }
         if (b.html) {
-          return b.text;
+          return parseTextFormatting(txt);
         } else {
-          return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${parseTextFormatting(escHtml(b.text))}</p>`;
+          return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${parseTextFormatting(escHtml(txt))}</p>`;
         }
       }
       if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
@@ -6055,7 +6066,7 @@ function openItem(id, type) {
         }
         return `<div class="blog-img-wrap"><img src="${escHtml(imgSrc)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
       }
-      if (b.type === 'html') return b.html;
+      if (b.type === 'html') return parseTextFormatting(b.html);
       if (b.type === 'edgecase') return `<div id="${escHtml(b.id)}" class="edgecase-container"></div>`;
       return '';
     }).join('');
@@ -6192,8 +6203,18 @@ function openItem(id, type) {
           } else if (item.id === "when-silence-wasnt-an-option") {
             nextHtml = `
               <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('when-sharing-became-dangerous', 'blogs')">When Sharing Became Dangerous →</a>
+            `;
+          } else if (item.id === "when-sharing-became-dangerous") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('when-nobody-could-move', 'blogs')">When Nobody Could Move →</a>
+            `;
+          } else if (item.id === "when-nobody-could-move") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Synchronization →
+                Memory Management →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
@@ -6402,6 +6423,9 @@ function parseTextFormatting(text) {
   // 4. Bullet lists: line starting with "* " or "- "
   parsed = parsed.replace(/(^|\n)[ \t]*[\*\-][ \t]+(.*?)(?=\n|$)/g, '$1<span class="list-item" style="display:flex; align-items:flex-start; margin-bottom:0.5rem; padding-left:1rem;"><span style="color:#3B82F6; margin-right:0.6rem; font-size:0.8rem; line-height:1.45rem;">&#9632;</span><span style="flex:1;">$2</span></span>');
 
+  // 4.5 Sub-sub-subheadings: #### Heading -> h4
+  parsed = parsed.replace(/(^|\n)####[ \t]+(.*?)(?=\n|$)/g, '$1<h4 style="font-family:\'Syne\',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">$2</h4>');
+
   // 5. Sub-subheadings: ### Heading -> h3
   parsed = parsed.replace(/(^|\n)###[ \t]+(.*?)(?=\n|$)/g, '$1<h3 style="font-family:\'Syne\',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">$2</h3>');
 
@@ -6445,6 +6469,14 @@ function initEdgeCase(containerId) {
     renderSwapSimulator();
   } else if (containerId === 'ipc-edgecase') {
     renderIpcEdgeCase();
+  } else if (containerId === 'sharing-dangerous-semaphore-edgecase') {
+    renderSharingDangerousSemaphoreEdgeCase();
+  } else if (containerId === 'sharing-dangerous-mutex-edgecase') {
+    renderSharingDangerousMutexEdgeCase();
+  } else if (containerId === 'deadlock-edgecase') {
+    renderDeadlockEdgeCase();
+  } else if (containerId === 'bankers-edgecase') {
+    renderBankersEdgeCase();
   }
 }
 
@@ -12793,6 +12825,10 @@ function initManthana(containerId) {
     renderWhoGoesNextManthana();
   } else if (containerId === 'wild-scheduling-manthana') {
     renderWildSchedulingManthana();
+  } else if (containerId === 'sharing-dangerous-manthana') {
+    renderSharingDangerousManthana();
+  } else if (containerId === 'deadlock-manthana') {
+    renderDeadlockManthana();
   }
 }
 
@@ -13613,3 +13649,1247 @@ function renderIpcEdgeCase() {
 
   render();
 }
+
+// ─── SHARING DANGEROUS: MANTHANA ───────────────────────────────────
+let manthanaSimRunCount = 0;
+
+function renderSharingDangerousManthana() {
+  const container = document.getElementById('sharing-dangerous-manthana');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper manthana-theme';
+
+  let simStep = 0;
+  let simFinished = false;
+  let simType = null; // 'clash' or 'seq'
+  let counter = 100;
+  let regA = null;
+  let regB = null;
+  let activeLog = "Press Start Simulation to run parallel execution timing trace.";
+  let timerId = null;
+
+  function render() {
+    let feedbackHtml = "";
+    if (simFinished) {
+      feedbackHtml = `
+        <div class="panel-box" style="margin: 1.5rem 0 0 0; padding: 1.25rem; border-color: #14B8A6; background: rgba(20, 180, 166, 0.02); text-align: left;">
+          <div style="font-weight: bold; color: #14B8A6; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            ✦ Observations on timing
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5;">
+            <p>The program never changed.</p>
+            <p>The hardware never changed.</p>
+            <p style="margin-bottom: 0.5rem;">Only the timing changed.</p>
+            <strong>This behaviour is called a Race Condition.</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    let displayRegA = regA === null ? "-" : regA;
+    let displayRegB = regB === null ? "-" : regB;
+
+    let traceSteps = "";
+    if (simType === 'clash') {
+      traceSteps = `
+        <div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; font-family: var(--mono); text-align: left; background: var(--surface2); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--border); width: 100%;">
+          <div style="color: var(--blue); font-weight: bold; margin-bottom: 0.25rem;">Timing 1: Interleaved Execution (Race Clash)</div>
+          <div style="color: ${simStep >= 1 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 1 ? 'bold' : 'normal'}">${simStep === 1 ? '▶' : '•'} Step 1: Core A reads Counter (100) into RegA</div>
+          <div style="color: ${simStep >= 2 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 2 ? 'bold' : 'normal'}">${simStep === 2 ? '▶' : '•'} Step 2: Core B reads Counter (100) into RegB</div>
+          <div style="color: ${simStep >= 3 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 3 ? 'bold' : 'normal'}">${simStep === 3 ? '▶' : '•'} Step 3: Core A increments to 101 and writes back to RAM</div>
+          <div style="color: ${simStep >= 4 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 4 ? 'bold' : 'normal'}">${simStep === 4 ? '▶' : '•'} Step 4: Core B increments to 101 and writes back to RAM</div>
+          <div style="color: ${simStep >= 5 ? '#EF4444' : 'var(--muted)'}; font-weight: ${simStep === 5 ? 'bold' : 'normal'}">${simStep === 5 ? '▶' : '•'} Completed: Core A's increment was overwritten! (Final Value = 101)</div>
+        </div>
+      `;
+    } else if (simType === 'seq') {
+      traceSteps = `
+        <div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; font-family: var(--mono); text-align: left; background: var(--surface2); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--border); width: 100%;">
+          <div style="color: #10B981; font-weight: bold; margin-bottom: 0.25rem;">Timing 2: Sequential Execution</div>
+          <div style="color: ${simStep >= 1 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 1 ? 'bold' : 'normal'}">${simStep === 1 ? '▶' : '•'} Step 1: Core A reads Counter (100) into RegA</div>
+          <div style="color: ${simStep >= 2 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 2 ? 'bold' : 'normal'}">${simStep === 2 ? '▶' : '•'} Step 2: Core A increments to 101 and writes back to RAM</div>
+          <div style="color: ${simStep >= 3 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 3 ? 'bold' : 'normal'}">${simStep === 3 ? '▶' : '•'} Step 3: Core B reads Counter (101) into RegB</div>
+          <div style="color: ${simStep >= 4 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 4 ? 'bold' : 'normal'}">${simStep === 4 ? '▶' : '•'} Step 4: Core B increments to 102 and writes back to RAM</div>
+          <div style="color: ${simStep >= 5 ? '#10B981' : 'var(--muted)'}; font-weight: ${simStep === 5 ? 'bold' : 'normal'}">${simStep === 5 ? '▶' : '•'} Completed: Operations executed sequentially. (Final Value = 102)</div>
+        </div>
+      `;
+    } else {
+      traceSteps = `
+        <div style="font-size: 0.75rem; color: var(--muted); font-style: italic; text-align: center;">Click "Start Simulation" to run a timing trace.</div>
+      `;
+    }
+
+    let simBtnStyle = (timerId !== null) ? "opacity: 0.5; pointer-events: none;" : "";
+
+    container.innerHTML = `
+      <div class="edgecase-header" style="color: #14B8A6;">✦ Reflecting on Parallel Access</div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 0.75rem; text-align: center; margin-bottom: 1.5rem; @media(max-width:480px){grid-template-columns: 1fr;}">
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: var(--border);">
+          <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.25rem;">Core A (Process A)</div>
+          <div style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono);">RegA</div>
+          <div style="font-family: var(--mono); font-size: 1.2rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">${displayRegA}</div>
+        </div>
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: #14B8A6; background: rgba(20, 180, 166, 0.05);">
+          <div style="font-size: 0.65rem; color: #14B8A6; font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.25rem;">RAM Memory</div>
+          <div style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono);">Variable: Counter</div>
+          <div style="font-family: var(--mono); font-size: 1.35rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">${counter}</div>
+        </div>
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: var(--border);">
+          <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.25rem;">Core B (Process B)</div>
+          <div style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono);">RegB</div>
+          <div style="font-family: var(--mono); font-size: 1.2rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">${displayRegB}</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem; text-align: left;">
+        <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.4rem;">Simulation Status</div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); font-family: var(--mono); font-size: 0.75rem; color: #FFF; min-height: 34px; line-height: 1.4;">
+          ${activeLog}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        ${traceSteps}
+      </div>
+
+      ${feedbackHtml}
+
+      <div style="display: flex; gap: 0.5rem; width: 100%;">
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: #14B8A6; background: rgba(20, 180, 166, 0.05); color: #FFF; ${simBtnStyle}" onclick="window.startSharingManthanaSim()">
+          ${manthanaSimRunCount > 0 ? "Run Alternate Timing" : "Start Simulation"}
+        </button>
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border); margin-left: auto;" onclick="window.resetSharingManthanaSim()">
+          Reset
+        </button>
+      </div>
+    `;
+  }
+
+  window.resetSharingManthanaSim = function() {
+    simStep = 0;
+    simFinished = false;
+    simType = null;
+    counter = 100;
+    regA = null;
+    regB = null;
+    activeLog = "Press Start Simulation to run parallel execution timing trace.";
+    manthanaSimRunCount = 0;
+    if (timerId) clearInterval(timerId);
+    render();
+  };
+
+  window.startSharingManthanaSim = function() {
+    if (timerId) clearInterval(timerId);
+    
+    // Alternate timing types so the user experiences both outcomes
+    simType = (manthanaSimRunCount % 2 === 0) ? 'clash' : 'seq';
+    manthanaSimRunCount++;
+    
+    simStep = 0;
+    simFinished = false;
+    counter = 100;
+    regA = null;
+    regB = null;
+    activeLog = `Initializing timing trace: ${simType === 'clash' ? 'Interleaved execution' : 'Sequential execution'}.`;
+    render();
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('sharing-dangerous-manthana')) {
+        clearInterval(timerId);
+        return;
+      }
+      simStep++;
+
+      if (simType === 'clash') {
+        if (simStep === 1) {
+          regA = 100;
+          activeLog = "Core A reads shared Counter (100) into register RegA.";
+        } else if (simStep === 2) {
+          regB = 100;
+          activeLog = "Core B reads shared Counter (100) into register RegB simultaneously.";
+        } else if (simStep === 3) {
+          regA = 101;
+          counter = 101;
+          activeLog = "Core A increments its local register value to 101 and writes it back to RAM.";
+        } else if (simStep === 4) {
+          regB = 101;
+          counter = 101;
+          activeLog = "Core B increments its local register value to 101 and writes it back to RAM, overwriting Core A.";
+        } else if (simStep === 5) {
+          activeLog = "Simulation complete. Two increments happened. Only one survived (Counter = 101).";
+          simFinished = true;
+          clearInterval(timerId);
+          timerId = null;
+        }
+      } else {
+        if (simStep === 1) {
+          regA = 100;
+          activeLog = "Core A reads shared Counter (100) into register RegA.";
+        } else if (simStep === 2) {
+          regA = 101;
+          counter = 101;
+          activeLog = "Core A increments to 101 and writes it back to RAM.";
+        } else if (simStep === 3) {
+          regB = 101;
+          activeLog = "Core B reads shared Counter (101) into register RegB.";
+        } else if (simStep === 4) {
+          regB = 102;
+          counter = 102;
+          activeLog = "Core B increments to 102 and writes it back to RAM.";
+        } else if (simStep === 5) {
+          activeLog = "Simulation complete. Two increments happened. Both survived (Counter = 102).";
+          simFinished = true;
+          clearInterval(timerId);
+          timerId = null;
+        }
+      }
+      render();
+    }, 1200);
+  };
+
+  render();
+}
+
+// ─── SHARING DANGEROUS: SEMAPHORE EDGECASE ──────────────────────────
+function renderSharingDangerousSemaphoreEdgeCase() {
+  const container = document.getElementById('sharing-dangerous-semaphore-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let semValue = 2; // Capacity limit = 2
+  const semMax = 2;
+  let processes = [
+    { id: 'P1', state: 'idle' },
+    { id: 'P2', state: 'idle' },
+    { id: 'P3', state: 'idle' },
+    { id: 'P4', state: 'idle' }
+  ];
+  let waitQueue = [];
+  let connectionSlots = [null, null];
+  let simStep = 0;
+  let timerId = null;
+  let activeLog = "Press Start Simulation to watch automatic Semaphore pooling.";
+
+  function render() {
+    let slotsHtml = connectionSlots.map((pid, idx) => {
+      let active = pid !== null;
+      return `
+        <div style="border: 1px solid ${active ? 'var(--blue)' : 'var(--border)'}; border-radius: 6px; padding: 0.6rem 0.8rem; background: ${active ? 'var(--blue-glow)' : 'var(--surface2)'}; display: flex; justify-content: space-between; align-items: center; width: 100%; transition: all 0.2s ease;">
+          <span style="font-size: 0.7rem; color: var(--muted); font-family: var(--mono);">Slot ${idx + 1}</span>
+          <span style="font-family: var(--mono); font-weight: bold; font-size: 0.8rem; color: ${active ? '#FFF' : 'var(--muted)'};">
+            ${active ? `✓ Active (${pid})` : 'Idle (Free)'}
+          </span>
+        </div>
+      `;
+    }).join('');
+
+    let procListHtml = processes.map(p => {
+      let stateBadge = "";
+      if (p.state === 'idle') {
+        stateBadge = `<span style="font-size: 0.6rem; color: var(--muted); font-family: var(--mono); border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; text-transform: uppercase;">Idle</span>`;
+      } else if (p.state === 'connected') {
+        stateBadge = `<span style="font-size: 0.6rem; color: #10B981; font-family: var(--mono); border: 1px solid #10B981; border-radius: 4px; padding: 1px 4px; text-transform: uppercase; background: rgba(16,185,129,0.05);">Connected</span>`;
+      } else if (p.state === 'waiting') {
+        stateBadge = `<span style="font-size: 0.6rem; color: #F59E0B; font-family: var(--mono); border: 1px solid #F59E0B; border-radius: 4px; padding: 1px 4px; text-transform: uppercase; background: rgba(245,158,11,0.05); animation: pulse 1.5s infinite;">Blocked</span>`;
+      }
+
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0; border-bottom: 1px solid var(--border);">
+          <span style="font-family: var(--mono); font-weight: bold; font-size: 0.8rem; color: #FFF;">Process ${p.id}</span>
+          ${stateBadge}
+        </div>
+      `;
+    }).join('');
+
+    let queueHtml = waitQueue.length > 0
+      ? waitQueue.map(pid => `<span style="border: 1px solid #F59E0B; border-radius: 4px; padding: 2px 6px; background: rgba(245,158,11,0.1); color: #F59E0B; font-family: var(--mono); font-size: 0.75rem; font-weight: bold;">${pid}</span>`).join(' ➔ ')
+      : `<span style="font-size: 0.75rem; color: var(--muted); font-style: italic;">Queue is empty</span>`;
+
+    let simBtnStyle = (timerId !== null) ? "opacity: 0.5; pointer-events: none;" : "";
+
+    container.innerHTML = `
+      <div class="edgecase-header">Database Connections Pool (Counting Semaphore)</div>
+      <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Coordinates access to 2 slots. Processes that exceed the counter limit are queued in sequence.</div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; @media(max-width:640px){grid-template-columns: 1fr;}">
+        <!-- SEMAPHORE STATUS AND SLOTS -->
+        <div>
+          <!-- Semaphore Counter -->
+          <div class="panel-box" style="margin: 0 0 1rem 0; padding: 1rem; border-color: var(--blue); text-align: center; background: rgba(30, 41, 59, 0.25);">
+            <div style="font-size: 0.65rem; color: var(--blue); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.25rem;">Semaphore Counter</div>
+            <div style="font-family: var(--mono); font-size: 2.25rem; font-weight: bold; color: ${semValue > 0 ? '#10B981' : '#EF4444'}; transition: all 0.2s;">
+              ${semValue}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;">Capacity: ${semMax} connections</div>
+          </div>
+
+          <!-- Slots Status -->
+          <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+            ${slotsHtml}
+          </div>
+        </div>
+
+        <!-- PROCESSES CONTROL & QUEUE -->
+        <div>
+          <!-- Queue Panel -->
+          <div class="panel-box" style="margin: 0 0 1rem 0; padding: 0.75rem 1rem; border-color: var(--border);">
+            <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem; text-align: left;">Semaphore Queue</div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; min-height: 24px;">
+              ${queueHtml}
+            </div>
+          </div>
+
+          <!-- Processes List -->
+          <div class="panel-box" style="margin: 0; padding: 1rem; border-color: var(--border); text-align: left;">
+            <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Processes State</div>
+            <div style="display: flex; flex-direction: column;">
+              ${procListHtml}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-family: var(--mono); font-size: 0.75rem; color: #FFF; background: var(--surface2); padding: 0.4rem 0.8rem; border-radius: 4px; border: 1px solid var(--border); flex: 1; margin-right: 1rem; text-align: left; min-height: 34px;">
+          ${activeLog}
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--blue); background: var(--blue-glow); ${simBtnStyle}" onclick="window.startSharingSemSim()">Start Simulation</button>
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border);" onclick="window.resetSharingSemSim()">Reset</button>
+        </div>
+      </div>
+    `;
+  }
+
+  window.resetSharingSemSim = function() {
+    semValue = 2;
+    processes.forEach(p => p.state = 'idle');
+    waitQueue = [];
+    connectionSlots = [null, null];
+    simStep = 0;
+    activeLog = "Press Start Simulation to watch automatic Semaphore pooling.";
+    if (timerId) clearInterval(timerId);
+    render();
+  };
+
+  window.startSharingSemSim = function() {
+    if (timerId) clearInterval(timerId);
+    simStep = 0;
+    semValue = 2;
+    processes.forEach(p => p.state = 'idle');
+    waitQueue = [];
+    connectionSlots = [null, null];
+    activeLog = "Starting simulation loop...";
+    render();
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('sharing-dangerous-semaphore-edgecase')) {
+        clearInterval(timerId);
+        return;
+      }
+      simStep++;
+
+      if (simStep === 1) {
+        // P1 requests slot -> enters Slot 1
+        processes[0].state = 'connected';
+        connectionSlots[0] = 'P1';
+        semValue = 1;
+        activeLog = "P1 requests connection. Slot 1 allocated. Semaphore counter decremented to 1.";
+      } else if (simStep === 2) {
+        // P2 requests slot -> enters Slot 2
+        processes[1].state = 'connected';
+        connectionSlots[1] = 'P2';
+        semValue = 0;
+        activeLog = "P2 requests connection. Slot 2 allocated. Semaphore counter decremented to 0.";
+      } else if (simStep === 3) {
+        // P3 requests slot -> Semaphore is 0 -> blocks
+        processes[2].state = 'waiting';
+        waitQueue.push('P3');
+        activeLog = "P3 requests connection. Semaphore counter is 0. P3 is BLOCKED and waits in queue.";
+      } else if (simStep === 4) {
+        // P4 requests slot -> blocks
+        processes[3].state = 'waiting';
+        waitQueue.push('P4');
+        activeLog = "P4 requests connection. Semaphore counter is 0. P4 is BLOCKED and joins the queue queue.";
+      } else if (simStep === 5) {
+        // P1 releases slot -> P3 dequeues and takes Slot 1
+        processes[0].state = 'idle';
+        connectionSlots[0] = null;
+        activeLog = "P1 releases connection. Slot 1 freed.";
+      } else if (simStep === 6) {
+        // Assign freed Slot 1 to P3
+        const nextPid = waitQueue.shift();
+        connectionSlots[0] = nextPid;
+        processes[2].state = 'connected';
+        activeLog = "P3 is dequeued from the wait queue and granted freed Slot 1. Semaphore remains 0.";
+      } else if (simStep === 7) {
+        // P2 releases slot -> P4 dequeues and takes Slot 2
+        processes[1].state = 'idle';
+        connectionSlots[1] = null;
+        activeLog = "P2 releases connection. Slot 2 freed.";
+      } else if (simStep === 8) {
+        // Assign freed Slot 2 to P4
+        const nextPid = waitQueue.shift();
+        connectionSlots[1] = nextPid;
+        processes[3].state = 'connected';
+        activeLog = "P4 is dequeued from the wait queue and granted freed Slot 2. Semaphore remains 0.";
+      } else if (simStep === 9) {
+        // P3 releases slot
+        processes[2].state = 'idle';
+        connectionSlots[0] = null;
+        semValue = 1;
+        activeLog = "P3 releases connection. Slot 1 is idle. Semaphore counter incremented to 1.";
+      } else if (simStep === 10) {
+        // P4 releases slot
+        processes[3].state = 'idle';
+        connectionSlots[1] = null;
+        semValue = 2;
+        activeLog = "P4 releases connection. Slot 2 is idle. Semaphore counter incremented to 2.";
+      } else if (simStep === 11) {
+        activeLog = "Simulation completed. All connections returned safely.";
+        clearInterval(timerId);
+        timerId = null;
+      }
+      render();
+    }, 1500);
+  };
+
+  render();
+}
+
+// ─── SHARING DANGEROUS: MUTEX EDGECASE ──────────────────────────────
+function renderSharingDangerousMutexEdgeCase() {
+  const container = document.getElementById('sharing-dangerous-mutex-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let mutexLocked = false;
+  let mutexOwner = null;
+  let writeStep = { P1: 'none', P2: 'none' };
+  let waitQueue = [];
+  let simStep = 0;
+  let timerId = null;
+  let activeLog = "Press Start Simulation to watch exclusive Mutex peripheral writes.";
+
+  function render() {
+    let mutexStatusHtml = mutexLocked
+      ? `<div style="font-size: 0.95rem; font-weight: bold; color: #EF4444; font-family: var(--mono);">🔒 LOCKED by ${mutexOwner}</div>`
+      : `<div style="font-size: 0.95rem; font-weight: bold; color: #10B981; font-family: var(--mono);">🔓 UNLOCKED</div>`;
+
+    let flashStatusHtml = "";
+    let activeWriter = Object.keys(writeStep).find(k => writeStep[k] === 'locked');
+    if (activeWriter) {
+      flashStatusHtml = `<div style="color: var(--blue); font-weight: bold; font-size: 0.85rem; font-family: var(--mono); animation: pulse 1s infinite;">⚡ WRITING: ${activeWriter} config data...</div>`;
+    } else {
+      flashStatusHtml = `<div style="color: var(--muted); font-size: 0.85rem; font-family: var(--mono);">Idle (No active write)</div>`;
+    }
+
+    let p1CardHtml = generateProcCard('P1');
+    let p2CardHtml = generateProcCard('P2');
+
+    let queueText = waitQueue.length > 0
+      ? waitQueue.map(pid => `<span style="font-family: var(--mono); color: #F59E0B; font-weight: bold;">${pid}</span>`).join(', ')
+      : "None";
+
+    let simBtnStyle = (timerId !== null) ? "opacity: 0.5; pointer-events: none;" : "";
+
+    container.innerHTML = `
+      <div class="edgecase-header">EEPROM Memory Lock (Mutex Animation)</div>
+      <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Mutex locks the physical EEPROM block. Process 2 must wait automatically when Process 1 holds the lock.</div>
+
+      <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start; @media(max-width:640px){grid-template-columns: 1fr;}">
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          ${p1CardHtml}
+          ${p2CardHtml}
+        </div>
+
+        <div>
+          <div class="panel-box" style="margin: 0 0 1rem 0; padding: 1.25rem; border-color: ${mutexLocked ? '#EF4444' : '#10B981'}; text-align: center; background: rgba(30, 41, 59, 0.25);">
+            <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Mutex State</div>
+            ${mutexStatusHtml}
+          </div>
+
+          <div class="panel-box" style="margin: 0 0 1rem 0; padding: 1.25rem; border-color: var(--border); text-align: center; background: var(--surface2);">
+            <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.5rem;">Shared Hardware: EEPROM Chip</div>
+            <div style="border: 2px dashed ${activeWriter ? 'var(--blue)' : 'var(--border)'}; border-radius: 6px; padding: 1rem; background: var(--surface); display: flex; align-items: center; justify-content: center; min-height: 60px;">
+              ${flashStatusHtml}
+            </div>
+          </div>
+
+          <div class="panel-box" style="margin: 0; padding: 0.75rem 1rem; border-color: var(--border); text-align: left; font-size: 0.75rem;">
+            <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.25rem;">Blocked Waiting List</div>
+            <span style="color: var(--text);">Processes blocked: ${queueText}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-family: var(--mono); font-size: 0.75rem; color: #FFF; background: var(--surface2); padding: 0.4rem 0.8rem; border-radius: 4px; border: 1px solid var(--border); flex: 1; margin-right: 1rem; text-align: left; min-height: 34px;">
+          ${activeLog}
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--blue); background: var(--blue-glow); ${simBtnStyle}" onclick="window.startSharingMutexSim()">Start Simulation</button>
+          <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border);" onclick="window.resetSharingMutexSim()">Reset</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function generateProcCard(pid) {
+    let current = writeStep[pid] || 'none';
+    let cardBorder = "var(--border)";
+    let background = "transparent";
+
+    if (current === 'locked') {
+      cardBorder = "var(--blue)";
+      background = "rgba(59,130,246,0.02)";
+    } else if (waitQueue.includes(pid)) {
+      cardBorder = "#F59E0B";
+      background = "rgba(245,158,11,0.02)";
+    }
+
+    let acquireStyle = current === 'none' && !waitQueue.includes(pid)
+      ? "background: var(--surface2); color: var(--muted); border: 1px solid var(--border);"
+      : (current === 'locked' || current === 'written'
+          ? "background: var(--surface2); color: var(--muted); border: 1px solid var(--border); text-decoration: line-through;"
+          : "background: var(--blue-glow); color: var(--blue); border: 1px solid var(--blue);");
+
+    let writeStyle = current === 'locked'
+      ? "background: var(--blue-glow); color: var(--blue); border: 1px solid var(--blue); font-weight: bold;"
+      : (current === 'written'
+          ? "background: var(--surface2); color: var(--muted); border: 1px solid var(--border); text-decoration: line-through;"
+          : "background: var(--surface2); color: var(--muted); border: 1px solid var(--border);");
+
+    let releaseStyle = current === 'written'
+      ? "background: rgba(16,185,129,0.1); color: #10B981; border: 1px solid #10B981; font-weight: bold;"
+      : "background: var(--surface2); color: var(--muted); border: 1px solid var(--border);";
+
+    return `
+      <div class="panel-box" style="margin: 0; padding: 1rem; border-color: ${cardBorder}; background: ${background}; text-align: left; transition: all 0.2s;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span style="font-family: var(--mono); font-weight: bold; font-size: 0.85rem; color: #FFF;">Process ${pid}</span>
+          <span style="font-family: var(--mono); font-size: 0.65rem; color: var(--muted);">${waitQueue.includes(pid) ? 'State: WAITING' : (current === 'locked' ? 'State: WRITING' : (current === 'written' ? 'State: READY_TO_RELEASE' : 'State: IDLE'))}</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-start; align-items: center; font-size: 0.65rem; font-family: var(--mono); margin-top: 0.5rem;">
+          <span style="border-radius: 3px; padding: 2px 5px; ${acquireStyle}">1. ACQUIRE LOCK</span>
+          <span style="color: var(--muted);">&rarr;</span>
+          <span style="border-radius: 3px; padding: 2px 5px; ${writeStyle}">2. WRITE CONFIG</span>
+          <span style="color: var(--muted);">&rarr;</span>
+          <span style="border-radius: 3px; padding: 2px 5px; ${releaseStyle}">3. RELEASE LOCK</span>
+        </div>
+      </div>
+    `;
+  }
+
+  window.resetSharingMutexSim = function() {
+    mutexLocked = false;
+    mutexOwner = null;
+    writeStep = { P1: 'none', P2: 'none' };
+    waitQueue = [];
+    simStep = 0;
+    activeLog = "Press Start Simulation to watch exclusive Mutex peripheral writes.";
+    if (timerId) clearInterval(timerId);
+    render();
+  };
+
+  window.startSharingMutexSim = function() {
+    if (timerId) clearInterval(timerId);
+    simStep = 0;
+    mutexLocked = false;
+    mutexOwner = null;
+    writeStep = { P1: 'none', P2: 'none' };
+    waitQueue = [];
+    activeLog = "Starting Mutex simulation loop...";
+    render();
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('sharing-dangerous-mutex-edgecase')) {
+        clearInterval(timerId);
+        return;
+      }
+      simStep++;
+
+      if (simStep === 1) {
+        // P1 locks Mutex
+        mutexLocked = true;
+        mutexOwner = 'P1';
+        writeStep['P1'] = 'locked';
+        activeLog = "Process P1 requests lock. Mutex acquired by P1 successfully.";
+      } else if (simStep === 2) {
+        // P1 writes data
+        activeLog = "Process P1 executes register write cycle on shared EEPROM block.";
+      } else if (simStep === 3) {
+        // P2 requests lock -> blocks
+        waitQueue.push('P2');
+        activeLog = "Process P2 requests lock. Mutex is LOCKED by P1. P2 is suspended and joins waitlist.";
+      } else if (simStep === 4) {
+        // P1 finishes write
+        writeStep['P1'] = 'written';
+        activeLog = "Process P1 completes writing EEPROM values. Ready to release lock.";
+      } else if (simStep === 5) {
+        // P1 unlocks -> P2 wakes and locks
+        mutexLocked = false;
+        mutexOwner = null;
+        writeStep['P1'] = 'none';
+        activeLog = "Process P1 unlocks the Mutex. Lock released.";
+      } else if (simStep === 6) {
+        // Assign to P2
+        const nextPid = waitQueue.shift();
+        mutexLocked = true;
+        mutexOwner = nextPid;
+        writeStep[nextPid] = 'locked';
+        activeLog = "P2 is woken up from waitlist, immediately locks the Mutex, and begins its write cycle.";
+      } else if (simStep === 7) {
+        // P2 writes data
+        activeLog = "Process P2 executes register write cycle on shared EEPROM block.";
+      } else if (simStep === 8) {
+        // P2 completes write
+        writeStep['P2'] = 'written';
+        activeLog = "Process P2 completes writing EEPROM values. Ready to release lock.";
+      } else if (simStep === 9) {
+        // P2 unlocks
+        mutexLocked = false;
+        mutexOwner = null;
+        writeStep['P2'] = 'none';
+        activeLog = "Process P2 unlocks the Mutex. Lock released. EEPROM returned to idle state.";
+      } else if (simStep === 10) {
+        activeLog = "Simulation completed. Mutual exclusion verified.";
+        clearInterval(timerId);
+        timerId = null;
+      }
+      render();
+    }, 1500);
+  };
+
+  render();
+}
+
+// ─── DEADLOCK: MANTHANA ─────────────────────────────────────────────
+function renderDeadlockManthana() {
+  const container = document.getElementById('deadlock-manthana');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper manthana-theme';
+
+  let simStep = 0;
+  let simFinished = false;
+  let timerId = null;
+  let lockState = { P1: 'idle', P2: 'idle' }; // 'idle', 'holds_A', 'holds_B', 'waiting_A', 'waiting_B'
+  let mutexHolders = { A: null, B: null };
+  let activeLog = "Press Start Simulation to watch the standstill occur.";
+
+  function render() {
+    let feedbackHtml = "";
+    if (simFinished) {
+      feedbackHtml = `
+        <div class="panel-box" style="margin: 1.5rem 0 0 0; padding: 1.25rem; border-color: #EF4444; background: rgba(239, 68, 68, 0.02); text-align: left;">
+          <div style="font-weight: bold; color: #EF4444; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            ✦ Standstill Observed
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5;">
+            <p>The program never changed.</p>
+            <p>The hardware never changed.</p>
+            <p style="margin-bottom: 0.5rem;">Only the timing changed.</p>
+            <strong>This behaviour is called a Deadlock.</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    let p1StatusText = lockState.P1 === 'idle' ? 'Idle' :
+                      lockState.P1 === 'holds_A' ? 'Holds Mutex A' :
+                      lockState.P1 === 'waiting_B' ? 'Waiting for Mutex B (BLOCKED)' : '';
+
+    let p2StatusText = lockState.P2 === 'idle' ? 'Idle' :
+                      lockState.P2 === 'holds_B' ? 'Holds Mutex B' :
+                      lockState.P2 === 'waiting_A' ? 'Waiting for Mutex A (BLOCKED)' : '';
+
+    let p1CardBorder = lockState.P1 === 'waiting_B' ? '#EF4444' : lockState.P1 === 'holds_A' ? 'var(--blue)' : 'var(--border)';
+    let p2CardBorder = lockState.P2 === 'waiting_A' ? '#EF4444' : lockState.P2 === 'holds_B' ? 'var(--blue)' : 'var(--border)';
+
+    let traceSteps = `
+      <div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; font-family: var(--mono); text-align: left; background: var(--surface2); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--border); width: 100%;">
+        <div style="color: var(--blue); font-weight: bold; margin-bottom: 0.25rem;">Timing Trace: Unordered Lock Acquisition</div>
+        <div style="color: ${simStep >= 1 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 1 ? 'bold' : 'normal'}">${simStep === 1 ? '▶' : '•'} Step 1: Process 1 acquires Mutex A</div>
+        <div style="color: ${simStep >= 2 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 2 ? 'bold' : 'normal'}">${simStep === 2 ? '▶' : '•'} Step 2: Process 2 acquires Mutex B simultaneously</div>
+        <div style="color: ${simStep >= 3 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 3 ? 'bold' : 'normal'}">${simStep === 3 ? '▶' : '•'} Step 3: Process 1 requests Mutex B (Blocks)</div>
+        <div style="color: ${simStep >= 4 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 4 ? 'bold' : 'normal'}">${simStep === 4 ? '▶' : '•'} Step 4: Process 2 requests Mutex A (Blocks)</div>
+        <div style="color: ${simStep >= 5 ? '#EF4444' : 'var(--muted)'}; font-weight: ${simStep === 5 ? 'bold' : 'normal'}">${simStep === 5 ? '▶' : '•'} Completed: Circular wait loop formed. Lockup detected!</div>
+      </div>
+    `;
+
+    let simBtnStyle = (timerId !== null) ? "opacity: 0.5; pointer-events: none;" : "";
+
+    container.innerHTML = `
+      <div class="edgecase-header" style="color: #EF4444;">✦ Mutex Circular Standstill</div>
+      <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Process 1 and Process 2 lock resources out of order. Neither can unlock, resulting in a system freeze.</div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}">
+        <!-- PROCESS 1 PANEL -->
+        <div class="panel-box" style="margin: 0; padding: 1.25rem; border-color: ${p1CardBorder}; background: ${lockState.P1 === 'waiting_B' ? 'rgba(239,68,68,0.02)' : 'transparent'};">
+          <div style="font-family: var(--mono); font-weight: bold; font-size: 0.85rem; color: #FFF; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+            <span>Process 1</span>
+            <span style="font-size: 0.65rem; color: var(--muted);">${p1StatusText}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.7rem; font-family: var(--mono);">
+            <div style="color: ${lockState.P1 === 'holds_A' || lockState.P1 === 'waiting_B' ? '#10B981' : 'var(--muted)'};">1. Lock Mutex A [OK]</div>
+            <div style="color: ${lockState.P1 === 'waiting_B' ? '#EF4444' : 'var(--muted)'};">2. Lock Mutex B ${lockState.P1 === 'waiting_B' ? '[BLOCKED]' : ''}</div>
+          </div>
+        </div>
+
+        <!-- PROCESS 2 PANEL -->
+        <div class="panel-box" style="margin: 0; padding: 1.25rem; border-color: ${p2CardBorder}; background: ${lockState.P2 === 'waiting_A' ? 'rgba(239,68,68,0.02)' : 'transparent'};">
+          <div style="font-family: var(--mono); font-weight: bold; font-size: 0.85rem; color: #FFF; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+            <span>Process 2</span>
+            <span style="font-size: 0.65rem; color: var(--muted);">${p2StatusText}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.7rem; font-family: var(--mono);">
+            <div style="color: ${lockState.P2 === 'holds_B' || lockState.P2 === 'waiting_A' ? '#10B981' : 'var(--muted)'};">1. Lock Mutex B [OK]</div>
+            <div style="color: ${lockState.P2 === 'waiting_A' ? '#EF4444' : 'var(--muted)'};">2. Lock Mutex A ${lockState.P2 === 'waiting_A' ? '[BLOCKED]' : ''}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MUTEX HARDWARE SLOTS -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; text-align: center; margin: 1.5rem 0;">
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: ${mutexHolders.A ? 'var(--blue)' : 'var(--border)'}; background: ${mutexHolders.A ? 'rgba(59,130,246,0.05)' : 'var(--surface2)'};">
+          <div style="font-size: 0.65rem; color: var(--muted); font-family: var(--mono);">Mutex A State</div>
+          <div style="font-family: var(--mono); font-size: 1.1rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">
+            ${mutexHolders.A ? `🔒 Held by ${mutexHolders.A}` : '🔓 Free'}
+          </div>
+        </div>
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: ${mutexHolders.B ? 'var(--blue)' : 'var(--border)'}; background: ${mutexHolders.B ? 'rgba(59,130,246,0.05)' : 'var(--surface2)'};">
+          <div style="font-size: 0.65rem; color: var(--muted); font-family: var(--mono);">Mutex B State</div>
+          <div style="font-family: var(--mono); font-size: 1.1rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">
+            ${mutexHolders.B ? `🔒 Held by ${mutexHolders.B}` : '🔓 Free'}
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem; text-align: left;">
+        <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.4rem;">Simulation Status</div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); font-family: var(--mono); font-size: 0.75rem; color: #FFF; min-height: 34px; line-height: 1.4;">
+          ${activeLog}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        ${traceSteps}
+      </div>
+
+      ${feedbackHtml}
+
+      <div style="display: flex; gap: 0.5rem; width: 100%;">
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: #EF4444; background: rgba(239, 68, 68, 0.05); color: #FFF; ${simBtnStyle}" onclick="window.startDeadlockManthanaSim()">Start Simulation</button>
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border); margin-left: auto;" onclick="window.resetDeadlockManthanaSim()">Reset</button>
+      </div>
+    `;
+  }
+
+  window.resetDeadlockManthanaSim = function() {
+    simStep = 0;
+    simFinished = false;
+    lockState = { P1: 'idle', P2: 'idle' };
+    mutexHolders = { A: null, B: null };
+    activeLog = "Press Start Simulation to watch the standstill occur.";
+    if (timerId) clearInterval(timerId);
+    render();
+  };
+
+  window.startDeadlockManthanaSim = function() {
+    if (timerId) clearInterval(timerId);
+    simStep = 0;
+    simFinished = false;
+    lockState = { P1: 'idle', P2: 'idle' };
+    mutexHolders = { A: null, B: null };
+    activeLog = "Initializing unordered acquisition loop...";
+    render();
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('deadlock-manthana')) {
+        clearInterval(timerId);
+        return;
+      }
+      simStep++;
+
+      if (simStep === 1) {
+        lockState.P1 = 'holds_A';
+        mutexHolders.A = 'P1';
+        activeLog = "Process 1 requests Mutex A. Mutex A acquired successfully.";
+      } else if (simStep === 2) {
+        lockState.P2 = 'holds_B';
+        mutexHolders.B = 'P2';
+        activeLog = "Process 2 requests Mutex B. Mutex B acquired successfully.";
+      } else if (simStep === 3) {
+        lockState.P1 = 'waiting_B';
+        activeLog = "Process 1 requests Mutex B. Mutex B is currently held by Process 2. Process 1 blocks.";
+      } else if (simStep === 4) {
+        lockState.P2 = 'waiting_A';
+        activeLog = "Process 2 requests Mutex A. Mutex A is currently held by Process 1. Process 2 blocks.";
+      } else if (simStep === 5) {
+        activeLog = "System Frozen: Process 1 holds A and waits for B; Process 2 holds B and waits for A. No process can continue.";
+        simFinished = true;
+        clearInterval(timerId);
+        timerId = null;
+      }
+      render();
+    }, 1500);
+  };
+
+  render();
+}
+
+// ─── DEADLOCK: EDGECASE (LOCK ORDERING) ─────────────────────────────
+function renderDeadlockEdgeCase() {
+  const container = document.getElementById('deadlock-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let simStep = 0;
+  let simFinished = false;
+  let timerId = null;
+  let lockState = { P1: 'idle', P2: 'idle' }; // 'idle', 'holds_A', 'waiting_A', 'holds_both', 'finished'
+  let mutexHolders = { A: null, B: null };
+  let activeLog = "Press Start Simulation to watch Lock Ordering resolve conflicts.";
+
+  function render() {
+    let feedbackHtml = "";
+    if (simFinished) {
+      feedbackHtml = `
+        <div class="panel-box" style="margin: 1.5rem 0 0 0; padding: 1.25rem; border-color: #10B981; background: rgba(16, 185, 129, 0.02); text-align: left;">
+          <div style="font-weight: bold; color: #10B981; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            ✓ Deadlock Resolved
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5;">
+            By establishing a strict ordering constraint (always lock A before B), circular waits cannot form. The system completes safely without locking up.
+          </div>
+        </div>
+      `;
+    }
+
+    let p1StatusText = lockState.P1 === 'idle' ? 'Idle' :
+                      lockState.P1 === 'holds_A' ? 'Holds Mutex A' :
+                      lockState.P1 === 'holds_both' ? 'Running critical work...' :
+                      lockState.P1 === 'finished' ? 'Finished execution' : '';
+
+    let p2StatusText = lockState.P2 === 'idle' ? 'Idle' :
+                      lockState.P2 === 'waiting_A' ? 'Waiting for Mutex A (BLOCKED)' :
+                      lockState.P2 === 'holds_A' ? 'Holds Mutex A' :
+                      lockState.P2 === 'holds_both' ? 'Running critical work...' :
+                      lockState.P2 === 'finished' ? 'Finished execution' : '';
+
+    let p1CardBorder = lockState.P1 === 'holds_both' ? '#10B981' : lockState.P1 === 'holds_A' ? 'var(--blue)' : 'var(--border)';
+    let p2CardBorder = lockState.P2 === 'holds_both' ? '#10B981' : lockState.P2 === 'waiting_A' ? '#F59E0B' : lockState.P2 === 'holds_A' ? 'var(--blue)' : 'var(--border)';
+
+    let traceSteps = `
+      <div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.75rem; font-family: var(--mono); text-align: left; background: var(--surface2); padding: 0.85rem; border-radius: 6px; border: 1px solid var(--border); width: 100%;">
+        <div style="color: #10B981; font-weight: bold; margin-bottom: 0.25rem;">Timing Trace: Enforced Lock Ordering (A → B)</div>
+        <div style="color: ${simStep >= 1 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 1 ? 'bold' : 'normal'}">${simStep === 1 ? '▶' : '•'} Step 1: Process 1 acquires Mutex A</div>
+        <div style="color: ${simStep >= 2 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 2 ? 'bold' : 'normal'}">${simStep === 2 ? '▶' : '•'} Step 2: Process 2 requests Mutex A (Blocks)</div>
+        <div style="color: ${simStep >= 3 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 3 ? 'bold' : 'normal'}">${simStep === 3 ? '▶' : '•'} Step 3: Process 1 acquires Mutex B safely</div>
+        <div style="color: ${simStep >= 4 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 4 ? 'bold' : 'normal'}">${simStep === 4 ? '▶' : '•'} Step 4: Process 1 completes work and releases both locks</div>
+        <div style="color: ${simStep >= 5 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 5 ? 'bold' : 'normal'}">${simStep === 5 ? '▶' : '•'} Step 5: Process 2 wakes up and acquires Mutex A</div>
+        <div style="color: ${simStep >= 6 ? '#FFF' : 'var(--muted)'}; font-weight: ${simStep === 6 ? 'bold' : 'normal'}">${simStep === 6 ? '▶' : '•'} Step 6: Process 2 acquires Mutex B and completes safely</div>
+      </div>
+    `;
+
+    let simBtnStyle = (timerId !== null) ? "opacity: 0.5; pointer-events: none;" : "";
+
+    container.innerHTML = `
+      <div class="edgecase-header" style="color: #10B981;">✦ Lock Ordering Mutex Guard</div>
+      <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Enforcing a strict order: processes must acquire Mutex A before Mutex B. Circular lockup is impossible.</div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}">
+        <!-- PROCESS 1 PANEL -->
+        <div class="panel-box" style="margin: 0; padding: 1.25rem; border-color: ${p1CardBorder}; background: ${lockState.P1 === 'holds_both' ? 'rgba(16,185,129,0.02)' : 'transparent'};">
+          <div style="font-family: var(--mono); font-weight: bold; font-size: 0.85rem; color: #FFF; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+            <span>Process 1</span>
+            <span style="font-size: 0.65rem; color: var(--muted);">${p1StatusText}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.7rem; font-family: var(--mono);">
+            <div style="color: ${lockState.P1 === 'holds_A' || lockState.P1 === 'holds_both' || lockState.P1 === 'finished' ? '#10B981' : 'var(--muted)'};">1. Lock Mutex A [OK]</div>
+            <div style="color: ${lockState.P1 === 'holds_both' || lockState.P1 === 'finished' ? '#10B981' : 'var(--muted)'};">2. Lock Mutex B [OK]</div>
+          </div>
+        </div>
+
+        <!-- PROCESS 2 PANEL -->
+        <div class="panel-box" style="margin: 0; padding: 1.25rem; border-color: ${p2CardBorder}; background: ${lockState.P2 === 'holds_both' ? 'rgba(16,185,129,0.02)' : 'transparent'};">
+          <div style="font-family: var(--mono); font-weight: bold; font-size: 0.85rem; color: #FFF; margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+            <span>Process 2</span>
+            <span style="font-size: 0.65rem; color: var(--muted);">${p2StatusText}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.7rem; font-family: var(--mono);">
+            <div style="color: ${lockState.P2 === 'holds_A' || lockState.P2 === 'holds_both' || lockState.P2 === 'finished' ? '#10B981' : (lockState.P2 === 'waiting_A' ? '#F59E0B' : 'var(--muted)')};">1. Lock Mutex A ${lockState.P2 === 'waiting_A' ? '[BLOCKED]' : ''}</div>
+            <div style="color: ${lockState.P2 === 'holds_both' || lockState.P2 === 'finished' ? '#10B981' : 'var(--muted)'};">2. Lock Mutex B</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MUTEX HARDWARE SLOTS -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; text-align: center; margin: 1.5rem 0;">
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: ${mutexHolders.A ? 'var(--blue)' : 'var(--border)'}; background: ${mutexHolders.A ? 'rgba(59,130,246,0.05)' : 'var(--surface2)'};">
+          <div style="font-size: 0.65rem; color: var(--muted); font-family: var(--mono);">Mutex A State</div>
+          <div style="font-family: var(--mono); font-size: 1.1rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">
+            ${mutexHolders.A ? `🔒 Held by ${mutexHolders.A}` : '🔓 Free'}
+          </div>
+        </div>
+        <div class="panel-box" style="margin: 0; padding: 0.75rem; border-color: ${mutexHolders.B ? 'var(--blue)' : 'var(--border)'}; background: ${mutexHolders.B ? 'rgba(59,130,246,0.05)' : 'var(--surface2)'};">
+          <div style="font-size: 0.65rem; color: var(--muted); font-family: var(--mono);">Mutex B State</div>
+          <div style="font-family: var(--mono); font-size: 1.1rem; color: #FFF; font-weight: bold; margin-top: 0.2rem;">
+            ${mutexHolders.B ? `🔒 Held by ${mutexHolders.B}` : '🔓 Free'}
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem; text-align: left;">
+        <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.4rem;">Simulation Status</div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); font-family: var(--mono); font-size: 0.75rem; color: #FFF; min-height: 34px; line-height: 1.4;">
+          ${activeLog}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        ${traceSteps}
+      </div>
+
+      ${feedbackHtml}
+
+      <div style="display: flex; gap: 0.5rem; width: 100%;">
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: #10B981; background: rgba(16, 185, 129, 0.05); color: #FFF; ${simBtnStyle}" onclick="window.startDeadlockEdgeCaseSim()">Start Simulation</button>
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border); margin-left: auto;" onclick="window.resetDeadlockEdgeCaseSim()">Reset</button>
+      </div>
+    `;
+  }
+
+  window.resetDeadlockEdgeCaseSim = function() {
+    simStep = 0;
+    simFinished = false;
+    lockState = { P1: 'idle', P2: 'idle' };
+    mutexHolders = { A: null, B: null };
+    activeLog = "Press Start Simulation to watch Lock Ordering resolve conflicts.";
+    if (timerId) clearInterval(timerId);
+    render();
+  };
+
+  window.startDeadlockEdgeCaseSim = function() {
+    if (timerId) clearInterval(timerId);
+    simStep = 0;
+    simFinished = false;
+    lockState = { P1: 'idle', P2: 'idle' };
+    mutexHolders = { A: null, B: null };
+    activeLog = "Initializing lock ordering sequence (always lock Mutex A first)...";
+    render();
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('deadlock-edgecase')) {
+        clearInterval(timerId);
+        return;
+      }
+      simStep++;
+
+      if (simStep === 1) {
+        lockState.P1 = 'holds_A';
+        mutexHolders.A = 'P1';
+        activeLog = "Process 1 requests Mutex A and acquires it successfully.";
+      } else if (simStep === 2) {
+        lockState.P2 = 'waiting_A';
+        activeLog = "Process 2 requests Mutex A. Mutex A is held by Process 1. Process 2 is BLOCKED.";
+      } else if (simStep === 3) {
+        lockState.P1 = 'holds_both';
+        mutexHolders.B = 'P1';
+        activeLog = "Process 1 requests Mutex B. Mutex B is free. Process 1 holds both locks and executes work.";
+      } else if (simStep === 4) {
+        lockState.P1 = 'finished';
+        mutexHolders.A = null;
+        mutexHolders.B = null;
+        activeLog = "Process 1 finishes critical section work. Mutex A and Mutex B are released.";
+      } else if (simStep === 5) {
+        lockState.P2 = 'holds_A';
+        mutexHolders.A = 'P2';
+        activeLog = "Process 2 wakes up from waiting status and acquires Mutex A.";
+      } else if (simStep === 6) {
+        lockState.P2 = 'holds_both';
+        mutexHolders.B = 'P2';
+        activeLog = "Process 2 requests Mutex B. Mutex B is free. Process 2 holds both locks and executes work.";
+      } else if (simStep === 7) {
+        lockState.P2 = 'finished';
+        mutexHolders.A = null;
+        mutexHolders.B = null;
+        activeLog = "Process 2 finishes critical section work. Mutex A and Mutex B are released. Execution complete!";
+        simFinished = true;
+        clearInterval(timerId);
+        timerId = null;
+      }
+      render();
+    }, 1500);
+  };
+
+  render();
+}
+
+// ─── DEADLOCK: BANKER'S ALGORITHM ──────────────────────────────────
+function renderBankersEdgeCase() {
+  const container = document.getElementById('bankers-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let simStep = 0;
+  let simFinished = false;
+  let timerId = null;
+  
+  // Resources state
+  let available = 1;
+  let allocated = { A: 1, B: 2, C: 1 };
+  let maxNeeds = { A: 2, B: 4, C: 3 };
+
+  let requestingProcess = null;
+  let requestedUnits = 0;
+  let evaluationState = null; // null, 'evaluating', 'safe', 'unsafe', 'granted', 'rejected'
+  let activeLog = "Press Start Simulation to watch the OS check resource requests.";
+
+  function render() {
+    let feedbackHtml = "";
+    if (simFinished) {
+      feedbackHtml = `
+        <div class="panel-box" style="margin: 1.5rem 0 0 0; padding: 1.25rem; border-color: #10B981; background: rgba(16, 185, 129, 0.02); text-align: left;">
+          <div style="font-weight: bold; color: #10B981; font-size: 0.9rem; margin-bottom: 0.5rem;">
+            ✓ Safe State Execution Complete
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text); line-height: 1.5;">
+            By predicting execution safety, the OS avoids deadlocks dynamically. Unsafe requests are delayed, while safe requests are granted, guaranteeing a clean completion path.
+          </div>
+        </div>
+      `;
+    }
+
+    // Helper to generate visual block dots
+    function makeDots(count, color) {
+      if (count <= 0) return `<span style="color: var(--muted); font-style: italic; font-size: 0.65rem;">None</span>`;
+      let dots = "";
+      for (let i = 0; i < count; i++) {
+        dots += `<span style="display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: ${color}; margin-right: 3px;"></span>`;
+      }
+      return dots;
+    }
+
+    // Process Cards rendering
+    let processHtml = "";
+    ['A', 'B', 'C'].forEach(p => {
+      let currentAlloc = allocated[p];
+      let maxNeed = maxNeeds[p];
+      let remainingNeed = maxNeed - currentAlloc;
+      if (currentAlloc === 0 && remainingNeed === maxNeed && simStep >= 4 && p === 'A') {
+        remainingNeed = 0; // A is finished
+      }
+      if (currentAlloc === 0 && remainingNeed === maxNeed && simStep >= 11 && p === 'B') {
+        remainingNeed = 0; // B is finished
+      }
+      if (currentAlloc === 0 && remainingNeed === maxNeed && simStep >= 14 && p === 'C') {
+        remainingNeed = 0; // C is finished
+      }
+
+      let isRequesting = (requestingProcess === p);
+      let cardBorder = isRequesting ? 'var(--blue)' : 'var(--border)';
+      let cardBg = isRequesting ? 'rgba(59, 130, 246, 0.03)' : 'transparent';
+
+      processHtml += `
+        <div class="panel-box" style="margin: 0; padding: 1rem; border-color: ${cardBorder}; background: ${cardBg};">
+          <div style="font-family: var(--mono); font-weight: bold; font-size: 0.8rem; color: #FFF; margin-bottom: 0.6rem; display: flex; justify-content: space-between;">
+            <span>Process ${p}</span>
+            ${isRequesting ? `<span style="font-size:0.65rem; color: var(--blue); animation: pulse 1s infinite;">★ Requesting ${requestedUnits}</span>` : ''}
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.7rem; font-family: var(--mono);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="color: var(--muted);">Allocated:</span>
+              <span>${makeDots(currentAlloc, 'var(--blue)')} (${currentAlloc})</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="color: var(--muted);">Still Needs:</span>
+              <span>${makeDots(remainingNeed, '#F59E0B')} (${remainingNeed})</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    // Safety Path Trace Overlay Box
+    let safetyTraceHtml = "";
+    if (evaluationState === 'evaluating') {
+      safetyTraceHtml = `
+        <div style="border: 1px dashed var(--border); border-radius: 6px; padding: 0.75rem; background: var(--surface2); text-align: center; font-size: 0.75rem; font-family: var(--mono); color: var(--muted);">
+          <span>🔍 OS simulates allocation safety trail...</span>
+        </div>
+      `;
+    } else if (evaluationState === 'unsafe') {
+      safetyTraceHtml = `
+        <div style="border: 1px solid #EF4444; border-radius: 6px; padding: 0.75rem; background: rgba(239, 68, 68, 0.05); text-align: left; font-size: 0.75rem; font-family: var(--mono);">
+          <div style="color: #EF4444; font-weight: bold; margin-bottom: 0.25rem;">🛑 Unsafe Path Found (Deadlock Danger)</div>
+          <div style="color: var(--text); font-size: 0.7rem; line-height: 1.4;">
+            If granted, Available becomes 0. None of the processes (A needs 1, B needs 1, C needs 2) can finish. The system would enter a dead-end deadlock.
+          </div>
+        </div>
+      `;
+    } else if (evaluationState === 'safe') {
+      safetyTraceHtml = `
+        <div style="border: 1px solid #10B981; border-radius: 6px; padding: 0.75rem; background: rgba(16, 185, 129, 0.05); text-align: left; font-size: 0.75rem; font-family: var(--mono);">
+          <div style="color: #10B981; font-weight: bold; margin-bottom: 0.25rem;">🟩 Safe Path Found (Green Light)</div>
+          <div style="color: var(--text); font-size: 0.7rem; line-height: 1.4;">
+            If granted, Process finishes successfully and releases its resources. Everyone completes in sequence.
+          </div>
+        </div>
+      `;
+    } else {
+      safetyTraceHtml = `
+        <div style="border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; background: var(--surface2); text-align: center; font-size: 0.75rem; font-family: var(--mono); color: var(--muted); font-style: italic;">
+          OS is idle. Ready to evaluate requests.
+        </div>
+      `;
+    }
+
+    let simBtnStyle = (timerId !== null) ? "opacity: 0.5; pointer-events: none;" : "";
+
+    container.innerHTML = `
+      <div class="edgecase-header" style="color: #10B981;">✦ Banker's Safety Trace</div>
+      <div class="edgecase-subheader" style="margin-bottom: 1.5rem;">Visual simulator showing safe vs unsafe request checking on resource units.</div>
+
+      <!-- AVAILABLE RESOURCES STORAGE -->
+      <div class="panel-box" style="margin: 0 0 1.5rem 0; padding: 0.85rem; border-color: var(--blue); background: rgba(59, 130, 246, 0.05); text-align: center;">
+        <div style="font-size: 0.65rem; color: var(--muted); font-family: var(--mono); text-transform: uppercase;">Available OS Resources</div>
+        <div style="font-family: var(--mono); font-size: 1.25rem; color: #FFF; font-weight: bold; margin-top: 0.2rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+          <span>${available} Units</span>
+          <span>${makeDots(available, '#10B981')}</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; @media(max-width:640px){grid-template-columns: 1fr;}">
+        ${processHtml}
+      </div>
+
+      <div style="margin-bottom: 1.5rem; text-align: left;">
+        <div style="font-size: 0.65rem; color: var(--muted); font-weight: bold; font-family: var(--mono); text-transform: uppercase; margin-bottom: 0.4rem;">OS Console (Safety Check Log)</div>
+        <div style="border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.75rem; background: var(--surface); font-family: var(--mono); font-size: 0.75rem; color: #FFF; min-height: 34px; line-height: 1.4;">
+          ${activeLog}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        ${safetyTraceHtml}
+      </div>
+
+      ${feedbackHtml}
+
+      <div style="display: flex; gap: 0.5rem; width: 100%;">
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: #10B981; background: rgba(16, 185, 129, 0.05); color: #FFF; ${simBtnStyle}" onclick="window.startBankersSim()">Start Simulation</button>
+        <button class="node-btn" style="padding: 0.4rem 1.25rem; font-size: 0.8rem; border-color: var(--border); margin-left: auto;" onclick="window.resetBankersSim()">Reset</button>
+      </div>
+    `;
+  }
+
+  window.resetBankersSim = function() {
+    simStep = 0;
+    simFinished = false;
+    available = 1;
+    allocated = { A: 1, B: 2, C: 1 };
+    requestingProcess = null;
+    requestedUnits = 0;
+    evaluationState = null;
+    activeLog = "Press Start Simulation to watch the OS check resource requests.";
+    if (timerId) clearInterval(timerId);
+    render();
+  };
+
+  window.startBankersSim = function() {
+    if (timerId) clearInterval(timerId);
+    simStep = 0;
+    simFinished = false;
+    available = 1;
+    allocated = { A: 1, B: 2, C: 1 };
+    requestingProcess = null;
+    requestedUnits = 0;
+    evaluationState = null;
+    activeLog = "Initializing Banker's safety trace check...";
+    render();
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('bankers-edgecase')) {
+        clearInterval(timerId);
+        return;
+      }
+      simStep++;
+
+      if (simStep === 1) {
+        requestingProcess = 'B';
+        requestedUnits = 1;
+        evaluationState = 'evaluating';
+        activeLog = "Process B requests 1 resource. Available resources = 1. OS evaluates transaction safety...";
+      } else if (simStep === 2) {
+        evaluationState = 'unsafe';
+        activeLog = "Safety Check: If granted, Available drops to 0. None of the processes can finish. Unsafe State detected!";
+      } else if (simStep === 3) {
+        evaluationState = 'rejected';
+        activeLog = "Request Rejected. Process B must wait. Available remains at 1.";
+      } else if (simStep === 4) {
+        requestingProcess = 'A';
+        requestedUnits = 1;
+        evaluationState = 'evaluating';
+        activeLog = "Process A requests 1 resource. OS evaluates safety...";
+      } else if (simStep === 5) {
+        evaluationState = 'safe';
+        activeLog = "Safety Check: If granted, Process A gets its max needs (2), finishes, and releases all resources. Safe State detected!";
+      } else if (simStep === 6) {
+        evaluationState = 'granted';
+        allocated.A = 2;
+        available = 0;
+        activeLog = "Request Granted. Process A holds 2 resources and executes work.";
+      } else if (simStep === 7) {
+        allocated.A = 0;
+        available = 2;
+        activeLog = "Process A finishes critical work and releases all resources. Available resources increase to 2.";
+      } else if (simStep === 8) {
+        requestingProcess = 'B';
+        requestedUnits = 2;
+        evaluationState = 'evaluating';
+        activeLog = "Process B requests 2 resources. OS evaluates safety...";
+      } else if (simStep === 9) {
+        evaluationState = 'safe';
+        activeLog = "Safety Check: Available is 2. If granted, Process B has 4 (max), finishes, and releases all resources. Safe State!";
+      } else if (simStep === 10) {
+        evaluationState = 'granted';
+        allocated.B = 4;
+        available = 0;
+        activeLog = "Request Granted. Process B holds 4 resources and executes work.";
+      } else if (simStep === 11) {
+        allocated.B = 0;
+        available = 4;
+        activeLog = "Process B finishes critical work and releases resources. Available resources increase to 4.";
+      } else if (simStep === 12) {
+        requestingProcess = 'C';
+        requestedUnits = 2;
+        evaluationState = 'evaluating';
+        activeLog = "Process C requests 2 resources. OS evaluates safety...";
+      } else if (simStep === 13) {
+        evaluationState = 'granted';
+        allocated.C = 3;
+        available = 2;
+        activeLog = "Request Granted. Process C has 3 (max) resources and executes work.";
+      } else if (simStep === 14) {
+        allocated.C = 0;
+        available = 5;
+        activeLog = "Process C finishes and releases all resources. Simulation complete. Deadlock avoided successfully!";
+        simFinished = true;
+        clearInterval(timerId);
+        timerId = null;
+      }
+      render();
+    }, 1800);
+  };
+
+  render();
+}
+
+

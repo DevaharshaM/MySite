@@ -217,11 +217,13 @@
  *(.bss)
  .bss           0x20000018       0x40 build/sensor.o
                 0x20000018                sensor_buffer</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. When Geography Becomes Critical</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Memory mapping eventually moves from a compiler detail to a system design challenge. In advanced architectures, you must place DMA (Direct Memory Access) buffers into specific memory regions that the DMA controller can actually access. If the buffer is mapped to a core-coupled RAM region that is inaccessible to the peripheral bus, the system will silently fail or crash.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Similarly, separating a bootloader from an application requires carving Flash memory into separate, non-overlapping regions using custom linker scripts. The developer is no longer writing software alone—they are shaping the physical layout of logic.</p></div>
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Shaping the City of Logic</h2>
-      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">Memory architecture defines the boundaries of what is electrically possible, but the linker script defines the geography where firmware actually lives.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">As you write embedded code, you are not just writing logic; you are organizing silicon.</p>
-      <div class="blog-quote">Every firmware image is a city. The linker simply decides where its citizens reside.</div>
-    </div>
+    
+        <div style="margin-bottom:2.5rem">
+          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Shaping the City of Logic</h2>
+          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">Memory architecture defines the boundaries of what is electrically possible, but the linker script defines the geography where firmware actually lives.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">As you write embedded code, you are not just writing logic; you are organizing silicon.</p>
+          <div class="blog-quote">Every firmware image is a city. The linker simply decides where its citizens reside.</div>
+        </div>
+        
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">

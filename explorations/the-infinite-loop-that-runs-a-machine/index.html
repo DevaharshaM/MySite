@@ -409,11 +409,13 @@ int main(void)
 - Sample a temperature sensor occasionally (every 10 ms)
 - Update a low-power screen display periodically (every 100 ms)
 - Transmit a network package slowly (every 1 second)</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Simply grouping all of these tasks inside one <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">while(1)</code> block means they all run at the same arbitrary, frequency-dependent speed of the loop. An infinite loop gives the machine repetition. It does not automatically give it time. To resolve this, we must teach our loop how to measure cycles, divide frequencies, and schedule its promises.</p></div>
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Eternal Engine</h2>
-      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The infinite loop is the eternal engine of the bare-metal machine. It keeps the core executing, coordinates peripherals, and acts as the canvas upon which interrupts paint asynchronous events.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">A loop can repeat forever. But to make that repetition useful, we must learn to structure it.</p>
-      <div class="blog-quote">A processor without a loop is a spark that goes out. The loop makes it a flame.</div>
-    </div>
+    
+        <div style="margin-bottom:2.5rem">
+          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Eternal Engine</h2>
+          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The infinite loop is the eternal engine of the bare-metal machine. It keeps the core executing, coordinates peripherals, and acts as the canvas upon which interrupts paint asynchronous events.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">A loop can repeat forever. But to make that repetition useful, we must learn to structure it.</p>
+          <div class="blog-quote">A processor without a loop is a spark that goes out. The loop makes it a flame.</div>
+        </div>
+        
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">

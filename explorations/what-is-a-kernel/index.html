@@ -261,11 +261,13 @@
 * <strong>Inter-Process Communication (IPC)</strong>: Setting up queues, shared memory, and mailboxes so isolated programs can exchange information securely.
 * <strong>Timers &amp; Clocks</strong>: Abstracting hardware clock cycles to manage time delays, timeouts, and periodic calls.
 * <strong>System Calls</strong>: The secure gate through which standard software requests high-privilege execution services from the Kernel.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The Supervisor of Actions</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The Kernel can coordinate dozens of activities simultaneously, carving up execution time, protecting address spaces, and responding to system interrupts.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But before a scheduler can schedule, or memory management can allocate space, the Kernel needs something to manage. It needs a basic unit of running code.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The next exploration starts at this very core.</p></div>
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Unit of Execution</h2>
-      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">All of these kernel responsibilities revolve around coordinating execution, managing hardware, and isolating resources.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But before the scheduler can schedule, or memory management can allocate boundaries, the system needs a unit of execution.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">It needs a representation of a running program.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The next exploration begins with the fundamental unit of running software.</p>
-      <div class="blog-quote">The kernel orchestrates the environment, but the process does the work.</div>
-    </div>
+    
+        <div style="margin-bottom:2.5rem">
+          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Unit of Execution</h2>
+          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">All of these kernel responsibilities revolve around coordinating execution, managing hardware, and isolating resources.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But before the scheduler can schedule, or memory management can allocate boundaries, the system needs a unit of execution.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">It needs a representation of a running program.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The next exploration begins with the fundamental unit of running software.</p>
+          <div class="blog-quote">The kernel orchestrates the environment, but the process does the work.</div>
+        </div>
+        
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">

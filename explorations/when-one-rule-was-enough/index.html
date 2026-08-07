@@ -247,11 +247,7 @@
 *   At Time = 0, $P_1$ begins running.
 *   At Time = 1, $P_{EM}$ arrives. It is the most critical process in the system.
 *   But because the scheduler is <strong>non-preemptive</strong>, $P_1$ cannot be interrupted. $P_{EM}$ is forced to wait in the Ready Queue for <strong>5 full time units</strong> until $P_1$ finishes at Time = 6.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is the fundamental limitation of non-preemptive scheduling: <strong>long-running tasks block critical work, and the kernel is powerless to stop them.</strong></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The early policies were simple and predictable. But when a system must react to user inputs or critical hardware interrupts, waiting is no longer an option.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Should the CPU continue executing a long task, or should it force it to yield?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Let's find out how the kernel breaks the rule of non-preemption.</p></div>
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem"></h2>
-      
-      <div class="blog-quote"></div>
-    </div>
+    
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">

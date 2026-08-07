@@ -65,7 +65,9 @@ systemsTreeNodes = {
     "the-great-swap",
     "scheduling-in-the-wild",
     "one-brain-wasnt-enough",
-    "when-silence-wasnt-an-option"
+    "when-silence-wasnt-an-option",
+    "when-sharing-became-dangerous",
+    "when-nobody-could-move"
   ]
 }
 
@@ -358,11 +360,11 @@ def build_navigation_html(post, all_posts_dict):
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
-        elif post_id == "when-silence-wasnt-an-option":
+        elif post_id == "when-nobody-could-move":
             next_html = """
                 <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  Synchronization →
+                  Memory Management →
                   <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
                 </span>
             """
@@ -417,8 +419,14 @@ def build_post_html(post, all_posts_dict):
                     blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(code_content)}</div>')
                 else:
                     p_content = b["text"]
-                    if b.get("html"):
-                        blocks_html.append(p_content)
+                    if p_content.startswith('#### '):
+                        heading_text = p_content[5:].strip()
+                        blocks_html.append(f'<h4 style="font-family:\'Syne\',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">{parse_text_formatting(esc_html(heading_text))}</h4>')
+                    elif p_content.startswith('### '):
+                        heading_text = p_content[4:].strip()
+                        blocks_html.append(f'<h3 style="font-family:\'Syne\',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">{parse_text_formatting(esc_html(heading_text))}</h3>')
+                    elif b.get("html"):
+                        blocks_html.append(parse_text_formatting(p_content))
                     else:
                         p_content = esc_html(p_content)
                         blocks_html.append(f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">{parse_text_formatting(p_content)}</p>')
@@ -427,7 +435,7 @@ def build_post_html(post, all_posts_dict):
             elif b["type"] == 'code':
                 blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(b["text"])}</div>')
             elif b["type"] == 'html':
-                blocks_html.append(b["html"])
+                blocks_html.append(parse_text_formatting(b["html"]))
             elif b["type"] == 'edgecase':
                 blocks_html.append(f'<div id="{esc_html(b["id"])}" class="edgecase-container"></div>')
             elif b["type"] in ('image', 'img'):
@@ -446,6 +454,16 @@ def build_post_html(post, all_posts_dict):
     
     closing_p_html = "".join([f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">{parse_text_formatting(esc_html(p))}</p>' for p in post["closing"]["paragraphs"]])
     
+    closing_html = ""
+    if post["closing"]["heading"] or post["closing"]["paragraphs"] or post["closing"]["quote"]:
+        closing_html = f"""
+        <div style="margin-bottom:2.5rem">
+          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">{esc_html(post["closing"]["heading"])}</h2>
+          {closing_p_html}
+          <div class="blog-quote">{esc_html(post["closing"]["quote"])}</div>
+        </div>
+        """
+
     post_html = f"""
     <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">{esc_html(post["category"])}</div>
     <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">{esc_html(post["title"])}</h1>
@@ -453,11 +471,7 @@ def build_post_html(post, all_posts_dict):
     <div class="tags" style="margin-bottom:3rem">{"".join([f'<span class="tag">{esc_html(t)}</span>' for t in post["tags"]])}</div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
     {sections_html}
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">{esc_html(post["closing"]["heading"])}</h2>
-      {closing_p_html}
-      <div class="blog-quote">{esc_html(post["closing"]["quote"])}</div>
-    </div>
+    {closing_html}
     {nav_html}
     """
     return post_html

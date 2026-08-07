@@ -376,11 +376,13 @@ SystemState current_state = STATE_IDLE;</div><p style="color:#CBD5E1;line-height
 2. <strong>The Infinite Loop That Runs a Machine</strong>: How the core commits to perpetual execution, performing background and foreground cycles.
 3. <strong>Teaching Time to an Infinite Loop</strong>: How independent counters and timer interrupts segment execution, scheduling tasks periodically.
 4. <strong>When Behaviour Becomes State</strong>: How explicit enums and transitions organize behaviors, ensuring the machine reacts safely to inputs.</p></div>
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Limits of the Simple Model</h2>
-      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">This simple timed superloop and state machine architecture can support highly sophisticated products—from medical devices to aerospace sensor nodes. It operates directly on the silicon with zero kernel overhead, minimal memory foot print, and complete predictability.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But as system complexity continues to scale, this cooperative model reaches a boundary. What happens when multiple tasks must block for external events, or task execution times collide? When sequential cooperation is no longer enough, a new way of organizing execution is waiting.</p>
-      <div class="blog-quote">The superloop keeps running, ticking millisecond by millisecond, waiting for the next path to awaken.</div>
-    </div>
+    
+        <div style="margin-bottom:2.5rem">
+          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Limits of the Simple Model</h2>
+          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">This simple timed superloop and state machine architecture can support highly sophisticated products—from medical devices to aerospace sensor nodes. It operates directly on the silicon with zero kernel overhead, minimal memory foot print, and complete predictability.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But as system complexity continues to scale, this cooperative model reaches a boundary. What happens when multiple tasks must block for external events, or task execution times collide? When sequential cooperation is no longer enough, a new way of organizing execution is waiting.</p>
+          <div class="blog-quote">The superloop keeps running, ticking millisecond by millisecond, waiting for the next path to awaken.</div>
+        </div>
+        
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">

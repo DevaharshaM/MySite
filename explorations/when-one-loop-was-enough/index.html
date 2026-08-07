@@ -217,11 +217,13 @@
 * <strong>Digital Thermometers</strong>: The loop continuously samples an ADC channel connected to a thermistor, converts the readings to a temperature value using a lookup table, and updates a segment LCD driver.
 * <strong>Brushless Motor Controllers</strong>: A high-speed super-loop runs the field-oriented control (FOC) mathematical algorithms to adjust motor phase voltages at 20 kHz. Because the math must be completed in under 50 microseconds, there is no room for operating system overhead.
 * <strong>Battery Chargers</strong>: The controller loops continuously to check battery voltage, current, and temperature, adjusting the output buck converter's PWM duty cycle to maintain a safe charging curve.</p></div>
-    <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Multitasking Horizon</h2>
-      <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">For years, one loop was enough.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But as embedded products grew, communication requirements multiplied, displays became graphical, networking appeared, and diagnostics expanded.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">One processor core now carried dozens of independent responsibilities. The challenge was no longer writing code for a peripheral; it was organizing the execution of independent, parallel activities without letting one delay the other.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">That challenge eventually led to the development of <a href="../../operating-systems/" onclick="showPage('operating-systems'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Operating Systems</a>.</p>
-      <div class="blog-quote">When a single loop must carry every burden, a single delay becomes a universal failure.</div>
-    </div>
+    
+        <div style="margin-bottom:2.5rem">
+          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Multitasking Horizon</h2>
+          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">For years, one loop was enough.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But as embedded products grew, communication requirements multiplied, displays became graphical, networking appeared, and diagnostics expanded.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">One processor core now carried dozens of independent responsibilities. The challenge was no longer writing code for a peripheral; it was organizing the execution of independent, parallel activities without letting one delay the other.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">That challenge eventually led to the development of <a href="../../operating-systems/" onclick="showPage('operating-systems'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Operating Systems</a>.</p>
+          <div class="blog-quote">When a single loop must carry every burden, a single delay becomes a universal failure.</div>
+        </div>
+        
     
       <div class="exploration-nav-block">
         <div class="exploration-nav-grid">
