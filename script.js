@@ -143,7 +143,8 @@ const systemsTreeNodes = {
       { id: "one-brain-wasnt-enough", title: "One Brain Wasn't Enough" },
       { id: "when-silence-wasnt-an-option", title: "When Silence Wasn't an Option" },
       { id: "when-sharing-became-dangerous", title: "When Sharing Became Dangerous" },
-      { id: "when-nobody-could-move", title: "When Nobody Could Move" }
+      { id: "when-nobody-could-move", title: "When Nobody Could Move" },
+      { id: "when-importance-wasnt-enough", title: "When Importance Wasn't Enough" }
     ]
   }
 };
@@ -6213,6 +6214,11 @@ function openItem(id, type) {
           } else if (item.id === "when-nobody-could-move") {
             nextHtml = `
               <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('when-importance-wasnt-enough', 'blogs')">When Importance Wasn't Enough →</a>
+            `;
+          } else if (item.id === "when-importance-wasnt-enough") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
                 Memory Management →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
@@ -6477,6 +6483,8 @@ function initEdgeCase(containerId) {
     renderDeadlockEdgeCase();
   } else if (containerId === 'bankers-edgecase') {
     renderBankersEdgeCase();
+  } else if (containerId === 'priority-inheritance-edgecase') {
+    renderPriorityInheritanceEdgeCase();
   }
 }
 
@@ -14891,5 +14899,308 @@ function renderBankersEdgeCase() {
 
   render();
 }
+
+function renderPriorityInheritanceEdgeCase() {
+  const container = document.getElementById('priority-inheritance-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+  
+  // State
+  let activeTab = 'without'; // 'without' or 'with'
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0;
+  let timerId = null;
+  
+  // Simulation variables
+  let lockOwner = null; // null, 'low'
+  let mutexLocked = false;
+  let priorities = {
+    high: 'High (10)',
+    medium: 'Medium (5)',
+    low: 'Low (1)'
+  };
+  let states = {
+    high: 'Idle',
+    medium: 'Idle',
+    low: 'Idle'
+  };
+  let activeLog = 'Select a tab and click "Start Simulation".';
+  let badgeHighlight = null; // 'inversion' or 'restored' or 'boost'
+
+  // Global event bindings on window to prevent DOM parent hierarchy mismatch
+  window.selectPriorityInheritanceTab = function(tab) {
+    if (activeTab === tab) return;
+    activeTab = tab;
+    resetSim();
+  };
+
+  window.startPriorityInheritanceSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 0;
+    badgeHighlight = null;
+    
+    if (activeTab === 'without') {
+      runWithoutInheritance();
+    } else {
+      runWithInheritance();
+    }
+  };
+
+  window.resetPriorityInheritanceSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    lockOwner = null;
+    mutexLocked = false;
+    priorities = {
+      high: 'High (10)',
+      medium: 'Medium (5)',
+      low: 'Low (1)'
+    };
+    states = {
+      high: 'Idle',
+      medium: 'Idle',
+      low: 'Idle'
+    };
+    badgeHighlight = null;
+    activeLog = `Click "Start Simulation" to execute the ${activeTab === 'without' ? 'Priority Inversion' : 'Priority Inheritance'} sequence.`;
+    render();
+  }
+
+  function runWithoutInheritance() {
+    const steps = [
+      () => {
+        // Step 1: Low priority acquires mutex
+        lockOwner = 'low';
+        mutexLocked = true;
+        states.low = 'Running (Executing Write)';
+        activeLog = "Step 1: Flash Logger (Low) begins executing and locks the EEPROM Mutex.";
+      },
+      () => {
+        // Step 2: High priority wakes up, preempts low, blocks on mutex
+        states.high = 'Blocked (Waiting for Lock)';
+        states.low = 'Suspended (Blocked on CPU)';
+        activeLog = "Step 2: Emergency Brake (High) wakes up and preempts CPU. It tries to acquire the EEPROM Mutex but blocks because Low is holding it.";
+      },
+      () => {
+        // Step 3: Medium priority wakes up, preempts low
+        states.medium = 'Running';
+        states.low = 'Suspended (Preempted by Medium)';
+        activeLog = "Step 3: Dashboard Display (Medium) task wakes up. Since its priority (5) is higher than Flash Logger (1), it preempts it.";
+      },
+      () => {
+        // Step 4: Medium task continues running
+        states.medium = 'Running (Updating speedometer UI)';
+        activeLog = "Step 4: Dashboard Display task continues running. Flash Logger remains preempted and cannot release the lock. Emergency Brake continues waiting.";
+      },
+      () => {
+        // Step 5: Priority Inversion Detected
+        badgeHighlight = 'inversion';
+        activeLog = "Step 5: PRIORITY INVERSION DETECTED. The High-priority safety task is blocked by the Medium-priority display task because of the shared Mutex!";
+      },
+      () => {
+        // Step 6: Finished
+        simState = 'finished';
+        clearInterval(timerId);
+        timerId = null;
+        activeLog = "Simulation complete. Emergency Brake remains delayed indefinitely. In safety critical systems, this leads to failure.";
+      }
+    ];
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('priority-inheritance-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < steps.length) {
+        steps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2000);
+    // Initial run
+    steps[0]();
+    simStep++;
+    render();
+  }
+
+  function runWithInheritance() {
+    const steps = [
+      () => {
+        // Step 1: Low acquires mutex
+        lockOwner = 'low';
+        mutexLocked = true;
+        states.low = 'Running (Executing Write)';
+        activeLog = "Step 1: Flash Logger (Low) starts and locks the EEPROM Mutex.";
+      },
+      () => {
+        // Step 2: High wakes up, blocks on mutex
+        states.high = 'Blocked (Waiting for Lock)';
+        states.low = 'Suspended (Blocked on CPU)';
+        activeLog = "Step 2: Emergency Brake (High) wakes up and requests EEPROM Mutex. It blocks on the lock owned by Low.";
+      },
+      () => {
+        // Step 3: Kernel boosts Low to High
+        priorities.low = 'Boosted to High (10)';
+        states.low = 'Running (Executing Write)';
+        states.high = 'Blocked (Waiting for Lock)';
+        badgeHighlight = 'boost';
+        activeLog = "Step 3: KERNEL DETECTS DEPENDENCY. It temporarily boosts Flash Logger's priority to matching HIGH (10) to bypass intermediate tasks.";
+      },
+      () => {
+        // Step 4: Medium attempts to preempt but fails
+        states.medium = 'Idle (Blocked by Boosted Low)';
+        activeLog = "Step 4: Dashboard Display (Medium) task attempts to run but cannot preempt Flash Logger (currently running at HIGH priority).";
+      },
+      () => {
+        // Step 5: Low finishes, restores priority, releases mutex
+        lockOwner = null;
+        mutexLocked = false;
+        priorities.low = 'Low (1)';
+        states.low = 'Idle';
+        states.high = 'Running (Acquiring lock)';
+        badgeHighlight = 'restored';
+        activeLog = "Step 5: Flash Logger finishes write and releases Mutex. Kernel instantly restores its original priority (1).";
+      },
+      () => {
+        // Step 6: High finishes
+        states.high = 'Finished';
+        activeLog = "Step 6: Emergency Brake (High) immediately acquires Mutex, runs to completion, and stabilizes the system.";
+      },
+      () => {
+        // Step 7: Medium runs
+        states.medium = 'Running';
+        states.high = 'Idle';
+        simState = 'finished';
+        clearInterval(timerId);
+        timerId = null;
+        activeLog = "Step 7: Dashboard Display task finally gets CPU cycles and runs safely. Simulation complete.";
+      }
+    ];
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('priority-inheritance-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < steps.length) {
+        steps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2000);
+    // Initial run
+    steps[0]();
+    simStep++;
+    render();
+  }
+
+  function render() {
+    const isWithout = activeTab === 'without';
+    
+    // Status Badge
+    let badgeHtml = '';
+    if (badgeHighlight === 'inversion') {
+      badgeHtml = `<span style="background:#EF4444; color:#fff; border:1px solid #EF4444; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Priority Inversion Detected</span>`;
+    } else if (badgeHighlight === 'boost') {
+      badgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Priority Boosted (Inheritance)</span>`;
+    } else if (badgeHighlight === 'restored') {
+      badgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Priority Restored Successfully</span>`;
+    } else {
+      badgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: ${simState.toUpperCase()}</span>`;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header">EdgeCase: Priority Inheritance</div>
+      <div class="edgecase-subheader">Compare process execution paths with and without kernel synchronization assistance</div>
+      
+      <div class="edgecase-tabs" style="display:flex; gap:0.5rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem; width:100%;">
+        <div class="edgecase-tab ${isWithout ? 'active' : ''}" style="padding:0.75rem 1.25rem; cursor:pointer; font-family:var(--mono); font-size:0.75rem; border-bottom:2px solid ${isWithout ? 'var(--blue)' : 'transparent'}; color:${isWithout ? '#fff' : 'var(--muted)'}; font-weight:bold;" onclick="window.selectPriorityInheritanceTab('without')">Without Priority Inheritance</div>
+        <div class="edgecase-tab ${!isWithout ? 'active' : ''}" style="padding:0.75rem 1.25rem; cursor:pointer; font-family:var(--mono); font-size:0.75rem; border-bottom:2px solid ${!isWithout ? 'var(--blue)' : 'transparent'}; color:${!isWithout ? '#fff' : 'var(--muted)'}; font-weight:bold;" onclick="window.selectPriorityInheritanceTab('with')">With Priority Inheritance</div>
+      </div>
+
+      <!-- Content Layout -->
+      <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; width:100%;">
+        <!-- Execution Monitor -->
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <!-- High Priority Task Card -->
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(30,41,59,0.3); border:1px solid ${states.high.startsWith('Running') || states.high === 'Finished' ? '#EF4444' : 'var(--border)'}; border-radius:6px; padding:0.85rem 1.2rem;">
+            <div>
+              <div style="font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:bold; color:#fff;">Emergency Brake Control</div>
+              <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono); margin-top:0.15rem;">Requesting Lock: EEPROM Mutex</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-family:var(--mono); font-size:0.7rem; color:#EF4444; border:1px solid #EF4444; border-radius:4px; padding:1px 5px; text-transform:uppercase;">Priority: ${priorities.high}</span>
+              <div style="font-family:var(--mono); font-size:0.75rem; color:${states.high.startsWith('Blocked') ? '#EF4444' : states.high.startsWith('Running') ? '#10B981' : '#fff'}; font-weight:bold; margin-top:0.35rem;">State: ${states.high}</div>
+            </div>
+          </div>
+
+          <!-- Medium Priority Task Card -->
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(30,41,59,0.3); border:1px solid ${states.medium.startsWith('Running') ? '#F59E0B' : 'var(--border)'}; border-radius:6px; padding:0.85rem 1.2rem;">
+            <div>
+              <div style="font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:bold; color:#fff;">Dashboard Display Refresh</div>
+              <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono); margin-top:0.15rem;">Independent task (No Lock Required)</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-family:var(--mono); font-size:0.7rem; color:#F59E0B; border:1px solid #F59E0B; border-radius:4px; padding:1px 5px; text-transform:uppercase;">Priority: ${priorities.medium}</span>
+              <div style="font-family:var(--mono); font-size:0.75rem; color:${states.medium.startsWith('Running') ? '#10B981' : '#fff'}; font-weight:bold; margin-top:0.35rem;">State: ${states.medium}</div>
+            </div>
+          </div>
+
+          <!-- Low Priority Task Card -->
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(30,41,59,0.3); border:1px solid ${states.low.startsWith('Running') ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:0.85rem 1.2rem; box-shadow:${badgeHighlight === 'boost' ? '0 0 10px rgba(59,130,246,0.25)' : 'none'};">
+            <div>
+              <div style="font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:bold; color:#fff;">Flash Logger</div>
+              <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono); margin-top:0.15rem;">EEPROM Lock Status: ${lockOwner === 'low' ? 'Acquired' : 'Released'}</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-family:var(--mono); font-size:0.7rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 5px; text-transform:uppercase; font-weight:${badgeHighlight === 'boost' ? 'bold' : 'normal'};">${badgeHighlight === 'boost' ? '★ ' : ''}Priority: ${priorities.low}</span>
+              <div style="font-family:var(--mono); font-size:0.75rem; color:${states.low.startsWith('Running') ? '#10B981' : states.low.startsWith('Suspended') ? '#EF4444' : '#fff'}; font-weight:bold; margin-top:0.35rem;">State: ${states.low}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lock & Logger System -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid var(--border); border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15); align-items:center; justify-content:center; text-align:center;">
+          <div style="font-family:var(--mono); font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Shared Resource</div>
+          
+          <!-- Mutex Locker Block -->
+          <div style="border:1px solid ${mutexLocked ? '#EF4444' : '#10B981'}; border-radius:50%; width:70px; height:70px; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:1.5rem; color:${mutexLocked ? '#EF4444' : '#10B981'}; margin:1rem 0; background:rgba(30,41,59,0.25); box-shadow:${mutexLocked ? '0 0 12px rgba(239,68,68,0.15)' : 'none'};">
+            ${mutexLocked ? '🔒' : '🔓'}
+          </div>
+          
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff;">EEPROM Mutex</div>
+          <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); margin-top:0.25rem;">Owner: ${lockOwner ? lockOwner.toUpperCase() : 'FREE'}</div>
+        </div>
+      </div>
+
+      <!-- Output logs and controls -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.45;">${activeLog}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${badgeHtml}
+          <button class="btn btn-primary" onclick="window.startPriorityInheritanceSim()" ${simState === 'running' ? 'disabled' : ''} style="padding:0.45rem 1rem; font-size:0.75rem;">Start Simulation</button>
+          <button class="btn btn-secondary" onclick="window.resetPriorityInheritanceSim()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
 
 

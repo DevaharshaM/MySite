@@ -67,7 +67,8 @@ systemsTreeNodes = {
     "one-brain-wasnt-enough",
     "when-silence-wasnt-an-option",
     "when-sharing-became-dangerous",
-    "when-nobody-could-move"
+    "when-nobody-could-move",
+    "when-importance-wasnt-enough"
   ]
 }
 
@@ -361,6 +362,11 @@ def build_navigation_html(post, all_posts_dict):
                 </span>
             """
         elif post_id == "when-nobody-could-move":
+            next_html = f"""
+                <span class="nav-dir-label">Next</span>
+                <a href="../when-importance-wasnt-enough/" class="nav-link">When Importance Wasn't Enough →</a>
+            """
+        elif post_id == "when-importance-wasnt-enough":
             next_html = """
                 <span class="nav-dir-label">Next</span>
                 <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
