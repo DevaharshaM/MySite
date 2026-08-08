@@ -144,7 +144,10 @@ const systemsTreeNodes = {
       { id: "when-silence-wasnt-an-option", title: "When Silence Wasn't an Option" },
       { id: "when-sharing-became-dangerous", title: "When Sharing Became Dangerous" },
       { id: "when-nobody-could-move", title: "When Nobody Could Move" },
-      { id: "when-importance-wasnt-enough", title: "When Importance Wasn't Enough" }
+      { id: "when-importance-wasnt-enough", title: "When Importance Wasn't Enough" },
+      { id: "the-illusion-of-ownership", title: "The Illusion of Ownership" },
+      { id: "the-invisible-translator", title: "The Invisible Translator" },
+      { id: "the-language-of-pages", title: "The Language of Pages" }
     ]
   }
 };
@@ -5314,12 +5317,15 @@ const demoPosts = [
 function updateSeoMetadata(page) {
   const params = new URLSearchParams(window.location.search);
   // 1. Determine unique document title
+  let title = "PrajnaEdge";
   if (page === 'about') {
     title = "About | PrajnaEdge";
   } else if (page === 'contact') {
-    title = "Contact | PrajnaEdge";
+    title = "Connect | PrajnaEdge";
   } else if (page === 'journey') {
     title = "Interactive Career Journey | PrajnaEdge";
+  } else if (page === 'creator') {
+    title = "Devaharsha Meesarapu | PrajnaEdge";
   } else if (page === 'demos') {
     title = "Demonstrations | PrajnaEdge";
   } else if (page === 'bare-metal') {
@@ -5357,6 +5363,10 @@ function updateSeoMetadata(page) {
     canonicalUrl = `${base}/bare-metal/`;
   } else if (page === 'operating-systems') {
     canonicalUrl = `${base}/operating-systems/`;
+  } else if (page === 'creator') {
+    canonicalUrl = `${base}/creator/`;
+  } else if (page === 'journey') {
+    canonicalUrl = `${base}/journey/`;
   } else if (page === 'blog-post' && (activePostId || blogId || demoId)) {
     const activeId = activePostId || blogId || demoId;
     const activeType = activePostType || (blogId ? 'blogs' : 'demos');
@@ -5373,8 +5383,10 @@ function updateSeoMetadata(page) {
       } else {
         canonicalUrl = `${base}/?page=blogs`;
       }
-    } else if (pageParam === 'journey' || pageParam === 'systems-map') {
+    } else if (pageParam === 'journey') {
       canonicalUrl = `${base}/?page=journey`;
+    } else if (pageParam === 'systems-map' || pageParam === 'creator') {
+      canonicalUrl = `${base}/?page=creator`;
     } else if (pageParam === 'demos' || pageParam === 'demonstrations') {
       canonicalUrl = `${base}/?page=demos`;
     } else if (pageParam === 'about') {
@@ -5428,6 +5440,16 @@ function showPage(page) {
     }
   }
   
+  // Toggle footer visibility on transition pages
+  const footer = document.querySelector('footer');
+  if (footer) {
+    if (page === 'bare-metal' || page === 'operating-systems') {
+      footer.style.display = 'none';
+    } else {
+      footer.style.display = '';
+    }
+  }
+  
   if (page === 'bare-metal' || page === 'operating-systems') {
     document.body.style.backgroundColor = '#171210';
   } else {
@@ -5436,7 +5458,7 @@ function showPage(page) {
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
   
-  if (page === 'journey') renderJourney();
+  if (page === 'journey' || page === 'creator') renderJourney();
   if (page === 'blogs') renderBlogs(currentBlogPage);
   if (page === 'demos') renderDemos(currentDemoPage);
 
@@ -5449,6 +5471,8 @@ function showPage(page) {
       let routeName = page;
       if (page === 'blogs') routeName = 'explorations';
       else if (page === 'demos' || page === 'demonstrations') routeName = 'demonstrations';
+      else if (page === 'journey') routeName = 'journey';
+      else if (page === 'creator' || page === 'systems-map') routeName = 'creator';
       newUrl = `${siteBase}${routeName}/`;
     }
     try {
@@ -6219,6 +6243,21 @@ function openItem(id, type) {
           } else if (item.id === "when-importance-wasnt-enough") {
             nextHtml = `
               <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('the-illusion-of-ownership', 'blogs')">The Illusion of Ownership →</a>
+            `;
+          } else if (item.id === "the-illusion-of-ownership") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('the-invisible-translator', 'blogs')">The Invisible Translator →</a>
+            `;
+          } else if (item.id === "the-invisible-translator") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
+              <a class="nav-link active" onclick="openItem('the-language-of-pages', 'blogs')">The Language of Pages →</a>
+            `;
+          } else if (item.id === "the-language-of-pages") {
+            nextHtml = `
+              <span class="nav-dir-label">Next</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
                 Memory Management →
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
@@ -6361,6 +6400,9 @@ function parseTextFormatting(text) {
   // 1. Bold notation: **text** -> <strong>text</strong>
   parsed = parsed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   
+  // 1c. Italics notation: *text* -> <em>text</em>
+  parsed = parsed.replace(/(?<!\*)\*([^\s\*](?:[^\*\n]*?[^\s\*])?)\*(?!\*)/g, '<em>$1</em>');
+  
   // 1b. Markdown links: [Text](target) -> onclick or href
   parsed = parsed.replace(new RegExp('\\[([^\\]]+)\\]\\(([^)]+)\\)', 'g'), (match, label, target) => {
     if (target === 'operating-systems') {
@@ -6485,6 +6527,10 @@ function initEdgeCase(containerId) {
     renderBankersEdgeCase();
   } else if (containerId === 'priority-inheritance-edgecase') {
     renderPriorityInheritanceEdgeCase();
+  } else if (containerId === 'one-memory-access-edgecase') {
+    renderOneMemoryAccessEdgeCase();
+  } else if (containerId === 'one-page-finds-its-frame-edgecase') {
+    renderOnePageFindsItsFrameEdgeCase();
   }
 }
 
@@ -11097,6 +11143,9 @@ const siteBase = (() => {
   if (path.includes('/journey/')) {
     return path.split('/journey/')[0] + '/';
   }
+  if (path.includes('/creator/')) {
+    return path.split('/creator/')[0] + '/';
+  }
   const idx = path.indexOf('/index.html');
   if (idx !== -1) {
     return path.substring(0, idx + 1);
@@ -11157,6 +11206,11 @@ function handleUrlRouting() {
     isRouting = false;
     return;
   }
+  if (relPath.startsWith('creator/')) {
+    showPage('creator');
+    isRouting = false;
+    return;
+  }
   if (relPath.startsWith('bare-metal/')) {
     showPage('bare-metal');
     isRouting = false;
@@ -11211,6 +11265,8 @@ function handleUrlRouting() {
     let cleanRoute = page;
     if (page === 'blogs') cleanRoute = 'explorations';
     else if (page === 'demos' || page === 'demonstrations') cleanRoute = 'demonstrations';
+    else if (page === 'journey') cleanRoute = 'journey';
+    else if (page === 'creator' || page === 'systems-map') cleanRoute = 'creator';
     
     let cleanUrl = `${siteBase}${cleanRoute}/`;
     if (page === 'blogs' && category && systemsTreeNodes[category]) {
@@ -11229,8 +11285,10 @@ function handleUrlRouting() {
       } else {
         openDirectExplorations();
       }
-    } else if (page === 'journey' || page === 'systems-map') {
+    } else if (page === 'journey') {
       showPage('journey');
+    } else if (page === 'creator' || page === 'systems-map') {
+      showPage('creator');
     } else if (page === 'demos' || page === 'demonstrations') {
       showPage('demos');
     } else if (page === 'about') {
@@ -15201,6 +15259,572 @@ function renderPriorityInheritanceEdgeCase() {
 
   render();
 }
+
+function renderOneMemoryAccessEdgeCase() {
+  const container = document.getElementById('one-memory-access-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let activeTab = 'hit'; // 'hit' or 'miss'
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0;
+  let timerId = null;
+
+  // Highlights
+  let highlightedBox = null; // 'mmu', 'tlb', 'pagetable', 'assembly', 'ram'
+  let activeLog = 'Select a pathway tab and click "Start Simulation".';
+
+  window.selectOneMemoryAccessTab = function(tab) {
+    if (activeTab === tab) return;
+    activeTab = tab;
+    resetSim();
+  };
+
+  window.startOneMemoryAccessSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 0;
+    highlightedBox = null;
+
+    if (activeTab === 'hit') {
+      runHitSim();
+    } else {
+      runMissSim();
+    }
+  };
+
+  window.resetOneMemoryAccessSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    highlightedBox = null;
+    activeLog = `Click "Start Simulation" to execute the ${activeTab === 'hit' ? 'TLB Hit' : 'TLB Miss'} pathway.`;
+    render();
+  }
+
+  function runHitSim() {
+    const steps = [
+      () => {
+        highlightedBox = 'cpu-generate';
+        activeLog = "Step 1: CPU requests Virtual Address 0x1234. MMU intercepts the execution flow.";
+      },
+      () => {
+        highlightedBox = 'mmu-split';
+        activeLog = "Step 2: MMU splits Virtual Address 0x1234 into Page Number 0x12 (first 8 bits) and Offset 0x34 (last 8 bits).";
+      },
+      () => {
+        highlightedBox = 'tlb';
+        activeLog = "Step 3: MMU queries the fast on-chip TLB Cache to check if a translation for Page 0x12 exists.";
+      },
+      () => {
+        highlightedBox = 'tlb-hit';
+        activeLog = "Step 4: TLB HIT! The cache instantly returns Frame Number 0x8A. No main memory lookup is needed.";
+      },
+      () => {
+        highlightedBox = 'assembly';
+        activeLog = "Step 5: The MMU combines Frame 0x8A with the original, UNCHANGED Offset 0x34 to construct Physical Address 0x8A34.";
+      },
+      () => {
+        highlightedBox = 'ram';
+        activeLog = "Step 6: Physical Address 0x8A34 is queried in RAM, completing the operation in a single memory trip. Simulation complete!";
+        simState = 'finished';
+        clearInterval(timerId);
+        timerId = null;
+      }
+    ];
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('one-memory-access-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < steps.length) {
+        steps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2200);
+
+    steps[0]();
+    simStep++;
+    render();
+  }
+
+  function runMissSim() {
+    const steps = [
+      () => {
+        highlightedBox = 'cpu-generate';
+        activeLog = "Step 1: CPU requests Virtual Address 0x1234. MMU intercepts the execution flow.";
+      },
+      () => {
+        highlightedBox = 'mmu-split';
+        activeLog = "Step 2: MMU splits Virtual Address 0x1234 into Page Number 0x12 (first 8 bits) and Offset 0x34 (last 8 bits).";
+      },
+      () => {
+        highlightedBox = 'tlb-miss-check';
+        activeLog = "Step 3: MMU queries the on-chip TLB Cache for Page 0x12.";
+      },
+      () => {
+        highlightedBox = 'tlb-miss-action';
+        activeLog = "Step 4: TLB MISS! No entry is found. MMU must pause and perform a Page Table Walk.";
+      },
+      () => {
+        highlightedBox = 'pagetable';
+        activeLog = "Step 5: MMU accesses the Page Table in physical RAM, finding that Page 0x12 maps to Frame 0x8A.";
+      },
+      () => {
+        highlightedBox = 'tlb-update';
+        activeLog = "Step 6: MMU updates the TLB Cache with the mapping (Page 0x12 -> Frame 0x8A) for future lookups.";
+      },
+      () => {
+        highlightedBox = 'assembly';
+        activeLog = "Step 7: The MMU combines Frame 0x8A with the original, UNCHANGED Offset 0x34 to construct Physical Address 0x8A34.";
+      },
+      () => {
+        highlightedBox = 'ram';
+        activeLog = "Step 8: Physical Address 0x8A34 is sent to RAM, completing the memory cycle. Simulation complete!";
+        simState = 'finished';
+        clearInterval(timerId);
+        timerId = null;
+      }
+    ];
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('one-memory-access-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < steps.length) {
+        steps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2200);
+
+    steps[0]();
+    simStep++;
+    render();
+  }
+
+  function render() {
+    const isHit = activeTab === 'hit';
+
+    // Status Badge
+    let badgeHtml = '';
+    if (simState === 'idle') {
+      badgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      badgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">TRANSLATING</span>`;
+    } else if (simState === 'finished') {
+      badgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">TRANSLATION COMPLETE</span>`;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header">EdgeCase: One Memory Access</div>
+      <div class="edgecase-subheader">Watch a virtual address traverse the MMU, TLB, and Page Table to find its physical RAM location</div>
+
+      <div class="edgecase-tabs" style="display:flex; gap:0.5rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem; width:100%;">
+        <div class="edgecase-tab ${isHit ? 'active' : ''}" style="padding:0.75rem 1.25rem; cursor:pointer; font-family:var(--mono); font-size:0.75rem; border-bottom:2px solid ${isHit ? 'var(--blue)' : 'transparent'}; color:${isHit ? '#fff' : 'var(--muted)'}; font-weight:bold;" onclick="window.selectOneMemoryAccessTab('hit')">TLB Hit Pathway</div>
+        <div class="edgecase-tab ${!isHit ? 'active' : ''}" style="padding:0.75rem 1.25rem; cursor:pointer; font-family:var(--mono); font-size:0.75rem; border-bottom:2px solid ${!isHit ? 'var(--blue)' : 'transparent'}; color:${!isHit ? '#fff' : 'var(--muted)'}; font-weight:bold;" onclick="window.selectOneMemoryAccessTab('miss')">TLB Miss Pathway</div>
+      </div>
+
+      <!-- Address Breakdown Bar -->
+      <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-bottom:1.5rem; width:100%; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">VIRTUAL ADDRESS TARGET</div>
+        <div style="display:flex; font-family:var(--mono); font-size:1.1rem; border:1px solid rgba(255,255,255,0.15); border-radius:4px; overflow:hidden; transition: all 0.3s;">
+          ${(highlightedBox === null || highlightedBox === 'cpu-generate') ? `
+            <div style="background:rgba(30,41,59,0.5); padding:0.5rem 1.5rem; color:#fff; font-weight:bold;">
+              0x1234
+            </div>
+          ` : highlightedBox === 'mmu-split' ? `
+            <div style="background:rgba(59,130,246,0.15); padding:0.5rem 1rem; color:#3B82F6; font-weight:bold; border-right:1px solid rgba(255,255,255,0.15);">
+              Page: 0x12
+            </div>
+            <div style="background:rgba(245,158,11,0.1); padding:0.5rem 1rem; color:#F59E0B; font-weight:bold;">
+              Offset: 0x34
+            </div>
+          ` : `
+            <div style="background:rgba(59,130,246,0.35); padding:0.5rem 1rem; color:#3B82F6; font-weight:bold; border-right:1px solid rgba(255,255,255,0.15); box-shadow: inset 0 0 10px rgba(59,130,246,0.35);">
+              Page: 0x12
+            </div>
+            <div style="background:rgba(245,158,11,0.25); padding:0.5rem 1rem; color:#F59E0B; font-weight:bold; box-shadow: inset 0 0 10px rgba(245,158,11,0.25);">
+              Offset: 0x34
+            </div>
+          `}
+        </div>
+        <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); text-align:center;">
+          ${(highlightedBox === null || highlightedBox === 'cpu-generate') ? `
+            The CPU generates a raw 16-bit Virtual Address target.
+          ` : highlightedBox === 'mmu-split' ? `
+            MMU separates the address bits into Page and Offset components.
+          ` : `
+            Notice: The <span style="color:#F59E0B; font-weight:bold;">Offset (0x34)</span> stays identical throughout. Only the page index is translated.
+          `}
+        </div>
+      </div>
+
+      <!-- Main Columns Grid -->
+      <div style="display:grid; grid-template-columns: 1.2fr 1fr 1fr; gap:1.2rem; width:100%;">
+        
+        <!-- Column 1: MMU / TLB -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid ${highlightedBox === 'cpu-generate' || highlightedBox === 'mmu-split' || highlightedBox === 'tlb' || highlightedBox?.startsWith('tlb-') ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">MMU (On Processor)</div>
+          
+          <div style="background:rgba(15,23,42,0.4); border:1px solid ${highlightedBox === 'cpu-generate' || highlightedBox === 'mmu-split' ? '#3B82F6' : 'transparent'}; border-radius:4px; padding:0.6rem; text-align:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.7rem; color:var(--muted);">INTERCEPTOR REGISTER</div>
+            <div style="font-family:var(--mono); font-size:0.8rem; color:#fff; font-weight:bold; margin-top:0.2rem;">
+              ${(highlightedBox === null || highlightedBox === 'cpu-generate') ? '0x1234' : 'Page: 0x12'}
+            </div>
+          </div>
+
+          <!-- TLB Component -->
+          <div style="background:rgba(15,23,42,0.6); border:1px solid ${highlightedBox === 'tlb-hit' ? '#10B981' : highlightedBox === 'tlb-miss-action' ? '#EF4444' : highlightedBox?.startsWith('tlb-') ? '#F59E0B' : 'var(--border)'}; border-radius:4px; padding:0.6rem; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.7rem; color:#F59E0B; text-align:center; font-weight:bold;">TLB Lookup Cache</div>
+            
+            <table style="width:100%; font-family:var(--mono); font-size:0.65rem; color:#E2E8F0; margin-top:0.5rem; text-align:center; border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+                  <th style="padding:0.25rem;">Page</th>
+                  <th style="padding:0.25rem;">Frame</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:${highlightedBox === 'tlb-hit' || highlightedBox === 'tlb-update' ? 'rgba(16,185,129,0.2)' : 'transparent'}; font-weight:${highlightedBox === 'tlb-hit' || highlightedBox === 'tlb-update' ? 'bold' : 'normal'};">
+                  <td style="padding:0.25rem; color:#3B82F6;">0x12</td>
+                  <td style="padding:0.25rem; color:#10B981;">${isHit || highlightedBox === 'tlb-update' ? '0x8A' : '—'}</td>
+                </tr>
+                <tr>
+                  <td style="padding:0.25rem;">0x05</td>
+                  <td style="padding:0.25rem;">0x3C</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Column 2: Page Table Walk -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid ${highlightedBox === 'pagetable' ? '#EF4444' : 'var(--border)'}; border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">Page Table (in RAM)</div>
+          
+          <div style="background:rgba(15,23,42,0.6); border:1px solid ${highlightedBox === 'pagetable' ? '#EF4444' : 'transparent'}; border-radius:4px; padding:0.6rem; height:100%; display:flex; flex-direction:column; justify-content:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-align:center; margin-bottom:0.4rem;">PROCESS DIRECTORY</div>
+            <table style="width:100%; font-family:var(--mono); font-size:0.65rem; color:#E2E8F0; text-align:center; border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+                  <th style="padding:0.25rem;">Page</th>
+                  <th style="padding:0.25rem;">Frame</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background:${highlightedBox === 'pagetable' ? 'rgba(239,68,68,0.2)' : 'transparent'}; font-weight:${highlightedBox === 'pagetable' ? 'bold' : 'normal'};">
+                  <td style="padding:0.25rem; color:#3B82F6;">0x12</td>
+                  <td style="padding:0.25rem; color:#10B981;">0x8A</td>
+                </tr>
+                <tr>
+                  <td style="padding:0.25rem;">0x13</td>
+                  <td style="padding:0.25rem;">0x4F</td>
+                </tr>
+                <tr>
+                  <td style="padding:0.25rem;">0x14</td>
+                  <td style="padding:0.25rem;">0x12</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Column 3: Assembly & RAM -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid ${highlightedBox === 'assembly' || highlightedBox === 'ram' ? '#10B981' : 'var(--border)'}; border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">Physical Assembly</div>
+          
+          <!-- Assembly Component -->
+          <div style="background:rgba(15,23,42,0.6); border:1px solid ${highlightedBox === 'assembly' ? '#10B981' : 'transparent'}; border-radius:4px; padding:0.6rem; text-align:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted);">PHYSICAL ADDRESS ASSEMBLY</div>
+            <div style="display:flex; font-family:var(--mono); font-size:0.8rem; border:1px solid rgba(255,255,255,0.1); border-radius:3px; overflow:hidden; justify-content:center; margin-top:0.4rem;">
+              <div style="background:${highlightedBox === 'assembly' || highlightedBox === 'ram' ? 'rgba(16,185,129,0.25)' : 'transparent'}; padding:0.25rem 0.5rem; color:#10B981; font-weight:bold;">
+                Frame: ${highlightedBox === 'assembly' || highlightedBox === 'ram' ? '0x8A' : '??'}
+              </div>
+              <div style="background:rgba(245,158,11,0.15); padding:0.25rem 0.5rem; color:#F59E0B; font-weight:bold; border-left:1px solid rgba(255,255,255,0.1);">
+                Offset: 0x34
+              </div>
+            </div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; font-weight:bold; margin-top:0.4rem;">
+              Address: ${highlightedBox === 'assembly' || highlightedBox === 'ram' ? '0x8A34' : '????'}
+            </div>
+          </div>
+
+          <!-- Physical RAM cell -->
+          <div style="background:rgba(15,23,42,0.4); border:1px solid ${highlightedBox === 'ram' ? '#10B981' : 'transparent'}; border-radius:4px; padding:0.6rem; text-align:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted);">RAM TARGET VALUE</div>
+            <div style="font-family:var(--mono); font-size:0.8rem; color:#10B981; font-weight:bold; margin-top:0.2rem;">
+              ${highlightedBox === 'ram' ? '0xAA (Data Read)' : '—'}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controls & Log Console -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.45;">${activeLog}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${badgeHtml}
+          <button class="btn btn-primary" onclick="window.startOneMemoryAccessSim()" ${simState === 'running' ? 'disabled' : ''} style="padding:0.45rem 1rem; font-size:0.75rem;">Start Simulation</button>
+          <button class="btn btn-secondary" onclick="window.resetOneMemoryAccessSim()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderOnePageFindsItsFrameEdgeCase() {
+  const container = document.getElementById('one-page-finds-its-frame-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0;
+  let timerId = null;
+
+  // Highlights
+  let highlightedBox = null; // 'cpu-generate', 'mmu-split', 'pagetable-lookup', 'assembly', 'ram'
+  let activeLog = 'Click "Start Simulation" to begin the address translation visualization.';
+
+  window.startOnePageFindsItsFrameSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 0;
+    highlightedBox = null;
+
+    runSimulation();
+  };
+
+  window.resetOnePageFindsItsFrameSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    highlightedBox = null;
+    activeLog = 'Click "Start Simulation" to watch Virtual Page 0x12 find its Physical Frame 0x8A.';
+    render();
+  }
+
+  function runSimulation() {
+    const steps = [
+      () => {
+        highlightedBox = 'cpu-generate';
+        activeLog = "Step 1: CPU initiates read request for Virtual Address 0x1234.";
+      },
+      () => {
+        highlightedBox = 'mmu-split';
+        activeLog = "Step 2: MMU isolates Page Number 0x12 (first 8 bits) and Offset 0x34 (last 8 bits).";
+      },
+      () => {
+        highlightedBox = 'pagetable-lookup';
+        activeLog = "Step 3: MMU lookups index 0x12 in the Page Table, finding physical Frame 0x8A.";
+      },
+      () => {
+        highlightedBox = 'assembly';
+        activeLog = "Step 4: MMU reassembles address: physical Frame 0x8A is joined with the UNCHANGED Offset 0x34.";
+      },
+      () => {
+        highlightedBox = 'ram';
+        activeLog = "Step 5: Physical Address 0x8A34 is targeted in RAM. The Offset remained 0x34 throughout! Translation complete.";
+        simState = 'finished';
+        clearInterval(timerId);
+        timerId = null;
+      }
+    ];
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('one-page-finds-its-frame-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < steps.length) {
+        steps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2200);
+
+    steps[0]();
+    simStep++;
+    render();
+  }
+
+  function render() {
+    // Status Badge
+    let badgeHtml = '';
+    if (simState === 'idle') {
+      badgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      badgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">TRANSLATING</span>`;
+    } else if (simState === 'finished') {
+      badgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">TRANSLATION COMPLETE</span>`;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header">EdgeCase: Page-to-Frame Pipeline</div>
+      <div class="edgecase-subheader">Watch how the Virtual Page Number is translated while the Offset stays identical</div>
+
+      <!-- Address Breakdown Bar -->
+      <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-bottom:1.5rem; width:100%; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">VIRTUAL ADDRESS TARGET</div>
+        <div style="display:flex; font-family:var(--mono); font-size:1.1rem; border:1px solid rgba(255,255,255,0.15); border-radius:4px; overflow:hidden; transition: all 0.3s;">
+          ${(highlightedBox === null || highlightedBox === 'cpu-generate') ? `
+            <div style="background:rgba(30,41,59,0.5); padding:0.5rem 1.5rem; color:#fff; font-weight:bold;">
+              0x1234
+            </div>
+          ` : highlightedBox === 'mmu-split' ? `
+            <div style="background:rgba(59,130,246,0.15); padding:0.5rem 1rem; color:#3B82F6; font-weight:bold; border-right:1px solid rgba(255,255,255,0.15);">
+              Page: 0x12
+            </div>
+            <div style="background:rgba(245,158,11,0.1); padding:0.5rem 1rem; color:#F59E0B; font-weight:bold;">
+              Offset: 0x34
+            </div>
+          ` : `
+            <div style="background:rgba(59,130,246,0.35); padding:0.5rem 1rem; color:#3B82F6; font-weight:bold; border-right:1px solid rgba(255,255,255,0.15); box-shadow: inset 0 0 10px rgba(59,130,246,0.35);">
+              Page: 0x12
+            </div>
+            <div style="background:rgba(245,158,11,0.25); padding:0.5rem 1rem; color:#F59E0B; font-weight:bold; box-shadow: inset 0 0 10px rgba(245,158,11,0.25);">
+              Offset: 0x34
+            </div>
+          `}
+        </div>
+        <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); text-align:center;">
+          ${(highlightedBox === null || highlightedBox === 'cpu-generate') ? `
+            The CPU generates a raw 16-bit Virtual Address target.
+          ` : highlightedBox === 'mmu-split' ? `
+            MMU separates the address bits into Page and Offset components.
+          ` : `
+            Takeaway: The <span style="color:#F59E0B; font-weight:bold;">Offset (0x34)</span> remains completely unchanged. Only the Page translates.
+          `}
+        </div>
+      </div>
+
+      <!-- Main Columns Grid -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1.2rem; width:100%;">
+        
+        <!-- Column 1: MMU Interceptor -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid ${highlightedBox === 'cpu-generate' || highlightedBox === 'mmu-split' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">MMU Register</div>
+          
+          <div style="background:rgba(15,23,42,0.4); border:1px solid ${highlightedBox === 'cpu-generate' || highlightedBox === 'mmu-split' ? '#3B82F6' : 'transparent'}; border-radius:4px; padding:0.6rem; text-align:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.7rem; color:var(--muted);">ADDRESS INTERCEPTOR</div>
+            <div style="font-family:var(--mono); font-size:0.8rem; color:#fff; font-weight:bold; margin-top:0.2rem;">
+              ${(highlightedBox === null || highlightedBox === 'cpu-generate') ? '0x1234' : 'Page: 0x12'}
+            </div>
+          </div>
+          <div style="font-size:0.65rem; color:var(--muted); line-height:1.4; text-align:center;">
+            The MMU catches the virtual coordinate, splitting it immediately to begin the translation.
+          </div>
+        </div>
+
+        <!-- Column 2: Page Table Directory -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid ${highlightedBox === 'pagetable-lookup' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">Page Table</div>
+          
+          <div style="background:rgba(15,23,42,0.6); border:1px solid ${highlightedBox === 'pagetable-lookup' ? 'var(--blue)' : 'var(--border)'}; border-radius:4px; padding:0.6rem; transition: border-color 0.3s;">
+            <table style="width:100%; font-family:var(--mono); font-size:0.65rem; color:#E2E8F0; text-align:center; border-collapse:collapse;">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+                  <th style="padding:0.25rem;">Page</th>
+                  <th style="padding:0.25rem;">Frame</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:0.25rem;">0x10</td>
+                  <td style="padding:0.25rem;">0x05</td>
+                </tr>
+                <tr>
+                  <td style="padding:0.25rem;">0x11</td>
+                  <td style="padding:0.25rem;">0xC2</td>
+                </tr>
+                <tr style="background:${highlightedBox === 'pagetable-lookup' || highlightedBox === 'assembly' || highlightedBox === 'ram' ? 'rgba(59,130,246,0.2)' : 'transparent'}; font-weight:${highlightedBox === 'pagetable-lookup' ? 'bold' : 'normal'}; border:1px solid ${highlightedBox === 'pagetable-lookup' ? 'var(--blue)' : 'transparent'};">
+                  <td style="padding:0.25rem; color:#3B82F6;">0x12</td>
+                  <td style="padding:0.25rem; color:#10B981; font-weight:bold;">0x8A</td>
+                </tr>
+                <tr>
+                  <td style="padding:0.25rem;">0x13</td>
+                  <td style="padding:0.25rem;">0x47</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Column 3: Reassembly & RAM target -->
+        <div style="display:flex; flex-direction:column; gap:1rem; border:1px solid ${highlightedBox === 'assembly' || highlightedBox === 'ram' ? '#10B981' : 'var(--border)'}; border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">RAM Target</div>
+          
+          <div style="background:rgba(15,23,42,0.6); border:1px solid ${highlightedBox === 'assembly' ? '#10B981' : 'transparent'}; border-radius:4px; padding:0.6rem; text-align:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted);">ASSEMBLED PHYSICAL ADDRESS</div>
+            <div style="display:flex; font-family:var(--mono); font-size:0.8rem; border:1px solid rgba(255,255,255,0.1); border-radius:3px; overflow:hidden; justify-content:center; margin-top:0.4rem;">
+              <div style="background:${highlightedBox === 'assembly' || highlightedBox === 'ram' ? 'rgba(16,185,129,0.25)' : 'transparent'}; padding:0.25rem 0.5rem; color:#10B981; font-weight:bold;">
+                Frame: ${highlightedBox === 'assembly' || highlightedBox === 'ram' ? '0x8A' : '??'}
+              </div>
+              <div style="background:rgba(245,158,11,0.15); padding:0.25rem 0.5rem; color:#F59E0B; font-weight:bold; border-left:1px solid rgba(255,255,255,0.1);">
+                Offset: 0x34
+              </div>
+            </div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; font-weight:bold; margin-top:0.4rem;">
+              Address: ${highlightedBox === 'assembly' || highlightedBox === 'ram' ? '0x8A34' : '????'}
+            </div>
+          </div>
+
+          <div style="background:rgba(15,23,42,0.4); border:1px solid ${highlightedBox === 'ram' ? '#10B981' : 'transparent'}; border-radius:4px; padding:0.6rem; text-align:center; transition: border-color 0.3s;">
+            <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted);">PHYSICAL VALUE LOADED</div>
+            <div style="font-family:var(--mono); font-size:0.8rem; color:#10B981; font-weight:bold; margin-top:0.2rem;">
+              ${highlightedBox === 'ram' ? '0x3F (Successful Read)' : '—'}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controls & Log Console -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.45;">${activeLog}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${badgeHtml}
+          <button class="btn btn-primary" onclick="window.startOnePageFindsItsFrameSim()" ${simState === 'running' ? 'disabled' : ''} style="padding:0.45rem 1rem; font-size:0.75rem;">Start Simulation</button>
+          <button class="btn btn-secondary" onclick="window.resetOnePageFindsItsFrameSim()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
 
 
 

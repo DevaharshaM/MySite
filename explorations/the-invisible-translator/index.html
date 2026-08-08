@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bare Metal | PrajnaEdge</title>
+<title>The Invisible Translator | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/bare-metal/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/the-invisible-translator/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -22,9 +22,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
   <!-- External Premium Stylesheet -->
-  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../../style.css" />
   <!-- External Behavior and Logic -->
-  <script src="../script.js" defer></script>
+  <script src="../../script.js" defer></script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
 <script>
@@ -63,11 +63,11 @@
       <div class="homepage-video-container">
         <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
         <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
-          <source src="../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
         </video>
         
         <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
-        <img id="final-frame" class="homepage-media" src="../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
         
         <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
         <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
@@ -184,11 +184,130 @@
   </div>
 </div>
 
-<div class="page" id="page-blog-post">
+<div class="page active" id="page-blog-post">
   <div style="padding-top:80px">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
-      <div id="blog-post-content"></div>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">The Invisible Translator</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How every Virtual Address finds its way to Physical Memory.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Memory Management</span><span class="tag">Virtual Memory</span><span class="tag">Physical Memory</span><span class="tag">MMU</span><span class="tag">TLB</span><span class="tag">Page Table</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Invisible Translator</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Software operates entirely inside a world of Virtual Addresses. Physical RAM, however, understands only concrete physical silicon locations.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For any instruction to load, any variable to be read, or any pointer to be dereferenced, the CPU must translate the virtual address into a physical one. This translation happens silently on every single memory cycle.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because of this constant execution demand, address translation cannot be handled by operating system software alone; querying software loops on every instruction fetch would make the processor crawl.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Instead, the translation is performed by a dedicated hardware component sitting directly on the CPU silicon: the <strong>MMU (Memory Management Unit)</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Whenever the CPU executes an instruction that references a virtual address, the hardware intercepts the request and routes it through the MMU. The MMU acts as the gateway, converting the virtual target on-the-fly to a physical address before sending it out along the motherboard's memory bus to the RAM chip.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Translation Journey</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To perform this translation, the MMU consults two main structures: a fast hardware lookup cache called the <strong>TLB (Translation Lookaside Buffer)</strong> and a complete mapping directory in memory called the <strong>Page Table</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Here is the path every memory request travels from the processor core to physical silicon:</p><div style="text-align: center; margin: 2rem 0; width: 100%;">
+  <svg viewBox="0 0 800 480" width="100%" height="auto" style="background: #111827; border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+    <defs>
+      <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)" /><!-- CPU Box -->
+    <rect x="40" y="50" width="120" height="60" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="2"/>
+    <text x="100" y="85" text-anchor="middle" fill="#FFF" font-size="14" font-weight="bold">CPU Core</text><!-- Virtual Address Bus -->
+    <path d="M 160 80 L 260 80" fill="none" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="210" y="70" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">Virtual Addr</text><!-- MMU boundary -->
+    <rect x="260" y="30" width="280" height="340" rx="8" fill="#111B30" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.5"/>
+    <text x="400" y="52" text-anchor="middle" fill="#3B82F6" font-size="12" font-weight="bold" letter-spacing="0.05em">CPU SILICON (MMU)</text><!-- TLB Box -->
+    <rect x="300" y="80" width="200" height="70" rx="6" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="400" y="110" text-anchor="middle" fill="#FFF" font-size="13" font-weight="bold">TLB Cache</text>
+    <text x="400" y="130" text-anchor="middle" fill="#F59E0B" font-size="10" font-family="monospace">Recent Translations</text><!-- Decision Arrow -->
+    <path d="M 400 150 L 400 210" fill="none" stroke="#FFF" stroke-width="1.5"/><!-- Hit Path -->
+    <path d="M 400 210 L 590 210 L 590 100 L 640 100" fill="none" stroke="#10B981" stroke-width="2"/>
+    <circle cx="490" cy="210" r="12" fill="#10B981"/>
+    <text x="490" y="214" text-anchor="middle" fill="#FFF" font-size="10" font-weight="bold">HIT</text><!-- Miss Path -->
+    <path d="M 400 210 L 400 260" fill="none" stroke="#EF4444" stroke-width="2"/>
+    <circle cx="400" cy="210" r="12" fill="#EF4444"/>
+    <text x="400" y="214" text-anchor="middle" fill="#FFF" font-size="10" font-weight="bold">MISS</text><!-- Page Table Walk Box -->
+    <rect x="300" y="260" width="200" height="70" rx="6" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="400" y="290" text-anchor="middle" fill="#FFF" font-size="13" font-weight="bold">Page Table Walk</text>
+    <text x="400" y="310" text-anchor="middle" fill="#EF4444" font-size="10" font-weight="bold">Consult RAM Directory</text><!-- Return to RAM from page table -->
+    <path d="M 500 295 L 680 295 L 680 130" fill="none" stroke="#EF4444" stroke-width="2"/><!-- RAM Box -->
+    <rect x="640" y="50" width="100" height="80" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="2"/>
+    <text x="690" y="90" text-anchor="middle" fill="#FFF" font-size="14" font-weight="bold">Physical</text>
+    <text x="690" y="110" text-anchor="middle" fill="#10B981" font-size="12" font-weight="bold">RAM</text><!-- Marker Arrow Defs -->
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 0 L 10 5 L 0 10 z" fill="#3B82F6"/>
+      </marker>
+    </defs>
+  </svg>
+</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Why another cache?</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Without the TLB cache, virtual memory would cut system performance in half.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because the main mapping directory (the Page Table) resides in RAM, every variables lookup would require two separate physical memory reads: first, the MMU must read the Page Table from RAM to discover where the physical address is; second, it must read the actual variable data from that address.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Since physical RAM accesses are slow compared to the CPU's cycle speed, doubling the number of memory calls for every instruction fetch would degrade execution speeds.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The TLB acts as a local hardware cache directly inside the MMU, storing the most recently used translations. When the CPU requests an address that has been translated recently, the MMU retrieves the mapping instantly from the TLB, requiring only a single read from RAM to fetch the actual data.</p><div style="text-align: center; margin: 2rem 0; width: 100%;">
+  <svg viewBox="0 0 800 280" width="100%" height="auto" style="background: #111827; border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+    <rect width="100%" height="100%" fill="url(#grid)" /><!-- NO TLB SCENARIO -->
+    <g transform="translate(40, 40)">
+      <rect x="0" y="0" width="330" height="200" rx="6" fill="#1E293B" stroke="#EF4444" stroke-width="1" stroke-dasharray="3"/>
+      <text x="165" y="30" text-anchor="middle" fill="#FFF" font-size="13" font-weight="bold">No TLB (Double Latency)</text><!-- Flow description -->
+      <rect x="20" y="60" width="290" height="40" rx="4" fill="#0F172A" stroke="rgba(239,68,68,0.2)"/>
+      <text x="35" y="84" fill="#E2E8F0" font-size="11" font-family="monospace">1. Lookup mapping in RAM</text><rect x="20" y="120" width="290" height="40" rx="4" fill="#0F172A" stroke="rgba(239,68,68,0.2)"/>
+      <text x="35" y="144" fill="#E2E8F0" font-size="11" font-family="monospace">2. Fetch actual variable from RAM</text><text x="165" y="185" text-anchor="middle" fill="#EF4444" font-size="10" font-weight="bold">🛑 2 Memory Bus Access Cycles</text>
+    </g><!-- WITH TLB SCENARIO -->
+    <g transform="translate(430, 40)">
+      <rect x="0" y="0" width="330" height="200" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1" stroke-dasharray="3"/>
+      <text x="165" y="30" text-anchor="middle" fill="#FFF" font-size="13" font-weight="bold">With TLB Hit (Fast Track)</text><!-- Flow description -->
+      <rect x="20" y="60" width="290" height="40" rx="4" fill="#0F172A" stroke="rgba(16,185,129,0.2)"/>
+      <text x="35" y="84" fill="#E2E8F0" font-size="11" font-family="monospace">1. Lookup mapping inside TLB (Instant)</text><rect x="20" y="120" width="290" height="40" rx="4" fill="#0F172A" stroke="rgba(16,185,129,0.2)"/>
+      <text x="35" y="144" fill="#E2E8F0" font-size="11" font-family="monospace">2. Fetch actual variable from RAM</text><text x="165" y="185" text-anchor="middle" fill="#10B981" font-size="10" font-weight="bold">🟩 Only 1 Memory Bus Access Cycle</text>
+    </g>
+  </svg>
+</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Where is the Page Table?</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because the TLB is small, it can only hold a fraction of the translations. The complete list of mappings is stored inside the <strong>Page Table</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A common misunderstanding is that the Page Table is a separate hardware unit inside the processor.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is not. The Page Table is simply a data structure residing in physical RAM, created and managed by the operating system kernel.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every process has its own isolated Page Table. When the CPU switches tasks, it updates a special register in the MMU pointing to the physical memory location of the active process's Page Table.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the requested mapping is not in the TLB (a TLB Miss), the MMU hardware automatically pauses the instruction execution, reads the mapping from the Page Table in RAM, updates the TLB, and resumes execution.</p><div style="text-align: center; margin: 2rem 0; width: 100%;">
+  <svg viewBox="0 0 800 300" width="100%" height="auto" style="background: #111827; border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+    <rect width="100%" height="100%" fill="url(#grid)" /><!-- Process space representation -->
+    <rect x="50" y="70" width="180" height="160" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="140" y="100" text-anchor="middle" fill="#FFF" font-size="14" font-weight="bold">Active Process</text>
+    <text x="140" y="130" text-anchor="middle" fill="#64748B" font-size="11" font-family="monospace">References: 0x1000</text>
+    <rect x="70" y="160" width="140" height="40" rx="4" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+    <text x="140" y="184" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">MMU Directory Pointer</text><!-- RAM Structure -->
+    <rect x="360" y="50" width="380" height="200" rx="8" fill="#111B30" stroke="#10B981" stroke-width="1.5"/>
+    <text x="550" y="75" text-anchor="middle" fill="#10B981" font-size="13" font-weight="bold">PHYSICAL RAM</text><!-- Page Table inside RAM -->
+    <rect x="390" y="100" width="150" height="120" rx="4" fill="#1E293B" stroke="rgba(148,163,184,0.2)"/>
+    <text x="465" y="125" text-anchor="middle" fill="#FFF" font-size="11" font-weight="bold">Process Page Table</text>
+    <text x="465" y="150" text-anchor="middle" fill="#EF4444" font-size="10" font-family="monospace">0x1000 &rarr; Frame 4</text>
+    <text x="465" y="175" text-anchor="middle" fill="#EF4444" font-size="10" font-family="monospace">0x2000 &rarr; Frame 9</text>
+    <text x="465" y="200" text-anchor="middle" fill="#64748B" font-size="9">(Lives in RAM)</text><!-- Physical Frame Target inside RAM -->
+    <rect x="580" y="100" width="130" height="120" rx="4" fill="#0F172A" stroke="rgba(16,185,129,0.3)"/>
+    <text x="645" y="130" text-anchor="middle" fill="#FFF" font-size="11" font-weight="bold">Physical Frames</text>
+    <rect x="595" y="155" width="100" height="25" rx="3" fill="#1E293B" stroke="#10B981"/>
+    <text x="645" y="172" text-anchor="middle" fill="#10B981" font-size="10" font-family="monospace">Frame 4 (Data)</text><!-- Mapping Arrows -->
+    <path d="M 230 180 L 390 160" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="3"/>
+    <path d="M 540 150 L 595 165" fill="none" stroke="#10B981" stroke-width="1.5"/>
+  </svg>
+</div><h4 style="font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">4.1.1 EdgeCase: One Memory Access</h4><div id="one-memory-access-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. A Common Misunderstanding</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Many beginners think that Virtual Memory is a physical memory expansion, like adding another RAM chip or swapping files directly to disk to act as memory.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is not. Virtual Memory is purely an <strong>addressing abstraction</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For example, a low-power microcontroller may have only 4 KB of physical RAM, yet the operating system can run processes using a 64 KB Virtual Address Space. This does not mean the system somehow created 60 KB of additional physical memory.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It simply means that the virtual range contains address numbers that can potentially be translated. At any given moment, only a few select virtual addresses are mapped to the actual 4 KB of physical RAM.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If an application attempts to access a virtual address that does not currently map to a physical silicon coordinate, the hardware halts the operation, letting the kernel decide how to resolve the missing link.</p><div style="text-align: center; margin: 2rem 0; width: 100%;">
+  <svg viewBox="0 0 800 300" width="100%" height="auto" style="background: #111827; border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+    <rect width="100%" height="100%" fill="url(#grid)" /><!-- Virtual Address Space (Large) -->
+    <g transform="translate(60, 40)">
+      <rect x="0" y="20" width="220" height="180" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="110" y="45" text-anchor="middle" fill="#FFF" font-size="13" font-weight="bold">Virtual Space (Large)</text>
+      <text x="110" y="65" text-anchor="middle" fill="#3B82F6" font-size="10" font-family="monospace">e.g. 64 KB Address Range</text><!-- Active Page Blocks -->
+      <rect x="20" y="85" width="180" height="30" rx="3" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+      <text x="110" y="103" text-anchor="middle" fill="#E2E8F0" font-size="11">Page 1 (Mapped)</text><rect x="20" y="125" width="180" height="30" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.15)"/>
+      <text x="110" y="143" text-anchor="middle" fill="#64748B" font-size="11">Page 2 (Unmapped)</text>
+    </g><!-- Physical RAM (Small) -->
+    <g transform="translate(520, 40)">
+      <rect x="0" y="20" width="220" height="180" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+      <text x="110" y="45" text-anchor="middle" fill="#FFF" font-size="13" font-weight="bold">Physical RAM (Small)</text>
+      <text x="110" y="65" text-anchor="middle" fill="#10B981" font-size="10" font-family="monospace">e.g. 4 KB Silicon Chips</text><rect x="20" y="85" width="180" height="30" rx="3" fill="#0F172A" stroke="rgba(16,185,129,0.3)"/>
+      <text x="110" y="103" text-anchor="middle" fill="#10B981" font-size="11">Physical Frame 1</text>
+    </g><!-- Connection Arrow -->
+    <path d="M 280 140 L 520 140" fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="4"/>
+    <text x="400" y="125" text-anchor="middle" fill="#10B981" font-size="11" font-weight="bold">Mapping Layer</text>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Most of the time, every process lives inside its own isolated world.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But occasionally, two completely different virtual worlds may quietly point toward the same physical location.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When that happens, the illusion of isolation disappears, and two independent processes can quietly begin exchanging information through the same physical memory. If you'd like to see how that conversation happens, revisit the <a href="../../explorations/when-silence-wasnt-an-option/" onclick="openItem('when-silence-wasnt-an-option', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">IPC</a> exploration.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Ending</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every process uses its own isolated Virtual Address Space. The MMU hardware dynamically translates virtual coordinates, the TLB speeds up lookup processes, and the Page Table stores the structural configuration database.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But another mystery remains:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>How does the Page Table know where every Virtual Address should go?</strong></p></div>
+    
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" href="../../explorations/the-illusion-of-ownership/" onclick="openItem('the-illusion-of-ownership', 'blogs')">← The Illusion of Ownership</a>
+        </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next</span>
+            <a class="nav-link active" href="../../explorations/the-language-of-pages/" onclick="openItem('the-language-of-pages', 'blogs')">The Language of Pages →</a>
+        </div>
+        </div>
+      </div>
+    
+    </div>
     </div>
   </div>
 </div>
@@ -393,7 +512,7 @@
   </section>
 </div>
 
-<div class="page active" id="page-bare-metal">
+<div class="page" id="page-bare-metal">
   <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
     <!-- Minimal Header or Back Link -->
     <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
@@ -501,12 +620,12 @@
 <footer class="site-footer">
   <div class="footer-container">
     <div class="footer-logo-wrap">
-      <img src="../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
     </div>
     <div class="footer-text-column">
       <div class="footer-title">PrajnaEdge</div>
       <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
-      <div class="footer-credits">Designed & Developed by <a href="../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+      <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
     </div>
   </div>
 </footer>

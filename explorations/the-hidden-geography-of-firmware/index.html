@@ -11,12 +11,12 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://prajnaedge.dev/" />
-<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:title" content="PrajnaEdge" />
 <meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content="https://prajnaedge.dev/" />
-<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:title" content="PrajnaEdge" />
 <meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -49,9 +49,9 @@
 
 <div class="page" id="page-home">
   <div class="empty-page">
-    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-title">PrajnaEdge</div>
     <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
-      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
     <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
       Follow the awakened trunk to begin exploring.
     </div>
@@ -112,15 +112,14 @@
     </div>
 
     <div style="margin-top:3.5rem;text-align:center">
-      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
       <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
            onmouseover="this.style.borderColor='var(--blue)'">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
-        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
       </div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-blogs">
@@ -150,7 +149,6 @@
       <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-demos">
@@ -184,7 +182,6 @@
       <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page active" id="page-blog-post">
@@ -197,11 +194,11 @@
     <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How linker scripts quietly decide where computation lives.</p>
     <div class="tags" style="margin-bottom:3rem"><span class="tag">Linker Scripts</span><span class="tag">Memory Mapping</span><span class="tag">Firmware</span><span class="tag">Systems Architecture</span></div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Illusion of Uniform Memory</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To a programmer working in a high-level application space, memory is often visualized as a flat, infinite landscape of bytes—a continuous array indexed from zero to the limits of physical RAM. You allocate memory, declare variables, and write functions under the assumption that all space is structurally equivalent.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But beneath the abstraction layers of low-level firmware, this uniformity disappears. Memory is not a single contiguous pasture; it is a highly structured, compartmentalized terrain. A microcontroller's memory space is fragmented by physical and electrical realities. Code, initialized global variables, uninitialized flags, read-only constants, stack frames, and dynamic heaps must reside in completely different areas of the silicon to function.</p><div class="blog-img-wrap"><img src="../../Images/firmware_memory_layout.png" alt="Embedded Firmware Memory Layout Diagram"><div class="blog-img-caption">Embedded Firmware Memory Layout Diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*Firmware is not stored as one object. It is distributed across memory according to behavioral requirements.*</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Birth of Memory Sections</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Why do we slice firmware into segments? It is a direct response to different behavioral requirements. Different classes of information behave differently during execution, requiring distinct storage mediums.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Consider instructions: executable code must be persistent and read-only, which is why the compiler assigns it to the '.text' section to reside in Flash memory. Constants and string literals share similar read-only behaviors and are grouped into the '.rodata' section, protected from runtime modification.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Global variables, however, present a dual behavior. They must be modifiable at runtime (residing in RAM), but they must start with a pre-configured initial value. These are grouped into '.data'. Uninitialized global variables—those that simply need to be cleared to zero on startup—are routed to '.bss' (Block Started by Symbol) to save space in the flash binary.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Finally, the Stack handles execution flow by dynamically pushing and popping function parameters and local variables, while the Heap manages runtime dynamic memory allocation workspace. The organization of these sections is the layout of digital life.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Linker as a Cartographer</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">During compilation, the compiler translates individual source files (.c or .cpp) into independent object files (.o). At this stage, the compiler acts in isolation: it has no knowledge of how much total Flash or RAM exists on the chip, nor does it know where other object files will eventually be placed.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is where the Linker enters as a cartographer. The linker compiles these fragmented objects and maps their sections into a unified, physical landscape. It decides the precise layout of the firmware—stitching together the various '.text', '.data', and '.bss' fragments and matching them to the exact address boundaries of the target processor.</p><div class="blog-img-wrap"><img src="../../Images/linker_to_memory_relationship.png" alt="Linker to Memory Relationship Mapping"><div class="blog-img-caption">Linker to Memory Relationship Mapping</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*The compiler generates isolated segments; the linker script guides the linker to map them into physical memory blocks.*</p><div class="blog-quote">The linker does not create firmware. It decides where firmware physically exists.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Linker Script</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To direct the linker, we use a linker script—a blueprint that defines the physical boundaries of the MCU's address register space. It tells the linker exactly where Flash and RAM begin and how long they are.</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">MEMORY
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Illusion of Uniform Memory</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To a programmer working in a high-level application space, memory is often visualized as a flat, infinite landscape of bytes—a continuous array indexed from zero to the limits of physical RAM. You allocate memory, declare variables, and write functions under the assumption that all space is structurally equivalent.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But beneath the abstraction layers of low-level firmware, this uniformity disappears. Memory is not a single contiguous pasture; it is a highly structured, compartmentalized terrain. A microcontroller's memory space is fragmented by physical and electrical realities. Code, initialized global variables, uninitialized flags, read-only constants, stack frames, and dynamic heaps must reside in completely different areas of the silicon to function.</p><div class="blog-img-wrap"><img src="../../Images/firmware_memory_layout.png" alt="Embedded Firmware Memory Layout Diagram"><div class="blog-img-caption">Embedded Firmware Memory Layout Diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>Firmware is not stored as one object. It is distributed across memory according to behavioral requirements.</em></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Birth of Memory Sections</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Why do we slice firmware into segments? It is a direct response to different behavioral requirements. Different classes of information behave differently during execution, requiring distinct storage mediums.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Consider instructions: executable code must be persistent and read-only, which is why the compiler assigns it to the '.text' section to reside in Flash memory. Constants and string literals share similar read-only behaviors and are grouped into the '.rodata' section, protected from runtime modification.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Global variables, however, present a dual behavior. They must be modifiable at runtime (residing in RAM), but they must start with a pre-configured initial value. These are grouped into '.data'. Uninitialized global variables—those that simply need to be cleared to zero on startup—are routed to '.bss' (Block Started by Symbol) to save space in the flash binary.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Finally, the Stack handles execution flow by dynamically pushing and popping function parameters and local variables, while the Heap manages runtime dynamic memory allocation workspace. The organization of these sections is the layout of digital life.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Linker as a Cartographer</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">During compilation, the compiler translates individual source files (.c or .cpp) into independent object files (.o). At this stage, the compiler acts in isolation: it has no knowledge of how much total Flash or RAM exists on the chip, nor does it know where other object files will eventually be placed.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is where the Linker enters as a cartographer. The linker compiles these fragmented objects and maps their sections into a unified, physical landscape. It decides the precise layout of the firmware—stitching together the various '.text', '.data', and '.bss' fragments and matching them to the exact address boundaries of the target processor.</p><div class="blog-img-wrap"><img src="../../Images/linker_to_memory_relationship.png" alt="Linker to Memory Relationship Mapping"><div class="blog-img-caption">Linker to Memory Relationship Mapping</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>The compiler generates isolated segments; the linker script guides the linker to map them into physical memory blocks.</em></p><div class="blog-quote">The linker does not create firmware. It decides where firmware physically exists.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Linker Script</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To direct the linker, we use a linker script—a blueprint that defines the physical boundaries of the MCU's address register space. It tells the linker exactly where Flash and RAM begin and how long they are.</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">MEMORY
 {
   FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 512K
   RAM (rwx)  : ORIGIN = 0x20000000, LENGTH = 128K
-}</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In this snippet, we define the region boundaries. 'FLASH' is marked as read-only and executable (rx) starting at origin address 0x08000000 with a length of 512 Kilobytes. 'RAM' is marked as readable, writable, and executable (rwx) starting at origin 0x20000000 with 128 Kilobytes.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By establishing these constraints, the compiler can output absolute addresses, knowing that the code and variable segments will fall safely within the silicon boundaries.</p><div class="blog-img-wrap"><img src="../../Images/mcu_memory_map.png" alt="Microcontroller Memory Map Diagram"><div class="blog-img-caption">Microcontroller Memory Map Diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*Microcontroller address registers are mapped to specific Flash (executable) and RAM (read-write) regions.*</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Startup: The First Migration</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When power is applied, the microcontroller is in a primitive state. The RAM is filled with random electrical noise. However, global variables in the '.data' section must have their initial non-zero values ready for the application to read.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Since RAM is volatile and loses all state when powered off, these initial values must be stored persistently inside Flash memory. This creates a logical conflict: the variables must be modifiable in RAM during execution, but their initial values are trapped in Flash.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To resolve this, the system executes startup assembly or C initialization routines before your main() function is reached. This startup code performs the first migration: it reads the block of initial values from Flash and copies them into their RAM destinations. It then clears the '.bss' section in RAM to zero.</p><div class="blog-img-wrap"><img src="../../Images/startup_initialization_flow.png" alt="Startup Initialization Flow Diagram"><div class="blog-img-caption">Startup Initialization Flow Diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*Relocation sequence at startup, moving initialized variables from Flash to RAM and zeroing out the BSS.*</p><div class="blog-quote">Before the first line of user code executes, the system has already performed a carefully orchestrated relocation.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. The Map File: The Firmware Census</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Once the linker has completed its map, it outputs a map file—a census of the compiled firmware. The map file outlines exactly where every function, variable, and library symbol has been placed, along with the size of each segment.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Experienced embedded engineers inspect map files regularly. When a firmware image suddenly overflows memory, the map file reveals which module or library is consuming the flash. It lets you identify compiler optimizations, alignment padding issues, and variables that were accidentally declared globally instead of locally.</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">.text           0x08000240      0x8a4
+}</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In this snippet, we define the region boundaries. 'FLASH' is marked as read-only and executable (rx) starting at origin address 0x08000000 with a length of 512 Kilobytes. 'RAM' is marked as readable, writable, and executable (rwx) starting at origin 0x20000000 with 128 Kilobytes.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By establishing these constraints, the compiler can output absolute addresses, knowing that the code and variable segments will fall safely within the silicon boundaries.</p><div class="blog-img-wrap"><img src="../../Images/mcu_memory_map.png" alt="Microcontroller Memory Map Diagram"><div class="blog-img-caption">Microcontroller Memory Map Diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>Microcontroller address registers are mapped to specific Flash (executable) and RAM (read-write) regions.</em></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Startup: The First Migration</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When power is applied, the microcontroller is in a primitive state. The RAM is filled with random electrical noise. However, global variables in the '.data' section must have their initial non-zero values ready for the application to read.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Since RAM is volatile and loses all state when powered off, these initial values must be stored persistently inside Flash memory. This creates a logical conflict: the variables must be modifiable in RAM during execution, but their initial values are trapped in Flash.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To resolve this, the system executes startup assembly or C initialization routines before your main() function is reached. This startup code performs the first migration: it reads the block of initial values from Flash and copies them into their RAM destinations. It then clears the '.bss' section in RAM to zero.</p><div class="blog-img-wrap"><img src="../../Images/startup_initialization_flow.png" alt="Startup Initialization Flow Diagram"><div class="blog-img-caption">Startup Initialization Flow Diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>Relocation sequence at startup, moving initialized variables from Flash to RAM and zeroing out the BSS.</em></p><div class="blog-quote">Before the first line of user code executes, the system has already performed a carefully orchestrated relocation.</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. The Map File: The Firmware Census</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Once the linker has completed its map, it outputs a map file—a census of the compiled firmware. The map file outlines exactly where every function, variable, and library symbol has been placed, along with the size of each segment.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Experienced embedded engineers inspect map files regularly. When a firmware image suddenly overflows memory, the map file reveals which module or library is consuming the flash. It lets you identify compiler optimizations, alignment padding issues, and variables that were accidentally declared globally instead of locally.</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">.text           0x08000240      0x8a4
  *(.text)
  .text          0x08000240      0x1c8 build/main.o
                 0x080002a0                SystemInit
@@ -241,7 +238,6 @@
     </div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-about">
@@ -249,56 +245,122 @@
     <div class="hero-bg"></div>
     <div class="hero-grid">
       <div>
-        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
         <h1 class="hero-title">
-          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+          Engineering concepts you don't just read — <em>you experience</em>.
         </h1>
         <p class="hero-sub">
-          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
-          and Edge AI. Engineering from the ground up — one register at a time.
+          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
         </p>
-        <div class="hero-btns">
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
+        <p class="about-text">
+          Engineering is often taught as a collection of isolated concepts.<br><br>
+          A processor here.<br>
+          A protocol there.<br>
+          An operating system somewhere else.<br><br>
+          But real systems are built by connecting these layers.<br><br>
+          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
+          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
+        <p class="why-text">
+          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
+          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
+          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
           <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
              target="_blank" rel="noopener noreferrer" class="btn-primary"
              onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
              onmouseout="this.style.transform='translateY(0) scale(1)'">
             View Resume →
           </a>
-          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
         </div>
       </div>
     </div>
   </section>
-  <section id="about">
-    <div class="section-label">// about</div>
-    <div class="about-grid">
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
       <div>
-        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
-        <p class="about-text">
-          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
-          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
-          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
         </p>
       </div>
-      <div class="why-card">
-        <div class="why-title">Why This Site Exists</div>
-        <p class="why-text">
-          This is not just a portfolio. It is a space where I explore, document, and simplify
-          how systems evolve from hardware to intelligent behavior.<br><br>
-          Every section is a layer of the stack — from the transistor to the trained model.
-          The goal is to make the journey from silicon to edge AI legible.
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
         </p>
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 
 <div class="page" id="page-journey">
-  <section id="journey-section">
-    <div class="journey-inner">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
       <div class="section-label">// career_journey</div>
-      <h2 class="section-title">Interactive Career Journey</h2>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
       <div class="node-selector" id="node-selector"></div>
       <div class="journey-content">
         <div class="node-meta fade-in" id="node-meta"></div>
@@ -306,7 +368,6 @@
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-contact">
@@ -326,13 +387,13 @@
         Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
       </div>
       <div class="connect-cards-grid">
-        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
           <div class="info-card-label">LinkedIn</div>
-          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
         </a>
-        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
-          <div class="info-card-label">GitHub</div>
-          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
         </a>
         <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
           <div class="info-card-label">Contact</div>
@@ -377,7 +438,6 @@
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-bare-metal">
@@ -484,6 +544,19 @@
     </button>
   </div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-logo-wrap">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+    </div>
+    <div class="footer-text-column">
+      <div class="footer-title">PrajnaEdge</div>
+      <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+      <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>

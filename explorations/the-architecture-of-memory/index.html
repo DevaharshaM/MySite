@@ -11,12 +11,12 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://prajnaedge.dev/" />
-<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:title" content="PrajnaEdge" />
 <meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content="https://prajnaedge.dev/" />
-<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:title" content="PrajnaEdge" />
 <meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -49,9 +49,9 @@
 
 <div class="page" id="page-home">
   <div class="empty-page">
-    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-title">PrajnaEdge</div>
     <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
-      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
     <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
       Follow the awakened trunk to begin exploring.
     </div>
@@ -112,15 +112,14 @@
     </div>
 
     <div style="margin-top:3.5rem;text-align:center">
-      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
       <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
            onmouseover="this.style.borderColor='var(--blue)'">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
-        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
       </div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-blogs">
@@ -150,7 +149,6 @@
       <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-demos">
@@ -184,7 +182,6 @@
       <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page active" id="page-blog-post">
@@ -197,7 +194,7 @@
     <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How physical constraints and electrical charge define the boundaries of digital state.</p>
     <div class="tags" style="margin-bottom:3rem"><span class="tag">Memory</span><span class="tag">SRAM</span><span class="tag">DRAM</span><span class="tag">Flash</span><span class="tag">Embedded Systems</span></div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Hierarchy of State</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every processor is fundamentally a state machine. It executes instructions by reading data from memory, transforming it, and writing it back. But not all memory is created equal. The physical reality of silicon forces a compromise between speed, capacity, and cost.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To build a useful system, we construct a hierarchy: registers and SRAM at the very top (tapering down near the CPU core for speed), backed by main DRAM system memory, and finally persistent NOR and NAND flash for mass storage. This tiered architecture ensures the CPU is never starved of instructions while keeping persistent data accessible.</p><div class="blog-img-wrap"><img src="../../Images/memory_hierarchy.png" alt="The Memory Hierarchy showing speed vs density trade-offs"><div class="blog-img-caption">The Memory Hierarchy showing speed vs density trade-offs</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*A vertical structural view of memory layers tapering down as they approach the CPU core.*</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Battle for the Bit: SRAM vs DRAM</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">At the volatile layer, the choice comes down to topology: how do we store a single bit of data?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Static RAM (SRAM) uses a cross-coupled latch constructed with 6 transistors (6T). This design creates an active, stable state that holds its value as long as power is applied. However, this complexity makes SRAM physically large and expensive, limiting its use to small, fast CPU caches and microcontroller registers.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Dynamic RAM (DRAM) takes the opposite approach. It shrinks the cell down to a single transistor and a single storage capacitor (1T1C). While this allows massive densities (gigabytes on a single chip), the capacitor is a leaky reservoir. It naturally drains its charge within milliseconds, requiring a continuous refresh loop to prevent data corruption.</p><div class="blog-img-wrap"><img src="../../Images/sram_vs_dram.png" alt="SRAM 6T vs DRAM 1T1C circuit diagram"><div class="blog-img-caption">SRAM 6T vs DRAM 1T1C circuit diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*Circuit topologies representing the active stable latch of SRAM versus the leaky reservoir of DRAM.*</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Persistence: NOR vs NAND Flash</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When power is removed, we rely on non-volatile flash memory to retain our programs and data. Flash operates by trapping charge within a floating gate transistor. The layout configuration of these gates determines how they can be accessed.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">NOR Flash connects storage transistors in parallel directly across word lines. This parallel alignment allows the processor to perform instant random byte reads, making it the standard choice for executing firmware binary code directly on-board.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">NAND Flash daisy-chains transistor arrays in a tight serial configuration. By eliminating the individual contacts needed for parallel routing, NAND achieves extraordinary densities. However, this serial chain prevents byte-level access, requiring the processor to read and write data in sequential sector blocks, ideal for mass storage filesystems.</p><div class="blog-img-wrap"><img src="../../Images/nor_vs_nand.png" alt="NOR parallel vs NAND serial micro-architectural layouts"><div class="blog-img-caption">NOR parallel vs NAND serial micro-architectural layouts</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*Transistor cell layout detailing parallel random-access lines in NOR vs serial block lines in NAND.*</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Address Map: Dividing Space</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To the developer, all of these physical layers are abstracted into a single, contiguous address space. The microcontroller registers map specific memory regions to Flash and SRAM boundaries.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">From top to bottom, the register space is divided into proportional segments: .text (NOR Flash for execution), .data and .bss (RAM for initialized and zeroed variables), followed by the Stack (runtime context engine) and the Heap (dynamic allocation workspace).</p><div class="blog-img-wrap"><img src="../../Images/embedded_memory_map.png" alt="Microcontroller memory map segment boundaries"><div class="blog-img-caption">Microcontroller memory map segment boundaries</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*The vertical register allocation of persistent Flash versus internal SRAM workspace segments.*</p></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Hierarchy of State</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Every processor is fundamentally a state machine. It executes instructions by reading data from memory, transforming it, and writing it back. But not all memory is created equal. The physical reality of silicon forces a compromise between speed, capacity, and cost.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To build a useful system, we construct a hierarchy: registers and SRAM at the very top (tapering down near the CPU core for speed), backed by main DRAM system memory, and finally persistent NOR and NAND flash for mass storage. This tiered architecture ensures the CPU is never starved of instructions while keeping persistent data accessible.</p><div class="blog-img-wrap"><img src="../../Images/memory_hierarchy.png" alt="The Memory Hierarchy showing speed vs density trade-offs"><div class="blog-img-caption">The Memory Hierarchy showing speed vs density trade-offs</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>A vertical structural view of memory layers tapering down as they approach the CPU core.</em></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Battle for the Bit: SRAM vs DRAM</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">At the volatile layer, the choice comes down to topology: how do we store a single bit of data?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Static RAM (SRAM) uses a cross-coupled latch constructed with 6 transistors (6T). This design creates an active, stable state that holds its value as long as power is applied. However, this complexity makes SRAM physically large and expensive, limiting its use to small, fast CPU caches and microcontroller registers.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Dynamic RAM (DRAM) takes the opposite approach. It shrinks the cell down to a single transistor and a single storage capacitor (1T1C). While this allows massive densities (gigabytes on a single chip), the capacitor is a leaky reservoir. It naturally drains its charge within milliseconds, requiring a continuous refresh loop to prevent data corruption.</p><div class="blog-img-wrap"><img src="../../Images/sram_vs_dram.png" alt="SRAM 6T vs DRAM 1T1C circuit diagram"><div class="blog-img-caption">SRAM 6T vs DRAM 1T1C circuit diagram</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>Circuit topologies representing the active stable latch of SRAM versus the leaky reservoir of DRAM.</em></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Persistence: NOR vs NAND Flash</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When power is removed, we rely on non-volatile flash memory to retain our programs and data. Flash operates by trapping charge within a floating gate transistor. The layout configuration of these gates determines how they can be accessed.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">NOR Flash connects storage transistors in parallel directly across word lines. This parallel alignment allows the processor to perform instant random byte reads, making it the standard choice for executing firmware binary code directly on-board.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">NAND Flash daisy-chains transistor arrays in a tight serial configuration. By eliminating the individual contacts needed for parallel routing, NAND achieves extraordinary densities. However, this serial chain prevents byte-level access, requiring the processor to read and write data in sequential sector blocks, ideal for mass storage filesystems.</p><div class="blog-img-wrap"><img src="../../Images/nor_vs_nand.png" alt="NOR parallel vs NAND serial micro-architectural layouts"><div class="blog-img-caption">NOR parallel vs NAND serial micro-architectural layouts</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>Transistor cell layout detailing parallel random-access lines in NOR vs serial block lines in NAND.</em></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Address Map: Dividing Space</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To the developer, all of these physical layers are abstracted into a single, contiguous address space. The microcontroller registers map specific memory regions to Flash and SRAM boundaries.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">From top to bottom, the register space is divided into proportional segments: .text (NOR Flash for execution), .data and .bss (RAM for initialized and zeroed variables), followed by the Stack (runtime context engine) and the Heap (dynamic allocation workspace).</p><div class="blog-img-wrap"><img src="../../Images/embedded_memory_map.png" alt="Microcontroller memory map segment boundaries"><div class="blog-img-caption">Microcontroller memory map segment boundaries</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>The vertical register allocation of persistent Flash versus internal SRAM workspace segments.</em></p></div>
     
         <div style="margin-bottom:2.5rem">
           <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Architecture of State</h2>
@@ -222,7 +219,6 @@
     </div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-about">
@@ -230,56 +226,122 @@
     <div class="hero-bg"></div>
     <div class="hero-grid">
       <div>
-        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
         <h1 class="hero-title">
-          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+          Engineering concepts you don't just read — <em>you experience</em>.
         </h1>
         <p class="hero-sub">
-          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
-          and Edge AI. Engineering from the ground up — one register at a time.
+          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
         </p>
-        <div class="hero-btns">
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
+        <p class="about-text">
+          Engineering is often taught as a collection of isolated concepts.<br><br>
+          A processor here.<br>
+          A protocol there.<br>
+          An operating system somewhere else.<br><br>
+          But real systems are built by connecting these layers.<br><br>
+          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
+          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
+        <p class="why-text">
+          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
+          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
+          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
           <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
              target="_blank" rel="noopener noreferrer" class="btn-primary"
              onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
              onmouseout="this.style.transform='translateY(0) scale(1)'">
             View Resume →
           </a>
-          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
         </div>
       </div>
     </div>
   </section>
-  <section id="about">
-    <div class="section-label">// about</div>
-    <div class="about-grid">
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
       <div>
-        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
-        <p class="about-text">
-          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
-          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
-          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
         </p>
       </div>
-      <div class="why-card">
-        <div class="why-title">Why This Site Exists</div>
-        <p class="why-text">
-          This is not just a portfolio. It is a space where I explore, document, and simplify
-          how systems evolve from hardware to intelligent behavior.<br><br>
-          Every section is a layer of the stack — from the transistor to the trained model.
-          The goal is to make the journey from silicon to edge AI legible.
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
         </p>
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 
 <div class="page" id="page-journey">
-  <section id="journey-section">
-    <div class="journey-inner">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
       <div class="section-label">// career_journey</div>
-      <h2 class="section-title">Interactive Career Journey</h2>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
       <div class="node-selector" id="node-selector"></div>
       <div class="journey-content">
         <div class="node-meta fade-in" id="node-meta"></div>
@@ -287,7 +349,6 @@
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-contact">
@@ -307,13 +368,13 @@
         Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
       </div>
       <div class="connect-cards-grid">
-        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
           <div class="info-card-label">LinkedIn</div>
-          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
         </a>
-        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
-          <div class="info-card-label">GitHub</div>
-          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
         </a>
         <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
           <div class="info-card-label">Contact</div>
@@ -358,7 +419,6 @@
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-bare-metal">
@@ -465,6 +525,19 @@
     </button>
   </div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-logo-wrap">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+    </div>
+    <div class="footer-text-column">
+      <div class="footer-title">PrajnaEdge</div>
+      <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+      <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>

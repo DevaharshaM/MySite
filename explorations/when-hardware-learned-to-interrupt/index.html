@@ -11,12 +11,12 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://prajnaedge.dev/" />
-<meta property="og:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="og:title" content="PrajnaEdge" />
 <meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content="https://prajnaedge.dev/" />
-<meta property="twitter:title" content="PrajnaEdge | Devaharsha Meesarapu" />
+<meta property="twitter:title" content="PrajnaEdge" />
 <meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -49,9 +49,9 @@
 
 <div class="page" id="page-home">
   <div class="empty-page">
-    <div class="empty-title">PrajnaEdge Forest</div>
+    <div class="empty-title">PrajnaEdge</div>
     <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
-      Created by Devaharsha Meesarapu, PrajnaEdge Forest is a living exploration of how machines evolve—from their deepest roots to the technologies shaping our world.    </div>
+      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
     <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
       Follow the awakened trunk to begin exploring.
     </div>
@@ -112,15 +112,14 @@
     </div>
 
     <div style="margin-top:3.5rem;text-align:center">
-      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">Active Production</div>
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
       <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
            onmouseover="this.style.borderColor='var(--blue)'">
         <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
-        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Spinning up product pipeline</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
       </div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-blogs">
@@ -150,7 +149,6 @@
       <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-demos">
@@ -184,7 +182,6 @@
       <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page active" id="page-blog-post">
@@ -202,12 +199,12 @@
     CheckUART();
     CheckADC();
     CheckCAN();
-}</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is polling. Its primary flaw is structural: it ties coordination entirely to the execution path of the software. The CPU spends almost all its time and power asking if something has happened, only to receive 'no' as an answer. It keeps the core running at 100% load, consuming maximum power simply to check idle pins. It is a system built on active waiting, where responsiveness degrades as more peripherals stretch the loop cycle time.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Reversal</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">What if we could reverse this relationship? Instead of the central processor constantly interrogating passive hardware components, what if the hardware could announce events instead?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is the core philosophy of <strong>Interrupts</strong>. Rather than the CPU spinning in a loop asking *'Has anything happened?'*, the hardware peripherals are given a dedicated channel to signal the CPU: *'Something happened. Act now.'*</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This simple reversal represents the most fundamental shift in embedded system architecture. It decouples event detection from the sequential flow of execution, freeing the CPU to execute background calculations or enter deep low-power sleep modes until the physical world demands its attention.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Doorbell Analogy</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To appreciate this shift, imagine waiting for a package delivery. Under a polling strategy, you must walk to the front door every ten seconds, open it, check the porch, close the door, and walk back. You can do nothing else; you are entirely consumed by the active wait.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">An interrupt-driven approach equips the door with a bell. You sit down, read a book, or fall asleep. The visitor arrives and presses the button. The bell rings, interrupting your activity. You bookmark your page, answer the door, sign for the package, and return to exactly where you left off. The active checking is gone, replaced by a reactive trigger.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Anatomy of an Interrupt</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does this handoff occur in raw silicon? When an external event occurs—such as a button pin falling low or a byte arriving in a UART buffer—the peripheral asserts a physical interrupt request (IRQ) line connected to the processor core. The hardware handoff then unfolds automatically:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">1. <strong>Assertion</strong>: The peripheral drives its IRQ line to its active state (high or low).
+}</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is polling. Its primary flaw is structural: it ties coordination entirely to the execution path of the software. The CPU spends almost all its time and power asking if something has happened, only to receive 'no' as an answer. It keeps the core running at 100% load, consuming maximum power simply to check idle pins. It is a system built on active waiting, where responsiveness degrades as more peripherals stretch the loop cycle time.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Reversal</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">What if we could reverse this relationship? Instead of the central processor constantly interrogating passive hardware components, what if the hardware could announce events instead?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is the core philosophy of <strong>Interrupts</strong>. Rather than the CPU spinning in a loop asking <em>'Has anything happened?'</em>, the hardware peripherals are given a dedicated channel to signal the CPU: <em>'Something happened. Act now.'</em></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This simple reversal represents the most fundamental shift in embedded system architecture. It decouples event detection from the sequential flow of execution, freeing the CPU to execute background calculations or enter deep low-power sleep modes until the physical world demands its attention.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Doorbell Analogy</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To appreciate this shift, imagine waiting for a package delivery. Under a polling strategy, you must walk to the front door every ten seconds, open it, check the porch, close the door, and walk back. You can do nothing else; you are entirely consumed by the active wait.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">An interrupt-driven approach equips the door with a bell. You sit down, read a book, or fall asleep. The visitor arrives and presses the button. The bell rings, interrupting your activity. You bookmark your page, answer the door, sign for the package, and return to exactly where you left off. The active checking is gone, replaced by a reactive trigger.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. The Anatomy of an Interrupt</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does this handoff occur in raw silicon? When an external event occurs—such as a button pin falling low or a byte arriving in a UART buffer—the peripheral asserts a physical interrupt request (IRQ) line connected to the processor core. The hardware handoff then unfolds automatically:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">1. <strong>Assertion</strong>: The peripheral drives its IRQ line to its active state (high or low).
 2. <strong>Synchronization</strong>: The core detects the active line and waits to finish its currently executing machine instruction (typically 1 to 5 clock cycles).
 3. <strong>Context Saving</strong>: The CPU automatically halts normal execution and pushes its current register states (such as the Program Counter, Link Register, Stack Pointer, and Status Register) onto the stack. This preserves the exact state of the background program.
 4. <strong>Vector Fetch</strong>: The processor reads the vector table to fetch the memory address of the handler function associated with the triggering IRQ.
 5. <strong>Execution</strong>: The Program Counter jumps to that address, and the CPU begins executing the <strong>Interrupt Service Routine (ISR)</strong>.
-6. <strong>Return</strong>: Once the handler finishes, it executes a special return instruction. The CPU pops the saved registers back off the stack, restoring the CPU state, and resumes the background program exactly where it was paused.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_flow.svg" alt="The step-by-step lifecycle of an interrupt request handoff."><div class="blog-img-caption">The step-by-step lifecycle of an interrupt request handoff.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Interrupt Latency</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">While interrupts resolve the polling delay bottleneck, they do not respond instantly. In embedded systems engineering, <strong>Interrupt Latency</strong> is the exact delay between the assertion of the hardware IRQ line and the execution of the first instruction in the ISR.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Latency is a hardware tax composed of several parts: completing the current instruction, pushing CPU registers onto the stack (stacking), syncing clocks between the peripheral bus and core, and executing entry handler routines. In modern ARM Cortex-M processors, this hardware stacking and lookup process is heavily optimized, taking as few as 12 to 24 clock cycles. But in real-time systems, every cycle counts. If another interrupt is already running or interrupts are temporarily disabled by the driver, this latency can stretch, potentially causing missed deadlines.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_latency.svg" alt="The timing breakdown of hardware stacking and vector fetch latencies."><div class="blog-img-caption">The timing breakdown of hardware stacking and vector fetch latencies.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Priority and Preemption</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A real embedded system has multiple interrupt sources. What happens if a button press occurs at the exact same millisecond a critical CAN network alarm frame arrives? How does the hardware choose?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is solved by <strong>Interrupt Priority</strong>. Every interrupt source is assigned a priority value. When multiple IRQ lines are asserted simultaneously, the core's hardware interrupt controller (such as the Nested Vectored Interrupt Controller, or NVIC, in ARM architectures) compares their values and runs the highest-priority handler first. If a lower-priority handler is already running when a higher-priority event arrives, the hardware executes <strong>Preemption</strong>—instantly pausing the lower-priority ISR, pushing its registers to the stack, and running the higher-priority ISR. Only when the high-priority handler completes does the lower-priority handler resume.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_priority.svg" alt="A multi-lane timing diagram visualizing preemption and context nesting."><div class="blog-img-caption">A multi-lane timing diagram visualizing preemption and context nesting.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. Nested Interrupts</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This ability to preempt running handlers is called <strong>Nesting</strong>. Without nesting, a slow, low-priority handler (like a periodic temperature readout) would block a high-speed critical line (like a motor safety trip signal) for milliseconds, defeating the real-time guarantees of the system.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Prioritization and nesting ensure that critical routines remain deterministic, regardless of other activities. However, nesting also introduces a system risk: stack depth. Each nested layer pushes more registers onto the RAM stack. If too many interrupts nest, the stack can overrun into application variables, leading to silent memory corruption.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. The Vector Table</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does the hardware translate a physical IRQ number into a software function address? It reads the <strong>Vector Table</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The Vector Table is an array of function pointers placed at a fixed location in memory (typically at the very bottom of the Flash partition, <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x0000_0000</code> or <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x0800_0000</code>). Each index corresponds to a specific hardware line: index 0 is the initial stack pointer, index 1 is the Reset Vector, index 2 is the Non-Maskable Interrupt (NMI), and subsequent indices map to internal faults, timers, and external peripherals.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When a peripheral triggers, the processor uses the IRQ index to offset into this table, reads the 32-bit address stored there, and jumps directly to that address. You may recognize the first entries from *The First Instruction*: the Reset Vector is simply the very first interrupt address fetched by the silicon when power is applied.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_vector_table.svg" alt="The mapping between hardware address indexes and handler code in flash."><div class="blog-img-caption">The mapping between hardware address indexes and handler code in flash.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. Real Embedded Examples</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Interrupts are the invisible coordination layer of modern electronics. In a UART interface, an interrupt triggers each time a character lands in the receive register, ensuring the CPU extracts it before it is overwritten. In a motor control loop, timer compare interrupts trigger microsecond-aligned PWM adjustments. In safety systems, CAN controllers trigger emergency handlers the moment an error frame is detected.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By replacing active waiting with reactive notifications, interrupts allow microcontrollers to sleep when inactive and respond with microsecond precision when needed. They represent the moment hardware became coordinate-aware.</p></div>
+6. <strong>Return</strong>: Once the handler finishes, it executes a special return instruction. The CPU pops the saved registers back off the stack, restoring the CPU state, and resumes the background program exactly where it was paused.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_flow.svg" alt="The step-by-step lifecycle of an interrupt request handoff."><div class="blog-img-caption">The step-by-step lifecycle of an interrupt request handoff.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Interrupt Latency</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">While interrupts resolve the polling delay bottleneck, they do not respond instantly. In embedded systems engineering, <strong>Interrupt Latency</strong> is the exact delay between the assertion of the hardware IRQ line and the execution of the first instruction in the ISR.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Latency is a hardware tax composed of several parts: completing the current instruction, pushing CPU registers onto the stack (stacking), syncing clocks between the peripheral bus and core, and executing entry handler routines. In modern ARM Cortex-M processors, this hardware stacking and lookup process is heavily optimized, taking as few as 12 to 24 clock cycles. But in real-time systems, every cycle counts. If another interrupt is already running or interrupts are temporarily disabled by the driver, this latency can stretch, potentially causing missed deadlines.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_latency.svg" alt="The timing breakdown of hardware stacking and vector fetch latencies."><div class="blog-img-caption">The timing breakdown of hardware stacking and vector fetch latencies.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Priority and Preemption</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A real embedded system has multiple interrupt sources. What happens if a button press occurs at the exact same millisecond a critical CAN network alarm frame arrives? How does the hardware choose?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is solved by <strong>Interrupt Priority</strong>. Every interrupt source is assigned a priority value. When multiple IRQ lines are asserted simultaneously, the core's hardware interrupt controller (such as the Nested Vectored Interrupt Controller, or NVIC, in ARM architectures) compares their values and runs the highest-priority handler first. If a lower-priority handler is already running when a higher-priority event arrives, the hardware executes <strong>Preemption</strong>—instantly pausing the lower-priority ISR, pushing its registers to the stack, and running the higher-priority ISR. Only when the high-priority handler completes does the lower-priority handler resume.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_priority.svg" alt="A multi-lane timing diagram visualizing preemption and context nesting."><div class="blog-img-caption">A multi-lane timing diagram visualizing preemption and context nesting.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. Nested Interrupts</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This ability to preempt running handlers is called <strong>Nesting</strong>. Without nesting, a slow, low-priority handler (like a periodic temperature readout) would block a high-speed critical line (like a motor safety trip signal) for milliseconds, defeating the real-time guarantees of the system.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Prioritization and nesting ensure that critical routines remain deterministic, regardless of other activities. However, nesting also introduces a system risk: stack depth. Each nested layer pushes more registers onto the RAM stack. If too many interrupts nest, the stack can overrun into application variables, leading to silent memory corruption.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. The Vector Table</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does the hardware translate a physical IRQ number into a software function address? It reads the <strong>Vector Table</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The Vector Table is an array of function pointers placed at a fixed location in memory (typically at the very bottom of the Flash partition, <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x0000_0000</code> or <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x0800_0000</code>). Each index corresponds to a specific hardware line: index 0 is the initial stack pointer, index 1 is the Reset Vector, index 2 is the Non-Maskable Interrupt (NMI), and subsequent indices map to internal faults, timers, and external peripherals.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When a peripheral triggers, the processor uses the IRQ index to offset into this table, reads the 32-bit address stored there, and jumps directly to that address. You may recognize the first entries from <em>The First Instruction</em>: the Reset Vector is simply the very first interrupt address fetched by the silicon when power is applied.</p><div class="blog-img-wrap"><img src="../../Images/interrupt_vector_table.svg" alt="The mapping between hardware address indexes and handler code in flash."><div class="blog-img-caption">The mapping between hardware address indexes and handler code in flash.</div></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. Real Embedded Examples</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Interrupts are the invisible coordination layer of modern electronics. In a UART interface, an interrupt triggers each time a character lands in the receive register, ensuring the CPU extracts it before it is overwritten. In a motor control loop, timer compare interrupts trigger microsecond-aligned PWM adjustments. In safety systems, CAN controllers trigger emergency handlers the moment an error frame is detected.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By replacing active waiting with reactive notifications, interrupts allow microcontrollers to sleep when inactive and respond with microsecond precision when needed. They represent the moment hardware became coordinate-aware.</p></div>
     
         <div style="margin-bottom:2.5rem">
           <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">The Limits of Response</h2>
@@ -232,7 +229,6 @@
     </div>
     </div>
   </div>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-about">
@@ -240,56 +236,122 @@
     <div class="hero-bg"></div>
     <div class="hero-grid">
       <div>
-        <div class="hero-tag">Embedded Firmware Engineer</div>
+        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
         <h1 class="hero-title">
-          Building <em>Intelligent Systems</em><br>from Silicon to Edge AI
+          Engineering concepts you don't just read — <em>you experience</em>.
         </h1>
         <p class="hero-sub">
-          Embedded Firmware Engineer focused on real-time systems, hardware-software integration,
-          and Edge AI. Engineering from the ground up — one register at a time.
+          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
         </p>
-        <div class="hero-btns">
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
+        <p class="about-text">
+          Engineering is often taught as a collection of isolated concepts.<br><br>
+          A processor here.<br>
+          A protocol there.<br>
+          An operating system somewhere else.<br><br>
+          But real systems are built by connecting these layers.<br><br>
+          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
+          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
+        <p class="why-text">
+          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
+          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
+          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
           <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
              target="_blank" rel="noopener noreferrer" class="btn-primary"
              onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
              onmouseout="this.style.transform='translateY(0) scale(1)'">
             View Resume →
           </a>
-          <button class="btn-ghost" onclick="showPage('journey')">Explore My Journey ↓</button>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
         </div>
       </div>
     </div>
   </section>
-  <section id="about">
-    <div class="section-label">// about</div>
-    <div class="about-grid">
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
       <div>
-        <h2 class="section-title">Where Hardware Meets Intelligence</h2>
-        <p class="about-text">
-          PrajnaEdge is a systems exploration project by Devaharsha Meesarapu.<br><br>
-          I work on low-level systems where hardware meets software, building reliable real-time embedded systems while exploring the evolution of intelligent edge systems.<br><br>
-          My work spans electronics, embedded firmware, system architecture, and artificial intelligence—a deliberate journey from understanding silicon to understanding intelligence.
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
         </p>
       </div>
-      <div class="why-card">
-        <div class="why-title">Why This Site Exists</div>
-        <p class="why-text">
-          This is not just a portfolio. It is a space where I explore, document, and simplify
-          how systems evolve from hardware to intelligent behavior.<br><br>
-          Every section is a layer of the stack — from the transistor to the trained model.
-          The goal is to make the journey from silicon to edge AI legible.
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
         </p>
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 
 <div class="page" id="page-journey">
-  <section id="journey-section">
-    <div class="journey-inner">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
       <div class="section-label">// career_journey</div>
-      <h2 class="section-title">Interactive Career Journey</h2>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
       <div class="node-selector" id="node-selector"></div>
       <div class="journey-content">
         <div class="node-meta fade-in" id="node-meta"></div>
@@ -297,7 +359,6 @@
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-contact">
@@ -317,13 +378,13 @@
         Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
       </div>
       <div class="connect-cards-grid">
-        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
           <div class="info-card-label">LinkedIn</div>
-          <div class="info-card-title" style="margin-top: 0.5rem;">Professional Profile</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
         </a>
-        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
-          <div class="info-card-label">GitHub</div>
-          <div class="info-card-title" style="margin-top: 0.5rem;">Projects & Code</div>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
         </a>
         <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
           <div class="info-card-label">Contact</div>
@@ -368,7 +429,6 @@
       </div>
     </div>
   </section>
-  <footer><p class="footer-text">// built with engineering thinking • Devaharsha © 2026</p></footer>
 </div>
 
 <div class="page" id="page-bare-metal">
@@ -475,6 +535,19 @@
     </button>
   </div>
 </div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-logo-wrap">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+    </div>
+    <div class="footer-text-column">
+      <div class="footer-title">PrajnaEdge</div>
+      <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+      <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>

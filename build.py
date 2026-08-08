@@ -68,7 +68,10 @@ systemsTreeNodes = {
     "when-silence-wasnt-an-option",
     "when-sharing-became-dangerous",
     "when-nobody-could-move",
-    "when-importance-wasnt-enough"
+    "when-importance-wasnt-enough",
+    "the-illusion-of-ownership",
+    "the-invisible-translator",
+    "the-language-of-pages"
   ]
 }
 
@@ -86,6 +89,9 @@ def parse_text_formatting(text):
     )
     # Bold: **text** -> <strong>text</strong>
     parsed = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', parsed)
+    
+    # Italics: *text* -> <em>text</em>
+    parsed = re.sub(r'(?<!\*)\*([^\s\*](?:[^\*\n]*?[^\s\*])?)\*(?!\*)', r'<em>\1</em>', parsed)
     
     # Internal links: [Text](target) -> onclick openItem and href
     def link_repl(match):
@@ -106,6 +112,76 @@ def strip_quotes(val):
     if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
         return val[1:-1].strip()
     return val
+
+def parse_markdown_table(p_text):
+    lines = [line.strip() for line in p_text.splitlines() if line.strip()]
+    if len(lines) < 2:
+        return None
+        
+    # Check if all lines start and end with '|'
+    if not all(line.startswith('|') and line.endswith('|') for line in lines):
+        return None
+        
+    # Check if line 2 is a separator line (contains at least dashes or colons between pipes)
+    sep_line = lines[1]
+    # Remove pipes and check if remaining characters are only dashes, colons, spaces
+    sep_parts = [part.strip() for part in sep_line.split('|')[1:-1]]
+    if not sep_parts:
+        return None
+    for part in sep_parts:
+        if not re.match(r'^:?-+:?$', part):
+            return None
+            
+    # Valid table! Extract headers
+    headers = [part.strip() for part in lines[0].split('|')[1:-1]]
+    
+    # Alignments
+    aligns = []
+    for part in sep_parts:
+        if part.startswith(':') and part.endswith(':'):
+            aligns.append('center')
+        elif part.endswith(':'):
+            aligns.append('right')
+        else:
+            aligns.append('left')
+            
+    rows = []
+    for line in lines[2:]:
+        row_cells = [part.strip() for part in line.split('|')[1:-1]]
+        # Pad or truncate row_cells to match headers length
+        if len(row_cells) < len(headers):
+            row_cells += [''] * (len(headers) - len(row_cells))
+        else:
+            row_cells = row_cells[:len(headers)]
+        rows.append(row_cells)
+        
+    # Construct HTML table
+    html = []
+    html.append('<table class="blog-table">')
+    
+    # Thead
+    html.append('  <thead>')
+    html.append('    <tr>')
+    for idx, h in enumerate(headers):
+        align_style = f' style="text-align:{aligns[idx]}"' if aligns[idx] != 'left' else ''
+        h_formatted = parse_text_formatting(h)
+        html.append(f'      <th{align_style}>{h_formatted}</th>')
+    html.append('    </tr>')
+    html.append('  </thead>')
+    
+    # Tbody
+    html.append('  <tbody>')
+    for row in rows:
+        html.append('    <tr>')
+        for idx, cell in enumerate(row):
+            align_style = f' style="text-align:{aligns[idx]}"' if aligns[idx] != 'left' else ''
+            cell_formatted = parse_text_formatting(cell)
+            html.append(f'      <td{align_style}>{cell_formatted}</td>')
+        html.append('    </tr>')
+    html.append('  </tbody>')
+    html.append('</table>')
+    
+    return '\n'.join(html)
 
 def parse_markdown_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -224,9 +300,17 @@ def parse_markdown_file(filepath):
             
         p_text = '\n'.join(paragraph_lines).strip()
         if p_text and current_section:
+            # Check if it is a table block
+            table_html = parse_markdown_table(p_text)
+            if table_html:
+                current_section["content"].append({
+                    "type": "p",
+                    "text": table_html,
+                    "html": True
+                })
             # Check if it is an image block
-            image_match = re.match(r'^!\[([\s\S]*?)\]\(([^)]+)\)$', p_text)
-            if image_match:
+            elif re.match(r'^!\[([\s\S]*?)\]\(([^)]+)\)$', p_text):
+                image_match = re.match(r'^!\[([\s\S]*?)\]\(([^)]+)\)$', p_text)
                 alt = image_match.group(1).replace('\n', ' ').strip()
                 src = image_match.group(2).strip()
                 if src.startswith('Images/'):
@@ -491,6 +575,9 @@ def make_paths_relative(html_content, depth=1):
     html_content = re.sub(r'href="HomepageAnimation/', f'href="{prefix}HomepageAnimation/', html_content)
     html_content = re.sub(r'src="HomepageAnimation/', f'src="{prefix}HomepageAnimation/', html_content)
     html_content = re.sub(r'<source src="HomepageAnimation/', f'<source src="{prefix}HomepageAnimation/', html_content)
+    html_content = re.sub(r'src="Logo/', f'src="{prefix}Logo/', html_content)
+    html_content = re.sub(r'href="Logo/', f'href="{prefix}Logo/', html_content)
+    html_content = html_content.replace('href="creator/"', f'href="{prefix}creator/"')
     return html_content
 
 def main():
@@ -542,7 +629,7 @@ def main():
         pre_rendered_html = pre_rendered_html.replace('<div class="page active" id="page-home">', '<div class="page" id="page-home">')
         pre_rendered_html = pre_rendered_html.replace('<div class="page" id="page-blog-post">', '<div class="page active" id="page-blog-post">')
         pre_rendered_html = pre_rendered_html.replace('<div id="blog-post-content"></div>', f'<div id="blog-post-content">{post_html}</div>')
-        pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge | Devaharsha Meesarapu</title>', f'<title>{post["title"]} | PrajnaEdge</title>')
+        pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge</title>', f'<title>{post["title"]} | PrajnaEdge</title>')
         pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/explorations/{post_id}/" />')
         pre_rendered_html = make_paths_relative(pre_rendered_html, depth=2)
         
@@ -564,7 +651,7 @@ def main():
         pre_rendered_html = pre_rendered_html.replace('<div class="page active" id="page-home">', '<div class="page" id="page-home">')
         pre_rendered_html = pre_rendered_html.replace('<div class="page" id="page-blog-post">', '<div class="page active" id="page-blog-post">')
         pre_rendered_html = pre_rendered_html.replace('<div id="blog-post-content"></div>', f'<div id="blog-post-content">{post_html}</div>')
-        pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge | Devaharsha Meesarapu</title>', f'<title>{post["title"]} | PrajnaEdge</title>')
+        pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge</title>', f'<title>{post["title"]} | PrajnaEdge</title>')
         pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/demonstrations/{post_id}/" />')
         pre_rendered_html = make_paths_relative(pre_rendered_html, depth=2)
         
@@ -576,8 +663,9 @@ def main():
     # 6. Generate Pre-rendered static pages: about, contact, journey, explorations, demonstrations
     page_configs = [
         {"id": "about", "title": "About | PrajnaEdge", "route": "about/"},
-        {"id": "contact", "title": "Contact | PrajnaEdge", "route": "contact/"},
+        {"id": "contact", "title": "Connect | PrajnaEdge", "route": "contact/"},
         {"id": "journey", "title": "Interactive Career Journey | PrajnaEdge", "route": "journey/"},
+        {"id": "creator", "title": "Devaharsha Meesarapu | PrajnaEdge", "route": "creator/"},
         {"id": "blogs", "title": "Explorations | PrajnaEdge", "route": "explorations/"},
         {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/"},
         {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"},
@@ -591,7 +679,7 @@ def main():
         pre_rendered_html = master_template
         pre_rendered_html = pre_rendered_html.replace('<div class="page active" id="page-home">', '<div class="page" id="page-home">')
         pre_rendered_html = pre_rendered_html.replace(f'<div class="page" id="page-{cfg["id"]}">', f'<div class="page active" id="page-{cfg["id"]}">')
-        pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge | Devaharsha Meesarapu</title>', f'<title>{cfg["title"]}</title>')
+        pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge</title>', f'<title>{cfg["title"]}</title>')
         pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/{cfg["route"]}" />')
         pre_rendered_html = make_paths_relative(pre_rendered_html, depth=1)
         

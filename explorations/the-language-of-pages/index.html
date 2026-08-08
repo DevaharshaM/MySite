@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bare Metal | PrajnaEdge</title>
+<title>The Language of Pages | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/bare-metal/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/the-language-of-pages/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -22,9 +22,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
   <!-- External Premium Stylesheet -->
-  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="../../style.css" />
   <!-- External Behavior and Logic -->
-  <script src="../script.js" defer></script>
+  <script src="../../script.js" defer></script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
 <script>
@@ -63,11 +63,11 @@
       <div class="homepage-video-container">
         <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
         <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
-          <source src="../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
         </video>
         
         <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
-        <img id="final-frame" class="homepage-media" src="../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
         
         <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
         <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
@@ -184,11 +184,127 @@
   </div>
 </div>
 
-<div class="page" id="page-blog-post">
+<div class="page active" id="page-blog-post">
   <div style="padding-top:80px">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
-      <div id="blog-post-content"></div>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">The Language of Pages</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How Virtual Memory and Physical RAM learned to speak the same language.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Memory Management</span><span class="tag">Paging</span><span class="tag">Pages</span><span class="tag">Frames</span><span class="tag">Page Table</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. Why Divide Memory?</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The Memory Management Unit (MMU) is incredibly fast, translating addresses on every single CPU cycle. But how does it keep track of where each address belongs?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Imagine if the MMU stored a mapping for every single byte of memory. If a process had a 4 GB address space, the Page Table would need to store 4 billion entries! The map itself would take up many gigabytes of physical RAM, leaving no room for the actual programs.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To solve this, systems divide memory into equal-sized blocks rather than mapping individual bytes.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   <strong>Pages</strong>: The equal-sized blocks that partition the <strong>Virtual Address Space</strong> of a process.
+*   <strong>Frames</strong>: The equal-sized blocks that partition the <strong>Physical RAM</strong> of the system.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Instead of translating individual byte coordinates, the Page Table simply translates entire <strong>Pages</strong> into <strong>Frames</strong>.</p><div style="text-align: center; margin: 2rem 0; width: 100%;">
+  <svg viewBox="0 0 800 320" width="100%" height="auto" style="background: #111827; border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+    <rect width="100%" height="100%" fill="url(#grid)" /><!-- Virtual Address Space (Pages) -->
+    <g transform="translate(40, 30)">
+      <rect x="0" y="0" width="180" height="260" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+      <text x="90" y="25" text-anchor="middle" fill="#FFF" font-size="12" font-weight="bold">VIRTUAL ADDRESS SPACE</text><rect x="15" y="45" width="150" height="40" rx="4" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+      <text x="90" y="70" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">Page 0</text><rect x="15" y="95" width="150" height="40" rx="4" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+      <text x="90" y="120" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">Page 1</text><rect x="15" y="145" width="150" height="40" rx="4" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+      <text x="90" y="170" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">Page 2</text><rect x="15" y="195" width="150" height="40" rx="4" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+      <text x="90" y="220" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">Page 3</text>
+    </g><!-- Page Table (Mapping Gateway) -->
+    <g transform="translate(310, 50)">
+      <rect x="0" y="0" width="180" height="220" rx="8" fill="#1E293B" stroke="rgba(148,163,184,0.2)" stroke-width="1.5"/>
+      <text x="90" y="25" text-anchor="middle" fill="#FFF" font-size="12" font-weight="bold">PAGE TABLE</text><rect x="15" y="45" width="150" height="30" rx="4" fill="#0F172A" stroke="rgba(255,255,255,0.05)"/>
+      <text x="90" y="64" text-anchor="middle" fill="#E2E8F0" font-size="10" font-family="monospace">Page 0 &rarr; Frame 7</text><rect x="15" y="85" width="150" height="30" rx="4" fill="#0F172A" stroke="rgba(255,255,255,0.05)"/>
+      <text x="90" y="104" text-anchor="middle" fill="#E2E8F0" font-size="10" font-family="monospace">Page 1 &rarr; Frame 2</text><rect x="15" y="125" width="150" height="30" rx="4" fill="#0F172A" stroke="rgba(255,255,255,0.05)"/>
+      <text x="90" y="144" text-anchor="middle" fill="#E2E8F0" font-size="10" font-family="monospace">Page 2 &rarr; Frame 10</text><rect x="15" y="165" width="150" height="30" rx="4" fill="#0F172A" stroke="rgba(255,255,255,0.05)"/>
+      <text x="90" y="184" text-anchor="middle" fill="#E2E8F0" font-size="10" font-family="monospace">Page 3 &rarr; Frame 5</text>
+    </g><!-- Physical RAM (Frames) -->
+    <g transform="translate(580, 30)">
+      <rect x="0" y="0" width="180" height="260" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+      <text x="90" y="25" text-anchor="middle" fill="#FFF" font-size="12" font-weight="bold">PHYSICAL RAM</text><rect x="15" y="45" width="150" height="30" rx="4" fill="#111B30" stroke="rgba(16,185,129,0.3)"/>
+      <text x="90" y="64" text-anchor="middle" fill="#10B981" font-size="10" font-family="monospace">Frame 2</text><rect x="15" y="85" width="150" height="30" rx="4" fill="#111B30" stroke="rgba(16,185,129,0.3)"/>
+      <text x="90" y="104" text-anchor="middle" fill="#10B981" font-size="10" font-family="monospace">Frame 5</text><rect x="15" y="125" width="150" height="30" rx="4" fill="#111B30" stroke="rgba(16,185,129,0.3)"/>
+      <text x="90" y="144" text-anchor="middle" fill="#10B981" font-size="10" font-family="monospace">Frame 7</text><rect x="15" y="165" width="150" height="30" rx="4" fill="#111B30" stroke="rgba(16,185,129,0.3)"/>
+      <text x="90" y="184" text-anchor="middle" fill="#10B981" font-size="10" font-family="monospace">Frame 10</text><text x="90" y="225" text-anchor="middle" fill="#64748B" font-size="9">(Scattered in physical space)</text>
+    </g><!-- Connectors -->
+    <!-- Page 0 to Frame 7 path -->
+    <path d="M 220 95 L 310 115" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-dasharray="3"/>
+    <path d="M 490 115 L 580 170" fill="none" stroke="#10B981" stroke-width="1.5"/>
+  </svg>
+</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Why Equal Sizes?</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If we partition memory into blocks, a crucial rule emerges: <strong>Pages and Frames must be exactly the same size.</strong></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Why? Because the MMU never modifies the entire address sequence. It only replaces the Page Number with the physical Frame Number. The rest of the address—the Offset—remains completely untouched.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   <strong>Page Number</strong>: Represents <em>which</em> block in the virtual address space is being accessed.
+*   <strong>Frame Number</strong>: Represents <em>which</em> physical block in the RAM chip is being targeted.
+*   <strong>Offset</strong>: Represents the specific byte offset <em>within</em> that block.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because the offset is identical on both sides, the index of the byte inside the Page is exactly the same as the index of the byte inside the Frame. If the sizes differed, the offset would point to a completely different byte, scrambling data structure alignments.</p><div style="text-align: center; margin: 2rem 0; width: 100%;">
+  <svg viewBox="0 0 800 260" width="100%" height="auto" style="background: #111827; border: 1px solid rgba(148, 163, 184, 0.12); border-radius: 8px; font-family: 'DM Sans', sans-serif;">
+    <rect width="100%" height="100%" fill="url(#grid)" /><!-- CPU Generating Address -->
+    <rect x="40" y="80" width="160" height="90" rx="6" fill="#1E293B" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="120" y="110" text-anchor="middle" fill="#FFF" font-size="12" font-weight="bold">CPU ADDRESS</text>
+    <rect x="55" y="125" width="130" height="30" rx="3" fill="#0F172A" stroke="rgba(59,130,246,0.3)"/>
+    <text x="120" y="144" text-anchor="middle" fill="#3B82F6" font-size="11" font-family="monospace">0x1234</text><!-- Page / Offset Split -->
+    <g transform="translate(250, 40)">
+      <rect x="0" y="0" width="120" height="60" rx="4" fill="#1E293B" stroke="#3B82F6"/>
+      <text x="60" y="20" text-anchor="middle" fill="#64748B" font-size="10">PAGE NUMBER</text>
+      <text x="60" y="45" text-anchor="middle" fill="#3B82F6" font-size="14" font-family="monospace" font-weight="bold">0x12</text>
+    </g><g transform="translate(250, 150)">
+      <rect x="0" y="0" width="120" height="60" rx="4" fill="#1E293B" stroke="#F59E0B" stroke-dasharray="3"/>
+      <text x="60" y="20" text-anchor="middle" fill="#64748B" font-size="10">OFFSET</text>
+      <text x="60" y="45" text-anchor="middle" fill="#F59E0B" font-size="14" font-family="monospace" font-weight="bold">0x34</text>
+    </g><!-- Page Table Translation Box -->
+    <rect x="420" y="40" width="120" height="60" rx="4" fill="#111B30" stroke="#10B981" stroke-width="1.5"/>
+    <text x="480" y="65" text-anchor="middle" fill="#10B981" font-size="11" font-weight="bold">Frame: 0x8A</text>
+    <text x="480" y="85" text-anchor="middle" fill="#64748B" font-size="9">(Page Table Translation)</text><!-- Reassembled Physical Address -->
+    <rect x="590" y="80" width="170" height="90" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+    <text x="675" y="110" text-anchor="middle" fill="#FFF" font-size="12" font-weight="bold">PHYSICAL RAM TARGET</text>
+    <rect x="605" y="125" width="140" height="30" rx="3" fill="#0F172A" stroke="rgba(16,185,129,0.3)"/>
+    <text x="675" y="144" text-anchor="middle" fill="#10B981" font-size="11" font-family="monospace">
+      0x8A<tspan fill="#F59E0B">34</tspan>
+    </text><!-- Flow paths -->
+    <path d="M 200 125 L 250 70" fill="none" stroke="#3B82F6" stroke-width="1.5"/>
+    <path d="M 200 125 L 250 180" fill="none" stroke="#F59E0B" stroke-width="1.5"/><path d="M 370 70 L 420 70" fill="none" stroke="#3B82F6" stroke-width="1.5"/>
+    <path d="M 540 70 L 590 125" fill="none" stroke="#10B981" stroke-width="1.5"/>
+    <path d="M 370 180 L 590 125" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4"/>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The offset <strong>never changes</strong>. Page <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x12</code> translates into Frame <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x8A</code>, but offset <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x34</code> maps directly to offset <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x34</code> inside the destination frame.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Page Table</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">So, what is the Page Table?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">It is simply an array indexed by the <strong>Page Number</strong>. Each entry in the Page Table (often called a Page Table Entry, or PTE) contains the corresponding <strong>Frame Number</strong> where that page is physically loaded.</p><table class="blog-table">
+  <thead>
+    <tr>
+      <th>Virtual Page Number</th>
+      <th>Valid Bit</th>
+      <th>Physical Frame Number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>0x00</strong></td>
+      <td>1</td>
+      <td>0x07</td>
+    </tr>
+    <tr>
+      <td><strong>0x01</strong></td>
+      <td>1</td>
+      <td>0x02</td>
+    </tr>
+    <tr>
+      <td><strong>0x02</strong></td>
+      <td>1</td>
+      <td>0x0A</td>
+    </tr>
+    <tr>
+      <td><strong>0x03</strong></td>
+      <td>1</td>
+      <td>0x05</td>
+    </tr>
+  </tbody>
+</table><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the CPU wants to access Virtual Address <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x011A</code> (Page <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x01</code>, Offset <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x1A</code>), the MMU queries index <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x01</code> of the Page Table. The table returns Frame Number <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x02</code>. The MMU then targets Physical Address <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">0x021A</code>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">No math, no search loops. Just a direct index lookup.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. EdgeCase: One Page Finds Its Frame</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Let's watch a single Virtual Address complete the translation pipeline.</p><h4 style="font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">4.2.1 EdgeCase: Page-to-Frame Pipeline</h4><div id="one-page-finds-its-frame-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Reflection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We now know the language of memory: Page sizes match Frame sizes, letting us translate coordinates by simply swapping the block headers while leaving the internal offset untouched.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But a structural bottleneck exists:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The Physical RAM chip contains only a limited number of Frame slots. What happens when a process attempts to read a Page that isn't currently loaded into any of those physical frames?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The operating system must make room. But how does it decide which page to evict, and how does the hardware handle this missing memory link?</p></div>
+    
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">Previous</span>
+            <a class="nav-link active" href="../../explorations/the-invisible-translator/" onclick="openItem('the-invisible-translator', 'blogs')">← The Invisible Translator</a>
+        </div>
+          <div class="nav-next" id="exploration-nav-next">
+                <span class="nav-dir-label">Next</span>
+                <span class="nav-link locked">None</span>
+            </div>
+        </div>
+      </div>
+    
+    </div>
     </div>
   </div>
 </div>
@@ -393,7 +509,7 @@
   </section>
 </div>
 
-<div class="page active" id="page-bare-metal">
+<div class="page" id="page-bare-metal">
   <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
     <!-- Minimal Header or Back Link -->
     <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
@@ -501,12 +617,12 @@
 <footer class="site-footer">
   <div class="footer-container">
     <div class="footer-logo-wrap">
-      <img src="../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
     </div>
     <div class="footer-text-column">
       <div class="footer-title">PrajnaEdge</div>
       <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
-      <div class="footer-credits">Designed & Developed by <a href="../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+      <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
     </div>
   </div>
 </footer>
