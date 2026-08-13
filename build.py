@@ -71,7 +71,9 @@ systemsTreeNodes = {
     "when-importance-wasnt-enough",
     "the-illusion-of-ownership",
     "the-invisible-translator",
-    "the-language-of-pages"
+    "the-language-of-pages",
+    "when-the-page-wasnt-there",
+    "choosing-what-to-forget"
   ]
 }
 
@@ -380,28 +382,28 @@ def build_navigation_html(post, all_posts_dict):
     if prevExpId and prevExpId in all_posts_dict:
         prev_title = all_posts_dict[prevExpId]["title"]
         prev_html = f"""
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../explorations/{prevExpId}/" onclick="openItem('{prevExpId}', 'blogs')">← {esc_html(prev_title)}</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/{prevExpId}/" onclick="openItem('{prevExpId}', 'blogs')">{esc_html(prev_title)}</a>
         """
     elif category == "Bare Metal":
         prev_html = """
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../bare-metal/" onclick="showPage('bare-metal')">← Return to Bare Metal</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../bare-metal/" onclick="showPage('bare-metal')">Return to Bare Metal</a>
         """
     elif category == "Operating Systems":
         prev_html = """
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">← Return to Operating Systems</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">Return to Operating Systems</a>
         """
     elif categoryIndex > 0:
         prev_category = node_order[categoryIndex - 1]
         prev_html = f"""
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{prev_category}')">← Return to {esc_html(prev_category)}</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{prev_category}')">Return to {esc_html(prev_category)}</a>
         """
     else:
         prev_html = """
-            <span class="nav-dir-label">Previous</span>
+            <span class="nav-dir-label">← Previous</span>
             <span class="nav-link locked">None</span>
         """
         
@@ -409,75 +411,35 @@ def build_navigation_html(post, all_posts_dict):
     if nextExpId and nextExpId in all_posts_dict:
         next_title = all_posts_dict[nextExpId]["title"]
         next_html = f"""
-            <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" href="../../explorations/{nextExpId}/" onclick="openItem('{nextExpId}', 'blogs')">{esc_html(next_title)} →</a>
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/{nextExpId}/" onclick="openItem('{nextExpId}', 'blogs')">{esc_html(next_title)}</a>
         """
     elif category == "Operating Systems":
-        if post_id == "why-do-we-need-an-operating-system":
+        if post_id == "choosing-what-to-forget":
             next_html = """
-                <span class="nav-dir-label">Next</span>
-                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  The Silent Conductor →
-                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-                </span>
-            """
-        elif post_id == "what-is-a-kernel":
-            next_html = """
-                <span class="nav-dir-label">Next</span>
-                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  When Code Comes Alive →
-                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-                </span>
-            """
-        elif post_id == "what-is-a-process":
-            next_html = """
-                <span class="nav-dir-label">Next</span>
-                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  The Journey Between Moments →
-                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-                </span>
-            """
-        elif post_id == "the-journey-between-moments":
-            next_html = """
-                <span class="nav-dir-label">Next</span>
-                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  Who Goes Next? →
-                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-                </span>
-            """
-        elif post_id == "when-nobody-could-move":
-            next_html = f"""
-                <span class="nav-dir-label">Next</span>
-                <a href="../when-importance-wasnt-enough/" class="nav-link">When Importance Wasn't Enough →</a>
-            """
-        elif post_id == "when-importance-wasnt-enough":
-            next_html = """
-                <span class="nav-dir-label">Next</span>
-                <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                  Memory Management →
-                  <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-                </span>
+                <span class="nav-dir-label">Next →</span>
+                <span class="nav-link locked">None</span>
             """
         else:
             next_html = """
-                <span class="nav-dir-label">Next</span>
+                <span class="nav-dir-label">Next →</span>
                 <span class="nav-link locked">None</span>
             """
     elif categoryIndex != -1 and categoryIndex < len(node_order) - 1:
         next_category = node_order[categoryIndex + 1]
         next_html = f"""
-            <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{next_category}')">Advance to {esc_html(next_category)} →</a>
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/" onclick="filterNodeRoute('{next_category}')">Advance to {esc_html(next_category)}</a>
         """
     else:
         if category == "Bare Metal":
             next_html = """
-                <span class="nav-dir-label">Next</span>
-                <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">New path is awakening →</a>
+                <span class="nav-dir-label">Next →</span>
+                <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">New path is awakening</a>
             """
         else:
             next_html = """
-                <span class="nav-dir-label">Next</span>
+                <span class="nav-dir-label">Next →</span>
                 <span class="nav-link locked">None</span>
             """
         
@@ -489,8 +451,16 @@ def build_navigation_html(post, all_posts_dict):
 
     nav_html = f"""
       <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">{esc_html(category)}</span>
+        </div>
         <div class="exploration-nav-grid">
           <div class="nav-prev">{prev_html}</div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">{esc_html(post['title'])}</span>
+          </div>
           <div{nav_next_id_str}>{next_html}</div>
         </div>
       </div>

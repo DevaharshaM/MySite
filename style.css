@@ -94,11 +94,51 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 2rem;
-  max-width: 800px;
+  justify-content: space-between;
+  max-width: 1100px;
   width: 100%;
-  justify-content: center;
   box-sizing: border-box;
+  gap: 2rem;
+}
+
+.footer-left {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.footer-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer-right {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.footer-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--blue);
+}
+
+.footer-sep {
+  color: rgba(148, 163, 184, 0.2);
 }
 
 .footer-logo-wrap {
@@ -453,7 +493,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
   .footer-container {
     flex-direction: column;
     text-align: center;
-    gap: 12px;
+    gap: 1.5rem;
+  }
+  .footer-center {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
   }
   .footer-logo-wrap {
     justify-content: center;
@@ -595,21 +641,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
 .exploration-nav-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 1.5rem;
   align-items: flex-start;
-  max-width: 600px;
-  margin: 0 auto;
 }
-.nav-prev, .nav-next {
+.nav-prev, .nav-current, .nav-next {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 .nav-prev {
-  text-align: right;
+  text-align: left;
+}
+.nav-current {
+  display: none !important;
 }
 .nav-next {
-  text-align: left;
+  text-align: right;
 }
 .nav-dir-label {
   font-family: var(--mono);
@@ -647,7 +694,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
     gap: 1.75rem;
     text-align: center;
   }
-  .nav-prev, .nav-next {
+  .nav-prev, .nav-current, .nav-next {
     text-align: center;
   }
 }

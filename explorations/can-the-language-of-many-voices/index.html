@@ -206,14 +206,22 @@
         
     
       <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Interaction</span>
+        </div>
         <div class="exploration-nav-grid">
           <div class="nav-prev">
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" href="../../explorations/i2c-the-shared-conversation/" onclick="openItem('i2c-the-shared-conversation', 'blogs')">← I2C: The Shared Conversation</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/i2c-the-shared-conversation/" onclick="openItem('i2c-the-shared-conversation', 'blogs')">I2C: The Shared Conversation</a>
         </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">CAN: The Language of Many Voices</span>
+          </div>
           <div class="nav-next" id="exploration-nav-next">
-            <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" href="../../explorations/the-roads-not-often-travelled/" onclick="openItem('the-roads-not-often-travelled', 'blogs')">The Roads Not Often Travelled →</a>
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/the-roads-not-often-travelled/" onclick="openItem('the-roads-not-often-travelled', 'blogs')">The Roads Not Often Travelled</a>
         </div>
         </div>
       </div>
@@ -528,15 +536,57 @@
   </div>
 </div>
 
+<div class="page" id="page-legal">
+  <div style="padding-top: 80px; min-height: 80vh;">
+    <div style="max-width: 760px; margin: 0 auto; padding: 3rem 2.5rem;">
+      <h2 style="font-family:'Syne', sans-serif; font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; color:#fff; margin-bottom:1.5rem; letter-spacing:-0.02em;">Legal Information</h2>
+      <p style="color:var(--muted); font-family:var(--mono); font-size:0.8rem; margin-bottom:2.5rem; letter-spacing:0.05em; text-transform:uppercase;">Product Terms & Licensing</p>
+      
+      <div style="display:flex; flex-direction:column; gap:2.5rem; color:#CBD5E1; font-size:0.95rem; line-height:1.75;">
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">1. Terms of Use</h3>
+          <p>
+            PrajnaEdge is an interactive learning platform designed for systems engineers, developers, and technology enthusiasts. The educational materials, simulation blocks, and visual code tracers are provided for instruction and concept validation. We make no warranty regarding their completeness or applicability to real-world industrial systems.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">2. Intellectual Property</h3>
+          <p>
+            The software, interactive widgets, diagrams, illustrations, custom SVG architectures, and textual documentation on this site are copyright &copy; 2026 PrajnaEdge. All rights reserved. Reproduction, modifications, or scraping of this content without prior written permission is strictly prohibited.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">3. Privacy Policy</h3>
+          <p>
+            PrajnaEdge is committed to learning privacy. We do not sell user data. Analytical event tracking is used solely to study click telemetry and help improve visual guides.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer class="site-footer">
   <div class="footer-container">
-    <div class="footer-logo-wrap">
-      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+    <div class="footer-left">
+      © 2026 PrajnaEdge&trade;
     </div>
-    <div class="footer-text-column">
-      <div class="footer-title">PrajnaEdge</div>
-      <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
-      <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+    <div class="footer-center">
+      <div class="footer-logo-wrap">
+        <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      </div>
+      <div class="footer-text-column">
+        <div class="footer-title">PrajnaEdge</div>
+        <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+        <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+      </div>
+    </div>
+    <div class="footer-right">
+      <a href="/sitemap.xml" target="_blank" class="footer-link">Sitemap</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/" target="_blank" class="footer-link">Legal</a>
     </div>
   </div>
 </footer>

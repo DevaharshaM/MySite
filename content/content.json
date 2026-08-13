@@ -1163,6 +1163,141 @@
       }
     },
     {
+      "id": "choosing-what-to-forget",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "Choosing What to Forget",
+      "subtitle": "When physical memory is full, which page must be evicted?",
+      "date": "9th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Memory Management",
+        "Page Replacement",
+        "FIFO",
+        "LRU",
+        "Optimal"
+      ],
+      "sections": [
+        {
+          "heading": "1. The Saturation Point",
+          "content": [
+            {
+              "type": "p",
+              "text": "Imagine a system running under constraint. Its physical RAM is small, containing only **3 physical frames**. Right now, physical memory is completely saturated, filled with three active pages:"
+            },
+            {
+              "type": "p",
+              "text": "$$\\text{RAM Frames: } [ \\text{Page 2} \\ | \\ \\text{Page 5} \\ | \\ \\text{Page 7} ]$$"
+            },
+            {
+              "type": "p",
+              "text": "A thread executes an instruction requesting virtual address space residing in **Page 3**."
+            },
+            {
+              "type": "p",
+              "text": "The MMU looks up the translation in the Page Table, finds it invalid, and raises a **Page Fault**. The Operating System traps the fault and prepares to copy Page 3 from disk into RAM. But there is a bottleneck: *all physical frames are occupied.*"
+            },
+            {
+              "type": "p",
+              "text": "To resolve the fault and bring Page 3 into memory, the operating system must choose one page currently in RAM and evict it back to disk."
+            },
+            {
+              "type": "p",
+              "text": "This decision is known as **Page Replacement**."
+            }
+          ]
+        },
+        {
+          "heading": "2. Three Answers to the Same Question",
+          "content": [
+            {
+              "type": "p",
+              "text": "How do we decide which page should leave? The policy we choose determines our system's memory efficiency. Three core algorithms answer this question:"
+            },
+            {
+              "type": "p",
+              "text": "**First-In, First-Out (FIFO)**\n*\"Which Page arrived first?\"*\nEvict the oldest page loaded into RAM, regardless of how frequently it is being used."
+            },
+            {
+              "type": "p",
+              "text": "**Least Recently Used (LRU)**\n*\"Which Page has been unused the longest?\"*\nEvict the page that has not been accessed for the longest duration, relying on the principle of temporal locality."
+            },
+            {
+              "type": "p",
+              "text": "**Optimal (OPT)**\n*\"Which Page will be needed farthest in the future?\"*\nEvict the page that will go the longest before being requested again."
+            }
+          ]
+        },
+        {
+          "heading": "3. Interactive Page Replacement Simulator",
+          "content": [
+            {
+              "type": "p",
+              "text": "See how these three different strategies handle the exact same reference sequence under the same constraint:"
+            },
+            {
+              "type": "p",
+              "text": "$$\\text{Reference Sequence: } 1 \\rightarrow 2 \\rightarrow 3 \\rightarrow 1 \\rightarrow 4$$"
+            },
+            {
+              "type": "p",
+              "text": "Observe how the exact same access trace produces completely different eviction choices and page fault rates depending on the active policy."
+            },
+            {
+              "type": "edgecase",
+              "id": "page-replacement-edgecase"
+            },
+            {
+              "type": "p",
+              "text": "### The Mathematical Ideal vs. Hardware Reality"
+            },
+            {
+              "type": "p",
+              "text": "The **Optimal** policy represents the absolute ceiling of performance, guaranteeing the minimum possible Page Faults for any known reference sequence. However, in practice, a real-world operating system cannot implement the Optimal policy because it cannot know future memory references in advance. Real-world systems must approximate this behavior using historical data, making **LRU** the standard benchmark for practical implementation."
+            }
+          ]
+        },
+        {
+          "heading": "4. Manthana: The Allocation Challenge",
+          "content": [
+            {
+              "type": "p",
+              "text": "Now that we can manage pages inside rigid slots, let's explore a different system constraints challenge."
+            },
+            {
+              "type": "p",
+              "text": "### External Fragmentation Challenge"
+            },
+            {
+              "type": "edgecase",
+              "id": "manthana-segmentation-reveal"
+            },
+            {
+              "type": "p",
+              "text": "We now know how memory can become fragmented."
+            },
+            {
+              "type": "p",
+              "text": "But fragmentation raises another question:"
+            },
+            {
+              "type": "p",
+              "text": "Can memory be organized around the logical structure of a program instead of treating it as one continuous block?"
+            },
+            {
+              "type": "p",
+              "text": "That's where we go next."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
       "id": "i2c-the-shared-conversation",
       "category": "Interaction",
       "series": "System Explorations",
@@ -1945,6 +2080,153 @@
             {
               "type": "p",
               "text": "And when multiple processors begin working simultaneously, sharing time is no longer the only challenge. The new frontier is sharing memory, coordinating state, and ensuring that processors working in parallel do not step on each other's feet."
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
+      "id": "segmentation",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When Memory Follows Meaning",
+      "subtitle": "Organizing memory around the logical structure of a program.",
+      "date": "9th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Memory Management",
+        "Segmentation",
+        "Logical Address Space",
+        "Fragmentation"
+      ],
+      "sections": [
+        {
+          "heading": "1. The Scattered Spaces",
+          "content": [
+            {
+              "type": "p",
+              "text": "At the end of our previous exploration, we ran into a fundamental memory allocation bottleneck: **External Fragmentation**."
+            },
+            {
+              "type": "p",
+              "text": "External fragmentation occurs when the total amount of free physical memory in the system is technically large enough to satisfy an allocation request, but because that free memory is scattered across non-contiguous, separate regions, a single sufficiently large contiguous allocation cannot be fulfilled."
+            },
+            {
+              "type": "p",
+              "text": "When page references demand a contiguous physical boundary, even the most optimal page replacement algorithms cannot solve external fragmentation once it occurs. The physical spaces are simply too fragmented to coalesce."
+            },
+            {
+              "type": "p",
+              "text": "This limitation forces us to ask a different design question:"
+            },
+            {
+              "type": "quote",
+              "text": "What if memory did not have to be treated as one continuous block?"
+            }
+          ]
+        },
+        {
+          "heading": "2. Logical Components of a Program",
+          "content": [
+            {
+              "type": "p",
+              "text": "In practice, a running program does not view its own memory as a single, uniform linear array of bytes. Instead, compilers and programmers organize a program into distinct logical components, each serving a different purpose:"
+            },
+            {
+              "type": "p",
+              "text": "*   **CODE**: The compiled executable instructions (read-only and executable).\n*   **DATA**: Global variables and static constants initialized at load time.\n*   **STACK**: Function frames, parameters, return addresses, and local variables.\n*   **HEAP**: Dynamic memory allocated at runtime by the programmer."
+            },
+            {
+              "type": "p",
+              "text": "Each of these components is a **Segment**\u2014a logical unit of variable size."
+            },
+            {
+              "type": "p",
+              "text": "**Segmentation** is a memory-management strategy that maps these logical divisions directly to physical memory."
+            },
+            {
+              "type": "p",
+              "text": "Rather than partitioning everything into arbitrary, equal-sized pages as Paging does, Segmentation recognizes the logical boundaries of the program itself."
+            },
+            {
+              "type": "p",
+              "text": "*   **Paging** \u2192 Divides the address space into fixed-size, uniform blocks (**Pages**).\n*   **Segmentation** \u2192 Divides the address space into logical, variable-sized units (**Segments**)."
+            }
+          ]
+        },
+        {
+          "heading": "3. EdgeCase: Logical-to-Physical Segment Mapping",
+          "content": [
+            {
+              "type": "p",
+              "text": "Let us look at how the logical segments of a program are placed into physical memory."
+            },
+            {
+              "type": "p",
+              "text": "In this scenario, a program is composed of four logical segments of varying sizes: a **CODE** segment (8 KB), a **DATA** segment (4 KB), a **STACK** segment (6 KB), and a **HEAP** segment (12 KB)."
+            },
+            {
+              "type": "p",
+              "text": "Unlike paging, these segments are not chopped up into equal-sized pages; they are mapped directly to physical RAM locations as whole units."
+            },
+            {
+              "type": "edgecase",
+              "id": "segmentation-edgecase"
+            }
+          ]
+        },
+        {
+          "heading": "4. Manthana: The Allocation Challenge",
+          "content": [
+            {
+              "type": "p",
+              "text": "By moving from fixed-size paging to variable-sized segments, we solved the problem of dividing programs into arbitrary blocks."
+            },
+            {
+              "type": "p",
+              "text": "However, variable-sized segment allocation introduces a new trade-off. Because segments are dynamic and vary in size, the hardware or the operating system must align them to specific boundary constraints (such as 4 KB or 8 KB physical alignments) to simplify translation circuitry."
+            },
+            {
+              "type": "p",
+              "text": "Suppose a logical segment requires exactly **7 KB** of space, but the physical slot allocated to it must be aligned to a **10 KB** boundary."
+            },
+            {
+              "type": "edgecase",
+              "id": "manthana-segmentation-internal"
+            },
+            {
+              "type": "p",
+              "text": "What happens to that unused space inside the allocated segment region?"
+            },
+            {
+              "type": "p",
+              "text": "This unused, wasted memory trapped inside an allocated block is called **Internal Fragmentation**."
+            },
+            {
+              "type": "p",
+              "text": "Segmentation solves the external fragmentation of linear programs by allowing logical blocks to be scattered non-contiguously in RAM, but it can still leave us with internal fragmentation when physical allocations exceed logical needs."
+            }
+          ]
+        },
+        {
+          "heading": "5. The Search for the Perfect Fit",
+          "content": [
+            {
+              "type": "p",
+              "text": "We have now encountered two different forms of memory waste."
+            },
+            {
+              "type": "p",
+              "text": "External fragmentation leaves free memory scattered between allocations.\nInternal fragmentation leaves unused space inside an allocated region."
+            },
+            {
+              "type": "p",
+              "text": "Can any memory-management strategy avoid both?"
             }
           ]
         }
@@ -7859,6 +8141,195 @@
           ]
         }
       ]
+    },
+    {
+      "id": "when-the-page-wasnt-there",
+      "category": "Operating Systems",
+      "series": "Operating Systems",
+      "title": "When the Page Wasn't There",
+      "subtitle": "How Demand Paging manages physical memory limits and Page Faults.",
+      "date": "9th August, 2026",
+      "tags": [
+        "Operating Systems",
+        "Memory Management",
+        "Paging",
+        "Demand Paging",
+        "Page Fault",
+        "Secondary Storage"
+      ],
+      "sections": [
+        {
+          "heading": "1. Beyond the Mapping",
+          "content": [
+            {
+              "type": "p",
+              "text": "What you just saw is called **Paging**."
+            },
+            {
+              "type": "p",
+              "text": "Paging divides a process's Virtual Address Space into equal-sized blocks called **Pages**, and physical memory into identically sized slots called **Frames**. The **Page Table** sits between them, serving as a translation gateway that maps virtual coordinates to physical RAM."
+            },
+            {
+              "type": "p",
+              "text": "But paging only tells us how memory is divided and mapped. The physical reality of computer hardware introduces a critical constraint: **physical RAM is limited.**"
+            },
+            {
+              "type": "p",
+              "text": "A process might have a vast Virtual Address Space (e.g., 4 GB on a 32-bit CPU), but the system may only possess a fraction of that in actual physical RAM. If multiple processes run concurrently, physical memory becomes even more scarce."
+            },
+            {
+              "type": "p",
+              "text": "This discrepancy raises a fundamental question:"
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"blog-quote\">If the Virtual Address Space is much larger than physical RAM, where do the Pages that are not currently in RAM exist?</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "2. The Storage Hierarchy",
+          "content": [
+            {
+              "type": "p",
+              "text": "To resolve the physical limits of RAM, operating systems leverage **Secondary Memory**."
+            },
+            {
+              "type": "p",
+              "text": "Secondary Memory refers to persistent storage devices, such as Solid-State Drives (SSDs) or traditional hard disks."
+            },
+            {
+              "type": "p",
+              "text": "The differences between these two storage tiers shape how operating systems manage memory:"
+            },
+            {
+              "type": "p",
+              "text": "*   **Physical RAM**:\n    *   **Speed**: Extremely fast (accessible in nanoseconds).\n    *   **Direct Access**: Connected directly to the CPU memory bus.\n    *   **Capacity**: Highly limited and expensive.\n    *   **Volatility**: Volatile (loses all data when power is removed).\n*   **Secondary Storage**:\n    *   **Speed**: Much slower than RAM (accessible in microseconds or milliseconds).\n    *   **Direct Access**: Cannot be accessed directly by the CPU instructions.\n    *   **Capacity**: Much larger and significantly cheaper.\n    *   **Volatility**: Persistent (retains data when powered off)."
+            },
+            {
+              "type": "p",
+              "text": "The key insight is that a Page does not have to reside in physical RAM at every moment. Some Pages can be kept in Secondary Storage until they are explicitly needed by the CPU."
+            }
+          ]
+        },
+        {
+          "heading": "3. Demand Paging",
+          "content": [
+            {
+              "type": "p",
+              "text": "Instead of loading all Pages of a process into physical RAM immediately when the program starts, modern operating systems employ **Demand Paging**."
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"blog-quote\">**Demand Paging** is a memory management strategy where Pages are loaded into physical memory only when the process explicitly requests them during execution.</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "Consider a process with four Pages. Under Demand Paging, the memory state might look like this:"
+            },
+            {
+              "type": "p",
+              "text": "*   **Page 0** \u2192 Loaded in Physical RAM\n*   **Page 1** \u2192 Loaded in Physical RAM\n*   **Page 2** \u2192 Stored in Secondary Storage\n*   **Page 3** \u2192 Loaded in Physical RAM"
+            },
+            {
+              "type": "p",
+              "text": "Even though Page 2 is not currently resident in physical RAM, it remains a valid part of the process's Virtual Address Space. The Page Table keeps track of this status using a special flag called the **Present (or Valid) Bit**."
+            }
+          ]
+        },
+        {
+          "heading": "4. The Page Fault",
+          "content": [
+            {
+              "type": "p",
+              "text": "What happens if the CPU attempts to read an instruction or data located inside Page 2?"
+            },
+            {
+              "type": "p",
+              "text": "When the MMU queries the Page Table for Page 2, it detects that the Present Bit is set to `0` (Invalid/Not Present). The MMU cannot complete the translation. It halts the instruction and signals the processor:"
+            },
+            {
+              "type": "p",
+              "text": "$$\\text{Present Bit is 0} \\rightarrow \\text{Trigger a Page Fault Interrupt}$$"
+            },
+            {
+              "type": "p",
+              "text": "This event is called a **Page Fault**."
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"blog-quote\">A **Page Fault** is a hardware interrupt raised by the MMU when a program accesses a Page that is mapped in its virtual address space but is not currently loaded into physical RAM.</div>",
+              "html": true
+            },
+            {
+              "type": "p",
+              "text": "A Page Fault is not a software crash or a programming error. It is a normal, expected control event that handoffs execution to the operating system to load the required page from disk."
+            }
+          ]
+        },
+        {
+          "heading": "5. EdgeCase: The Missing Page",
+          "content": [
+            {
+              "type": "p",
+              "text": "Walk through the step-by-step sequence of a Page Fault."
+            },
+            {
+              "type": "p",
+              "text": "In this scenario, the Virtual Address Space contains Pages 0 to 3. Frames 0 to 2 are occupied, while Frame 3 is free. Page 2 is currently stored in Secondary Storage. Watch what happens when the CPU requests Page 2:"
+            },
+            {
+              "type": "edgecase",
+              "id": "demand-paging-edgecase"
+            }
+          ]
+        },
+        {
+          "heading": "6. The Next Bottleneck",
+          "content": [
+            {
+              "type": "p",
+              "text": "Demand Paging allows the operating system to execute programs that are much larger than the physical RAM by loading pages dynamically as they are referenced."
+            },
+            {
+              "type": "p",
+              "text": "But this strategy works smoothly only as long as there is an empty Frame available in RAM (like Frame 3 in our simulation) to receive the page."
+            },
+            {
+              "type": "p",
+              "text": "What happens if the physical RAM is completely full?"
+            },
+            {
+              "type": "p",
+              "text": "Imagine this physical memory state:\n*   **Frame 0** $\\rightarrow$ Occupied by Page A\n*   **Frame 1** $\\rightarrow$ Occupied by Page B\n*   **Frame 2** $\\rightarrow$ Occupied by Page C"
+            },
+            {
+              "type": "p",
+              "text": "Now, the CPU requests **Page D**, which is in Secondary Storage. There are no free frames left."
+            },
+            {
+              "type": "p",
+              "text": "To bring Page D in, the operating system must first select one of the active pages (A, B, or C) to evict back to secondary storage to make room."
+            },
+            {
+              "type": "p",
+              "text": "But how does it choose?"
+            },
+            {
+              "type": "p",
+              "text": "<div class=\"blog-quote\">**Which Page should be replaced?**</div>",
+              "html": true
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
     },
     {
       "id": "when-waiting-was-too-expensive",

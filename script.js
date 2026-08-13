@@ -147,7 +147,10 @@ const systemsTreeNodes = {
       { id: "when-importance-wasnt-enough", title: "When Importance Wasn't Enough" },
       { id: "the-illusion-of-ownership", title: "The Illusion of Ownership" },
       { id: "the-invisible-translator", title: "The Invisible Translator" },
-      { id: "the-language-of-pages", title: "The Language of Pages" }
+      { id: "the-language-of-pages", title: "The Language of Pages" },
+      { id: "when-the-page-wasnt-there", title: "When the Page Wasn't There" },
+      { id: "choosing-what-to-forget", title: "Choosing What to Forget" },
+      { id: "segmentation", title: "When Memory Follows Meaning" }
     ]
   }
 };
@@ -5332,6 +5335,8 @@ function updateSeoMetadata(page) {
     title = "Bare Metal | PrajnaEdge";
   } else if (page === 'operating-systems') {
     title = "Operating Systems | PrajnaEdge";
+  } else if (page === 'legal') {
+    title = "Legal | PrajnaEdge";
   } else if (page === 'blogs') {
     if (selectedCategoryFilter) {
       title = `${selectedCategoryFilter} | Explorations | PrajnaEdge`;
@@ -5367,6 +5372,8 @@ function updateSeoMetadata(page) {
     canonicalUrl = `${base}/creator/`;
   } else if (page === 'journey') {
     canonicalUrl = `${base}/journey/`;
+  } else if (page === 'legal') {
+    canonicalUrl = `${base}/legal/`;
   } else if (page === 'blog-post' && (activePostId || blogId || demoId)) {
     const activeId = activePostId || blogId || demoId;
     const activeType = activePostType || (blogId ? 'blogs' : 'demos');
@@ -5395,6 +5402,8 @@ function updateSeoMetadata(page) {
       canonicalUrl = `${base}/?page=contact`;
     } else if (pageParam === 'bare-metal') {
       canonicalUrl = `${base}/?page=bare-metal`;
+    } else if (pageParam === 'legal') {
+      canonicalUrl = `${base}/?page=legal`;
     }
   }
 
@@ -6082,7 +6091,7 @@ function openItem(id, type) {
           return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">${parseTextFormatting(escHtml(txt))}</p>`;
         }
       }
-      if (b.type === 'quote') return `<div class="blog-quote">${escHtml(b.text)}</div>`;
+      if (b.type === 'quote') return `<div class="blog-quote">${parseTextFormatting(escHtml(b.text))}</div>`;
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
       if (b.type === 'image' || b.type === 'img') {
         let imgSrc = b.src;
@@ -6114,28 +6123,28 @@ function openItem(id, type) {
         let prevHtml = '';
         if (prevExp && prevExp.id) {
           prevHtml = `
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">← ${escHtml(prevExp.title)}</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="openItem('${prevExp.id}', 'blogs')">${escHtml(prevExp.title)}</a>
           `;
         } else if (nodeKey === "Bare Metal") {
           prevHtml = `
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" onclick="showPage('bare-metal')">← Return to Bare Metal</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="showPage('bare-metal')">Return to Bare Metal</a>
           `;
         } else if (nodeKey === "Operating Systems") {
           prevHtml = `
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" onclick="showPage('operating-systems')">← Return to Operating Systems</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="showPage('operating-systems')">Return to Operating Systems</a>
           `;
         } else if (nodeIndex > 0) {
           const prevNodeKey = nodeOrder[nodeIndex - 1];
           prevHtml = `
-            <span class="nav-dir-label">Previous</span>
-            <a class="nav-link active" onclick="filterNodeRoute('${prevNodeKey}')">← Return to ${escHtml(prevNodeKey)}</a>
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="filterNodeRoute('${prevNodeKey}')">Return to ${escHtml(prevNodeKey)}</a>
           `;
         } else {
           prevHtml = `
-            <span class="nav-dir-label">Previous</span>
+            <span class="nav-dir-label">← Previous</span>
             <span class="nav-link locked">None</span>
           `;
         }
@@ -6144,14 +6153,14 @@ function openItem(id, type) {
         if (nextExp) {
           if (nextExp.id) {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)} →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('${nextExp.id}', 'blogs')">${escHtml(nextExp.title)}</a>
             `;
           } else {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
+              <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                ${escHtml(nextExp.title)} →
+                ${escHtml(nextExp.title)}
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
@@ -6159,132 +6168,133 @@ function openItem(id, type) {
         } else if (nodeIndex !== -1 && nodeIndex < nodeOrder.length - 1) {
           const nextNodeKey = nodeOrder[nodeIndex + 1];
           nextHtml = `
-            <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" onclick="filterNodeRoute('${nextNodeKey}')">Continue to ${escHtml(nextNodeKey)} →</a>
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" onclick="filterNodeRoute('${nextNodeKey}')">Continue to ${escHtml(nextNodeKey)}</a>
           `;
         } else if (nodeKey === "Bare Metal") {
           nextHtml = `
-            <span class="nav-dir-label">Next</span>
-            <a class="nav-link active" onclick="showPage('operating-systems')">New path is awakening →</a>
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" onclick="showPage('operating-systems')">New path is awakening</a>
           `;
         } else if (nodeKey === "Operating Systems") {
           if (item.id === "why-do-we-need-an-operating-system") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
+              <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                The Silent Conductor →
+                The Silent Conductor
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "what-is-a-kernel") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
+              <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                When Code Comes Alive →
+                When Code Comes Alive
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "what-is-a-process") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
+              <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                The Journey Between Moments →
+                The Journey Between Moments
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "the-journey-between-moments") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
+              <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Who Goes Next? →
+                Who Goes Next?
                 <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
               </span>
             `;
           } else if (item.id === "who-goes-next") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('the-rules-of-fairness', 'blogs')">The Rules of Fairness →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('the-rules-of-fairness', 'blogs')">The Rules of Fairness</a>
             `;
           } else if (item.id === "the-rules-of-fairness") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('when-one-rule-was-enough', 'blogs')">When One Rule Was Enough →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-one-rule-was-enough', 'blogs')">When One Rule Was Enough</a>
             `;
           } else if (item.id === "when-one-rule-was-enough") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('when-waiting-was-too-expensive', 'blogs')">When Waiting Was Too Expensive →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-waiting-was-too-expensive', 'blogs')">When Waiting Was Too Expensive</a>
             `;
           } else if (item.id === "scheduling-in-the-wild") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('one-brain-wasnt-enough', 'blogs')">One Brain Wasn't Enough →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('one-brain-wasnt-enough', 'blogs')">One Brain Wasn't Enough</a>
             `;
           } else if (item.id === "one-brain-wasnt-enough") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('when-silence-wasnt-an-option', 'blogs')">When Silence Wasn't an Option →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-silence-wasnt-an-option', 'blogs')">When Silence Wasn't an Option</a>
             `;
           } else if (item.id === "when-silence-wasnt-an-option") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('when-sharing-became-dangerous', 'blogs')">When Sharing Became Dangerous →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-sharing-became-dangerous', 'blogs')">When Sharing Became Dangerous</a>
             `;
           } else if (item.id === "when-sharing-became-dangerous") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('when-nobody-could-move', 'blogs')">When Nobody Could Move →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-nobody-could-move', 'blogs')">When Nobody Could Move</a>
             `;
           } else if (item.id === "when-nobody-could-move") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('when-importance-wasnt-enough', 'blogs')">When Importance Wasn't Enough →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-importance-wasnt-enough', 'blogs')">When Importance Wasn't Enough</a>
             `;
           } else if (item.id === "when-importance-wasnt-enough") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('the-illusion-of-ownership', 'blogs')">The Illusion of Ownership →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('the-illusion-of-ownership', 'blogs')">The Illusion of Ownership</a>
             `;
           } else if (item.id === "the-illusion-of-ownership") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('the-invisible-translator', 'blogs')">The Invisible Translator →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('the-invisible-translator', 'blogs')">The Invisible Translator</a>
             `;
           } else if (item.id === "the-invisible-translator") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <a class="nav-link active" onclick="openItem('the-language-of-pages', 'blogs')">The Language of Pages →</a>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('the-language-of-pages', 'blogs')">The Language of Pages</a>
             `;
           } else if (item.id === "the-language-of-pages") {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
-              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-                Memory Management →
-                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
-              </span>
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('when-the-page-wasnt-there', 'blogs')">When the Page Wasn't There</a>
+            `;
+          } else if (item.id === "when-the-page-wasnt-there") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <a class="nav-link active" onclick="openItem('choosing-what-to-forget', 'blogs')">Choosing What to Forget</a>
             `;
           } else {
             nextHtml = `
-              <span class="nav-dir-label">Next</span>
+              <span class="nav-dir-label">Next →</span>
               <span class="nav-link locked">None</span>
             `;
           }
         } else {
           nextHtml = `
-            <span class="nav-dir-label">Next</span>
+            <span class="nav-dir-label">Next →</span>
             <span class="nav-link locked">None</span>
           `;
         }
 
-        let navNextIdStr = ' class="nav-next"';
-        if (item.id === 'who-goes-next') {
-          navNextIdStr = ' class="nav-next" id="exploration-nav-next" style="display: none;"';
-        } else {
-          navNextIdStr = ' class="nav-next" id="exploration-nav-next"';
-        }
+        let navNextIdStr = ' class="nav-next" id="exploration-nav-next"';
 
         navHtml = `
           <div class="exploration-nav-block">
+            <div class="exploration-nav-header">
+              <span class="nav-node-label">Node</span>
+              <span class="nav-node-name" onclick="filterNodeRoute('${node.title}')" style="cursor: pointer; text-decoration: underline; transition: color 0.2s;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='#fff'">${escHtml(node.title)}</span>
+            </div>
             <div class="exploration-nav-grid">
               <div class="nav-prev">${prevHtml}</div>
               <div${navNextIdStr}>${nextHtml}</div>
@@ -6531,6 +6541,16 @@ function initEdgeCase(containerId) {
     renderOneMemoryAccessEdgeCase();
   } else if (containerId === 'one-page-finds-its-frame-edgecase') {
     renderOnePageFindsItsFrameEdgeCase();
+  } else if (containerId === 'demand-paging-edgecase') {
+    renderDemandPagingEdgeCase();
+  } else if (containerId === 'page-replacement-edgecase') {
+    renderPageReplacementEdgeCase();
+  } else if (containerId === 'manthana-segmentation-reveal') {
+    renderManthanaSegmentationReveal();
+  } else if (containerId === 'segmentation-edgecase') {
+    renderSegmentationEdgeCase();
+  } else if (containerId === 'manthana-segmentation-internal') {
+    renderManthanaSegmentationInternal();
   }
 }
 
@@ -11146,6 +11166,15 @@ const siteBase = (() => {
   if (path.includes('/creator/')) {
     return path.split('/creator/')[0] + '/';
   }
+  if (path.includes('/legal/')) {
+    return path.split('/legal/')[0] + '/';
+  }
+  if (path.includes('/bare-metal/')) {
+    return path.split('/bare-metal/')[0] + '/';
+  }
+  if (path.includes('/operating-systems/')) {
+    return path.split('/operating-systems/')[0] + '/';
+  }
   const idx = path.indexOf('/index.html');
   if (idx !== -1) {
     return path.substring(0, idx + 1);
@@ -11218,6 +11247,11 @@ function handleUrlRouting() {
   }
   if (relPath.startsWith('operating-systems/')) {
     showPage('operating-systems');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('legal/')) {
+    showPage('legal');
     isRouting = false;
     return;
   }
@@ -11295,6 +11329,8 @@ function handleUrlRouting() {
       showPage('about');
     } else if (page === 'contact') {
       showPage('contact');
+    } else if (page === 'legal') {
+      showPage('legal');
     } else {
       showPage('home');
     }
@@ -15825,6 +15861,1330 @@ function renderOnePageFindsItsFrameEdgeCase() {
   render();
 }
 
+function renderDemandPagingEdgeCase() {
+  const container = document.getElementById('demand-paging-edgecase');
+  if (!container) return;
 
+  container.className = 'edgecase-wrapper';
 
+  // Simulation State
+  let simState = 'idle'; // 'idle', 'running', 'faulted', 'resolved', 'finished'
+  let simStep = 0;
+  let timerId = null;
+
+  // Visual highlights and values
+  let highlightedComponent = null; // 'cpu', 'mmu', 'pagetable', 'disk', 'ram', 'os'
+  let activeLog = 'Click "Start Simulation" to watch the MMU and OS handle a Page Fault for Page 2.';
+  let pageTableData = [
+    { page: '0x00', frame: '0', valid: 1 },
+    { page: '0x01', frame: '2', valid: 1 },
+    { page: '0x02', frame: '—', valid: 0 },
+    { page: '0x03', frame: '1', valid: 1 }
+  ];
+  let ramData = [
+    { frame: '0', page: 'Page 0', status: 'occupied' },
+    { frame: '1', page: 'Page 3', status: 'occupied' },
+    { frame: '2', page: 'Page 1', status: 'occupied' },
+    { frame: '3', page: '—', status: 'free' }
+  ];
+  let diskData = ['Page 2'];
+
+  window.startDemandPagingSim = function() {
+    if (simState === 'running') return;
+    resetSim();
+    simState = 'running';
+    simStep = 0;
+    runSimulation();
+  };
+
+  window.resetDemandPagingSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    highlightedComponent = null;
+    activeLog = 'Click "Start Simulation" to watch the MMU and OS handle a Page Fault for Page 2.';
+    pageTableData[2] = { page: '0x02', frame: '—', valid: 0 };
+    ramData[3] = { frame: '3', page: '—', status: 'free' };
+    diskData = ['Page 2'];
+    render();
+  }
+
+  function runSimulation() {
+    const steps = [
+      () => {
+        highlightedComponent = 'cpu';
+        activeLog = "Step 1: CPU generates memory request for an address inside Virtual Page 2.";
+      },
+      () => {
+        highlightedComponent = 'mmu';
+        activeLog = "Step 2: MMU intercepts request and checks Page Table for Virtual Page 2.";
+      },
+      () => {
+        highlightedComponent = 'pagetable';
+        simState = 'faulted';
+        activeLog = "Step 3: Page Table check reveals Present/Valid bit is 0 (NOT PRESENT). PAGE FAULT interrupt is triggered!";
+      },
+      () => {
+        highlightedComponent = 'os';
+        activeLog = "Step 4: CPU traps to Operating System. The OS Page Fault handler is loaded into kernel space.";
+      },
+      () => {
+        highlightedComponent = 'disk';
+        diskData = ['Page 2 (READING...)'];
+        activeLog = "Step 5: OS schedules Disk Controller access. Page 2 is retrieved from Secondary Storage.";
+      },
+      () => {
+        highlightedComponent = 'ram';
+        diskData = [];
+        ramData[3] = { frame: '3', page: 'Page 2', status: 'loading' };
+        activeLog = "Step 6: OS locates free Physical Frame 3 in RAM and copies Page 2 from disk into Frame 3.";
+      },
+      () => {
+        highlightedComponent = 'pagetable';
+        pageTableData[2] = { page: '0x02', frame: '3', valid: 1 };
+        ramData[3].status = 'occupied';
+        activeLog = "Step 7: OS updates Page Table entry 2 to point to Frame 3 and sets the Present bit to 1 (VALID).";
+      },
+      () => {
+        highlightedComponent = 'cpu';
+        simState = 'finished';
+        activeLog = "Step 8: CPU restarts the instruction. MMU translates Page 2 to Frame 3 successfully. Access completes!";
+        if (timerId) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+      }
+    ];
+
+    timerId = setInterval(() => {
+      if (!document.getElementById('demand-paging-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < steps.length) {
+        steps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2500);
+
+    steps[0]();
+    simStep++;
+    render();
+  }
+
+  function render() {
+    let badgeHtml = '';
+    if (simState === 'idle') {
+      badgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      badgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Status: LOOKING UP</span>`;
+    } else if (simState === 'faulted') {
+      badgeHtml = `<span style="background:#EF4444; color:#fff; border:1px solid #EF4444; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">PAGE FAULT!</span>`;
+    } else if (simState === 'finished') {
+      badgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">RESOLVED & COMPLETED</span>`;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header">EdgeCase: Demand Paging & Page Fault</div>
+      <div class="edgecase-subheader">Watch how hardware and operating system coordinate to load a missing page dynamically</div>
+
+      <!-- Main Layout Columns -->
+      <div style="display:grid; grid-template-columns: 1.1fr 1fr 1fr 1fr; gap:1rem; width:100%; margin-top:1.5rem;">
+
+        <!-- Col 1: CPU & MMU Gateway -->
+        <div style="display:flex; flex-direction:column; gap:0.8rem;">
+          
+          <!-- CPU Box -->
+          <div style="border:1px solid ${highlightedComponent === 'cpu' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:0.85rem; background:rgba(30,41,59,0.25); text-align:center; transition: all 0.3s; ${highlightedComponent === 'cpu' ? 'box-shadow: 0 0 10px rgba(59,130,246,0.25);' : ''}">
+            <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff;">CPU Core</div>
+            <div style="font-family:var(--mono); font-size:0.75rem; background:rgba(15,23,42,0.4); border:1px solid rgba(255,255,255,0.05); border-radius:4px; padding:0.4rem; margin-top:0.5rem; color:#fff;">
+              LOAD R1, [Page 2 + Offset]
+            </div>
+            <div style="font-size:0.6rem; color:var(--muted); margin-top:0.4rem;">
+              Initiates memory access cycle.
+            </div>
+          </div>
+
+          <!-- MMU Interceptor -->
+          <div style="border:1px solid ${highlightedComponent === 'mmu' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:0.85rem; background:rgba(30,41,59,0.25); text-align:center; transition: all 0.3s; ${highlightedComponent === 'mmu' ? 'box-shadow: 0 0 10px rgba(59,130,246,0.25);' : ''}">
+            <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff;">MMU Gateway</div>
+            <div style="font-family:var(--mono); font-size:0.75rem; color:var(--blue); margin-top:0.4rem; font-weight:bold;">
+              Page Target: 2
+            </div>
+            <div style="font-size:0.6rem; color:var(--muted); margin-top:0.4rem;">
+              Checks Page Table for translation.
+            </div>
+          </div>
+
+          <!-- OS Interrupt Box -->
+          <div style="border:1px solid ${highlightedComponent === 'os' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:0.85rem; background:rgba(30,41,59,0.25); text-align:center; transition: all 0.3s; ${highlightedComponent === 'os' ? 'box-shadow: 0 0 10px rgba(59,130,246,0.25);' : ''}">
+            <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:${simState === 'faulted' ? '#EF4444' : '#fff'};">OS Trap Handler</div>
+            <div style="font-family:var(--mono); font-size:0.75rem; background:rgba(15,23,42,0.4); border:1px solid rgba(255,255,255,0.05); border-radius:4px; padding:0.4rem; margin-top:0.5rem; color:${simState === 'faulted' ? '#EF4444' : 'var(--muted)'};">
+              ${simState === 'faulted' || highlightedComponent === 'os' || highlightedComponent === 'disk' || highlightedComponent === 'ram' ? 'PAGE_FAULT_TRAP' : 'Inactive'}
+            </div>
+            <div style="font-size:0.6rem; color:var(--muted); margin-top:0.4rem;">
+              Allocates physical frames and fetches disk assets.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Col 2: Page Table mapping -->
+        <div style="border:1px solid ${highlightedComponent === 'pagetable' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:0.85rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.5rem; transition: all 0.3s; ${highlightedComponent === 'pagetable' ? 'box-shadow: 0 0 10px rgba(59,130,246,0.25);' : ''}">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.4rem;">Page Table</div>
+          
+          <table style="width:100%; font-family:var(--mono); font-size:0.7rem; border-collapse:collapse; color:#CBD5E1; text-align:center;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border); color:var(--muted); font-size:0.6rem;">
+                <th style="padding:0.3rem 0.1rem;">Page</th>
+                <th style="padding:0.3rem 0.1rem;">Frame</th>
+                <th style="padding:0.3rem 0.1rem;">Pres</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pageTableData.map(row => {
+                const isTarget = row.page === '0x02';
+                const rowStyle = isTarget 
+                  ? `background:rgba(59,130,246,0.15); font-weight:bold; outline: 1px solid ${simState === 'faulted' ? '#EF4444' : 'var(--blue)'};` 
+                  : '';
+                const vColor = row.valid === 1 ? '#10B981' : '#EF4444';
+                return `
+                  <tr style="${rowStyle}">
+                    <td style="padding:0.4rem 0.1rem;">${row.page}</td>
+                    <td style="padding:0.4rem 0.1rem; color:${row.frame !== '—' ? '#10B981' : 'var(--muted)'};">${row.frame}</td>
+                    <td style="padding:0.4rem 0.1rem; color:${vColor}; font-weight:bold;">${row.valid}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+          <div style="font-size:0.58rem; color:var(--muted); line-height:1.3; text-align:center; margin-top:auto;">
+            PTE 2 starts invalid (0). An address access here halts execution to trigger a trap.
+          </div>
+        </div>
+
+        <!-- Col 3: Physical RAM -->
+        <div style="border:1px solid ${highlightedComponent === 'ram' ? '#10B981' : 'var(--border)'}; border-radius:6px; padding:0.85rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.5rem; transition: all 0.3s; ${highlightedComponent === 'ram' ? 'box-shadow: 0 0 10px rgba(16,185,129,0.2);' : ''}">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.4rem;">Physical RAM</div>
+          
+          <div style="display:flex; flex-direction:column; gap:0.4rem; font-family:var(--mono); font-size:0.7rem; margin-top:0.2rem;">
+            ${ramData.map(frame => {
+              let frameBg = 'rgba(255,255,255,0.03)';
+              let borderCol = 'rgba(255,255,255,0.05)';
+              let textCol = '#CBD5E1';
+              
+              if (frame.status === 'free') {
+                frameBg = 'transparent';
+                borderCol = 'rgba(148,163,184,0.15)';
+                textCol = 'var(--muted)';
+              } else if (frame.status === 'loading') {
+                frameBg = 'rgba(59,130,246,0.15)';
+                borderCol = 'var(--blue)';
+                textCol = 'var(--blue)';
+              } else if (frame.frame === '3' && frame.status === 'occupied') {
+                frameBg = 'rgba(16,185,129,0.15)';
+                borderCol = '#10B981';
+                textCol = '#10B981';
+              }
+              
+              return `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:${frameBg}; border:1px solid ${borderCol}; border-radius:4px; padding:0.35rem 0.5rem; color:${textCol}; transition: all 0.3s;">
+                  <span>Fr ${frame.frame}</span>
+                  <span style="font-weight:bold;">${frame.page}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <div style="font-size:0.58rem; color:var(--muted); line-height:1.3; text-align:center; margin-top:auto;">
+            Physical slots mapping active Pages. Frame 3 is empty and targeted for eviction load.
+          </div>
+        </div>
+
+        <!-- Col 4: Secondary Storage -->
+        <div style="border:1px solid ${highlightedComponent === 'disk' ? 'var(--blue)' : 'var(--border)'}; border-radius:6px; padding:0.85rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.5rem; transition: all 0.3s; ${highlightedComponent === 'disk' ? 'box-shadow: 0 0 10px rgba(59,130,246,0.2);' : ''}">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.4rem;">Disk Storage</div>
+          
+          <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; flex:1; min-height:80px; background:rgba(15,23,42,0.4); border:1px dashed var(--border); border-radius:6px; padding:0.5rem; font-family:var(--mono);">
+            ${diskData.length > 0 ? diskData.map(item => {
+              const activeDiscCol = item.includes('READING') ? '#EF4444' : 'var(--blue)';
+              return `
+                <div style="background:rgba(59,130,246,0.1); border:1px solid ${activeDiscCol}; border-radius:4px; padding:0.4rem 0.8rem; font-size:0.75rem; font-weight:bold; color:${activeDiscCol}; text-align:center; animation: pulse 1.5s infinite; box-sizing: border-box;">
+                  ${item}
+                </div>
+              `;
+            }).join('') : `
+              <div style="color:var(--muted); font-size:0.65rem; text-align:center;">
+                (Disk is Idle / Page Transferred)
+              </div>
+            `}
+          </div>
+          <div style="font-size:0.58rem; color:var(--muted); line-height:1.3; text-align:center;">
+            Persistent storage containing pages not residing in RAM.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Controls & Log Console -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.72rem; color:#A5F3FC; line-height:1.45;">${activeLog}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${badgeHtml}
+          <button class="btn btn-primary" onclick="window.startDemandPagingSim()" ${simState === 'running' || simState === 'faulted' ? 'disabled' : ''} style="padding:0.45rem 1rem; font-size:0.75rem;">Start Simulation</button>
+          <button class="btn btn-secondary" onclick="window.resetDemandPagingSim()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderPageReplacementEdgeCase() {
+  const container = document.getElementById('page-replacement-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let activeTab = 'FIFO'; // 'FIFO', 'LRU', 'Optimal'
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0;
+  let timerId = null;
+
+  const refString = [1, 2, 3, 1, 4];
+  let frames = [null, null, null];
+  let fifoQueue = [];
+  let lruStack = []; // MRU is index 0, LRU is last
+  let highlightedFrame = null;
+  let isHit = false;
+  let evictedPage = null;
+  let activeLog = 'Select an algorithm tab and click "Start Simulation" to begin.';
+
+  let fifoFaults = 0;
+  let lruFaults = 0;
+  let optimalFaults = 0;
+
+  // Run initial simulation behind the scenes to populate comparison table
+  calculateComparisonMetrics();
+
+  function calculateComparisonMetrics() {
+    // FIFO simulation
+    {
+      let tempFrames = [null, null, null];
+      let tempQueue = [];
+      let tempFaults = 0;
+      for (let req of refString) {
+        if (tempFrames.includes(req)) {
+          // Hit
+        } else {
+          tempFaults++;
+          if (tempFrames.includes(null)) {
+            tempFrames[tempFrames.indexOf(null)] = req;
+            tempQueue.push(req);
+          } else {
+            let evict = tempQueue.shift();
+            let idx = tempFrames.indexOf(evict);
+            tempFrames[idx] = req;
+            tempQueue.push(req);
+          }
+        }
+      }
+      fifoFaults = tempFaults;
+    }
+    // LRU simulation
+    {
+      let tempFrames = [null, null, null];
+      let tempStack = [];
+      let tempFaults = 0;
+      for (let req of refString) {
+        if (tempFrames.includes(req)) {
+          let idx = tempStack.indexOf(req);
+          if (idx !== -1) tempStack.splice(idx, 1);
+          tempStack.unshift(req);
+        } else {
+          tempFaults++;
+          if (tempFrames.includes(null)) {
+            tempFrames[tempFrames.indexOf(null)] = req;
+            tempStack.unshift(req);
+          } else {
+            let evict = tempStack.pop();
+            let idx = tempFrames.indexOf(evict);
+            tempFrames[idx] = req;
+            tempStack.unshift(req);
+          }
+        }
+      }
+      lruFaults = tempFaults;
+    }
+    // Optimal simulation
+    {
+      let tempFrames = [null, null, null];
+      let tempFaults = 0;
+      for (let i = 0; i < refString.length; i++) {
+        let req = refString[i];
+        if (tempFrames.includes(req)) {
+          // Hit
+        } else {
+          tempFaults++;
+          if (tempFrames.includes(null)) {
+            tempFrames[tempFrames.indexOf(null)] = req;
+          } else {
+            // Predict future access
+            let farthest = -1;
+            let evictIdx = 0;
+            for (let f = 0; f < tempFrames.length; f++) {
+              let page = tempFrames[f];
+              let nextUse = -1;
+              for (let j = i + 1; j < refString.length; j++) {
+                if (refString[j] === page) {
+                  nextUse = j;
+                  break;
+                }
+              }
+              if (nextUse === -1) {
+                // Never used again
+                evictIdx = f;
+                break;
+              } else {
+                if (nextUse > farthest) {
+                  farthest = nextUse;
+                  evictIdx = f;
+                }
+              }
+            }
+            tempFrames[evictIdx] = req;
+          }
+        }
+      }
+      optimalFaults = tempFaults;
+    }
+  }
+
+  window.setReplacementAlgo = function(algo) {
+    if (simState === 'running') return;
+    activeTab = algo;
+    window.resetReplacementSim();
+  };
+
+  window.startReplacementSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 0;
+    frames = [null, null, null];
+    fifoQueue = [];
+    lruStack = [];
+    highlightedFrame = null;
+    isHit = false;
+    evictedPage = null;
+    activeLog = `Starting ${activeTab} Simulation...`;
+    runSimulation();
+  };
+
+  window.resetReplacementSim = function() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    frames = [null, null, null];
+    fifoQueue = [];
+    lruStack = [];
+    highlightedFrame = null;
+    isHit = false;
+    evictedPage = null;
+    activeLog = `Select "Start Simulation" to run the ${activeTab} replacement logic.`;
+    render();
+  };
+
+  function runSimulation() {
+    const steps = {
+      FIFO: [
+        () => {
+          const req = refString[0];
+          isHit = false;
+          evictedPage = null;
+          frames[0] = req;
+          fifoQueue.push(req);
+          highlightedFrame = 0;
+          activeLog = `Step 1: CPU requests Page 1. Frame 0 is empty, so Page 1 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[1];
+          isHit = false;
+          evictedPage = null;
+          frames[1] = req;
+          fifoQueue.push(req);
+          highlightedFrame = 1;
+          activeLog = `Step 2: CPU requests Page 2. Frame 1 is empty, so Page 2 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[2];
+          isHit = false;
+          evictedPage = null;
+          frames[2] = req;
+          fifoQueue.push(req);
+          highlightedFrame = 2;
+          activeLog = `Step 3: CPU requests Page 3. Frame 2 is empty, so Page 3 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[3];
+          isHit = true;
+          evictedPage = null;
+          highlightedFrame = frames.indexOf(req);
+          activeLog = `Step 4: CPU requests Page 1. Page 1 is already in Frame 0. Page Hit!`;
+        },
+        () => {
+          const req = refString[4];
+          isHit = false;
+          evictedPage = fifoQueue.shift();
+          fifoQueue.push(req);
+          highlightedFrame = frames.indexOf(evictedPage);
+          frames[highlightedFrame] = req;
+          activeLog = `Step 5: CPU requests Page 4. Memory is full. The oldest page (Page ${evictedPage}) is evicted from Frame ${highlightedFrame}. Page Fault!`;
+        },
+        () => {
+          simState = 'finished';
+          highlightedFrame = null;
+          isHit = false;
+          evictedPage = null;
+          activeLog = `FIFO Simulation completed. Total Page Faults: 4, Total Page Hits: 1.`;
+          clearInterval(timerId);
+          timerId = null;
+        }
+      ],
+      LRU: [
+        () => {
+          const req = refString[0];
+          isHit = false;
+          evictedPage = null;
+          frames[0] = req;
+          lruStack.unshift(req);
+          highlightedFrame = 0;
+          activeLog = `Step 1: CPU requests Page 1. Frame 0 is empty, so Page 1 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[1];
+          isHit = false;
+          evictedPage = null;
+          frames[1] = req;
+          lruStack.unshift(req);
+          highlightedFrame = 1;
+          activeLog = `Step 2: CPU requests Page 2. Frame 1 is empty, so Page 2 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[2];
+          isHit = false;
+          evictedPage = null;
+          frames[2] = req;
+          lruStack.unshift(req);
+          highlightedFrame = 2;
+          activeLog = `Step 3: CPU requests Page 3. Frame 2 is empty, so Page 3 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[3];
+          isHit = true;
+          evictedPage = null;
+          const idx = lruStack.indexOf(req);
+          if (idx !== -1) lruStack.splice(idx, 1);
+          lruStack.unshift(req);
+          highlightedFrame = frames.indexOf(req);
+          activeLog = `Step 4: CPU requests Page 1. Page 1 is already in Frame 0. Stack updated: Page 1 is now MRU (Most Recently Used). Page Hit!`;
+        },
+        () => {
+          const req = refString[4];
+          isHit = false;
+          evictedPage = lruStack.pop();
+          lruStack.unshift(req);
+          highlightedFrame = frames.indexOf(evictedPage);
+          frames[highlightedFrame] = req;
+          activeLog = `Step 5: CPU requests Page 4. Memory is full. The Least Recently Used page (Page ${evictedPage}) is evicted from Frame ${highlightedFrame}. Page Fault!`;
+        },
+        () => {
+          simState = 'finished';
+          highlightedFrame = null;
+          isHit = false;
+          evictedPage = null;
+          activeLog = `LRU Simulation completed. Total Page Faults: 4, Total Page Hits: 1.`;
+          clearInterval(timerId);
+          timerId = null;
+        }
+      ],
+      Optimal: [
+        () => {
+          const req = refString[0];
+          isHit = false;
+          evictedPage = null;
+          frames[0] = req;
+          highlightedFrame = 0;
+          activeLog = `Step 1: CPU requests Page 1. Frame 0 is empty, so Page 1 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[1];
+          isHit = false;
+          evictedPage = null;
+          frames[1] = req;
+          highlightedFrame = 1;
+          activeLog = `Step 2: CPU requests Page 2. Frame 1 is empty, so Page 2 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[2];
+          isHit = false;
+          evictedPage = null;
+          frames[2] = req;
+          highlightedFrame = 2;
+          activeLog = `Step 3: CPU requests Page 3. Frame 2 is empty, so Page 3 is loaded. Page Fault!`;
+        },
+        () => {
+          const req = refString[3];
+          isHit = true;
+          evictedPage = null;
+          highlightedFrame = frames.indexOf(req);
+          activeLog = `Step 4: CPU requests Page 1. Page 1 is already in Frame 0. Page Hit!`;
+        },
+        () => {
+          const req = refString[4];
+          isHit = false;
+          evictedPage = 3;
+          highlightedFrame = 2;
+          frames[highlightedFrame] = req;
+          activeLog = `Step 5: CPU requests Page 4. Memory is full. Looking ahead, Pages 1, 2, and 3 are never referenced again. Optimal evicts Page 3 from Frame 2. Page Fault!`;
+        },
+        () => {
+          simState = 'finished';
+          highlightedFrame = null;
+          isHit = false;
+          evictedPage = null;
+          activeLog = `Optimal Simulation completed. Total Page Faults: 4, Total Page Hits: 1.`;
+          clearInterval(timerId);
+          timerId = null;
+        }
+      ]
+    };
+
+    const activeSteps = steps[activeTab];
+    timerId = setInterval(() => {
+      if (!document.getElementById('page-replacement-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      if (simStep < activeSteps.length) {
+        activeSteps[simStep]();
+        simStep++;
+        render();
+      }
+    }, 2500);
+
+    activeSteps[0]();
+    simStep++;
+    render();
+  }
+
+  function render() {
+    const tabAlgos = ['FIFO', 'LRU', 'Optimal'];
+    const tabsHtml = tabAlgos.map(algo => {
+      const active = activeTab === algo;
+      const btnClass = active ? 'btn-primary' : 'btn-secondary';
+      return `<button class="btn ${btnClass}" onclick="window.setReplacementAlgo('${algo}')" ${simState === 'running' ? 'disabled' : ''} style="padding:0.45rem 1.2rem; font-size:0.75rem;">${algo}</button>`;
+    }).join('');
+
+    const timelineHtml = refString.map((val, idx) => {
+      const active = simState === 'running' && simStep - 1 === idx;
+      const done = simState === 'finished' || (simState === 'running' && simStep - 1 > idx);
+      
+      let tabColor = 'var(--blue)';
+      if (activeTab === 'LRU') tabColor = '#F59E0B';
+      if (activeTab === 'Optimal') tabColor = '#10B981';
+
+      const bg = active ? tabColor : (done ? `rgba(${activeTab === 'FIFO' ? '59,130,246' : activeTab === 'LRU' ? '245,158,11' : '16,185,129'}, 0.2)` : 'rgba(255, 255, 255, 0.05)');
+      const border = active ? `1px solid ${tabColor}` : '1px solid rgba(255, 255, 255, 0.1)';
+      const color = active ? '#FFF' : (done ? '#E2E8F0' : 'var(--muted)');
+      
+      let optimalIndicator = '';
+      if (activeTab === 'Optimal' && simState === 'running' && simStep - 1 === 4) {
+        optimalIndicator = `<div style="position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:0.6rem; color:#EF4444; font-family:var(--mono);">Evict</div>`;
+      }
+
+      return `<div style="background:${bg}; border:${border}; color:${color}; padding:0.35rem 0.75rem; border-radius:4px; font-weight:bold; font-family:var(--mono); font-size:0.8rem; position:relative; min-width:32px; text-align:center;">
+        ${val}
+        ${active ? `<div style="position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); color:${tabColor}; font-size:0.7rem;">▲</div>` : ''}
+        ${optimalIndicator}
+      </div>`;
+    }).join('<div style="color:var(--muted); font-weight:bold;">&rarr;</div>');
+
+    const framesHtml = frames.map((page, i) => {
+      const isHighlighted = highlightedFrame === i;
+      const borderCol = isHighlighted ? (isHit ? '#10B981' : '#EF4444') : 'rgba(255,255,255,0.1)';
+      const bgCol = isHighlighted ? (isHit ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)') : 'rgba(15,23,42,0.4)';
+      const textColor = page === null ? 'var(--muted)' : '#FFF';
+      const pageText = page === null ? 'Empty' : `Page ${page}`;
+      return `<div style="background:${bgCol}; border:1px solid ${borderCol}; border-radius:4px; padding:0.6rem; text-align:center; transition: all 0.3s; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-family:var(--mono); font-size:0.7rem; color:var(--muted);">Frame ${i}</span>
+        <span style="font-family:var(--mono); font-size:0.85rem; color:${textColor}; font-weight:bold;">${pageText}</span>
+      </div>`;
+    }).join('');
+
+    let algoPanelTitle = '';
+    let algoPanelContent = '';
+
+    if (activeTab === 'FIFO') {
+      algoPanelTitle = 'FIFO Queue (Arrival Order)';
+      if (fifoQueue.length === 0) {
+        algoPanelContent = '<div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Queue is empty</div>';
+      } else {
+        const queueItems = fifoQueue.map((p, idx) => {
+          const isOldest = idx === 0;
+          const border = isOldest ? '1px solid #EF4444' : '1px solid rgba(255,255,255,0.1)';
+          return `<span style="border:${border}; border-radius:3px; padding:0.25rem 0.5rem; background:rgba(255,255,255,0.05); color:#FFF; font-weight:bold; font-size:0.75rem;">Page ${p}</span>`;
+        }).join('<span style="color:var(--muted);">&larr;</span>');
+        
+        algoPanelContent = `<div style="display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.75rem;">
+          <span style="color:#EF4444; font-weight:bold;">[Oldest]</span>
+          ${queueItems}
+          <span style="color:#3B82F6; font-weight:bold;">[Newest]</span>
+        </div>`;
+      }
+    } else if (activeTab === 'LRU') {
+      algoPanelTitle = 'LRU Stack (Recent Usage)';
+      if (lruStack.length === 0) {
+        algoPanelContent = '<div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Stack is empty</div>';
+      } else {
+        const stackItems = lruStack.map((p, idx) => {
+          const isLRU = idx === lruStack.length - 1;
+          const border = isLRU ? '1px solid #EF4444' : '1px solid rgba(255,255,255,0.1)';
+          const color = isLRU ? '#EF4444' : '#FFF';
+          return `<span style="border:${border}; border-radius:3px; padding:0.25rem 0.5rem; background:rgba(255,255,255,0.05); color:${color}; font-weight:bold; font-size:0.75rem;">Page ${p}</span>`;
+        }).join('<span style="color:var(--muted);">&larr;</span>');
+
+        algoPanelContent = `<div style="display:flex; align-items:center; gap:0.4rem; font-family:var(--mono); font-size:0.75rem;">
+          <span style="color:#10B981; font-weight:bold;">[MRU]</span>
+          ${stackItems}
+          <span style="color:#EF4444; font-weight:bold;">[LRU]</span>
+        </div>`;
+      }
+    } else if (activeTab === 'Optimal') {
+      algoPanelTitle = 'Lookahead Analysis (Future Refs)';
+      if (simState === 'running' && simStep - 1 === 4) {
+        algoPanelContent = `<div style="display:flex; flex-direction:column; gap:0.4rem; font-family:var(--mono); font-size:0.7rem; width:100%;">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:0.25rem;">
+            <span>Page 1 next use:</span>
+            <span style="color:var(--muted);">Never (tie)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:0.25rem;">
+            <span>Page 2 next use:</span>
+            <span style="color:var(--muted);">Never (tie)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>Page 3 next use:</span>
+            <span style="color:#EF4444; font-weight:bold;">Never (Evict Page 3)</span>
+          </div>
+        </div>`;
+      } else if (simState !== 'idle') {
+        algoPanelContent = '<div style="font-family:var(--mono); font-size:0.72rem; color:var(--muted); text-align:center;">Future lookahead computed dynamically on page fault</div>';
+      } else {
+        algoPanelContent = '<div style="font-family:var(--mono); font-size:0.72rem; color:var(--muted); text-align:center;">Start simulation to inspect lookahead</div>';
+      }
+    }
+
+    let curFaults = 0;
+    let curHits = 0;
+    if (simState === 'running' || simState === 'finished') {
+      for (let s = 0; s < simStep; s++) {
+        if (s === 3) curHits++;
+        else if (s < 5) curFaults++;
+      }
+    }
+
+    let badgeHtml = '';
+    if (simState === 'idle') {
+      badgeHtml = '<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>';
+    } else if (simState === 'running') {
+      badgeHtml = isHit ? 
+        '<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">PAGE HIT</span>' :
+        '<span style="background:#EF4444; color:#fff; border:1px solid #EF4444; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">PAGE FAULT</span>';
+    } else if (simState === 'finished') {
+      badgeHtml = '<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">FINISHED</span>';
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header">EdgeCase: Interactive Page Replacement</div>
+      <div class="edgecase-subheader">Compare how FIFO, LRU, and Optimal handle the same reference string in real time</div>
+
+      <div style="display:flex; justify-content:center; gap:0.5rem; margin-bottom:1.5rem;">
+        ${tabsHtml}
+      </div>
+
+      <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-bottom:1.5rem; width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem; position:relative;">
+        ${timelineHtml}
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; width:100%; margin-bottom:1.5rem;">
+        <div style="display:flex; flex-direction:column; gap:0.8rem; border:1px solid var(--border); border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">Physical RAM Frames (Size: 3)</div>
+          ${framesHtml}
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:0.8rem; border:1px solid var(--border); border-radius:6px; padding:1rem; background:rgba(30,41,59,0.15);">
+          <div style="font-family:'Syne',sans-serif; font-size:0.8rem; font-weight:bold; color:#fff; text-align:center; border-bottom:1px solid var(--border); padding-bottom:0.5rem;">${algoPanelTitle}</div>
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:0.5rem; background:rgba(15,23,42,0.4); border-radius:4px; padding:0.8rem;">
+            ${algoPanelContent}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.75rem; font-family:var(--mono); font-size:0.75rem; text-align:center;">
+        <div>Page Faults: <span style="color:#EF4444; font-weight:bold;">${curFaults}</span></div>
+        <div>Page Hits: <span style="color:#10B981; font-weight:bold;">${curHits}</span></div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%; margin-bottom:1.5rem;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.45;">${activeLog}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${badgeHtml}
+          <button class="btn btn-primary" onclick="window.startReplacementSim()" ${simState === 'running' ? 'disabled' : ''} style="padding:0.45rem 1rem; font-size:0.75rem;">Start Simulation</button>
+          <button class="btn btn-secondary" onclick="window.resetReplacementSim()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--border); padding-top:1.25rem; width:100%;">
+        <div style="font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:bold; color:#FFF; margin-bottom:0.75rem; text-align:center;">Live Policy Comparison (For Sequence 1 &rarr; 2 &rarr; 3 &rarr; 1 &rarr; 4)</div>
+        <table style="width:100%; border-collapse:collapse; text-align:left; font-family:'DM Sans',sans-serif; font-size:0.8rem;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border); color:var(--muted); font-size:0.7rem; font-family:var(--mono); text-transform:uppercase;">
+              <th style="padding:0.5rem 0;">Algorithm</th>
+              <th style="padding:0.5rem 0; text-align:center;">Total Page Faults</th>
+              <th style="padding:0.5rem 0; text-align:center;">Total Page Hits</th>
+              <th style="padding:0.5rem 0; text-align:right;">Evicted Page (at req 4)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05); color:${activeTab === 'FIFO' ? 'var(--blue)' : '#FFF'}; font-weight:${activeTab === 'FIFO' ? 'bold' : 'normal'};">
+              <td style="padding:0.6rem 0;">FIFO</td>
+              <td style="padding:0.6rem 0; text-align:center;">${fifoFaults}</td>
+              <td style="padding:0.6rem 0; text-align:center;">1</td>
+              <td style="padding:0.6rem 0; text-align:right; font-family:var(--mono); color:#EF4444;">Page 1</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05); color:${activeTab === 'LRU' ? '#F59E0B' : '#FFF'}; font-weight:${activeTab === 'LRU' ? 'bold' : 'normal'};">
+              <td style="padding:0.6rem 0;">LRU</td>
+              <td style="padding:0.6rem 0; text-align:center;">${lruFaults}</td>
+              <td style="padding:0.6rem 0; text-align:center;">1</td>
+              <td style="padding:0.6rem 0; text-align:right; font-family:var(--mono); color:#EF4444;">Page 2</td>
+            </tr>
+            <tr style="color:${activeTab === 'Optimal' ? '#10B981' : '#FFF'}; font-weight:${activeTab === 'Optimal' ? 'bold' : 'normal'};">
+              <td style="padding:0.6rem 0;">Optimal</td>
+              <td style="padding:0.6rem 0; text-align:center;">${optimalFaults}</td>
+              <td style="padding:0.6rem 0; text-align:center;">1</td>
+              <td style="padding:0.6rem 0; text-align:right; font-family:var(--mono); color:#EF4444;">Page 3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderManthanaSegmentationReveal() {
+  const container = document.getElementById('manthana-segmentation-reveal');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper manthana-theme';
+
+  let state = 'idle'; // 'idle', 'scanning', 'failed'
+  let activeBlock = null; // null or index of block being checked
+  let statusLog = 'Click "Request 10 KB Allocation" to start searching for free memory.';
+  let timerId = null;
+
+  const blocks = [
+    { type: 'free', size: 4 },
+    { type: 'used', size: 2 },
+    { type: 'free', size: 3 },
+    { type: 'used', size: 1 },
+    { type: 'free', size: 5 }
+  ];
+
+  window.request10KbAllocation = function() {
+    if (state !== 'idle') return;
+    state = 'scanning';
+    activeBlock = 0;
+    statusLog = 'Requesting contiguous 10 KB allocation. Scanning Block 0 (Free, 4 KB)...';
+    render();
+
+    let scanIndex = 0;
+    
+    function scanNext() {
+      if (scanIndex === 0) {
+        timerId = setTimeout(() => {
+          statusLog = 'Block 0 (Free, 4 KB) is too small for the 10 KB request. Moving to next block...';
+          scanIndex = 2; 
+          activeBlock = 2;
+          render();
+          scanNext();
+        }, 2000);
+      } else if (scanIndex === 2) {
+        timerId = setTimeout(() => {
+          statusLog = 'Block 2 (Free, 3 KB) is too small for the 10 KB request. Moving to next block...';
+          scanIndex = 4; 
+          activeBlock = 4;
+          render();
+          scanNext();
+        }, 2000);
+      } else if (scanIndex === 4) {
+        timerId = setTimeout(() => {
+          statusLog = 'Block 4 (Free, 5 KB) is too small for the 10 KB request. All blocks checked.';
+          activeBlock = null;
+          state = 'failed';
+          render();
+        }, 2000);
+      }
+    }
+
+    scanNext();
+  };
+
+  window.resetManthanaFragmentation = function() {
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+    state = 'idle';
+    activeBlock = null;
+    statusLog = 'Click "Request 10 KB Allocation" to start searching for free memory.';
+    render();
+  };
+
+  function render() {
+    const memoryBlocksHtml = blocks.map((block, idx) => {
+      const isFree = block.type === 'free';
+      const isChecking = activeBlock === idx;
+
+      let border = '1px solid rgba(255, 255, 255, 0.1)';
+      let bg = isFree ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+      let textColor = isFree ? 'var(--blue)' : 'var(--muted)';
+
+      if (isChecking) {
+        border = '1px solid #F59E0B';
+        bg = 'rgba(245, 158, 11, 0.2)';
+      } else if (state === 'failed' && isFree) {
+        border = '1px solid #EF4444';
+        bg = 'rgba(239, 68, 68, 0.1)';
+      }
+
+      return `<div style="flex:${block.size}; background:${bg}; border:${border}; border-radius:6px; padding:1rem 0.5rem; text-align:center; transition:all 0.3s; min-width:40px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:0.25rem;">
+        <span style="font-family:var(--mono); font-size:0.8rem; font-weight:bold; color:${textColor};">${block.size} KB</span>
+        <span style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">${block.type}</span>
+      </div>`;
+    }).join('<div style="align-self:center; color:var(--muted); font-size:0.8rem; font-family:var(--mono);">|</div>');
+
+    let revealHtml = '';
+    if (state === 'failed') {
+      revealHtml = `
+        <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:6px; padding:1.25rem; margin-top:1.5rem; animation: fadeIn 0.4s ease-out; font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; color:#E2E8F0;">
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.05rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
+             🚨 Allocation Failed: External Fragmentation Detected
+          </div>
+          <p style="margin-bottom:0.75rem;">
+            Wait! Let's sum up the numbers: <strong>4 KB + 3 KB + 5 KB = 12 KB</strong> of total free memory.
+            We requested <strong>10 KB</strong>. Why did the system fail to allocate?
+          </p>
+          <p style="margin-bottom:0.75rem;">
+            Because the free space is physically scattered. A contiguous block of 10 KB could not be found anywhere.
+            This mismatch is called <strong>External Fragmentation</strong>.
+          </p>
+          <p style="margin-bottom:0.75rem; color:#A5F3FC; font-weight:bold;">
+            Applying FIFO, LRU, or Optimal replacement here yields absolutely nothing! Evicting more pages won't coalesce these fragmented regions into a single contiguous block.
+          </p>
+          <p style="margin-bottom:0.75rem;">
+            Fixed-size Paging solves this completely because a program is split into uniform pages that can be mapped to any free physical frames, regardless of where they are located. Paging, by definition, <strong>does not suffer from external fragmentation</strong>.
+          </p>
+          <p style="margin-bottom:0.75rem;">
+            But wait: if paging solves external fragmentation, does it solve all fragmentation? No. What if we allocate a 4 KB frame to a page that only needs 1 KB? The remaining 3 KB inside the frame is wasted. This is <strong>Internal Fragmentation</strong>.
+          </p>
+          <div style="border-top:1px dashed rgba(255,255,255,0.15); margin-top:1rem; padding-top:1rem;">
+            <p style="font-weight:bold; color:var(--blue); margin-bottom:0.5rem;">
+              Could memory be organized logically instead of in arbitrary, fixed-size chunks?
+            </p>
+            <p style="color:#FFF; font-weight:bold;">
+              What if we organize memory according to the logical segments of the program (Code, Stack, Heap)?
+            </p>
+            <p style="color:var(--blue); font-weight:bold; margin-top:0.5rem;">
+              In the next exploration, we'll dive into this alternative structure: Segmentation.
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    let badgeHtml = '';
+    if (state === 'idle') {
+      badgeHtml = '<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>';
+    } else if (state === 'scanning') {
+      badgeHtml = '<span style="background:#F59E0B; color:#fff; border:1px solid #F59E0B; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase; animation:pulse 1s infinite;">SCANNING</span>';
+    } else if (state === 'failed') {
+      badgeHtml = '<span style="background:#EF4444; color:#fff; border:1px solid #EF4444; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">ALLOCATION CRASH</span>';
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header manthana-header" style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
+        Manthana: The Fragmentation Dilemma
+      </div>
+      <div class="edgecase-subheader">CPU requests a contiguous 10 KB allocation. Watch how memory layout impacts physical mapping.</div>
+
+      <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; padding:1.25rem; margin-top:1rem; margin-bottom:1.5rem; display:flex; gap:0.5rem; width:100%; box-sizing:border-box;">
+        ${memoryBlocksHtml}
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:${state === 'failed' ? '#EF4444' : '#A5F3FC'}; line-height:1.45;">${statusLog}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${badgeHtml}
+          ${state === 'idle' ? `
+            <button class="btn btn-primary" onclick="window.request10KbAllocation()" style="padding:0.45rem 1rem; font-size:0.75rem;">Request 10 KB</button>
+          ` : `
+            <button class="btn btn-secondary" onclick="window.resetManthanaFragmentation()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+          `}
+        </div>
+      </div>
+
+      ${revealHtml}
+    `;
+  }
+
+  render();
+}
+
+function renderSegmentationEdgeCase() {
+  const container = document.getElementById('segmentation-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let step = 0; // 0: idle, 1: code, 2: data, 3: stack, 4: heap, 5: complete
+  let statusText = 'Click "Start" to begin the continuous placement animation.';
+
+  const segments = [
+    { name: 'CODE', size: 8, color: '#3B82F6', desc: 'Executable program instructions (Read-Only).' },
+    { name: 'DATA', size: 4, color: '#10B981', desc: 'Global and static variables (Read-Write).' },
+    { name: 'STACK', size: 6, color: '#8B5CF6', desc: 'Function frames and local variables (Grow Down).' },
+    { name: 'HEAP', size: 12, color: '#EC4899', desc: 'Dynamically allocated memory (Grow Up).' }
+  ];
+
+  const slots = [
+    { id: 0, name: 'CODE', size: 8, address: '0x0000', mapped: false },
+    { id: 1, name: 'STACK', size: 6, address: '0x3800', mapped: false },
+    { id: 2, name: 'DATA', size: 4, address: '0x6000', mapped: false },
+    { id: 3, name: 'HEAP', size: 12, address: '0x8000', mapped: false }
+  ];
+
+  // Clear any existing global interval to prevent multiple background timers running
+  if (window.segmentationIntervalId) {
+    clearInterval(window.segmentationIntervalId);
+    window.segmentationIntervalId = null;
+  }
+
+  window.startSegmentationSimulator = function() {
+    if (window.segmentationIntervalId) {
+      clearInterval(window.segmentationIntervalId);
+    }
+    
+    step = 1;
+    slots.forEach(s => s.mapped = false);
+    slots[0].mapped = true; // Map CODE
+    statusText = 'CODE segment (8 KB) mapped to physical block 0x0000 - 0x1FFF.';
+    render();
+
+    window.segmentationIntervalId = setInterval(() => {
+      step++;
+      if (step === 2) {
+        slots[2].mapped = true; // Map DATA
+        statusText = 'DATA segment (4 KB) mapped to physical block 0x6000 - 0x6FFF.';
+      } else if (step === 3) {
+        slots[1].mapped = true; // Map STACK
+        statusText = 'STACK segment (6 KB) mapped to physical block 0x3800 - 0x4FFF.';
+      } else if (step === 4) {
+        slots[3].mapped = true; // Map HEAP
+        statusText = 'HEAP segment (12 KB) mapped to physical block 0x8000 - 0xAFFF.';
+      } else if (step === 5) {
+        statusText = 'Placement complete! All logical segments are mapped to non-contiguous physical memory blocks.';
+        if (window.segmentationIntervalId) {
+          clearInterval(window.segmentationIntervalId);
+          window.segmentationIntervalId = null;
+        }
+      }
+      render();
+    }, 2000); // 2 seconds per transition for good visibility
+  };
+
+  window.resetSegmentationSimulator = function() {
+    if (window.segmentationIntervalId) {
+      clearInterval(window.segmentationIntervalId);
+      window.segmentationIntervalId = null;
+    }
+    step = 0;
+    slots.forEach(s => s.mapped = false);
+    statusText = 'Click "Start" to begin the placement animation.';
+    render();
+  };
+
+  function render() {
+    // Generate logical segments HTML
+    const logicalHtml = segments.map((seg, idx) => {
+      const isPlaced = step > idx;
+      const active = step === idx + 1;
+      const opacity = isPlaced ? '0.6' : '1';
+      const border = active ? `2px solid ${seg.color}` : '1px solid rgba(255,255,255,0.1)';
+      
+      return `
+        <div style="background:rgba(30,41,59,0.5); border:${border}; border-radius:6px; padding:0.75rem; flex:1; opacity:${opacity}; transition:all 0.3s; position:relative; min-width:120px;">
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#fff; font-size:0.9rem; display:flex; justify-content:space-between; align-items:center;">
+            <span>${seg.name}</span>
+            <span style="font-family:var(--mono); font-size:0.75rem; color:${seg.color}">${seg.size} KB</span>
+          </div>
+          <div style="font-size:0.65rem; color:var(--muted); margin-top:0.25rem;">${seg.desc}</div>
+          ${active ? `<div style="position:absolute; right:8px; top:8px; width:6px; height:6px; border-radius:50%; background:${seg.color}; animation:pulse 1s infinite;"></div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    // Generate physical memory slots HTML
+    const physicalHtml = [
+      { name: 'CODE', size: 8, start: 0, end: 8, isOS: false, color: '#3B82F6', id: 0 },
+      { name: 'OS Reserved', size: 6, start: 8, end: 14, isOS: true, color: 'rgba(255,255,255,0.05)', id: -1 },
+      { name: 'STACK', size: 6, start: 14, end: 20, isOS: false, color: '#8B5CF6', id: 1 },
+      { name: 'Process Y', size: 4, start: 20, end: 24, isOS: true, color: 'rgba(255,255,255,0.05)', id: -1 },
+      { name: 'DATA', size: 4, start: 24, end: 28, isOS: false, color: '#10B981', id: 2 },
+      { name: 'Process Z', size: 4, start: 28, end: 32, isOS: true, color: 'rgba(255,255,255,0.05)', id: -1 },
+      { name: 'HEAP', size: 12, start: 32, end: 44, isOS: false, color: '#EC4899', id: 3 }
+    ].map((block) => {
+      const slot = slots.find(s => s.id === block.id);
+      const isMapped = slot ? slot.mapped : false;
+      
+      let bg = 'rgba(15,23,42,0.6)';
+      let border = '1px dashed rgba(255,255,255,0.08)';
+      let labelColor = 'var(--muted)';
+      let name = 'Free Slot';
+
+      if (block.isOS) {
+        bg = 'rgba(255,255,255,0.02)';
+        border = '1px solid rgba(255,255,255,0.05)';
+        name = block.name;
+      } else if (isMapped) {
+        bg = `${block.color}18`;
+        border = `1px solid ${block.color}`;
+        labelColor = block.color;
+        name = block.name;
+      }
+
+      return `
+        <div style="flex:${block.size}; background:${bg}; border:${border}; border-radius:6px; padding:1.25rem 0.5rem; text-align:center; transition:all 0.4s; min-width:55px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:0.25rem;">
+          <span style="font-family:var(--mono); font-size:0.75rem; color:${labelColor}; font-weight:bold;">${name}</span>
+          <span style="font-size:0.6rem; color:var(--muted); font-family:var(--mono);">${block.size} KB</span>
+          <span style="font-size:0.55rem; color:var(--muted); font-family:var(--mono);">${block.start}K - ${block.end}K</span>
+        </div>
+      `;
+    }).join('<div style="align-self:center; color:rgba(255,255,255,0.05); font-size:0.8rem; font-family:var(--mono);">|</div>');
+
+    // Build buttons and actions - only Start and Reset
+    const actionBtnHtml = `
+      <button class="btn btn-primary" onclick="window.startSegmentationSimulator()" style="padding:0.45rem 1rem; font-size:0.75rem;">Start</button>
+      <button class="btn btn-secondary" onclick="window.resetSegmentationSimulator()" style="padding:0.45rem 1rem; font-size:0.75rem; margin-left:0.5rem;">Reset</button>
+    `;
+
+    // Segment Table HTML (visible when step > 0)
+    let segmentTableHtml = '';
+    if (step > 0) {
+      const rows = slots.map(s => {
+        const valBase = s.mapped ? s.address : '---';
+        const valLimit = s.mapped ? `${s.size} KB` : '---';
+        const color = segments.find(seg => seg.name === s.name).color;
+        const fontColor = s.mapped ? color : 'var(--muted)';
+        
+        return `
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+            <td style="padding: 0.4rem; font-family:'Syne',sans-serif; font-size:0.8rem; color:${fontColor}; font-weight:700;">${s.name}</td>
+            <td style="padding: 0.4rem; font-family:var(--mono); font-size:0.8rem; color:${fontColor};">${valBase}</td>
+            <td style="padding: 0.4rem; font-family:var(--mono); font-size:0.8rem; color:${fontColor};">${valLimit}</td>
+          </tr>
+        `;
+      }).join('');
+
+      segmentTableHtml = `
+        <div style="margin-top: 1.5rem; background: rgba(15,23,42,0.4); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; animation: fadeIn 0.4s ease-out; width:100%; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; color:#fff; margin-bottom:0.75rem;">Segment Table (Translation Mapping)</div>
+          <table style="width: 100%; text-align: left; border-collapse: collapse;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                <th style="padding: 0.4rem;">Segment</th>
+                <th style="padding: 0.4rem;">Base Address</th>
+                <th style="padding: 0.4rem;">Limit Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header" style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; margin-bottom:0.5rem;">
+        EdgeCase: Logical-to-Physical Segmentation Mapping
+      </div>
+      <div class="edgecase-subheader">Logical compiler segments are placed independently into variable-sized physical regions.</div>
+
+      <!-- Logical program blocks -->
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:1.25rem; width:100%; box-sizing:border-box;">
+        <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.05em;">Logical Address Space (Segment Blocks)</div>
+        <div style="display:flex; gap:0.75rem; width:100%; flex-wrap:wrap;">
+          ${logicalHtml}
+        </div>
+      </div>
+
+      <!-- Physical memory space -->
+      <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:1.5rem; width:100%; box-sizing:border-box;">
+        <div style="font-size:0.7rem; color:var(--muted); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.05em;">Physical RAM Layout (Non-Contiguous Slots)</div>
+        <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; padding:1.25rem; display:flex; gap:0.5rem; width:100%; box-sizing:border-box;">
+          ${physicalHtml}
+        </div>
+      </div>
+
+      <!-- Control details -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%; box-sizing:border-box;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.45;">${statusText}</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          <span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Step ${step}/5</span>
+          ${actionBtnHtml}
+        </div>
+      </div>
+
+      ${segmentTableHtml}
+    `;
+  }
+
+  render();
+}
+
+function renderManthanaSegmentationInternal() {
+  const container = document.getElementById('manthana-segmentation-internal');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper manthana-theme';
+
+  let selectedSize = null; // null, 5, 7, or 9 KB
+
+  window.selectSegmentSize = function(size) {
+    selectedSize = size;
+    render();
+  };
+
+  window.resetManthanaSegmentation = function() {
+    selectedSize = null;
+    render();
+  };
+
+  function render() {
+    const options = [5, 7, 9];
+    const buttonsHtml = options.map(size => {
+      const active = selectedSize === size;
+      const btnClass = active ? 'btn btn-primary' : 'btn btn-secondary';
+      return `<button class="${btnClass}" onclick="window.selectSegmentSize(${size})" style="padding:0.45rem 1rem; font-size:0.75rem;">Request ${size} KB</button>`;
+    }).join(' ');
+
+    let mainVisualHtml = '';
+    let explanationHtml = '';
+
+    if (selectedSize !== null) {
+      const allocated = 10;
+      const used = selectedSize;
+      const wasted = allocated - used;
+      const usedPercent = (used / allocated) * 100;
+      const wastedPercent = (wasted / allocated) * 100;
+
+      mainVisualHtml = `
+        <div style="display:flex; border:2px solid var(--blue); border-radius:6px; width:100%; height:50px; overflow:hidden; margin-top:1.25rem;">
+          <div style="width:${usedPercent}%; background:rgba(59, 130, 246, 0.35); border-right:2px solid var(--blue); display:flex; justify-content:center; align-items:center; transition:all 0.5s;">
+            <span style="font-family:var(--mono); font-size:0.75rem; color:#fff; font-weight:bold;">USED: ${used} KB</span>
+          </div>
+          <div style="width:${wastedPercent}%; background:rgba(245, 158, 11, 0.25); display:flex; justify-content:center; align-items:center; transition:all 0.5s; animation: pulse 1s infinite;">
+            <span style="font-family:var(--mono); font-size:0.75rem; color:#F59E0B; font-weight:bold;">WASTED: ${wasted} KB</span>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:0.35rem; width:100%; font-size:0.65rem; color:var(--muted); font-family:var(--mono);">
+          <span>0 KB</span>
+          <span style="color:#FFF;">Allocated Physical Region = 10 KB</span>
+          <span>10 KB</span>
+        </div>
+      `;
+
+      explanationHtml = `
+        <div style="background:rgba(245, 158, 11, 0.06); border:1px solid rgba(245, 158, 11, 0.2); border-radius:6px; padding:1.25rem; margin-top:1.5rem; animation: fadeIn 0.4s ease-out; font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; color:#E2E8F0;">
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.05rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
+            ⚠️ Waste Identified: Internal Fragmentation
+          </div>
+          <p style="margin-bottom:0.75rem;">
+            The segment requires exactly <strong>${used} KB</strong> of memory space.
+            However, the physical allocator maps this to a <strong>10 KB</strong> region to align the physical mapping boundaries.
+          </p>
+          <p style="margin-bottom:0.75rem;">
+            Because the allocated region is larger than the actual logical segment size, the remaining <strong>${wasted} KB</strong> is trapped and cannot be used by other parts of the system.
+          </p>
+          <p style="margin-bottom:0.75rem; color:#A5F3FC; font-weight:bold;">
+            Segmentation does not offer a complete cure for memory waste; it merely trades the external fragmentation of linear pages for the internal fragmentation of variable blocks.
+          </p>
+        </div>
+      `;
+    } else {
+      mainVisualHtml = `
+        <div style="border:1px dashed var(--border); border-radius:6px; width:100%; padding:2rem 1rem; text-align:center; margin-top:1.25rem; font-family:var(--mono); font-size:0.8rem; color:var(--muted);">
+          Select a request size below to see memory allocation behavior.
+        </div>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="edgecase-header manthana-header" style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; margin-bottom:0.5rem;">
+        Manthana: The Internal Waste
+      </div>
+      <div class="edgecase-subheader">Select a segment size request to allocate inside a fixed-aligned 10 KB physical boundary.</div>
+
+      ${mainVisualHtml}
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%; box-sizing:border-box;">
+        <div style="flex:1;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:${selectedSize !== null ? '#F59E0B' : '#A5F3FC'}; line-height:1.45;">
+            ${selectedSize !== null ? `Segment allocated. Internal fragmentation = ${10 - selectedSize} KB.` : 'Select a size to request memory allocation.'}
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
+          ${buttonsHtml}
+          ${selectedSize !== null ? `<button class="btn btn-secondary" onclick="window.resetManthanaSegmentation()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>` : ''}
+        </div>
+      </div>
+
+      ${explanationHtml}
+    `;
+  }
+
+  render();
+}
 
