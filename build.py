@@ -659,15 +659,65 @@ def main():
         print(f"Pre-rendered core page: {cfg['id']}")
         
     # 7. Generate clean sitemap.xml
+    def format_sitemap_date(date_str):
+        if not date_str:
+            return "2026-07-28"
+        s = date_str.strip().strip('"').strip("'").replace(',', '')
+        parts = [p for p in s.split() if p]
+        if len(parts) != 3:
+            return "2026-07-28"
+        
+        day_str, month_str, year_str = parts
+        day = "".join([c for c in day_str if c.isdigit()])
+        if not day:
+            return "2026-07-28"
+        day = int(day)
+        
+        months = {
+            "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+            "july": 7, "august": 8, "september": 9, "october": 10, "november": 11, "december": 12,
+            "jan": 1, "feb": 2, "mar": 3, "apr": 4, "jun": 6, "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12
+        }
+        month = months.get(month_str.lower())
+        if not month:
+            return "2026-07-28"
+        
+        try:
+            year = int(year_str)
+        except ValueError:
+            return "2026-07-28"
+            
+        return f"{year:04d}-{month:02d}-{day:02d}"
+
+    post_dates = []
+    formatted_post_dates = {}
+    
+    for post in blogs:
+        d_val = post.get("date")
+        iso = format_sitemap_date(d_val)
+        formatted_post_dates[post["id"]] = iso
+        post_dates.append(iso)
+        
+    for post in demos:
+        d_val = post.get("date")
+        iso = format_sitemap_date(d_val)
+        formatted_post_dates[post["id"]] = iso
+        post_dates.append(iso)
+        
+    max_date = max(post_dates) if post_dates else "2026-07-28"
+
     sitemap_entries = [
-        '  <url>\n    <loc>https://prajnaedge.dev/</loc>\n    <lastmod>2026-07-28</lastmod>\n  </url>'
+        f'  <url>\n    <loc>https://prajnaedge.dev/</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>',
+        f'  <url>\n    <loc>https://prajnaedge.dev/legal/</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>'
     ]
     for cfg in page_configs:
-        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/{cfg["route"]}</loc>\n    <lastmod>2026-07-28</lastmod>\n  </url>')
+        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/{cfg["route"]}</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>')
     for post in blogs:
-        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/explorations/{post["id"]}/</loc>\n    <lastmod>2026-07-28</lastmod>\n  </url>')
+        iso = formatted_post_dates.get(post["id"], "2026-07-28")
+        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/explorations/{post["id"]}/</loc>\n    <lastmod>{iso}</lastmod>\n  </url>')
     for post in demos:
-        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/demonstrations/{post["id"]}/</loc>\n    <lastmod>2026-07-28</lastmod>\n  </url>')
+        iso = formatted_post_dates.get(post["id"], "2026-07-28")
+        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/demonstrations/{post["id"]}/</loc>\n    <lastmod>{iso}</lastmod>\n  </url>')
         
     sitemap_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

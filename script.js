@@ -150,7 +150,8 @@ const systemsTreeNodes = {
       { id: "the-language-of-pages", title: "The Language of Pages" },
       { id: "when-the-page-wasnt-there", title: "When the Page Wasn't There" },
       { id: "choosing-what-to-forget", title: "Choosing What to Forget" },
-      { id: "segmentation", title: "When Memory Follows Meaning" }
+      { id: "segmentation", title: "When Memory Follows Meaning" },
+      { id: "there-is-no-perfect-fit", title: "There Is No Perfect Fit" }
     ]
   }
 };
@@ -6274,6 +6275,14 @@ function openItem(id, type) {
               <span class="nav-dir-label">Next →</span>
               <a class="nav-link active" onclick="openItem('choosing-what-to-forget', 'blogs')">Choosing What to Forget</a>
             `;
+          } else if (item.id === "there-is-no-perfect-fit") {
+            nextHtml = `
+              <span class="nav-dir-label">Next →</span>
+              <span class="nav-link locked" style="display:inline-flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                File Management
+                <span style="font-size:0.55rem; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:1px 4px; text-transform:uppercase; letter-spacing:0.05em; font-weight:600; background:var(--blue-glow);">Coming Soon</span>
+              </span>
+            `;
           } else {
             nextHtml = `
               <span class="nav-dir-label">Next →</span>
@@ -6545,12 +6554,14 @@ function initEdgeCase(containerId) {
     renderDemandPagingEdgeCase();
   } else if (containerId === 'page-replacement-edgecase') {
     renderPageReplacementEdgeCase();
-  } else if (containerId === 'manthana-segmentation-reveal') {
-    renderManthanaSegmentationReveal();
+  } else if (containerId === 'manthana-paging-boundary') {
+    renderManthanaPagingBoundary();
   } else if (containerId === 'segmentation-edgecase') {
     renderSegmentationEdgeCase();
-  } else if (containerId === 'manthana-segmentation-internal') {
-    renderManthanaSegmentationInternal();
+  } else if (containerId === 'manthana-segmentation-external') {
+    renderManthanaSegmentationExternal();
+  } else if (containerId === 'allocation-strategies-edgecase') {
+    renderAllocationStrategiesEdgeCase();
   }
 }
 
@@ -16699,171 +16710,139 @@ function renderPageReplacementEdgeCase() {
   render();
 }
 
-function renderManthanaSegmentationReveal() {
-  const container = document.getElementById('manthana-segmentation-reveal');
+function renderManthanaPagingBoundary() {
+  const container = document.getElementById('manthana-paging-boundary');
   if (!container) return;
 
   container.className = 'edgecase-wrapper manthana-theme';
 
-  let state = 'idle'; // 'idle', 'scanning', 'failed'
-  let activeBlock = null; // null or index of block being checked
-  let statusLog = 'Click "Request 10 KB Allocation" to start searching for free memory.';
-  let timerId = null;
+  let state = 'idle'; // 'idle', 'mapped'
 
-  const blocks = [
-    { type: 'free', size: 4 },
-    { type: 'used', size: 2 },
-    { type: 'free', size: 3 },
-    { type: 'used', size: 1 },
-    { type: 'free', size: 5 }
-  ];
-
-  window.request10KbAllocation = function() {
-    if (state !== 'idle') return;
-    state = 'scanning';
-    activeBlock = 0;
-    statusLog = 'Requesting contiguous 10 KB allocation. Scanning Block 0 (Free, 4 KB)...';
+  window.runPagingMapping = function() {
+    state = 'mapped';
     render();
-
-    let scanIndex = 0;
-    
-    function scanNext() {
-      if (scanIndex === 0) {
-        timerId = setTimeout(() => {
-          statusLog = 'Block 0 (Free, 4 KB) is too small for the 10 KB request. Moving to next block...';
-          scanIndex = 2; 
-          activeBlock = 2;
-          render();
-          scanNext();
-        }, 2000);
-      } else if (scanIndex === 2) {
-        timerId = setTimeout(() => {
-          statusLog = 'Block 2 (Free, 3 KB) is too small for the 10 KB request. Moving to next block...';
-          scanIndex = 4; 
-          activeBlock = 4;
-          render();
-          scanNext();
-        }, 2000);
-      } else if (scanIndex === 4) {
-        timerId = setTimeout(() => {
-          statusLog = 'Block 4 (Free, 5 KB) is too small for the 10 KB request. All blocks checked.';
-          activeBlock = null;
-          state = 'failed';
-          render();
-        }, 2000);
-      }
-    }
-
-    scanNext();
   };
 
-  window.resetManthanaFragmentation = function() {
-    if (timerId) {
-      clearTimeout(timerId);
-      timerId = null;
-    }
+  window.resetPagingMapping = function() {
     state = 'idle';
-    activeBlock = null;
-    statusLog = 'Click "Request 10 KB Allocation" to start searching for free memory.';
     render();
   };
 
   function render() {
-    const memoryBlocksHtml = blocks.map((block, idx) => {
-      const isFree = block.type === 'free';
-      const isChecking = activeBlock === idx;
-
-      let border = '1px solid rgba(255, 255, 255, 0.1)';
-      let bg = isFree ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.05)';
-      let textColor = isFree ? 'var(--blue)' : 'var(--muted)';
-
-      if (isChecking) {
-        border = '1px solid #F59E0B';
-        bg = 'rgba(245, 158, 11, 0.2)';
-      } else if (state === 'failed' && isFree) {
-        border = '1px solid #EF4444';
-        bg = 'rgba(239, 68, 68, 0.1)';
-      }
-
-      return `<div style="flex:${block.size}; background:${bg}; border:${border}; border-radius:6px; padding:1rem 0.5rem; text-align:center; transition:all 0.3s; min-width:40px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:0.25rem;">
-        <span style="font-family:var(--mono); font-size:0.8rem; font-weight:bold; color:${textColor};">${block.size} KB</span>
-        <span style="font-size:0.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">${block.type}</span>
-      </div>`;
-    }).join('<div style="align-self:center; color:var(--muted); font-size:0.8rem; font-family:var(--mono);">|</div>');
-
-    let revealHtml = '';
-    if (state === 'failed') {
-      revealHtml = `
-        <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:6px; padding:1.25rem; margin-top:1.5rem; animation: fadeIn 0.4s ease-out; font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; color:#E2E8F0;">
-          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.05rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
-             🚨 Allocation Failed: External Fragmentation Detected
+    // Logical memory visual
+    let logicalHtml = '';
+    if (state === 'idle') {
+      logicalHtml = `
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1rem; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:0.85rem; margin-bottom:0.5rem;">Logical Address Space</div>
+          <div style="background:rgba(59, 130, 246, 0.15); border:2px solid #3B82F6; border-radius:4px; padding:0.75rem; font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; max-width:280px; margin:0 auto;">
+            <strong>Logical 10 KB Buffer</strong><br>
+            (Single Contiguous Structure)
           </div>
-          <p style="margin-bottom:0.75rem;">
-            Wait! Let's sum up the numbers: <strong>4 KB + 3 KB + 5 KB = 12 KB</strong> of total free memory.
-            We requested <strong>10 KB</strong>. Why did the system fail to allocate?
-          </p>
-          <p style="margin-bottom:0.75rem;">
-            Because the free space is physically scattered. A contiguous block of 10 KB could not be found anywhere.
-            This mismatch is called <strong>External Fragmentation</strong>.
-          </p>
-          <p style="margin-bottom:0.75rem; color:#A5F3FC; font-weight:bold;">
-            Applying FIFO, LRU, or Optimal replacement here yields absolutely nothing! Evicting more pages won't coalesce these fragmented regions into a single contiguous block.
-          </p>
-          <p style="margin-bottom:0.75rem;">
-            Fixed-size Paging solves this completely because a program is split into uniform pages that can be mapped to any free physical frames, regardless of where they are located. Paging, by definition, <strong>does not suffer from external fragmentation</strong>.
-          </p>
-          <p style="margin-bottom:0.75rem;">
-            But wait: if paging solves external fragmentation, does it solve all fragmentation? No. What if we allocate a 4 KB frame to a page that only needs 1 KB? The remaining 3 KB inside the frame is wasted. This is <strong>Internal Fragmentation</strong>.
-          </p>
-          <div style="border-top:1px dashed rgba(255,255,255,0.15); margin-top:1rem; padding-top:1rem;">
-            <p style="font-weight:bold; color:var(--blue); margin-bottom:0.5rem;">
-              Could memory be organized logically instead of in arbitrary, fixed-size chunks?
-            </p>
-            <p style="color:#FFF; font-weight:bold;">
-              What if we organize memory according to the logical segments of the program (Code, Stack, Heap)?
-            </p>
-            <p style="color:var(--blue); font-weight:bold; margin-top:0.5rem;">
-              In the next exploration, we'll dive into this alternative structure: Segmentation.
-            </p>
+        </div>
+      `;
+    } else {
+      logicalHtml = `
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1rem; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:0.85rem; margin-bottom:0.5rem;">Logical Address Space (Sliced)</div>
+          <div style="display:flex; flex-direction:column; gap:0.35rem; max-width:280px; margin:0 auto;">
+            <div style="background:rgba(59, 130, 246, 0.25); border:1px solid #3B82F6; border-radius:4px; padding:0.4rem; font-family:var(--mono); font-size:0.7rem; color:#FFF;">
+              <strong>Page 0 (4 KB)</strong>
+            </div>
+            <div style="background:rgba(59, 130, 246, 0.25); border:1px solid #3B82F6; border-radius:4px; padding:0.4rem; font-family:var(--mono); font-size:0.7rem; color:#FFF;">
+              <strong>Page 1 (4 KB)</strong>
+            </div>
+            <div style="background:rgba(59, 130, 246, 0.15); border:1px dashed #3B82F6; border-radius:4px; padding:0.4rem; font-family:var(--mono); font-size:0.7rem; color:#A5F3FC; display:flex; justify-content:space-between;">
+              <span>Page 2 (2 KB Used)</span>
+              <span style="color:#EF4444; font-weight:bold;">2 KB Unused</span>
+            </div>
           </div>
         </div>
       `;
     }
 
+    // Mapped physical memory representation
+    const makeFrame = (num, status, pageLabel) => {
+      let bg = 'rgba(255,255,255,0.03)';
+      let border = '1px solid var(--border)';
+      let color = 'var(--muted)';
+      let label = 'USED';
+
+      if (status === 'free') {
+        bg = 'rgba(15,23,42,0.6)';
+        border = '1px dashed rgba(255,255,255,0.15)';
+        label = 'FREE';
+      } else if (status === 'mapped') {
+        bg = 'rgba(59, 130, 246, 0.2)';
+        border = '2px solid #3B82F6';
+        color = '#FFF';
+        label = pageLabel;
+      }
+
+      return `
+        <div style="flex:1; background:${bg}; border:${border}; border-radius:6px; padding:0.4rem; text-align:center; min-width:65px; box-sizing:border-box;">
+          <div style="font-family:var(--mono); font-size:0.55rem; color:var(--muted);">Frame ${num}</div>
+          <div style="font-family:var(--mono); font-size:0.6rem; color:${color}; font-weight:bold; margin-top:0.25rem;">${label}</div>
+        </div>
+      `;
+    };
+
+    let p0_state = state === 'mapped' ? 'mapped' : 'free';
+    let p1_state = state === 'mapped' ? 'mapped' : 'free';
+    let p2_state = state === 'mapped' ? 'mapped' : 'free';
+
+    const framesHtml = `
+      ${makeFrame(0, 'used')}
+      ${makeFrame(1, p0_state, 'PAGE 0')}
+      ${makeFrame(2, 'used')}
+      ${makeFrame(3, p1_state, 'PAGE 1')}
+      ${makeFrame(4, 'used')}
+      ${makeFrame(5, p2_state, 'PAGE 2')}
+    `;
+
+    // Status description
+    let statusText = '';
     let badgeHtml = '';
     if (state === 'idle') {
-      badgeHtml = '<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>';
-    } else if (state === 'scanning') {
-      badgeHtml = '<span style="background:#F59E0B; color:#fff; border:1px solid #F59E0B; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase; animation:pulse 1s infinite;">SCANNING</span>';
-    } else if (state === 'failed') {
-      badgeHtml = '<span style="background:#EF4444; color:#fff; border:1px solid #EF4444; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">ALLOCATION CRASH</span>';
+      statusText = 'A logical 10 KB block needs allocation. Click "Slice & Map" to see how Paging manages it.';
+      badgeHtml = '<span style="font-family:var(--mono); font-size:0.6rem; background:rgba(255,255,255,0.05); color:var(--muted); border-radius:4px; padding:2px 6px; font-weight:bold;">IDLE</span>';
+    } else {
+      statusText = '<strong>Paging Success.</strong> The 10 KB contiguous request is chopped into three 4 KB pages and placed in non-contiguous physical frames (Frame 1, 3, and 5). <strong>No external fragmentation occurs</strong>, but a 2 KB chunk in Page 2 is wasted (<strong>internal fragmentation</strong>). Paging is unaware of logical boundaries.';
+      badgeHtml = '<span style="font-family:var(--mono); font-size:0.6rem; background:rgba(16,185,129,0.15); color:#10B981; border:1px solid rgba(16,185,129,0.3); border-radius:4px; padding:2px 6px; font-weight:bold;">MAPPED</span>';
     }
 
     container.innerHTML = `
-      <div class="edgecase-header manthana-header" style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
-        Manthana: The Fragmentation Dilemma
-      </div>
-      <div class="edgecase-subheader">CPU requests a contiguous 10 KB allocation. Watch how memory layout impacts physical mapping.</div>
-
-      <div style="background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:6px; padding:1.25rem; margin-top:1rem; margin-bottom:1.5rem; display:flex; gap:0.5rem; width:100%; box-sizing:border-box;">
-        ${memoryBlocksHtml}
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.75rem;">
+        <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.05rem;">Manthana: Slicing Logical Boundaries</span>
+        ${badgeHtml}
       </div>
 
-      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%;">
-        <div style="flex:1;">
-          <div style="font-family:var(--mono); font-size:0.75rem; color:${state === 'failed' ? '#EF4444' : '#A5F3FC'}; line-height:1.45;">${statusLog}</div>
+      <div style="display:flex; gap:1.25rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px;">
+          ${logicalHtml}
         </div>
-        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
-          ${badgeHtml}
+        <div style="flex:1.5; min-width:280px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:0.85rem; margin-bottom:0.5rem; text-align:center;">Physical Memory Frames (RAM)</div>
+          <div style="display:flex; gap:0.35rem; width:100%; box-sizing:border-box; background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:4px; padding:0.50rem;">
+            ${framesHtml}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem 1rem; gap:1rem; width:100%; box-sizing:border-box; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px;">
+          <div style="font-family:var(--mono); font-size:0.72rem; color:#A5F3FC; line-height:1.5;">
+            ${statusText}
+          </div>
+        </div>
+        <div>
           ${state === 'idle' ? `
-            <button class="btn btn-primary" onclick="window.request10KbAllocation()" style="padding:0.45rem 1rem; font-size:0.75rem;">Request 10 KB</button>
+            <button class="btn btn-primary" onclick="window.runPagingMapping()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold;">Slice & Map</button>
           ` : `
-            <button class="btn btn-secondary" onclick="window.resetManthanaFragmentation()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>
+            <button class="btn btn-secondary" onclick="window.resetPagingMapping()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold;">Reset</button>
           `}
         </div>
       </div>
-
-      ${revealHtml}
     `;
   }
 
@@ -17084,104 +17063,382 @@ function renderSegmentationEdgeCase() {
   render();
 }
 
-function renderManthanaSegmentationInternal() {
-  const container = document.getElementById('manthana-segmentation-internal');
+function renderManthanaSegmentationExternal() {
+  const container = document.getElementById('manthana-segmentation-external');
   if (!container) return;
 
   container.className = 'edgecase-wrapper manthana-theme';
 
-  let selectedSize = null; // null, 5, 7, or 9 KB
+  let state = 'idle'; // 'idle', 'scanning', 'failed'
+  let activeFreeIndex = null; // null, 0, 1, 2
+  let timerId = null;
 
-  window.selectSegmentSize = function(size) {
-    selectedSize = size;
+  window.requestExternalSegment = function() {
+    state = 'scanning';
+    activeFreeIndex = 0;
     render();
+
+    timerId = setTimeout(() => {
+      activeFreeIndex = 1;
+      render();
+
+      timerId = setTimeout(() => {
+        activeFreeIndex = 2;
+        render();
+
+        timerId = setTimeout(() => {
+          state = 'failed';
+          activeFreeIndex = null;
+          render();
+        }, 1000);
+      }, 1000);
+    }, 1000);
   };
 
-  window.resetManthanaSegmentation = function() {
-    selectedSize = null;
+  window.resetExternalSegment = function() {
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+    state = 'idle';
+    activeFreeIndex = null;
     render();
   };
 
   function render() {
-    const options = [5, 7, 9];
-    const buttonsHtml = options.map(size => {
-      const active = selectedSize === size;
-      const btnClass = active ? 'btn btn-primary' : 'btn btn-secondary';
-      return `<button class="${btnClass}" onclick="window.selectSegmentSize(${size})" style="padding:0.45rem 1rem; font-size:0.75rem;">Request ${size} KB</button>`;
-    }).join(' ');
+    // Blocks list: Segment A (8K), Free (4K), Segment B (6K), Free (3K), Segment C (5K), Free (5K)
+    const blocks = [
+      { type: 'allocated', name: 'Segment A', size: 8, color: '#1E293B' },
+      { type: 'free', index: 0, size: 4 },
+      { type: 'allocated', name: 'Segment B', size: 6, color: '#1E293B' },
+      { type: 'free', index: 1, size: 3 },
+      { type: 'allocated', name: 'Segment C', size: 5, color: '#1E293B' },
+      { type: 'free', index: 2, size: 5 }
+    ];
 
-    let mainVisualHtml = '';
-    let explanationHtml = '';
-
-    if (selectedSize !== null) {
-      const allocated = 10;
-      const used = selectedSize;
-      const wasted = allocated - used;
-      const usedPercent = (used / allocated) * 100;
-      const wastedPercent = (wasted / allocated) * 100;
-
-      mainVisualHtml = `
-        <div style="display:flex; border:2px solid var(--blue); border-radius:6px; width:100%; height:50px; overflow:hidden; margin-top:1.25rem;">
-          <div style="width:${usedPercent}%; background:rgba(59, 130, 246, 0.35); border-right:2px solid var(--blue); display:flex; justify-content:center; align-items:center; transition:all 0.5s;">
-            <span style="font-family:var(--mono); font-size:0.75rem; color:#fff; font-weight:bold;">USED: ${used} KB</span>
+    const blocksHtml = blocks.map(b => {
+      if (b.type === 'allocated') {
+        return `
+          <div style="flex:${b.size}; background:${b.color}; border:1px solid var(--border); border-radius:6px; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:0.5rem 0.25rem; min-height:48px; min-width:40px; box-sizing:border-box;">
+            <span style="font-family:var(--mono); font-size:0.55rem; color:var(--muted); font-weight:bold;">${b.name}</span>
+            <span style="font-family:var(--mono); font-size:0.5rem; color:var(--muted);">${b.size}K</span>
           </div>
-          <div style="width:${wastedPercent}%; background:rgba(245, 158, 11, 0.25); display:flex; justify-content:center; align-items:center; transition:all 0.5s; animation: pulse 1s infinite;">
-            <span style="font-family:var(--mono); font-size:0.75rem; color:#F59E0B; font-weight:bold;">WASTED: ${wasted} KB</span>
-          </div>
-        </div>
-        <div style="display:flex; justify-content:space-between; margin-top:0.35rem; width:100%; font-size:0.65rem; color:var(--muted); font-family:var(--mono);">
-          <span>0 KB</span>
-          <span style="color:#FFF;">Allocated Physical Region = 10 KB</span>
-          <span>10 KB</span>
-        </div>
-      `;
+        `;
+      } else {
+        let bg = 'rgba(15,23,42,0.6)';
+        let border = '1px solid var(--border)';
+        let color = 'var(--muted)';
+        
+        if (state === 'scanning' && activeFreeIndex === b.index) {
+          bg = 'rgba(245,158,11,0.15)';
+          border = '2px solid #F59E0B';
+          color = '#F59E0B';
+        } else if (state === 'failed') {
+          bg = 'rgba(239,68,68,0.05)';
+          border = '1px dashed rgba(239,68,68,0.2)';
+          color = '#EF4444';
+        }
 
-      explanationHtml = `
-        <div style="background:rgba(245, 158, 11, 0.06); border:1px solid rgba(245, 158, 11, 0.2); border-radius:6px; padding:1.25rem; margin-top:1.5rem; animation: fadeIn 0.4s ease-out; font-family:'DM Sans',sans-serif; font-size:0.9rem; line-height:1.7; color:#E2E8F0;">
-          <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.05rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;">
-            ⚠️ Waste Identified: Internal Fragmentation
+        return `
+          <div style="flex:${b.size}; background:${bg}; border:${border}; border-radius:6px; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:0.5rem 0.25rem; min-height:48px; min-width:40px; box-sizing:border-box; transition:all 0.3s ease;">
+            <span style="font-family:var(--mono); font-size:0.55rem; color:${color}; font-weight:bold;">FREE</span>
+            <span style="font-family:var(--mono); font-size:0.5rem; color:${color};">${b.size}K</span>
           </div>
-          <p style="margin-bottom:0.75rem;">
-            The segment requires exactly <strong>${used} KB</strong> of memory space.
-            However, the physical allocator maps this to a <strong>10 KB</strong> region to align the physical mapping boundaries.
-          </p>
-          <p style="margin-bottom:0.75rem;">
-            Because the allocated region is larger than the actual logical segment size, the remaining <strong>${wasted} KB</strong> is trapped and cannot be used by other parts of the system.
-          </p>
-          <p style="margin-bottom:0.75rem; color:#A5F3FC; font-weight:bold;">
-            Segmentation does not offer a complete cure for memory waste; it merely trades the external fragmentation of linear pages for the internal fragmentation of variable blocks.
-          </p>
-        </div>
-      `;
-    } else {
-      mainVisualHtml = `
-        <div style="border:1px dashed var(--border); border-radius:6px; width:100%; padding:2rem 1rem; text-align:center; margin-top:1.25rem; font-family:var(--mono); font-size:0.8rem; color:var(--muted);">
-          Select a request size below to see memory allocation behavior.
-        </div>
-      `;
+        `;
+      }
+    }).join('');
+
+    let statusText = '';
+    let badgeHtml = '';
+
+    if (state === 'idle') {
+      statusText = 'Click "Request 10 KB" to try to allocate a contiguous 10 KB segment in memory.';
+      badgeHtml = '<span style="font-family:var(--mono); font-size:0.6rem; background:rgba(255,255,255,0.05); color:var(--muted); border-radius:4px; padding:2px 6px; font-weight:bold;">IDLE</span>';
+    } else if (state === 'scanning') {
+      const sizes = [4, 3, 5];
+      const activeSize = sizes[activeFreeIndex];
+      statusText = `Scanning free blocks... Checking Free Block (Size: ${activeSize} KB) for a 10 KB contiguous request. ${activeSize} KB < 10 KB. Block too small!`;
+      badgeHtml = '<span style="font-family:var(--mono); font-size:0.6rem; background:rgba(245,158,11,0.15); color:#F59E0B; border:1px solid rgba(245,158,11,0.3); border-radius:4px; padding:2px 6px; font-weight:bold; animation: pulse 1s infinite;">SCANNING</span>';
+    } else if (state === 'failed') {
+      statusText = '<strong style="color:#EF4444;">Allocation Failed: External Fragmentation.</strong> Total free space is <strong>12 KB</strong> (4K + 3K + 5K). But because it is scattered non-contiguously, no single slot can accommodate the contiguous <strong>10 KB segment</strong>.';
+      badgeHtml = '<span style="font-family:var(--mono); font-size:0.6rem; background:rgba(239,68,68,0.15); color:#EF4444; border:1px solid rgba(239,68,68,0.3); border-radius:4px; padding:2px 6px; font-weight:bold;">FAILED</span>';
     }
 
     container.innerHTML = `
-      <div class="edgecase-header manthana-header" style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; margin-bottom:0.5rem;">
-        Manthana: The Internal Waste
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.75rem;">
+        <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.05rem;">Manthana: Contiguous Placement Constraints</span>
+        ${badgeHtml}
       </div>
-      <div class="edgecase-subheader">Select a segment size request to allocate inside a fixed-aligned 10 KB physical boundary.</div>
 
-      ${mainVisualHtml}
+      <div style="margin-bottom:1.5rem; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:1.25rem; box-sizing:border-box;">
+        <div style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:0.85rem; margin-bottom:0.75rem; text-align:center;">Physical Memory Layout (Total: 31 KB)</div>
+        <div style="display:flex; gap:0.35rem; width:100%; box-sizing:border-box; background:rgba(15,23,42,0.8); border:1px solid var(--border); border-radius:4px; padding:0.5rem; overflow-x:auto;">
+          ${blocksHtml}
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:0.75rem; font-family:var(--mono); font-size:0.65rem; color:var(--muted); flex-wrap:wrap; gap:0.5rem;">
+          <span>Allocated Memory: 19 KB (Segment A: 8K, Segment B: 6K, Segment C: 5K)</span>
+          <span style="color:#A5F3FC; font-weight:bold;">Total Free Memory: 12 KB (4K + 3K + 5K)</span>
+        </div>
+      </div>
 
-      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:1rem; margin-top:1.5rem; gap:1.5rem; width:100%; box-sizing:border-box;">
-        <div style="flex:1;">
-          <div style="font-family:var(--mono); font-size:0.75rem; color:${selectedSize !== null ? '#F59E0B' : '#A5F3FC'}; line-height:1.45;">
-            ${selectedSize !== null ? `Segment allocated. Internal fragmentation = ${10 - selectedSize} KB.` : 'Select a size to request memory allocation.'}
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem 1rem; gap:1rem; width:100%; box-sizing:border-box; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px;">
+          <div style="font-family:var(--mono); font-size:0.72rem; color:#A5F3FC; line-height:1.5;">
+            ${statusText}
           </div>
         </div>
-        <div style="display:flex; gap:0.5rem; align-items:center; shrink:0;">
-          ${buttonsHtml}
-          ${selectedSize !== null ? `<button class="btn btn-secondary" onclick="window.resetManthanaSegmentation()" style="padding:0.45rem 1rem; font-size:0.75rem;">Reset</button>` : ''}
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${state === 'idle' ? `
+            <button class="btn btn-primary" onclick="window.requestExternalSegment()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold;">Request 10 KB</button>
+          ` : `
+            <button class="btn btn-secondary" onclick="window.resetExternalSegment()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold;">Reset</button>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderAllocationStrategiesEdgeCase() {
+  const container = document.getElementById('allocation-strategies-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  let step = 0; // 0 to 3
+  let intervalId = null;
+
+  window.startAllocationSimulation = function() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    step = 0;
+    render();
+    
+    intervalId = setInterval(() => {
+      if (!document.getElementById('allocation-strategies-edgecase')) {
+        clearInterval(intervalId);
+        intervalId = null;
+        return;
+      }
+      
+      if (step < 3) {
+        step++;
+        render();
+      } else {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }, 1800);
+  };
+
+  window.resetAllocationSimulation = function() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    step = 0;
+    render();
+  };
+
+  function render() {
+    // Requests representation
+    const reqs = [
+      { name: 'R1', size: 5, color: '#3B82F6', title: 'Request 1' },
+      { name: 'R2', size: 10, color: '#10B981', title: 'Request 2' },
+      { name: 'R3', size: 15, color: '#8B5CF6', title: 'Request 3' }
+    ];
+
+    const requestsHtml = reqs.map((r, idx) => {
+      const active = step > idx;
+      let statusLabel = 'Waiting';
+      let borderStyle = 'border: 1px solid var(--border); opacity: 0.85;';
+      let badgeStyle = 'background: rgba(255,255,255,0.05); color: var(--muted);';
+      
+      if (active) {
+        statusLabel = 'Allocated';
+        borderStyle = `border: 2px solid ${r.color}; background: rgba(255,255,255,0.03);`;
+        badgeStyle = `background: ${r.color}; color: #FFF;`;
+      } else if (step === 3 && idx === 2) {
+        statusLabel = 'Mixed Result';
+        borderStyle = 'border: 2px solid #EF4444; background: rgba(239,68,68,0.05);';
+        badgeStyle = 'background: #EF4444; color: #FFF;';
+      }
+
+      return `
+        <div style="flex:1; min-width:140px; background:var(--surface); border-radius:6px; padding:0.6rem; box-sizing:border-box; transition:all 0.3s ease; ${borderStyle}">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.15rem;">
+            <span style="font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem; color:#FFF;">${r.title}</span>
+            <span style="font-family:var(--mono); font-size:0.55rem; border-radius:4px; padding:1px 3px; font-weight:600; text-transform:uppercase; ${badgeStyle}">${statusLabel}</span>
+          </div>
+          <div style="font-family:var(--mono); font-size:0.65rem; color:var(--muted);">Size: <strong style="color:#FFF;">${r.size} KB</strong></div>
+        </div>
+      `;
+    }).join('');
+
+    // Helper functions for blocks
+    const makeAllocatedBlock = (size, name) => `
+      <div style="flex:${size}; background:#1E293B; border:1px solid var(--border); border-radius:6px; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:0.35rem 0.25rem; min-height:42px; min-width:35px; box-sizing:border-box;">
+        <span style="font-family:var(--mono); font-size:0.55rem; color:var(--muted); font-weight:bold;">${name}</span>
+        <span style="font-family:var(--mono); font-size:0.5rem; color:var(--muted);">${size}K</span>
+      </div>
+    `;
+
+    const makeFreeBlock = (size) => `
+      <div style="flex:${size}; background:rgba(15,23,42,0.6); border:1px dashed rgba(255,255,255,0.15); border-radius:6px; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:0.35rem 0.25rem; min-height:42px; min-width:35px; box-sizing:border-box;">
+        <span style="font-family:var(--mono); font-size:0.55rem; color:var(--muted); font-weight:bold;">FREE</span>
+        <span style="font-family:var(--mono); font-size:0.5rem; color:var(--muted);">${size}K</span>
+      </div>
+    `;
+
+    const makeSplitBlock = (size, pieces) => {
+      const innerHtml = pieces.map(p => {
+        if (p.type === 'req') {
+          return `
+            <div style="flex:${p.size}; background:${p.color}; border-right:1px solid rgba(255,255,255,0.15); display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; box-sizing:border-box;">
+              <span style="font-family:var(--mono); font-size:0.55rem; color:#FFF; font-weight:bold;">${p.name}</span>
+              <span style="font-family:var(--mono); font-size:0.45rem; color:rgba(255,255,255,0.85);">${p.size}K</span>
+            </div>
+          `;
+        } else {
+          return `
+            <div style="flex:${p.size}; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; box-sizing:border-box;">
+              <span style="font-family:var(--mono); font-size:0.5rem; color:var(--muted); font-weight:bold;">FREE</span>
+              <span style="font-family:var(--mono); font-size:0.45rem; color:var(--muted);">${p.size}K</span>
+            </div>
+          `;
+        }
+      }).join('');
+
+      return `
+        <div style="flex:${size}; display:flex; gap:0px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; overflow:hidden; background:rgba(15,23,42,0.6); min-height:42px; min-width:35px; box-sizing:border-box;">
+          ${innerHtml}
+        </div>
+      `;
+    };
+
+    // First Fit row construction
+    let ff_b1, ff_b3, ff_b5;
+    let ff_status = 'Idle';
+    if (step === 0) {
+      ff_b1 = makeFreeBlock(12); ff_b3 = makeFreeBlock(6); ff_b5 = makeFreeBlock(20);
+    } else if (step === 1) {
+      ff_b1 = makeSplitBlock(12, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 7 }]);
+      ff_b3 = makeFreeBlock(6); ff_b5 = makeFreeBlock(20);
+      ff_status = 'R1 placed in Block 1';
+    } else if (step === 2) {
+      ff_b1 = makeSplitBlock(12, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 7 }]);
+      ff_b3 = makeFreeBlock(6);
+      ff_b5 = makeSplitBlock(20, [{ type: 'req', name: 'R2', size: 10, color: '#10B981' }, { type: 'free', size: 10 }]);
+      ff_status = 'R2 placed in Block 5';
+    } else if (step === 3) {
+      ff_b1 = makeSplitBlock(12, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 7 }]);
+      ff_b3 = makeFreeBlock(6);
+      ff_b5 = makeSplitBlock(20, [{ type: 'req', name: 'R2', size: 10, color: '#10B981' }, { type: 'free', size: 10 }]);
+      ff_status = 'R3 FAILED (External Fragmentation)';
+    }
+
+    // Best Fit row construction
+    let bf_b1, bf_b3, bf_b5;
+    let bf_status = 'Idle';
+    if (step === 0) {
+      bf_b1 = makeFreeBlock(12); bf_b3 = makeFreeBlock(6); bf_b5 = makeFreeBlock(20);
+    } else if (step === 1) {
+      bf_b1 = makeFreeBlock(12);
+      bf_b3 = makeSplitBlock(6, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 1 }]);
+      bf_b5 = makeFreeBlock(20);
+      bf_status = 'R1 placed in Block 3';
+    } else if (step === 2) {
+      bf_b1 = makeSplitBlock(12, [{ type: 'req', name: 'R2', size: 10, color: '#10B981' }, { type: 'free', size: 2 }]);
+      bf_b3 = makeSplitBlock(6, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 1 }]);
+      bf_b5 = makeFreeBlock(20);
+      bf_status = 'R2 placed in Block 1';
+    } else if (step === 3) {
+      bf_b1 = makeSplitBlock(12, [{ type: 'req', name: 'R2', size: 10, color: '#10B981' }, { type: 'free', size: 2 }]);
+      bf_b3 = makeSplitBlock(6, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 1 }]);
+      bf_b5 = makeSplitBlock(20, [{ type: 'req', name: 'R3', size: 15, color: '#8B5CF6' }, { type: 'free', size: 5 }]);
+      bf_status = 'R3 placed in Block 5 (Success)';
+    }
+
+    // Worst Fit row construction
+    let wf_b1, wf_b3, wf_b5;
+    let wf_status = 'Idle';
+    if (step === 0) {
+      wf_b1 = makeFreeBlock(12); wf_b3 = makeFreeBlock(6); wf_b5 = makeFreeBlock(20);
+    } else if (step === 1) {
+      wf_b1 = makeFreeBlock(12); wf_b3 = makeFreeBlock(6);
+      wf_b5 = makeSplitBlock(20, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'free', size: 15 }]);
+      wf_status = 'R1 placed in Block 5';
+    } else if (step === 2) {
+      wf_b1 = makeFreeBlock(12); wf_b3 = makeFreeBlock(6);
+      wf_b5 = makeSplitBlock(20, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'req', name: 'R2', size: 10, color: '#10B981' }, { type: 'free', size: 5 }]);
+      wf_status = 'R2 placed in Block 5';
+    } else if (step === 3) {
+      wf_b1 = makeFreeBlock(12); wf_b3 = makeFreeBlock(6);
+      wf_b5 = makeSplitBlock(20, [{ type: 'req', name: 'R1', size: 5, color: '#3B82F6' }, { type: 'req', name: 'R2', size: 10, color: '#10B981' }, { type: 'free', size: 5 }]);
+      wf_status = 'R3 FAILED (External Fragmentation)';
+    }
+
+    const makeRowHtml = (title, status, blocks) => `
+      <div style="margin-bottom:1rem; background:rgba(255,255,255,0.01); border:1px solid var(--border); border-radius:6px; padding:0.75rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem; font-family:'Syne',sans-serif; font-weight:700; font-size:0.8rem;">
+          <span style="color:#FFF;">${title}</span>
+          <span style="font-family:var(--mono); font-size:0.65rem; color:${status.includes('FAILED') ? '#EF4444' : (status.includes('Success') ? '#10B981' : 'var(--muted)')}; font-weight:bold;">${status}</span>
+        </div>
+        <div style="display:flex; gap:0.25rem; width:100%; box-sizing:border-box; background:rgba(15,23,42,0.6); border-radius:4px; padding:0.5rem; overflow-x:auto;">
+          ${makeAllocatedBlock(10, 'OS')}
+          ${blocks[0]}
+          ${makeAllocatedBlock(8, 'USED')}
+          ${blocks[1]}
+          ${makeAllocatedBlock(12, 'USED')}
+          ${blocks[2]}
+          ${makeAllocatedBlock(12, 'USED')}
+        </div>
+      </div>
+    `;
+
+    // Status Texts
+    let statusText = '';
+    if (step === 0) {
+      statusText = 'Requests waiting. Click "Start" to begin automatic placement.';
+    } else if (step === 1) {
+      statusText = '<strong>Step 1/3: Placing Request 1 (5 KB).</strong><br>• First Fit scan chooses the first slot (Block 1).<br>• Best Fit scan chooses the smallest slot (Block 3).<br>• Worst Fit scan chooses the largest slot (Block 5).';
+    } else if (step === 2) {
+      statusText = '<strong>Step 2/3: Placing Request 2 (10 KB).</strong><br>• First Fit scan chooses Block 5.<br>• Best Fit scan chooses Block 1 (leaves 2 KB).<br>• Worst Fit scan chooses Block 5 (largest remaining, leaves 5 KB).';
+    } else if (step === 3) {
+      statusText = '<strong>Step 3/3: Placing Request 3 (15 KB).</strong><br>• <strong style="color:#EF4444;">First Fit fails!</strong> Block 1 has 7K, Block 3 has 6K, Block 5 has 10K. No single block fits R3 (15 KB).<br>• <strong style="color:#10B981;">Best Fit succeeds!</strong> Block 5 has 20K free, perfectly fitting R3.<br>• <strong style="color:#EF4444;">Worst Fit fails!</strong> Stacking R1 and R2 in Block 5 leaves only 5K free. The largest remaining block (Block 1) is 12K, which is too small for R3.';
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1rem; flex-wrap:wrap; gap:0.75rem;">
+        <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: Allocation Strategy Trade-Offs</span>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button class="btn btn-primary" onclick="window.startAllocationSimulation()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold;">Start</button>
+          <button class="btn btn-secondary" onclick="window.resetAllocationSimulation()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold;">Reset</button>
         </div>
       </div>
 
-      ${explanationHtml}
+      <div style="margin-bottom:1rem; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:6px; padding:0.6rem;">
+        <div style="font-family:'Syne',sans-serif; font-weight:600; font-size:0.75rem; color:var(--muted); margin-bottom:0.35rem; text-align:center; text-transform:uppercase; letter-spacing:0.05em;">Requests Queue</div>
+        <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+          ${requestsHtml}
+        </div>
+      </div>
+
+      <div>
+        ${makeRowHtml('First Fit', ff_status, [ff_b1, ff_b3, ff_b5])}
+        ${makeRowHtml('Best Fit', bf_status, [bf_b1, bf_b3, bf_b5])}
+        ${makeRowHtml('Worst Fit', wf_status, [wf_b1, wf_b3, wf_b5])}
+      </div>
+
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:80px;">
+        <div style="font-family:var(--mono); font-size:0.72rem; color:#A5F3FC; line-height:1.55;">
+          ${statusText}
+        </div>
+      </div>
     `;
   }
 

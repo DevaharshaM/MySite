@@ -54,18 +54,15 @@ The **Optimal** policy represents the absolute ceiling of performance, guarantee
 
 ---
 
-## 4. Manthana: The Allocation Challenge
+## 4. Manthana: The Paging Boundary
 
-Now that we can manage pages inside rigid slots, let's explore a different system constraints challenge.
+We have learned how Paging places fixed-size pages into physical frames. We have also learned how Page Replacement decides which page should leave when all frames are occupied.
 
-### External Fragmentation Challenge
+But notice something important: **all of this assumes that memory is being managed as fixed-size pages.**
 
-<div id="manthana-segmentation-reveal" class="edgecase-container"></div>
+What happens when a program needs memory as a meaningful, variable-sized unit rather than as a collection of equal-sized pages?
 
-We now know how memory can become fragmented.
+<div id="manthana-paging-boundary" class="edgecase-container"></div>
 
-But fragmentation raises another question:
+What if memory management followed the logical structure of the program itself?
 
-Can memory be organized around the logical structure of a program instead of treating it as one continuous block?
-
-That's where we go next.
