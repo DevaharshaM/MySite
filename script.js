@@ -158,7 +158,11 @@ const systemsTreeNodes = {
       { id: "how-does-the-filesystem-keep-track", title: "How Does the Filesystem Keep Track?" },
       { id: "a-file-is-not-stored-as-a-file", title: "A File Is Not Stored as a File" },
       { id: "the-disk-has-no-files", title: "The Disk Has No Files" },
-      { id: "when-the-disk-becomes-the-bottleneck", title: "When the Disk Becomes the Bottleneck" }
+      { id: "when-the-disk-becomes-the-bottleneck", title: "When the Disk Becomes the Bottleneck" },
+      { id: "when-the-power-goes-out", title: "When the Power Goes Out" },
+      { id: "the-boundary-between-software-and-hardware", title: "The Boundary Between Software and Hardware" },
+      { id: "not-every-os-has-the-same-job", title: "Not Every OS Has the Same Job" },
+      { id: "when-time-becomes-a-requirement", title: "When Time Becomes a Requirement" }
     ]
   }
 };
@@ -6309,6 +6313,9 @@ function openItem(id, type) {
         }
 
         let navNextIdStr = ' class="nav-next" id="exploration-nav-next"';
+        if (item.id === "who-goes-next" || item.id === "when-behaviour-becomes-state" || item.id === "when-time-becomes-a-requirement") {
+          navNextIdStr = ' class="nav-next" id="exploration-nav-next" style="display: none;"';
+        }
 
         navHtml = `
           <div class="exploration-nav-block">
@@ -6582,6 +6589,12 @@ function initEdgeCase(containerId) {
     renderDiskHasNoFilesEdgeCase();
   } else if (containerId === 'disk-scheduling-edgecase') {
     renderDiskSchedulingEdgeCase();
+  } else if (containerId === 'when-the-power-goes-out-edgecase') {
+    renderWhenThePowerGoesOutEdgeCase();
+  } else if (containerId === 'io-journey-edgecase') {
+    renderIoJourneyEdgeCase();
+  } else if (containerId === 'protected-device-edgecase') {
+    renderProtectedDeviceEdgeCase();
   }
 }
 
@@ -18478,6 +18491,641 @@ function renderDiskSchedulingEdgeCase() {
         <!-- Right Column: Visual plot mapping -->
         <div style="display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;">
           ${svgHtml}
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderWhenThePowerGoesOutEdgeCase() {
+  const container = document.getElementById('when-the-power-goes-out-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State variables
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0; // 0: idle, 1: non-journal-write, 2: non-journal-crash, 3: non-journal-recovery, 4: journal-write, 5: journal-crash, 6: journal-recovery
+  let timerId = null;
+
+  // Visual state states
+  let metadataSize = '4 KB';
+  let metadataBlocks = 'Block A';
+  let blockAState = 'valid'; // 'valid'
+  let blockBState = 'free'; // 'free', 'writing', 'corrupt', 'restored'
+  let journalState = 'inactive'; // 'inactive', 'writing-log', 'committed', 'inspected'
+  let powerState = 'on'; // 'on', 'crashed'
+  let trackerState = 'consistent'; // 'consistent', 'corrupt', 'restored'
+  let activeLog = 'Click "Start" to begin the power loss and filesystem recovery simulation.';
+
+  window.startPowerLossSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 1;
+    updateStateForStep();
+    runSimulation();
+  };
+
+  window.resetPowerLossSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    metadataSize = '4 KB';
+    metadataBlocks = 'Block A';
+    blockAState = 'valid';
+    blockBState = 'free';
+    journalState = 'inactive';
+    powerState = 'on';
+    trackerState = 'consistent';
+    activeLog = 'Click "Start" to begin the power loss and filesystem recovery simulation.';
+    render();
+  }
+
+  function updateStateForStep() {
+    if (simStep === 1) {
+      // Step 1: Non-Journaled write initiated
+      metadataSize = '4 KB';
+      metadataBlocks = 'Block A';
+      blockAState = 'valid';
+      blockBState = 'writing';
+      journalState = 'inactive';
+      powerState = 'on';
+      trackerState = 'consistent';
+      activeLog = '<strong>[1/6] Step 1 — Write Initiated (No Journal)</strong><br>• The application issues an append of 4 KB.<br>• The filesystem allocates Block B from the free space tracker.<br>• The system starts writing data to Block B, preparing to update the metadata next.';
+    } else if (simStep === 2) {
+      // Step 2: Power loss
+      blockBState = 'corrupt';
+      powerState = 'crashed';
+      activeLog = '<strong>[2/6] Step 2 — ⚡ Power Loss Interruption</strong><br>• Sudden power failure cuts off operations mid-write.<br>• The data write to Block B is incomplete, and metadata updates were never written to disk.<br>• Filesystem state is now fractured across storage.';
+    } else if (simStep === 3) {
+      // Step 3: Restart (No Journal) -> inconsistent
+      metadataSize = '8 KB (Inconsistent)';
+      metadataBlocks = 'Block A, Block B (Stale)';
+      blockBState = 'corrupt';
+      powerState = 'on';
+      trackerState = 'corrupt';
+      activeLog = '<strong>[3/6] Step 3 — Restart & Recovery Check (No Journal)</strong><br>• The OS restarts and mounts the volume. Without a journal, it must scan structures manually.<br>• <strong>Inconsistency detected:</strong> The metadata points to Block B and size reports 8 KB, but Block B contains corrupted/garbage data.<br>• Repairing this requires a slow filesystem check (fsck/chkdsk), which may result in data loss.';
+    } else if (simStep === 4) {
+      // Step 4: Restarted with Journal scenario
+      metadataSize = '4 KB';
+      metadataBlocks = 'Block A';
+      blockAState = 'valid';
+      blockBState = 'free';
+      journalState = 'writing-log';
+      powerState = 'on';
+      trackerState = 'consistent';
+      activeLog = '<strong>[4/6] Step 4 — Append Attempt With Journaling</strong><br>• The simulation resets to demonstrate a journaling filesystem.<br>• Before touching the actual storage blocks, the filesystem writes its intent to the journal: <code>[Tx1: Map Block B, Size 8KB]</code>.<br>• The log transaction is marked as pending.';
+    } else if (simStep === 5) {
+      // Step 5: Power loss with Journal
+      blockBState = 'writing';
+      journalState = 'committed';
+      powerState = 'crashed';
+      activeLog = '<strong>[5/6] Step 5 — ⚡ Power Loss Interrupted Mid-Transaction</strong><br>• Power fails again while writing the actual blocks.<br>• Block B write is cut short, but the transaction intent is fully committed to the journal log.';
+    } else if (simStep === 6) {
+      // Step 6: Restart and Journal Recovery
+      metadataSize = '4 KB (Restored)';
+      metadataBlocks = 'Block A';
+      blockBState = 'free';
+      journalState = 'inspected';
+      powerState = 'on';
+      trackerState = 'restored';
+      activeLog = '<strong>[6/6] Step 6 — Journal Recovery on Restart</strong><br>• During restart, the OS scans the journal instead of the entire drive.<br>• It finds the uncompleted transaction <code>Tx1</code>. Because the write never completed, the recovery manager rolls back the metadata to the last safe state (4 KB, Block A).<br>• The filesystem returns to a clean, consistent state in seconds!';
+      simState = 'finished';
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function runSimulation() {
+    timerId = setInterval(() => {
+      if (!document.getElementById('when-the-power-goes-out-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      simStep++;
+      updateStateForStep();
+      render();
+    }, 4500); // 4.5 seconds per step
+
+    render();
+  }
+
+  function render() {
+    // Left Column: Metadata Record Details
+    let metadataHtml = `
+      <div style="display:grid; grid-template-columns:1fr 1.2fr; gap:0.4rem; color:#E2E8F0; font-family:var(--mono); font-size:0.7rem;">
+        <div style="color:var(--muted)">File Name:</div><div style="color:#FFF; font-weight:bold;">notes.txt</div>
+        <div style="color:var(--muted)">Inode Num:</div><div style="color:#60A5FA; font-weight:bold;">7182</div>
+        <div style="color:var(--muted)">File Size:</div><div style="color:${trackerState === 'corrupt' ? '#EF4444' : (trackerState === 'restored' ? '#10B981' : '#FFF')}; font-weight:bold;">${metadataSize}</div>
+        <div style="color:var(--muted)">Blocks Map:</div><div style="color:#FFF; font-weight:bold;">${metadataBlocks}</div>
+      </div>
+    `;
+
+    // Center Column: Storage Blocks
+    let blockAHtml = `
+      <div style="border:1.5px solid #10B981; background:rgba(16,185,129,0.15); border-radius:6px; height:50px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#A7F3D0; font-family:var(--mono); font-size:0.7rem; font-weight:bold; width:100%;">
+        <span>Block A</span>
+        <span style="font-size:0.55rem; color:#34D399;">(Data Valid)</span>
+      </div>
+    `;
+
+    let blockBHtml = '';
+    if (blockBState === 'free') {
+      blockBHtml = `
+        <div style="border:1px dashed var(--border); background:rgba(15,23,42,0.2); border-radius:6px; height:50px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:var(--muted); font-family:var(--mono); font-size:0.7rem; width:100%;">
+          <span>Block B</span>
+          <span style="font-size:0.55rem;">(Free Space)</span>
+        </div>
+      `;
+    } else if (blockBState === 'writing') {
+      blockBHtml = `
+        <div style="border:1.5px solid #3B82F6; background:rgba(59,130,246,0.15); border-radius:6px; height:50px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#93C5FD; font-family:var(--mono); font-size:0.7rem; font-weight:bold; width:100%; animation: pulse 1.5s infinite;">
+          <span>Block B</span>
+          <span style="font-size:0.55rem; color:#60A5FA;">[Writing...]</span>
+        </div>
+      `;
+    } else if (blockBState === 'corrupt') {
+      blockBHtml = `
+        <div style="border:1.5px solid #EF4444; background:rgba(239,68,68,0.15); border-radius:6px; height:50px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#FCA5A5; font-family:var(--mono); font-size:0.7rem; font-weight:bold; width:100%;">
+          <span>Block B</span>
+          <span style="font-size:0.55rem; color:#EF4444;">[Corrupted/Incomplete]</span>
+        </div>
+      `;
+    }
+
+    // Right Column: Journal Log Block
+    let journalHtml = '';
+    if (journalState === 'inactive') {
+      journalHtml = `<div style="color:var(--muted); text-align:center; font-style:italic; font-size:0.7rem; padding-top:1.5rem;">Journal Inactive</div>`;
+    } else if (journalState === 'writing-log') {
+      journalHtml = `
+        <div style="border:1px solid #F59E0B; background:rgba(245,158,11,0.1); border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.65rem; color:#FCD34D;">
+          <div style="font-weight:bold; border-bottom:1px solid rgba(245,158,11,0.3); padding-bottom:0.2rem; margin-bottom:0.25rem;">TRANSACTION LOG</div>
+          <div>TxID: #012</div>
+          <div>Op: Append 4KB</div>
+          <div>Target Inode: 7182</div>
+          <div style="color:#F59E0B; font-weight:bold; margin-top:0.25rem;">[PENDING LOG]</div>
+        </div>
+      `;
+    } else if (journalState === 'committed') {
+      journalHtml = `
+        <div style="border:1px solid #10B981; background:rgba(16,185,129,0.15); border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.65rem; color:#A7F3D0;">
+          <div style="font-weight:bold; border-bottom:1px solid rgba(16,185,129,0.3); padding-bottom:0.2rem; margin-bottom:0.25rem;">TRANSACTION LOG</div>
+          <div>TxID: #012</div>
+          <div>Op: Append 4KB</div>
+          <div>Target Inode: 7182</div>
+          <div style="color:#34D399; font-weight:bold; margin-top:0.25rem;">[COMMITTED]</div>
+        </div>
+      `;
+    } else if (journalState === 'inspected') {
+      journalHtml = `
+        <div style="border:1px dashed #60A5FA; background:rgba(59,130,246,0.05); border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.65rem; color:#93C5FD;">
+          <div style="font-weight:bold; border-bottom:1px dashed rgba(96,165,250,0.3); padding-bottom:0.2rem; margin-bottom:0.25rem;">TRANSACTION LOG</div>
+          <div>TxID: #012</div>
+          <div style="text-decoration:line-through; color:var(--muted);">Append 4KB</div>
+          <div style="color:#60A5FA; font-weight:bold; margin-top:0.25rem;">[ROLLED BACK]</div>
+        </div>
+      `;
+    }
+
+    // Power status indicator
+    let statusLabel = '';
+    let statusBg = '';
+    let borderOverlay = '';
+
+    if (powerState === 'crashed') {
+      statusLabel = 'POWER LOSS';
+      statusBg = '#EF4444';
+      borderOverlay = 'border:2px solid #EF4444; box-shadow: 0 0 15px rgba(239,68,68,0.4);';
+    } else if (simState === 'idle') {
+      statusLabel = 'SYSTEM IDLE';
+      statusBg = 'var(--muted)';
+    } else if (simState === 'running') {
+      statusLabel = 'RUNNING';
+      statusBg = 'var(--blue)';
+    } else {
+      statusLabel = 'RECOVERED';
+      statusBg = '#10B981';
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: Crash Consistency Simulation</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Watch how filesystems react to power outages with and without journaling</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <span style="background:${statusBg}; color:#fff; border:1px solid ${statusBg}; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">${statusLabel}</span>
+          <button class="btn btn-primary" onclick="window.startPowerLossSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'running' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetPowerLossSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1.1fr 1fr; gap:1.25rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box; ${borderOverlay} border-radius:8px; padding:0.5rem; transition: all 0.3s;">
+        
+        <!-- Column 1: Filesystem Metadata -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">File Metadata</div>
+          ${metadataHtml}
+        </div>
+
+        <!-- Column 2: Storage Blocks -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Storage Data Blocks</div>
+          <div style="display:flex; flex-direction:column; gap:0.5rem; justify-content:center; align-items:center; height:100%;">
+            ${blockAHtml}
+            ${blockBHtml}
+          </div>
+        </div>
+
+        <!-- Column 3: Journal Log -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Filesystem Journal</div>
+          <div style="display:flex; flex-direction:column; justify-content:center; height:100%;">
+            ${journalHtml}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderIoJourneyEdgeCase() {
+  const container = document.getElementById('io-journey-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0; // 0: idle, 1: syscall, 2: driver-cmd, 3: device-work, 4: dma-irq, 5: complete
+  let timerId = null;
+  let activeLog = 'Click "Start" to trace the complete I/O data lifecycle from software to physical device.';
+
+  window.startIoJourneySim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 1;
+    updateStateForStep();
+    runSimulation();
+  };
+
+  window.resetIoJourneySim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    activeLog = 'Click "Start" to trace the complete I/O data lifecycle from software to physical device.';
+    render();
+  }
+
+  function updateStateForStep() {
+    if (simStep === 1) {
+      activeLog = '<strong>[1/5] System Call: Application requests I/O</strong><br>• The user app executes <code>read()</code>. Accessing hardware directly is blocked.<br>• Execution transitions from user space into the kernel via an electronic software interrupt (syscall boundary).';
+    } else if (simStep === 2) {
+      activeLog = '<strong>[2/5] Device Driver: Translating logical requests</strong><br>• The kernel directs the read request to the device driver.<br>• The driver writes register commands to configure the physical device control parameters (e.g. baud rate, transfer length).';
+    } else if (simStep === 3) {
+      activeLog = '<strong>[3/5] Hardware execution</strong><br>• The device goes active, transferring physical signals (pulses, voltages) from pins into its internal buffer memory.';
+    } else if (simStep === 4) {
+      activeLog = '<strong>[4/5] Direct Memory Access (DMA) & Interrupts</strong><br>• The hardware controller bypasses the CPU to copy data directly from its buffer into kernel RAM (DMA).<br>• Once transfer finishes, the controller triggers a hardware Interrupt line (IRQ) notifying the CPU.';
+    } else if (simStep === 5) {
+      activeLog = '<strong>[5/5] Return & Resume</strong><br>• The interrupt handler wakes up the waiting system call.<br>• The kernel copies data from kernel space to user space and returns control back to the application. I/O complete!';
+      simState = 'finished';
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function runSimulation() {
+    timerId = setInterval(() => {
+      if (!document.getElementById('io-journey-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      simStep++;
+      updateStateForStep();
+      render();
+    }, 4000); // 4 seconds per step
+
+    render();
+  }
+
+  function render() {
+    // Generate Visual Highlight classes depending on step
+    const getLayerStyle = (layerStep) => {
+      const active = simStep === layerStep || (simStep === 5 && layerStep === 1);
+      const border = active ? '2px solid #3B82F6' : '1px solid var(--border)';
+      const bg = active ? 'rgba(59,130,246,0.15)' : 'rgba(30,41,59,0.1)';
+      const text = active ? '#FFF' : 'var(--muted)';
+      const shadow = active ? 'box-shadow: 0 0 10px rgba(59,130,246,0.25);' : '';
+      return `border: ${border}; background: ${bg}; color: ${text}; ${shadow}`;
+    };
+
+    let appStatus = 'IDLE';
+    let kernelStatus = 'WAITING';
+    let driverStatus = 'IDLE';
+    let deviceStatus = 'READY';
+    let ramStatus = 'IDLE';
+
+    if (simStep === 1) {
+      appStatus = 'CALLING read()';
+      kernelStatus = 'INTERCEPTING SYSCALL';
+    } else if (simStep === 2) {
+      kernelStatus = 'ROUTING TO DRIVER';
+      driverStatus = 'CONFIGURING REGISTERS';
+    } else if (simStep === 3) {
+      driverStatus = 'MONITORING';
+      deviceStatus = 'READING HARDWARE';
+    } else if (simStep === 4) {
+      deviceStatus = 'WRITING DMA';
+      ramStatus = 'DMA FILLING';
+      kernelStatus = 'HANDLING INTERRUPT (IRQ)';
+    } else if (simStep === 5) {
+      appStatus = 'DATA RECEIVED (SUCCESS)';
+      kernelStatus = 'COMPLETED';
+      driverStatus = 'IDLE';
+      deviceStatus = 'READY';
+      ramStatus = 'DATA BUFFERED';
+    }
+
+    let statusBadgeHtml = '';
+    if (simState === 'idle') {
+      statusBadgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      statusBadgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Running</span>`;
+    } else if (simState === 'finished') {
+      statusBadgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Complete</span>`;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: The I/O Journey</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Follow a read request from software system call down to registers and DMA transfers</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${statusBadgeHtml}
+          <button class="btn btn-primary" onclick="window.startIoJourneySim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'running' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetIoJourneySim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap:1rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+        
+        <!-- App Layer -->
+        <div style="${getLayerStyle(1)} border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.6rem; align-items:center; transition: all 0.3s; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">User Space (App)</div>
+          <div style="font-family:var(--mono); font-size:0.65rem; color:#A5F3FC; background:rgba(0,0,0,0.2); padding:0.3rem 0.5rem; border-radius:4px; border:1px solid rgba(255,255,255,0.05); width:100%;">
+            Status: ${appStatus}
+          </div>
+        </div>
+
+        <!-- Kernel Layer -->
+        <div style="${getLayerStyle(2)} border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.6rem; align-items:center; transition: all 0.3s; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">OS Kernel</div>
+          <div style="font-family:var(--mono); font-size:0.65rem; color:#A5F3FC; background:rgba(0,0,0,0.2); padding:0.3rem 0.5rem; border-radius:4px; border:1px solid rgba(255,255,255,0.05); width:100%;">
+            Status: ${kernelStatus}
+          </div>
+        </div>
+
+        <!-- Driver Layer -->
+        <div style="${getLayerStyle(3)} border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.6rem; align-items:center; transition: all 0.3s; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">Device Driver</div>
+          <div style="font-family:var(--mono); font-size:0.65rem; color:#A5F3FC; background:rgba(0,0,0,0.2); padding:0.3rem 0.5rem; border-radius:4px; border:1px solid rgba(255,255,255,0.05); width:100%;">
+            Status: ${driverStatus}
+          </div>
+        </div>
+
+        <!-- Device/Hardware Layer -->
+        <div style="${getLayerStyle(4)} border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.6rem; align-items:center; transition: all 0.3s; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; text-transform:uppercase;">Hardware Device</div>
+          <div style="font-family:var(--mono); font-size:0.65rem; color:#A5F3FC; background:rgba(0,0,0,0.2); padding:0.3rem 0.5rem; border-radius:4px; border:1px solid rgba(255,255,255,0.05); width:100%;">
+            Status: ${deviceStatus}
+          </div>
+          ${simStep === 4 ? `
+            <div style="font-family:var(--mono); font-size:0.58rem; color:#10B981; margin-top:0.2rem; animation: pulse 1s infinite;">
+              ► DMA Data Stream
+            </div>
+          ` : ''}
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderProtectedDeviceEdgeCase() {
+  const container = document.getElementById('protected-device-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0; // 0: idle, 1: appA-request, 2: appA-eval, 3: appB-request, 4: appB-eval, 5: complete
+  let timerId = null;
+  let activeLog = 'Click "Start" to simulate authorized vs. unauthorized application hardware access checks.';
+
+  window.startProtectedDeviceSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 1;
+    updateStateForStep();
+    runSimulation();
+  };
+
+  window.resetProtectedDeviceSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    activeLog = 'Click "Start" to simulate authorized vs. unauthorized application hardware access checks.';
+    render();
+  }
+
+  function updateStateForStep() {
+    if (simStep === 1) {
+      activeLog = '<strong>[1/4] App A Request</strong><br>• Application A (running in restricted User Mode) executes a system call requesting write access to the disk storage driver.';
+    } else if (simStep === 2) {
+      activeLog = '<strong>[2/4] Kernel Evaluation (App A) - ACCESS ALLOWED</strong><br>• The system call handler intercepts the request.<br>• The protection subsystem checks Application A\'s access tokens and verifies it possesses write permissions.<br>• The kernel routes the request to the Driver, granting direct physical modification rights.';
+    } else if (simStep === 3) {
+      activeLog = '<strong>[3/4] App B Request</strong><br>• Application B (running in User Mode) executes a system call to read raw disk blocks belonging to another process.';
+    } else if (simStep === 4) {
+      activeLog = '<strong>[4/4] Kernel Evaluation (App B) - ACCESS DENIED</strong><br>• The kernel catches the system call and performs access control checking.<br>• <strong>Violation detected:</strong> Application B lacks permissions for this partition block range.<br>• Access is immediately blocked. The request is rejected before reaching the device driver, and an error code (e.g. EACCES) is sent back to App B.';
+    } else if (simStep === 5) {
+      activeLog = '<strong>[5/4] Simulation Complete</strong><br>• Access control checks at the kernel boundary prevent malicious or unprivileged processes from corrupting shared physical hardware.';
+      simState = 'finished';
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function runSimulation() {
+    timerId = setInterval(() => {
+      if (!document.getElementById('protected-device-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      simStep++;
+      updateStateForStep();
+      render();
+    }, 4500); // 4.5 seconds per step
+
+    render();
+  }
+
+  function render() {
+    // Styling state highlights
+    const checkA = simStep >= 2;
+    const checkB = simStep >= 4;
+
+    let appAStatus = 'IDLE';
+    let appBStatus = 'IDLE';
+    let checkResult = 'WAITING';
+    let driverStatus = 'IDLE';
+
+    if (simStep === 1) {
+      appAStatus = 'REQUESTING ACCESS';
+      checkResult = 'EVALUATING APP A';
+    } else if (simStep === 2) {
+      appAStatus = 'ACCESS GRANTED';
+      checkResult = 'ALLOWED (TOKEN MATCH)';
+      driverStatus = 'WRITING DATA';
+    } else if (simStep === 3) {
+      appBStatus = 'REQUESTING ACCESS';
+      checkResult = 'EVALUATING APP B';
+    } else if (simStep === 4) {
+      appBStatus = 'BLOCKED (ACCESS DENIED)';
+      checkResult = 'DENIED (NO PERMISSION)';
+      driverStatus = 'IDLE';
+    } else if (simStep === 5) {
+      appAStatus = 'IDLE';
+      appBStatus = 'IDLE';
+      checkResult = 'READY';
+      driverStatus = 'IDLE';
+    }
+
+    let statusBadgeHtml = '';
+    if (simState === 'idle') {
+      statusBadgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      statusBadgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Running</span>`;
+    } else if (simState === 'finished') {
+      statusBadgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Complete</span>`;
+    }
+
+    // App grid layout
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: The Protected Device</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Observe how the kernel checks privileges and blocks unauthorized hardware requests</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${statusBadgeHtml}
+          <button class="btn btn-primary" onclick="window.startProtectedDeviceSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'running' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetProtectedDeviceSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1.2fr 1fr; gap:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+        
+        <!-- Left Pane: User Apps -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:1rem; box-sizing:border-box; justify-content:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">User Space Applications</div>
+          
+          <!-- App A -->
+          <div style="border:${simStep === 1 || simStep === 2 ? '1px solid #10B981' : '1px solid var(--border)'}; background:${simStep === 1 || simStep === 2 ? 'rgba(16,185,129,0.08)' : 'rgba(15,23,42,0.4)'}; border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.68rem; transition:all 0.3s;">
+            <div style="font-weight:bold; color:#FFF;">Application A (Admin Task)</div>
+            <div style="color:#10B981; font-size:0.6rem; margin-top:0.25rem;">Status: ${appAStatus}</div>
+          </div>
+
+          <!-- App B -->
+          <div style="border:${simStep === 3 || simStep === 4 ? '1px solid #EF4444' : '1px solid var(--border)'}; background:${simStep === 3 || simStep === 4 ? 'rgba(239,68,68,0.08)' : 'rgba(15,23,42,0.4)'}; border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.68rem; transition:all 0.3s;">
+            <div style="font-weight:bold; color:#FFF;">Application B (Guest Task)</div>
+            <div style="color:#EF4444; font-size:0.6rem; margin-top:0.25rem;">Status: ${appBStatus}</div>
+          </div>
+        </div>
+
+        <!-- Center Pane: Protection Check Boundary -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box; justify-content:center; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Kernel Protection Check</div>
+          
+          <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; min-height:80px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <span style="font-family:var(--mono); font-size:0.72rem; color:#A5F3FC; font-weight:bold; text-transform:uppercase;">${checkResult}</span>
+            ${simStep === 2 ? `
+              <div style="font-size:0.65rem; color:#10B981; font-weight:bold; margin-top:0.4rem;">✔ Security Token OK</div>
+            ` : ''}
+            ${simStep === 4 ? `
+              <div style="font-size:0.65rem; color:#EF4444; font-weight:bold; margin-top:0.4rem;">✘ Missing Privilege</div>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Right Pane: Device Driver & Hardware -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box; justify-content:center; text-align:center;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Device Driver & Device</div>
+          
+          <div style="border:${simStep === 2 ? '1px solid #10B981' : '1px solid var(--border)'}; background:rgba(15,23,42,0.4); border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.65rem; transition:all 0.3s;">
+            <div style="font-weight:bold; color:#FFF;">Driver Status</div>
+            <div style="color:var(--muted); font-size:0.6rem; margin-top:0.2rem;">${driverStatus}</div>
+          </div>
+
+          <div style="border:${simStep === 2 ? '1px solid #3B82F6' : '1px solid var(--border)'}; background:rgba(15,23,42,0.4); border-radius:6px; padding:0.6rem; font-family:var(--mono); font-size:0.65rem; transition:all 0.3s;">
+            <div style="font-weight:bold; color:#FFF;">Physical Disk</div>
+            <div style="color:var(--muted); font-size:0.6rem; margin-top:0.2rem;">${simStep === 2 ? 'WRITING SECTOR 102' : 'IDLE'}</div>
+          </div>
         </div>
 
       </div>

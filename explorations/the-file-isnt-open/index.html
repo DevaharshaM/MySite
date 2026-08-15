@@ -306,6 +306,27 @@ close(fd);              // Release the reference</div><p style="color:#CBD5E1;li
 *   <strong>Windows</strong>: Applications invoke APIs like <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">CreateFile()</code> and receive a <strong>HANDLE</strong> (a pointer-sized opaque reference) rather than a small integer.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In both paradigms, the application receives a reference token. The process never interacts with the storage driver directly; it requests operations using the token, and the operating system handles the translation.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. The Name-to-Identity Mapping</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We now understand that an application does not directly hold the physical file. It uses a file descriptor or reference index to ask the operating system to perform operations on the file. The kernel maintains the open file state and delegates block lookup to the filesystem.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But this relies on the file already being identified by name.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When the application requests:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">/usr/local/bin/prog</code></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>How does the filesystem find the file that this name refers to?</strong></p></div>
     
     
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Operating Systems</span>
+        </div>
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/where-does-a-file-actually-live/" onclick="openItem('where-does-a-file-actually-live', 'blogs')">Where Does a File Actually Live?</a>
+        </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">The File Isn't Open</span>
+          </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/the-name-is-not-the-file/" onclick="openItem('the-name-is-not-the-file', 'blogs')">The Name Is Not the File</a>
+        </div>
+        </div>
+      </div>
+    
     </div>
     </div>
   </div>

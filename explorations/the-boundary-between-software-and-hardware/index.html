@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Choosing What to Forget | PrajnaEdge</title>
+<title>The Boundary Between Software and Hardware | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/choosing-what-to-forget/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/the-boundary-between-software-and-hardware/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -190,17 +190,122 @@
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
       <div id="blog-post-content">
     <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
-    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Choosing What to Forget</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">When physical memory is full, which page must be evicted?</p>
-    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Memory Management</span><span class="tag">Page Replacement</span><span class="tag">FIFO</span><span class="tag">LRU</span><span class="tag">Optimal</span></div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">The Boundary Between Software and Hardware</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Understanding device driver abstractions, user/kernel privilege modes, I/O registers, and protection boundaries.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">I/O Management</span><span class="tag">Protection</span><span class="tag">Security</span><span class="tag">Drivers</span></div>
     <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Saturation Point</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Imagine a system running under constraint. Its physical RAM is small, containing only <strong>3 physical frames</strong>. Right now, physical memory is completely saturated, filled with three active pages:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">$$\text{RAM Frames: } [ \text{Page 2} \ | \ \text{Page 5} \ | \ \text{Page 7} ]$$</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A thread executes an instruction requesting virtual address space residing in <strong>Page 3</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The MMU looks up the translation in the Page Table, finds it invalid, and raises a <strong>Page Fault</strong>. The Operating System traps the fault and prepares to copy Page 3 from disk into RAM. But there is a bottleneck: <em>all physical frames are occupied.</em></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To resolve the fault and bring Page 3 into memory, the operating system must choose one page currently in RAM and evict it back to disk.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This decision is known as <strong>Page Replacement</strong>.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. Three Answers to the Same Question</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How do we decide which page should leave? The policy we choose determines our system's memory efficiency. Three core algorithms answer this question:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>First-In, First-Out (FIFO)</strong>
-<em>"Which Page arrived first?"</em>
-Evict the oldest page loaded into RAM, regardless of how frequently it is being used.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>Least Recently Used (LRU)</strong>
-<em>"Which Page has been unused the longest?"</em>
-Evict the page that has not been accessed for the longest duration, relying on the principle of temporal locality.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>Optimal (OPT)</strong>
-<em>"Which Page will be needed farthest in the future?"</em>
-Evict the page that will go the longest before being requested again.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Interactive Page Replacement Simulator</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">See how these three different strategies handle the exact same reference sequence under the same constraint:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">$$\text{Reference Sequence: } 1 \rightarrow 2 \rightarrow 3 \rightarrow 1 \rightarrow 4$$</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Observe how the exact same access trace produces completely different eviction choices and page fault rates depending on the active policy.</p><div id="page-replacement-edgecase" class="edgecase-container"></div><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">The Mathematical Ideal vs. Hardware Reality</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The <strong>Optimal</strong> policy represents the absolute ceiling of performance, guaranteeing the minimum possible Page Faults for any known reference sequence. However, in practice, a real-world operating system cannot implement the Optimal policy because it cannot know future memory references in advance. Real-world systems must approximate this behavior using historical data, making <strong>LRU</strong> the standard benchmark for practical implementation.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Manthana: The Paging Boundary</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have learned how Paging places fixed-size pages into physical frames. We have also learned how Page Replacement decides which page should leave when all frames are occupied.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But notice something important: <strong>all of this assumes that memory is being managed as fixed-size pages.</strong></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">What happens when a program needs memory as a meaningful, variable-sized unit rather than as a collection of equal-sized pages?</p><div id="manthana-paging-boundary" class="edgecase-container"></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">What if memory management followed the logical structure of the program itself?</p></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Hardware Boundary</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When an ordinary user application needs to perform an operation on a hardware device, it cannot communicate with the hardware directly:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">Application
+     ↓
+"I need data from the device"</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A beginner might imagine a direct software-to-device pathway:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">Application
+     ↓
+  Hardware</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In a modern, protected operating system, this direct path is blocked. Allowing arbitrary, direct register access to every user program would lead to chaos. Instead, the OS inserts a structured boundary of interfaces and control mechanisms:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">Application
+     ↓
+OS Interface / System Call
+     ↓
+   Kernel
+     ↓
+ Device Driver
+     ↓
+  Hardware</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The application requests a logical operation from the operating system. The operating system coordinates the request and delegates the device-specific operations to the driver, which contains the specialized commands required to interact with the target hardware.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. What a Device Driver Actually Does</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A device driver is a specialized kernel module that translates generic OS-level operations into hardware-specific control sequences. Different physical devices have entirely different characteristics:
+* Registers (status, control, data register addresses)
+* Command formats and protocols (e.g. formatting a command packet)
+* Timing requirements and clock frequencies
+* Hardware-specific quirks and initialization routines</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Instead of requiring every application to understand these details, the driver presents a standardized interface to the operating system:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">Generic Request (e.g. read, write)
+      ↓
+    Kernel
+      ↓
+ Device Driver (Hardware-specific translation)
+      ↓
+ Device-specific operations
+      ↓
+   Hardware</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For instance, when reading from a serial port, the application simply executes:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">Application
+     ↓
+  read()
+     ↓
+  Kernel
+     ↓
+ UART Driver
+     ↓
+ UART Hardware</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The application does not know which registers to query or which hardware flags to check; it relies on the driver to handle the translation.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. We Already Know How Hardware Coordinates</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have already seen how software and hardware coordinate through polling, interrupts, and DMA. Those mechanisms do not disappear when an operating system is introduced. Device drivers and the kernel use them underneath the higher-level OS abstraction.</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">                 OS
+                  │
+            Device Driver
+                  │
+       ┌──────────┼──────────┐
+       ↓          ↓          ↓
+    Polling    Interrupt    DMA
+       │          │          │
+       └──────────┼──────────┘
+                  ↓
+               Device</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The driver coordinates operations using these fundamental coordination techniques:
+* <strong>Polling</strong>: The device driver repeatedly reads status registers to check if a byte is ready, useful for ultra-low latency or simple hardware loops.
+* <strong>Interrupts</strong>: The driver registers an Interrupt Service Routine (ISR). When a hardware event occurs (such as a keypress or network frame arrival), the device triggers an interrupt pin, notifying the CPU to pause execution and run the driver's handler code.
+* <strong>DMA (Direct Memory Access)</strong>: The driver configures a DMA controller with source/destination addresses. The hardware transfer executes directly between the device and RAM, bypassing the CPU to prevent it from stalling on large blocks of data.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. EdgeCase — The I/O Journey</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Use the simulator below to trace how a system call routes down through the OS kernel and device driver layers, and how hardware interrupts and DMA return data to the waiting application:</p><div id="io-journey-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Why Does the OS Need a Protection Boundary?</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the application needs hardware data, why not let every program talk to the physical device directly?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If any program could read and write arbitrary device registers, several critical problems would arise:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">Application A ──→ Device
+Application B ──→ Device
+Application C ──→ Device</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Interference</strong>: Application A might overwrite control registers while Application B is mid-transfer, crashing the device controller.
+* <strong>Corruption</strong>: A bug in a user space program could corrupt the partition tables on a physical hard drive, ruining the storage structure for all other applications.
+* <strong>Unauthorized Access</strong>: A program could bypass system policies to read private keys or user keystrokes directly from peripheral memory.
+* <strong>System Control</strong>: Programs could disable CPU interrupts, locking up the machine entirely.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To maintain system stability, the operating system must stand as the sole gatekeeper between user software and hardware.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. User Mode vs. Kernel Mode</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To enforce this boundary, modern CPUs provide physical privilege rings. We have already seen this concept in action: applications run in a restricted state, while kernel code runs with full privileges.</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">┌─────────────────────────────┐
+│          USER MODE          │
+│                             │
+│   Application A             │
+│   Application B             │
+│   Application C             │
+└──────────────┬──────────────┘
+               │
+        Controlled Interface (Syscall / Trap)
+               │
+┌──────────────▼──────────────┐
+│         KERNEL MODE         │
+│                             │
+│      OS + Drivers           │
+└──────────────┬──────────────┘
+               │
+               ▼
+           HARDWARE</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Applications execute in <strong>User Mode</strong>, where direct access to peripheral I/O ports or control registers is forbidden by the hardware. When an app needs to touch a device, it must execute a system call, causing a controlled trap into <strong>Kernel Mode</strong>, where the operating system evaluates the request and carries out the raw register manipulations safely.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. What Protection Actually Provides</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">An operating system's security and protection subsystem provides several core guarantees:</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Privilege
+Restricts hazardous hardware operations (such as page table modifications or device register configurations) to trusted kernel code.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Isolation
+Ensures that one process's memory space and files are completely hidden and protected from unauthorized modification by another process.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Resource Control
+Prevents any single process from monopolizing physical devices, allocating disk blocks, or consuming unfair quantities of network bandwidth.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Permissions / Access Control
+Validates user security tokens and group policies before permitting a system call to reach the underlying hardware drivers.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Controlled Entry
+Forces all user-to-kernel transitions to pass through defined interrupt vectors, preventing malicious code from jumping directly into random kernel memory locations.</h3></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. EdgeCase — The Protected Device</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Use the simulator below to compare how the kernel evaluates hardware write requests from an authorized system task (Application A) versus an unauthorized guest task (Application B):</p><div id="protected-device-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. Connecting the Two Concepts</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When we look at the complete OS stack, device management and security boundary checks work in unison:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">             APPLICATION
+                  │
+             System Call
+                  ↓
+               KERNEL
+              /      \
+             /        \
+      Protection    Device Driver
+          │              │
+          ↓              ↓
+     Permission     Poll / IRQ / DMA
+                         │
+                         ↓
+                       DEVICE</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The key realization is that the OS is not merely a scheduler or a memory manager. <strong>It is also the controlled boundary between applications and the machine.</strong></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">10. Embedded-System Connection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In raw bare-metal embedded firmware, there are often no privilege boundaries. Your software has direct access to the entire memory map. You configure hardware peripherals directly by writing to specialized memory addresses:
+* General Purpose I/O (GPIO) direction registers
+* Universal Asynchronous Receiver-Transmitter (UART) transmit/receive buffers
+* Serial Peripheral Interface (SPI), I2C, and CAN controller control lines
+* Analog-to-Digital Converter (ADC) channels, timers, and DMA channels</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When you transition to an RTOS or a full operating system with a driver abstraction:
+* Peripheral access is encapsulated inside API drivers (e.g. <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">ioctl()</code>, <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">read()</code>, <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">write()</code>).
+* Under memory protection configurations (MPUs or MMUs), the OS blocks direct pointer write accesses to peripheral register addresses from application threads.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The amount of abstraction and protection depends entirely on the system architecture.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">11. Summary of Concepts</h2><table class="blog-table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Core Responsibility</th>
+      <th>Physical CPU Mechanism</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>I/O Device Management</strong></td>
+      <td>Abstraction and device configuration</td>
+      <td>I/O Ports, DMA, Interrupt Lines</td>
+    </tr>
+    <tr>
+      <td><strong>Protection / Security</strong></td>
+      <td>Isolation and access restriction</td>
+      <td>Privilege Rings (User vs. Kernel), Page Tables</td>
+    </tr>
+  </tbody>
+</table><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have now seen how an operating system manages execution, memory, files, storage, devices, and protection.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But not every operating system is designed with the same priorities.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>Why do different types of operating systems exist in the first place?</strong></p></div>
     
     
       <div class="exploration-nav-block">
@@ -211,15 +316,15 @@ Evict the page that will go the longest before being requested again.</p></div><
         <div class="exploration-nav-grid">
           <div class="nav-prev">
             <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../explorations/when-the-page-wasnt-there/" onclick="openItem('when-the-page-wasnt-there', 'blogs')">When the Page Wasn't There</a>
+            <a class="nav-link active" href="../../explorations/when-the-power-goes-out/" onclick="openItem('when-the-power-goes-out', 'blogs')">When the Power Goes Out</a>
         </div>
           <div class="nav-current">
             <span class="nav-dir-label">Current Exploration</span>
-            <span class="nav-title-current">Choosing What to Forget</span>
+            <span class="nav-title-current">The Boundary Between Software and Hardware</span>
           </div>
           <div class="nav-next" id="exploration-nav-next">
             <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" href="../../explorations/segmentation/" onclick="openItem('segmentation', 'blogs')">When Memory Follows Meaning</a>
+            <a class="nav-link active" href="../../explorations/not-every-os-has-the-same-job/" onclick="openItem('not-every-os-has-the-same-job', 'blogs')">Not Every OS Has the Same Job</a>
         </div>
         </div>
       </div>

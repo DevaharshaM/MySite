@@ -322,6 +322,27 @@
 * <strong>Relative</strong>: Does not start from root, e.g., <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">projects/notes.txt</code>. Resolution begins from a contextual environment—typically the process's <strong>Current Working Directory</strong> (CWD).</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This context means the same relative path can resolve to different physical files depending on which folder the application is executed from.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. Real Operating-System Connection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">While disk format structures vary across operating systems, the core programming interface remains uniform.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For instance, Linux filesystems (like ext4) implement directory entries as tables mapping name strings to numerical index nodes (<strong>inodes</strong>). The inode contains all metadata and block addresses, but has no knowledge of the name itself. Regardless of the underlying operating system—be it Windows, macOS, or Linux—the OS presents the exact same unified namespace abstraction (names, paths, directories, and file objects) to user application processes.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. The Next Question</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does the filesystem keep track of all this information — the file's metadata, its directory entries, its data blocks, and the free space around them?</p></div>
     
     
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Operating Systems</span>
+        </div>
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/the-file-isnt-open/" onclick="openItem('the-file-isnt-open', 'blogs')">The File Isn't Open</a>
+        </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">The Name Is Not the File</span>
+          </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/how-does-the-filesystem-keep-track/" onclick="openItem('how-does-the-filesystem-keep-track', 'blogs')">How Does the Filesystem Keep Track?</a>
+        </div>
+        </div>
+      </div>
+    
     </div>
     </div>
   </div>

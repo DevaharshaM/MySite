@@ -342,6 +342,27 @@ All data block pointers are collected together in a single dedicated index block
 * <strong>On Solid State Drives (SSDs)</strong>: There are no moving heads, so mechanical seek delays do not apply. However, extreme fragmentation still imposes CPU overhead on the filesystem driver (which must manage massive mapping tables) and limits the drive controller's ability to run parallel block operations.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">10. The Next Question</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We now know that a file is a logical object whose data is mapped onto storage blocks.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But those blocks do not exist in isolation.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>What exactly is the layer between the filesystem and the storage device — and how do partitions, volumes and filesystems turn a raw device into something the OS can actually use?</strong></p></div>
     
     
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Operating Systems</span>
+        </div>
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/how-does-the-filesystem-keep-track/" onclick="openItem('how-does-the-filesystem-keep-track', 'blogs')">How Does the Filesystem Keep Track?</a>
+        </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">A File Is Not Stored as a File</span>
+          </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/the-disk-has-no-files/" onclick="openItem('the-disk-has-no-files', 'blogs')">The Disk Has No Files</a>
+        </div>
+        </div>
+      </div>
+    
     </div>
     </div>
   </div>

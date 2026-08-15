@@ -73,7 +73,20 @@ systemsTreeNodes = {
     "the-invisible-translator",
     "the-language-of-pages",
     "when-the-page-wasnt-there",
-    "choosing-what-to-forget"
+    "choosing-what-to-forget",
+    "segmentation",
+    "there-is-no-perfect-fit",
+    "where-does-a-file-actually-live",
+    "the-file-isnt-open",
+    "the-name-is-not-the-file",
+    "how-does-the-filesystem-keep-track",
+    "a-file-is-not-stored-as-a-file",
+    "the-disk-has-no-files",
+    "when-the-disk-becomes-the-bottleneck",
+    "when-the-power-goes-out",
+    "the-boundary-between-software-and-hardware",
+    "not-every-os-has-the-same-job",
+    "when-time-becomes-a-requirement"
   ]
 }
 
@@ -444,7 +457,7 @@ def build_navigation_html(post, all_posts_dict):
             """
         
     nav_next_id_str = ' class="nav-next"'
-    if post_id == "who-goes-next":
+    if post_id in ("who-goes-next", "when-behaviour-becomes-state", "when-time-becomes-a-requirement"):
         nav_next_id_str = ' class="nav-next" id="exploration-nav-next" style="display: none;"'
     else:
         nav_next_id_str = ' class="nav-next" id="exploration-nav-next"'

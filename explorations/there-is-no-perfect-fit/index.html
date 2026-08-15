@@ -204,6 +204,27 @@
 *   <strong>Windows &amp; Apple macOS/iOS</strong>: Employ advanced virtual memory managers that dynamically manage page tables, compress memory pages, and page out inactive memory to persistent storage when memory pressure rises.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Modern memory management is not a single universal algorithm, but a coordinated hierarchy of physical managers, virtual translation layers, and reclaim daemons working together.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The Next Horizon</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have followed the journey of memory from physical registers to virtual pages, through paging tables, page replacement algorithms, and variable-sized segment allocators.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But RAM—whether paged, segmented, or compressed—possesses a fundamental physical constraint: <strong>it is temporary</strong>. When a system loses power, everything inside its memory fades away. Programs need a way to keep their code, documents, images, databases, and configurations safe across reboots.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This transition from volatile memory to persistent storage leads us to our next major architectural question:</p><div class="blog-quote">If memory is where information lives while it is being used, where does information live when it isn't?</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To answer this, we must cross the boundary from memory allocation to <strong>File Management</strong>.</p></div>
     
     
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Operating Systems</span>
+        </div>
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/segmentation/" onclick="openItem('segmentation', 'blogs')">When Memory Follows Meaning</a>
+        </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">There Is No Perfect Fit</span>
+          </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/where-does-a-file-actually-live/" onclick="openItem('where-does-a-file-actually-live', 'blogs')">Where Does a File Actually Live?</a>
+        </div>
+        </div>
+      </div>
+    
     </div>
     </div>
   </div>

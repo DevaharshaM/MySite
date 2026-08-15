@@ -2,43 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://prajnaedge.dev/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/legal/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/about/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/contact/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/journey/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/creator/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/explorations/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/demonstrations/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/bare-metal/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/operating-systems/</loc>
-    <lastmod>2026-08-12</lastmod>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/explorations/a-file-is-not-stored-as-a-file/</loc>
@@ -89,6 +89,10 @@
     <lastmod>2026-05-03</lastmod>
   </url>
   <url>
+    <loc>https://prajnaedge.dev/explorations/not-every-os-has-the-same-job/</loc>
+    <lastmod>2026-08-13</lastmod>
+  </url>
+  <url>
     <loc>https://prajnaedge.dev/explorations/one-brain-wasnt-enough/</loc>
     <lastmod>2026-08-06</lastmod>
   </url>
@@ -119,6 +123,10 @@
   <url>
     <loc>https://prajnaedge.dev/explorations/the-architecture-of-time/</loc>
     <lastmod>2026-06-21</lastmod>
+  </url>
+  <url>
+    <loc>https://prajnaedge.dev/explorations/the-boundary-between-software-and-hardware/</loc>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/explorations/the-disk-has-no-files/</loc>
@@ -259,6 +267,14 @@
   <url>
     <loc>https://prajnaedge.dev/explorations/when-the-page-wasnt-there/</loc>
     <lastmod>2026-08-09</lastmod>
+  </url>
+  <url>
+    <loc>https://prajnaedge.dev/explorations/when-the-power-goes-out/</loc>
+    <lastmod>2026-08-13</lastmod>
+  </url>
+  <url>
+    <loc>https://prajnaedge.dev/explorations/when-time-becomes-a-requirement/</loc>
+    <lastmod>2026-08-13</lastmod>
   </url>
   <url>
     <loc>https://prajnaedge.dev/explorations/when-waiting-was-too-expensive/</loc>

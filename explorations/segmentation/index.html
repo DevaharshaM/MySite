@@ -209,6 +209,27 @@
     *   External fragmentation is possible as segments are created and destroyed.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. EdgeCase: Logical-to-Physical Segment Mapping</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Let us look at how the logical segments of a program are placed into physical memory.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In this scenario, a program is composed of four logical segments of varying sizes: a <strong>CODE</strong> segment (8 KB), a <strong>DATA</strong> segment (4 KB), a <strong>STACK</strong> segment (6 KB), and a <strong>HEAP</strong> segment (12 KB).</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Unlike paging, these segments are not chopped up into equal-sized pages; they are mapped directly to physical RAM locations as whole units.</p><div id="segmentation-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Manthana: External Fragmentation</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">By organizing memory around variable-sized segments, we align physical allocation with the logical structure of a program.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">However, this flexibility introduces a major constraint: each individual segment requires a contiguous physical region. As segments of varying sizes are allocated and freed over time, physical memory becomes divided into a series of scattered free holes and allocated blocks.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">What happens when we need to allocate a new segment under these conditions?</p><div id="manthana-segmentation-external" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The Search for a Strategy</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We have now encountered a different memory-allocation problem.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">External fragmentation leaves free memory scattered between allocations. If a segment needs one contiguous region, scattered free space may not be enough.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Can we choose where to place a segment intelligently so that fragmentation is reduced?</p></div>
     
     
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Operating Systems</span>
+        </div>
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/choosing-what-to-forget/" onclick="openItem('choosing-what-to-forget', 'blogs')">Choosing What to Forget</a>
+        </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">When Memory Follows Meaning</span>
+          </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/there-is-no-perfect-fit/" onclick="openItem('there-is-no-perfect-fit', 'blogs')">There Is No Perfect Fit</a>
+        </div>
+        </div>
+      </div>
+    
     </div>
     </div>
   </div>
