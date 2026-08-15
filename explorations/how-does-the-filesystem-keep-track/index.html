@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How Does the Filesystem Keep Track? | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/how-does-the-filesystem-keep-track/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">How Does the Filesystem Keep Track?</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Demystifying persistent directories, metadata bookkeeping, and physical block allocation.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">File Management</span><span class="tag">Filesystem</span><span class="tag">Allocation</span><span class="tag">Metadata</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. Start from the Problem</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When an application creates a new file, the operating system must perform a lot of bookkeeping. Suppose your program requests:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">notes.txt</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To manage this file, the operating system cannot simply store a list of active filenames. It must be prepared to answer critical operational questions at any time:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>What does this file represent?</strong> Is it a regular file, a directory, a symbolic link, or a character device?
+* <strong>How large is it?</strong> Where does the file end, and how many bytes are in use?
+* <strong>Who owns it and who can access it?</strong> What are the read, write, and execute permissions?
+* <strong>When was it changed?</strong> When was the file created, modified, or last opened?
+* <strong>Where is its data?</strong> Which physical block sectors on the storage media hold the file's content?
+* <strong>Which blocks are free?</strong> Where can the filesystem allocate space when the file expands?
+* <strong>How does it survive a power loss?</strong> What happens to the metadata if the machine suddenly shuts down mid-write?</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To resolve these questions, the operating system relies on <strong>persistent filesystem structures</strong> written directly onto the storage device.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Conceptual Filesystem Structures</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To organize this information, modern filesystems split their responsibilities among four major conceptual layers:</p><div class="svg-container" style="margin: 2.5rem 0; text-align: center;">
+  <svg viewBox="0 0 800 250" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6" />
+      </marker>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+      </marker>
+    </defs>
+    <text x="30" y="30" fill="#64748b" font-size="10" font-family="monospace" text-transform="uppercase" letter-spacing="0.05em">Conceptual Filesystem Architecture</text>
+    
+    <!-- Top Level: Filesystem -->
+    <rect x="320" y="45" width="160" height="35" rx="6" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5" />
+    <text x="400" y="67" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">FILESYSTEM INDEX</text>
+
+    <!-- Mid Level: Directory, Metadata, Free-Space -->
+    <!-- Directory Entries -->
+    <rect x="60" y="115" width="180" height="45" rx="6" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="150" y="134" fill="#e2e8f0" font-size="11" font-weight="bold" text-anchor="middle">Directory Entries</text>
+    <text x="150" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">Maps names to internal IDs</text>
+
+    <!-- File Metadata -->
+    <rect x="310" y="115" width="180" height="45" rx="6" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="400" y="134" fill="#e2e8f0" font-size="11" font-weight="bold" text-anchor="middle">File Metadata Records</text>
+    <text x="400" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">Stores size, permissions, properties</text>
+
+    <!-- Free Space Tracking -->
+    <rect x="560" y="115" width="180" height="45" rx="6" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="650" y="134" fill="#e2e8f0" font-size="11" font-weight="bold" text-anchor="middle">Free-Space Tracking</text>
+    <text x="650" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">Tracks available sectors</text>
+
+    <!-- Bottom Level: Data Blocks -->
+    <rect x="310" y="195" width="180" height="35" rx="6" fill="#111827" stroke="#10b981" stroke-width="1.5" />
+    <text x="400" y="217" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">Physical Data Blocks</text>
+
+    <!-- Connectors -->
+    <!-- Top Down Arrows -->
+    <path d="M 340,80 L 190,112" fill="none" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#arrow-blue)" />
+    <path d="M 400,80 L 400,110" fill="none" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#arrow-blue)" />
+    <path d="M 460,80 L 610,112" fill="none" stroke="#3b82f6" stroke-width="1.2" marker-end="url(#arrow-blue)" />
+
+    <!-- Directory to Metadata mapping -->
+    <path d="M 240,137 L 305,137" fill="none" stroke="#3b82f6" stroke-dasharray="3,3" stroke-width="1.2" marker-end="url(#arrow-blue)" />
+
+    <!-- Metadata & Free Space to Data Blocks -->
+    <path d="M 400,160 L 400,190" fill="none" stroke="#10b981" stroke-width="1.2" marker-end="url(#arrow-green)" />
+    <path d="M 610,160 L 460,192" fill="none" stroke="#10b981" stroke-width="1.2" marker-end="url(#arrow-green)" />
+  </svg>
+</div><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Directory Entries
+The namespace is the human-facing interface of the filesystem. The directory structure answers: <strong>What name refers to which filesystem object?</strong></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Directory records are lookups mapping filenames to internal system identifiers:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">notes.txt &amp;rarr; File Identity #7182
+photo.jpg &amp;rarr; File Identity #8221</div><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">File Metadata
+Once the filename maps to an internal ID, the operating system accesses the metadata record. It answers: <strong>What is this file?</strong></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The metadata block contains everything about the file except its name or its raw data:
+* File size (in bytes or sectors).
+* Owner and group membership.
+* Access permissions (Read/Write/Execute constraints).
+* Timestamps (creation, modification, access).
+* File type (regular, folder, link, etc.).
+* Link count (number of directory entry references).
+* Data location offsets (pointing to where the data blocks are located).</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Data Allocation Information
+To read or write the actual data payload, the OS consults the location map stored in the file's metadata. It answers: <strong>Where are the contents of this file stored?</strong></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Conceptually:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">File #7182
+   &amp;darr;
+Block 209
+Block 310
+Block 311</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The exact indexing mechanisms vary, ranging from sequential block indexes to extent maps (which reference a starting block and a run length).</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Free-Space Tracking
+When files grow or new files are created, the filesystem needs to know: <strong>Which storage blocks are available for new data?</strong></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Conceptually, the filesystem maintains a map of the drive:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">[USED] [USED] [FREE] [USED] [FREE] [FREE] [USED]</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The OS reads this structure to find free space quickly and update its markers as sectors are assigned.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. The Key Realization</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A filesystem is not just a bucket where you store files.</p><div class="blog-quote">**A filesystem is a collection of metadata and data structures that allow the operating system to find, describe, allocate, modify, and delete those files.**</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Without these background structures, the storage drive is merely a flat, raw string of addressable sectors. The filesystem is the translation machinery that converts raw sectors into a structured digital workspace.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. EdgeCase: The Lifecycle of a File</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Use the simulator below to trace how the operating system coordinates directories, metadata tables, space trackers, and storage sectors during the lifecycle of a file:</p><div id="filesystem-tracker-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Important Conceptual Distinction</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When you click "Delete" in the simulator above, notice that the physical data blocks are not wiped.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When a file is deleted, the operating system typically does not overwrite the physical sectors with zeros immediately. Instead, it:
+1. Removes the name mapping from the directory.
+2. Releases the metadata record (making its ID available for new files).
+3. Marks the data blocks as "free" in the space tracker.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The old data remains physically readable on the drive sectors until it is overwritten by a subsequent write operation.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Real Operating-System Connection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">While the concepts remain uniform, different operating systems organize their directories and metadata structures in unique ways:</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Unix / Linux (ext4, XFS)
+Linux filesystems separate names from properties using index nodes (<strong>inodes</strong>). Directory entry records map name strings directly to inode numbers. Each inode stands as a self-contained record pointing to the file metadata and data block pointers.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Windows (NTFS)
+NTFS stores all file data and properties in a database called the <strong>Master File Table (MFT)</strong>. MFT records contain the attributes of a file, such as its name, security permissions, and either the data itself (for very small files) or references to external data clusters.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">macOS (APFS)
+APFS uses a b-tree object map, dynamically scaling metadata nodes to manage file snapshots, space sharing, and quick lookups without hardcoded layout layouts.</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Regardless of the on-disk implementation details, every operating system must provide matching mechanisms for directory names, metadata properties, data tracking, and free-space bookkeeping.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. The Next Question</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We now understand how the filesystem keeps track of files.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>But what actually happens underneath the filesystem when it asks the storage device to read or write those blocks?</strong></p></div>
+    
+    
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
+        <h1 class="hero-title">
+          Engineering concepts you don't just read — <em>you experience</em>.
+        </h1>
+        <p class="hero-sub">
+          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
+        <p class="about-text">
+          Engineering is often taught as a collection of isolated concepts.<br><br>
+          A processor here.<br>
+          A protocol there.<br>
+          An operating system somewhere else.<br><br>
+          But real systems are built by connecting these layers.<br><br>
+          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
+          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
+        <p class="why-text">
+          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
+          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
+          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-journey">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
+        </a>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-bare-metal">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Bare Metal</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      Software that runs directly on hardware without an operating system.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Operating Systems</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Bare Metal
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "Every embedded application begins long before main()."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Bare Metal')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-operating-systems">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Operating Systems</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      An Operating System manages hardware and software resources so complex applications can work efficiently.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Operating Systems
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Bare Metal</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "When one loop is no longer enough to carry the burden."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Operating Systems')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-legal">
+  <div style="padding-top: 80px; min-height: 80vh;">
+    <div style="max-width: 760px; margin: 0 auto; padding: 3rem 2.5rem;">
+      <h2 style="font-family:'Syne', sans-serif; font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; color:#fff; margin-bottom:1.5rem; letter-spacing:-0.02em;">Legal Information</h2>
+      <p style="color:var(--muted); font-family:var(--mono); font-size:0.8rem; margin-bottom:2.5rem; letter-spacing:0.05em; text-transform:uppercase;">Product Terms & Licensing</p>
+      
+      <div style="display:flex; flex-direction:column; gap:2.5rem; color:#CBD5E1; font-size:0.95rem; line-height:1.75;">
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">1. Terms of Use</h3>
+          <p>
+            PrajnaEdge is an interactive learning platform designed for systems engineers, developers, and technology enthusiasts. The educational materials, simulation blocks, and visual code tracers are provided for instruction and concept validation. We make no warranty regarding their completeness or applicability to real-world industrial systems.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">2. Intellectual Property</h3>
+          <p>
+            The software, interactive widgets, diagrams, illustrations, custom SVG architectures, and textual documentation on this site are copyright &copy; 2026 PrajnaEdge. All rights reserved. Reproduction, modifications, or scraping of this content without prior written permission is strictly prohibited.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">3. Privacy Policy</h3>
+          <p>
+            PrajnaEdge is committed to learning privacy. We do not sell user data. Analytical event tracking is used solely to study click telemetry and help improve visual guides.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-left">
+      © 2026 PrajnaEdge&trade;
+    </div>
+    <div class="footer-center">
+      <div class="footer-logo-wrap">
+        <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      </div>
+      <div class="footer-text-column">
+        <div class="footer-title">PrajnaEdge</div>
+        <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+        <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+      </div>
+    </div>
+    <div class="footer-right">
+      <a href="/sitemap.xml" target="_blank" class="footer-link">Sitemap</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/" target="_blank" class="footer-link">Legal</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

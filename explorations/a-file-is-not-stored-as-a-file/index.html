@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>A File Is Not Stored as a File | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/a-file-is-not-stored-as-a-file/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">A File Is Not Stored as a File</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Understanding block translation layers, allocation strategies, and logical-to-physical address mapping.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Storage Management</span><span class="tag">Filesystem</span><span class="tag">Allocation</span><span class="tag">Fragmentation</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. Start with the Familiar File</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When you browse your storage, you see files organized neatly into folders:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">notes.txt</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A user or an application interacts with a file as a single, continuous stream of bytes. You open the file, write some text, read it back, and close it.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But this continuity is a software abstraction. The underlying physical storage device has no concept of a "file," a "name," or a "directory." It does not know where <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">notes.txt</code> begins or ends.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Instead, storage devices operate purely in terms of fixed-size data blocks.</p><div style="margin: 2rem 0; text-align: center;">
+  <svg viewBox="0 0 700 80" width="100%" height="auto" style="background: #151d2a; border-radius: 8px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: monospace;">
+    <!-- Flow diagram: App -> File -> FS -> Blocks -> Device -->
+    <rect x="20" y="25" width="100" height="30" rx="4" fill="#1e293b" stroke="#3b82f6" />
+    <text x="70" y="44" fill="#fff" font-size="11" text-anchor="middle">Application</text>
+    
+    <text x="140" y="44" fill="#64748b" font-size="14" text-anchor="middle">&rarr;</text>
+    
+    <rect x="160" y="25" width="80" height="30" rx="4" fill="#1e293b" stroke="#3b82f6" />
+    <text x="200" y="44" fill="#fff" font-size="11" text-anchor="middle">File</text>
+    
+    <text x="260" y="44" fill="#64748b" font-size="14" text-anchor="middle">&rarr;</text>
+
+    <rect x="280" y="25" width="100" height="30" rx="4" fill="#1e293b" stroke="#3b82f6" />
+    <text x="330" y="44" fill="#fff" font-size="11" text-anchor="middle">Filesystem</text>
+    
+    <text x="400" y="44" fill="#64748b" font-size="14" text-anchor="middle">&rarr;</text>
+
+    <rect x="420" y="25" width="110" height="30" rx="4" fill="#1e293b" stroke="#10b981" />
+    <text x="475" y="44" fill="#10b981" font-size="11" text-anchor="middle">Storage Blocks</text>
+    
+    <text x="550" y="44" fill="#64748b" font-size="14" text-anchor="middle">&rarr;</text>
+
+    <rect x="570" y="25" width="110" height="30" rx="4" fill="#111827" stroke="#10b981" />
+    <text x="625" y="44" fill="#10b981" font-size="11" text-anchor="middle">Physical Device</text>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The key realization is simple:</p><div class="blog-quote">**A file is a logical object managed by the operating system. Storage hardware works entirely with blocks.**</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. From File to Blocks</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When a file is written to storage, the filesystem must divide the continuous file bytes into discrete, block-sized chunks.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Suppose <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">notes.txt</code> is exactly <strong>10 KB</strong> in size, and the filesystem organizes storage into <strong>4 KB blocks</strong>. The filesystem splits the file as follows:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Block 1</strong>: Bytes 0 to 4,095 (4 KB) &amp;rarr; Storage Block 120
+* <strong>Block 2</strong>: Bytes 4,096 to 8,191 (4 KB) &amp;rarr; Storage Block 121
+* <strong>Block 3</strong>: Bytes 8,192 to 10,239 (2 KB used) &amp;rarr; Storage Block 122</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Notice that the final block (Block 122) contains only 2 KB of file content, but it still consumes a full 4 KB block on disk. The remaining 2 KB of that block cannot be allocated to another file, resulting in <strong>internal fragmentation</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This block-based translation is handled entirely by the operating system's filesystem driver.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. A File's Blocks Do Not Have to Be Physically Adjacent</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because the filesystem maps logical segments to storage blocks through an index, a file's blocks do not need to sit next to each other on the physical drive.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A file could easily be scattered across the storage medium:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">notes.txt
+   &amp;darr;
+Logical Block 0 &amp;rarr; Storage Block 120
+Logical Block 1 &amp;rarr; Storage Block 121
+Logical Block 2 &amp;rarr; Storage Block 245</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This establishes an important separation of concerns:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">1. <strong>Logical File Order</strong>: A continuous byte sequence starting at 0 and running to 10,239.
+2. <strong>Physical Block Locations</strong>: Scattered blocks (120, 121, 245) residing wherever space was available when the write occurred.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The storage hardware does not know these blocks are related; it simply reads and writes individual blocks as commanded.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Classic Storage Allocation Strategies</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does the filesystem keep track of which blocks belong to which files? Historically, three classic allocation strategies were designed to solve this mapping problem:</p><div class="svg-container" style="margin: 2.5rem 0; text-align: center;">
+  <svg viewBox="0 0 800 240" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6" />
+      </marker>
+    </defs>
+
+    <!-- SECTION 1: CONTIGUOUS ALLOCATION -->
+    <text x="140" y="30" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">Contiguous Allocation</text>
+    
+    <!-- Directory entry -->
+    <rect x="30" y="50" width="220" height="35" rx="4" fill="#1e293b" stroke="rgba(148, 163, 184, 0.15)" />
+    <text x="40" y="72" fill="#94a3b8" font-size="10" font-family="monospace">File A: Start 120, Length 3</text>
+    
+    <!-- Block layout -->
+    <g transform="translate(30, 110)">
+      <rect x="0" y="0" width="60" height="30" rx="3" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" />
+      <text x="30" y="19" fill="#93c5fd" font-size="10" font-family="monospace" text-anchor="middle">Block 120</text>
+      
+      <rect x="70" y="0" width="60" height="30" rx="3" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" />
+      <text x="100" y="19" fill="#93c5fd" font-size="10" font-family="monospace" text-anchor="middle">Block 121</text>
+      
+      <rect x="140" y="0" width="60" height="30" rx="3" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" />
+      <text x="170" y="19" fill="#93c5fd" font-size="10" font-family="monospace" text-anchor="middle">Block 122</text>
+      
+      <!-- Connective flow -->
+      <line x1="60" y1="15" x2="70" y2="15" stroke="#3b82f6" stroke-width="1" />
+      <line x1="130" y1="15" x2="140" y2="15" stroke="#3b82f6" stroke-width="1" />
+    </g>
+    <text x="140" y="175" fill="#94a3b8" font-size="9" text-anchor="middle">Sequential, but prone to fragmentation</text>
+
+    <!-- Divider Line -->
+    <line x1="270" y1="20" x2="270" y2="220" stroke="rgba(148, 163, 184, 0.1)" stroke-width="1" />
+
+    <!-- SECTION 2: LINKED ALLOCATION -->
+    <text x="400" y="30" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">Linked Allocation</text>
+
+    <!-- Directory entry -->
+    <rect x="290" y="50" width="220" height="35" rx="4" fill="#1e293b" stroke="rgba(148, 163, 184, 0.15)" />
+    <text x="300" y="72" fill="#94a3b8" font-size="10" font-family="monospace">File B: Start 120</text>
+
+    <!-- Block layout -->
+    <g transform="translate(290, 110)">
+      <rect x="0" y="0" width="60" height="30" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" />
+      <text x="30" y="15" fill="#a7f3d0" font-size="10" font-family="monospace" text-anchor="middle">Block 120</text>
+      <text x="30" y="25" fill="#64748b" font-size="7" font-family="monospace" text-anchor="middle">ptr: 245</text>
+      
+      <rect x="80" y="0" width="60" height="30" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" />
+      <text x="110" y="15" fill="#a7f3d0" font-size="10" font-family="monospace" text-anchor="middle">Block 245</text>
+      <text x="110" y="25" fill="#64748b" font-size="7" font-family="monospace" text-anchor="middle">ptr: 91</text>
+      
+      <rect x="160" y="0" width="60" height="30" rx="3" fill="rgba(16,185,129,0.1)" stroke="#10b981" />
+      <text x="190" y="15" fill="#a7f3d0" font-size="10" font-family="monospace" text-anchor="middle">Block 91</text>
+      <text x="190" y="25" fill="#ef4444" font-size="7" font-family="monospace" text-anchor="middle">ptr: NULL</text>
+      
+      <!-- Connective arrows -->
+      <path d="M 60,15 L 75,15" fill="none" stroke="#10b981" stroke-dasharray="2,2" stroke-width="1.2" marker-end="url(#arrow-blue)" />
+      <path d="M 140,15 L 155,15" fill="none" stroke="#10b981" stroke-dasharray="2,2" stroke-width="1.2" marker-end="url(#arrow-blue)" />
+    </g>
+    <text x="400" y="175" fill="#94a3b8" font-size="9" text-anchor="middle">Non-contiguous, but random access is poor</text>
+
+    <!-- Divider Line -->
+    <line x1="530" y1="20" x2="530" y2="220" stroke="rgba(148, 163, 184, 0.1)" stroke-width="1" />
+
+    <!-- SECTION 3: INDEXED ALLOCATION -->
+    <text x="660" y="30" fill="#fff" font-size="12" font-weight="bold" text-anchor="middle">Indexed Allocation</text>
+
+    <!-- Directory entry -->
+    <rect x="550" y="50" width="220" height="35" rx="4" fill="#1e293b" stroke="rgba(148, 163, 184, 0.15)" />
+    <text x="560" y="72" fill="#94a3b8" font-size="10" font-family="monospace">File C: Index Block 150</text>
+
+    <!-- Block layout -->
+    <g transform="translate(550, 100)">
+      <!-- Index block -->
+      <rect x="0" y="10" width="70" height="70" rx="3" fill="#1f2937" stroke="#60a5fa" stroke-width="1.5" />
+      <text x="35" y="22" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">Index [150]</text>
+      <text x="35" y="36" fill="#93c5fd" font-size="8" font-family="monospace" text-anchor="middle">0: 120</text>
+      <text x="35" y="48" fill="#93c5fd" font-size="8" font-family="monospace" text-anchor="middle">1: 245</text>
+      <text x="35" y="60" fill="#93c5fd" font-size="8" font-family="monospace" text-anchor="middle">2: 91</text>
+      
+      <!-- Data Blocks -->
+      <rect x="140" y="0" width="60" height="22" rx="2" fill="rgba(96,165,250,0.1)" stroke="rgba(96,165,250,0.4)" />
+      <text x="170" y="14" fill="#93c5fd" font-size="8" font-family="monospace" text-anchor="middle">Block 120</text>
+
+      <rect x="140" y="34" width="60" height="22" rx="2" fill="rgba(96,165,250,0.1)" stroke="rgba(96,165,250,0.4)" />
+      <text x="170" y="48" fill="#93c5fd" font-size="8" font-family="monospace" text-anchor="middle">Block 245</text>
+
+      <rect x="140" y="68" width="60" height="22" rx="2" fill="rgba(96,165,250,0.1)" stroke="rgba(96,165,250,0.4)" />
+      <text x="170" y="82" fill="#93c5fd" font-size="8" font-family="monospace" text-anchor="middle">Block 91</text>
+
+      <!-- Connectors from index to data blocks -->
+      <path d="M 70,30 L 135,11" fill="none" stroke="#60a5fa" stroke-width="1" marker-end="url(#arrow-blue)" />
+      <path d="M 70,45 L 135,45" fill="none" stroke="#60a5fa" stroke-width="1" marker-end="url(#arrow-blue)" />
+      <path d="M 70,60 L 135,79" fill="none" stroke="#60a5fa" stroke-width="1" marker-end="url(#arrow-blue)" />
+    </g>
+    <text x="660" y="195" fill="#94a3b8" font-size="9" text-anchor="middle">Efficient indexes, handles large files</text>
+  </svg>
+</div><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Contiguous Allocation
+The filesystem places the entire file's blocks in consecutive sequence on the storage device.
+* <strong>Advantage</strong>: Extremely fast sequential access, as the device read heads (in HDDs) or controller logic (in SSDs) do not need to jump addresses.
+* <strong>Disadvantage</strong>: Prone to external fragmentation. As files are created and deleted, finding consecutive blocks large enough for new files becomes increasingly difficult.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Linked Allocation
+Each block contains a small pointer to the next block, forming a chain.
+* <strong>Advantage</strong>: No block space is wasted due to external fragmentation; any free block can join the chain.
+* <strong>Disadvantage</strong>: Poor random access performance. To read Block 50, the OS must read Blocks 1 through 49 first to follow the pointers.</h3><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">Indexed Allocation
+All data block pointers are collected together in a single dedicated index block.
+* <strong>Advantage</strong>: Supports fast direct/random access to any block without reading preceding data.
+* <strong>Disadvantage</strong>: Overhead. Even tiny files consume an entire extra block just to hold the index mapping.</h3></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. Important Clarification</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Modern operating system filesystems rarely implement these classic models in their raw textbook form. Instead, they use advanced adaptations:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Extents</strong>: Rather than indexing every block individually, modern filesystems allocate ranges of consecutive blocks. An extent is simply a <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">(Start Block, Run Length)</code> pair. For example: <em>"Start at Block 120 and read the next 8 blocks."</em>
+* <strong>B-Trees / Extent Trees</strong>: Large files index their extents inside tree structures, allowing quick lookups and scaling to petabytes of data.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The fundamental goal, however, remains the same: <strong>translating a single logical file stream into a set of mapped storage block addresses.</strong></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. EdgeCase: From File to Blocks</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Use the simulator below to visualize how the filesystem translates a 10 KB file into logical blocks, maps them to physical sectors, and services a read request from the middle of the file:</p><div id="file-to-blocks-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. Do Not Overclaim Physical Placement</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">While the filesystem maps files to "Storage Blocks," it is important to realize that these storage blocks are still logical representations.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">On modern Solid State Drives (SSDs) and NVMe drives, there is another translation layer inside the device itself. When the filesystem requests <strong>Logical Block Address (LBA) 120</strong>, the SSD controller's <strong>Flash Translation Layer (FTL)</strong> intercepts the request and maps it to a physical flash memory cell.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The SSD controller does this to balance wear across its silicon gates, handle bad blocks, and optimize write performance. The operating system filesystem manages logical block layouts, while the storage drive controller manages the actual physical hardware mapping.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. Real Operating-System Connection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Most production operating systems rely heavily on <strong>extent-based allocation</strong> instead of raw block mapping:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Linux (ext4)</strong>: Uses extent trees to store metadata. A single extent can represent up to 128 MB of contiguous space on a 4 KB block filesystem, reducing metadata overhead significantly.
+* <strong>Windows (NTFS)</strong>: Refers to extents as <em>data runs</em>. The MFT record describes files as a series of runs mapping logical clusters to physical storage clusters.
+* <strong>macOS (APFS)</strong>: Employs dynamic extent allocation paired with copy-on-write clones, letting multiple directory entries reference the same extents until a write is made.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. Connection to Fragmentation</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In the Memory Management branch, we saw how memory becomes fragmented as pages are allocated and freed. The same phenomenon occurs in storage.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When a file's blocks are scattered far apart on physical storage, the file is <strong>fragmented</strong>:
+* <strong>On Hard Disk Drives (HDDs)</strong>: Fragmentation is highly destructive to performance. The mechanical drive head must physically rotate and seek to jump between distant sectors, causing noticeable delays.
+* <strong>On Solid State Drives (SSDs)</strong>: There are no moving heads, so mechanical seek delays do not apply. However, extreme fragmentation still imposes CPU overhead on the filesystem driver (which must manage massive mapping tables) and limits the drive controller's ability to run parallel block operations.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">10. The Next Question</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">We now know that a file is a logical object whose data is mapped onto storage blocks.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But those blocks do not exist in isolation.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><strong>What exactly is the layer between the filesystem and the storage device — and how do partitions, volumes and filesystems turn a raw device into something the OS can actually use?</strong></p></div>
+    
+    
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
+        <h1 class="hero-title">
+          Engineering concepts you don't just read — <em>you experience</em>.
+        </h1>
+        <p class="hero-sub">
+          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
+        <p class="about-text">
+          Engineering is often taught as a collection of isolated concepts.<br><br>
+          A processor here.<br>
+          A protocol there.<br>
+          An operating system somewhere else.<br><br>
+          But real systems are built by connecting these layers.<br><br>
+          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
+          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
+        <p class="why-text">
+          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
+          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
+          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-journey">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
+        </a>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-bare-metal">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Bare Metal</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      Software that runs directly on hardware without an operating system.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Operating Systems</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Bare Metal
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "Every embedded application begins long before main()."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Bare Metal')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-operating-systems">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Operating Systems</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      An Operating System manages hardware and software resources so complex applications can work efficiently.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Operating Systems
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Bare Metal</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "When one loop is no longer enough to carry the burden."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Operating Systems')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-legal">
+  <div style="padding-top: 80px; min-height: 80vh;">
+    <div style="max-width: 760px; margin: 0 auto; padding: 3rem 2.5rem;">
+      <h2 style="font-family:'Syne', sans-serif; font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; color:#fff; margin-bottom:1.5rem; letter-spacing:-0.02em;">Legal Information</h2>
+      <p style="color:var(--muted); font-family:var(--mono); font-size:0.8rem; margin-bottom:2.5rem; letter-spacing:0.05em; text-transform:uppercase;">Product Terms & Licensing</p>
+      
+      <div style="display:flex; flex-direction:column; gap:2.5rem; color:#CBD5E1; font-size:0.95rem; line-height:1.75;">
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">1. Terms of Use</h3>
+          <p>
+            PrajnaEdge is an interactive learning platform designed for systems engineers, developers, and technology enthusiasts. The educational materials, simulation blocks, and visual code tracers are provided for instruction and concept validation. We make no warranty regarding their completeness or applicability to real-world industrial systems.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">2. Intellectual Property</h3>
+          <p>
+            The software, interactive widgets, diagrams, illustrations, custom SVG architectures, and textual documentation on this site are copyright &copy; 2026 PrajnaEdge. All rights reserved. Reproduction, modifications, or scraping of this content without prior written permission is strictly prohibited.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">3. Privacy Policy</h3>
+          <p>
+            PrajnaEdge is committed to learning privacy. We do not sell user data. Analytical event tracking is used solely to study click telemetry and help improve visual guides.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-left">
+      © 2026 PrajnaEdge&trade;
+    </div>
+    <div class="footer-center">
+      <div class="footer-logo-wrap">
+        <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      </div>
+      <div class="footer-text-column">
+        <div class="footer-title">PrajnaEdge</div>
+        <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+        <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+      </div>
+    </div>
+    <div class="footer-right">
+      <a href="/sitemap.xml" target="_blank" class="footer-link">Sitemap</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/" target="_blank" class="footer-link">Legal</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

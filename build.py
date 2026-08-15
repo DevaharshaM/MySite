@@ -277,9 +277,9 @@ def parse_markdown_file(filepath):
             continue
             
         # Check Code block
-        if line.strip().startswith('```c') or line.strip().startswith('```cpp') or line.strip().startswith('```assembly'):
-            lang_match = re.match(r'^```(\w+)', line.strip())
-            lang = lang_match.group(1) if lang_match else 'c'
+        if line.strip().startswith('```') and not line.strip().startswith('```html'):
+            lang_match = re.match(r'^```(\w*)', line.strip())
+            lang = lang_match.group(1) if (lang_match and lang_match.group(1)) else 'c'
             code_lines = []
             i += 1
             while i < len(lines) and not lines[i].strip().startswith('```'):
@@ -495,7 +495,7 @@ def build_post_html(post, all_posts_dict):
             elif b["type"] == 'code':
                 blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(b["text"])}</div>')
             elif b["type"] == 'html':
-                blocks_html.append(parse_text_formatting(b["html"]))
+                blocks_html.append(b["html"])
             elif b["type"] == 'edgecase':
                 blocks_html.append(f'<div id="{esc_html(b["id"])}" class="edgecase-container"></div>')
             elif b["type"] in ('image', 'img'):

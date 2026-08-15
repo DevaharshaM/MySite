@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Name Is Not the File | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/the-name-is-not-the-file/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
+    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
+    <a id="nav-about" onclick="showPage('about')">About</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+  </div>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page">
+    <div class="empty-title">PrajnaEdge</div>
+    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
+      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
+    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
+      Follow the awakened trunk to begin exploring.
+    </div>
+    <!-- Cinematic Evolution Viewport Container -->
+    <div class="tree-viewport" id="tree-viewport">
+      <div class="tree-tooltip" id="tree-tooltip"></div>
+      
+      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+      <div class="homepage-video-container">
+        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
+          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+        </video>
+        
+        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+            <!-- Active Trunk Nodes -->
+            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+            
+            <!-- Special Paths (Future/Interlinked) -->
+            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+            
+            <!-- Industry Branches (Dormant) -->
+            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+          </g>
+        </svg>
+
+        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
+        <div class="homepage-controls-group">
+          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+            <!-- SVG icon injected dynamically via JS based on mute state -->
+          </button>
+          
+          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:3.5rem;text-align:center">
+      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
+      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
+           onmouseover="this.style.borderColor='var(--blue)'">
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
+        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
+            Exploring how systems evolve from hardware to integration.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">The Name Is Not the File</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Understanding directories, path resolution, and filesystem identity.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">File Management</span><span class="tag">Path Resolution</span><span class="tag">Directories</span><span class="tag">Hard Links</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. Start with the Familiar Name</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">When we interact with persistent storage, we locate and open files using names:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">notes.txt</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To a user or a programmer, it is natural to assume that the name <em>is</em> the file itself.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">But this assumption is incorrect.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A filename is merely a string used to identify an object. It is not the underlying file object, nor is it the physical container of the data. A filename is a name used for lookup within a namespace. The physical data blocks on disk and the metadata describing them have an entirely separate identity.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This separation becomes more apparent when we construct a sequence of names to identify a file—a <strong>Path</strong>:</p><div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">/home/dev/projects/notes.txt</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A path is not a single physical string stored on disk that points directly to a sector. Instead, a path is a map. It represents a route that the operating system must navigate component by component to find the target object.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. From Path to File</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To resolve the path <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">/home/dev/projects/notes.txt</code>, the filesystem must step through each component of the directory hierarchy:</p><div class="svg-container" style="margin: 2rem 0; text-align: center;">
+  <svg viewBox="0 0 800 130" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6" />
+      </marker>
+    </defs>
+    <text x="30" y="30" fill="#64748b" font-size="10" font-family="monospace" text-transform="uppercase" letter-spacing="0.05em">Path Resolution Sequence</text>
+    
+    <rect x="40" y="55" width="40" height="30" rx="4" fill="#1e293b" stroke="#3b82f6" />
+    <text x="60" y="74" fill="#fff" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">/</text>
+    <line x1="80" y1="70" x2="112" y2="70" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow)" />
+    
+    <rect x="120" y="55" width="70" height="30" rx="4" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="155" y="74" fill="#e2e8f0" font-size="11" text-anchor="middle">home</text>
+    <line x1="190" y1="70" x2="222" y2="70" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <rect x="230" y="55" width="70" height="30" rx="4" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="265" y="74" fill="#e2e8f0" font-size="11" text-anchor="middle">dev</text>
+    <line x1="300" y1="70" x2="332" y2="70" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <rect x="340" y="55" width="85" height="30" rx="4" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="382" y="74" fill="#e2e8f0" font-size="11" text-anchor="middle">projects</text>
+    <line x1="425" y1="70" x2="457" y2="70" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <rect x="465" y="55" width="85" height="30" rx="4" fill="#1e293b" stroke="#3b82f6" stroke-dasharray="3,2" />
+    <text x="507" y="74" fill="#3b82f6" font-size="11" font-weight="bold" text-anchor="middle">notes.txt</text>
+    <line x1="550" y1="70" x2="592" y2="70" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)" />
+
+    <rect x="600" y="55" width="140" height="30" rx="4" fill="#111827" stroke="#10b981" stroke-width="1.5" />
+    <text x="670" y="74" fill="#10b981" font-size="11" font-weight="bold" text-anchor="middle">File Identity (Inode)</text>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The process begins at the absolute root of the filesystem namespace. The operating system looks up the root node, retrieves its contents, finds the mapping for <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">home</code>, and traverses downward. It repeats this matching step for <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">dev</code> and <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">projects</code> until it gets the entry for <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">notes.txt</code>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A path is not a pointer to data. <strong>A path is a set of instructions for navigating a hierarchical namespace.</strong></p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Directories Are Not Folders</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In graphical user interfaces, directories are styled as "folders"—visual bins that contain physical files.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Conceptually, however, a directory is a mapping table. It is an organizational structure that translates human-readable name strings into unique filesystem internal identities.</p><div class="svg-container" style="margin: 2rem 0; text-align: center;">
+  <svg viewBox="0 0 800 200" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+      </marker>
+    </defs>
+    <text x="30" y="30" fill="#64748b" font-size="10" font-family="monospace" text-transform="uppercase" letter-spacing="0.05em">Conceptual Directory Structure</text>
+    
+    <rect x="50" y="50" width="220" height="120" rx="8" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="70" y="75" fill="#fff" font-size="12" font-weight="bold">Directory Entries Table</text>
+    <line x1="70" y1="85" x2="250" y2="85" stroke="rgba(148, 163, 184, 0.1)" />
+    <text x="70" y="105" fill="#a5f3fc" font-size="10" font-family="monospace">📄 notes.txt</text>
+    <text x="70" y="125" fill="#a5f3fc" font-size="10" font-family="monospace">🖼️ photo.jpg</text>
+    <text x="70" y="145" fill="#f59e0b" font-size="10" font-family="monospace">📁 projects/</text>
+    
+    <path d="M 270,100 L 372,80" fill="none" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)" />
+    <path d="M 270,120 L 372,120" fill="none" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)" />
+    <path d="M 270,140 L 372,160" fill="none" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)" />
+    
+    <rect x="380" y="60" width="220" height="36" rx="4" fill="#111827" stroke="rgba(148, 163, 184, 0.15)" />
+    <text x="400" y="82" fill="#e2e8f0" font-size="11">File: 'notes.txt' Metadata and Inode #7182</text>
+    
+    <rect x="380" y="102" width="220" height="36" rx="4" fill="#111827" stroke="rgba(148, 163, 184, 0.15)" />
+    <text x="400" y="124" fill="#e2e8f0" font-size="11">File: 'photo.jpg' Metadata and Inode #8221</text>
+    
+    <rect x="380" y="144" width="220" height="36" rx="4" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="400" y="166" fill="#f59e0b" font-size="11" font-weight="bold">Directory Object: Inode #1204</text>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A directory provides mappings from names to filesystem objects. When we look up <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">notes.txt</code> inside a directory table, we receive the internal index key. By nesting directory objects inside other directory tables, the filesystem builds the entire hierarchical directory tree.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. EdgeCase: Path Resolution</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Watch the interactive sequence below to trace how the operating system resolves <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">/home/dev/projects/notes.txt</code> from the root node through nested directories, retrieving directory entry tables along the path:</p><div id="path-resolution-edgecase" class="edgecase-container"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">5. The Surprising Part: Name ≠ Identity</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Because directories only link names to identities, the name of a file is decoupled from the file itself. This means <strong>multiple names can point to the same underlying file identity</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This relationship is known as a <strong>Hard Link</strong>:</p><div class="svg-container" style="margin: 2rem 0; text-align: center;">
+  <svg viewBox="0 0 800 180" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#10b981" />
+      </marker>
+    </defs>
+    <text x="30" y="30" fill="#64748b" font-size="10" font-family="monospace" text-transform="uppercase" letter-spacing="0.05em">Hard Link Architecture</text>
+    
+    <rect x="50" y="50" width="220" height="100" rx="8" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="70" y="75" fill="#fff" font-size="11" font-weight="bold">Directory Entries Map</text>
+    <line x1="70" y1="83" x2="230" y2="83" stroke="rgba(148, 163, 184, 0.1)" />
+    
+    <rect x="70" y="93" width="180" height="20" rx="3" fill="rgba(255,255,255,0.02)" stroke="rgba(148, 163, 184, 0.1)" />
+    <text x="80" y="107" fill="#e2e8f0" font-size="10" font-family="monospace">📄 report.txt</text>
+    
+    <rect x="70" y="120" width="180" height="20" rx="3" fill="rgba(255,255,255,0.02)" stroke="rgba(148, 163, 184, 0.1)" />
+    <text x="80" y="134" fill="#e2e8f0" font-size="10" font-family="monospace">📄 backup.txt</text>
+
+    <path d="M 250,103 L 392,100" fill="none" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)" />
+    <path d="M 250,130 L 392,110" fill="none" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow-green)" />
+
+    <rect x="400" y="65" width="260" height="70" rx="6" fill="#111827" stroke="#10b981" stroke-width="2" />
+    <text x="420" y="90" fill="#10b981" font-size="12" font-weight="bold">Inode #7182 (Single File Identity)</text>
+    <text x="420" y="108" fill="#94a3b8" font-size="10">Link Count: 2</text>
+    <text x="420" y="123" fill="#64748b" font-size="9" font-family="monospace">Data blocks: #41902, #41903</text>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">In this system, both <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">report.txt</code> and <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">backup.txt</code> entries are registered inside a directory pointing to the exact same file metadata entry (Inode #7182).</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This is not a copy. Both names refer to the exact same file. If a program writes to <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">report.txt</code> and updates its content, a subsequent read of <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">backup.txt</code> immediately reveals those updates. The file remains alive until all names pointing to its inode reference are deleted (reducing the link count to 0).</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">6. Symbolic Links</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Another way to map names is through a <strong>Symbolic Link</strong> (often called a symlink or shortcut).</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Unlike a hard link, which points directly to the file identity, a symbolic link is a separate file that stores a path string referencing another name:</p><div class="svg-container" style="margin: 2rem 0; text-align: center;">
+  <svg viewBox="0 0 800 200" width="100%" height="auto" style="background: #151d2a; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.08); font-family: system-ui, -apple-system, sans-serif;">
+    <defs>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#3b82f6" />
+      </marker>
+      <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#a855f7" />
+      </marker>
+    </defs>
+    <text x="30" y="30" fill="#64748b" font-size="10" font-family="monospace" text-transform="uppercase" letter-spacing="0.05em">Symbolic Link (Shortcut) Pathing</text>
+    
+    <rect x="50" y="50" width="220" height="120" rx="8" fill="#1e293b" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="70" y="72" fill="#fff" font-size="11" font-weight="bold">Directory Entry Table</text>
+    <line x1="70" y1="80" x2="230" y2="80" stroke="rgba(148, 163, 184, 0.1)" />
+
+    <rect x="65" y="88" width="190" height="26" rx="3" fill="rgba(59,130,246,0.1)" stroke="#3b82f6" />
+    <text x="75" y="104" fill="#3b82f6" font-size="10" font-family="monospace" font-weight="bold">🔗 latest.txt</text>
+
+    <rect x="65" y="124" width="190" height="26" rx="3" fill="rgba(16,185,129,0.05)" stroke="rgba(148, 163, 184, 0.15)" />
+    <text x="75" y="140" fill="#e2e8f0" font-size="10" font-family="monospace">📄 report.txt</text>
+
+    <path d="M 255,101 L 372,85" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow-blue)" />
+    <path d="M 470,110 L 268,135" fill="none" stroke="#3b82f6" stroke-dasharray="3,3" stroke-width="1.5" marker-end="url(#arrow-blue)" />
+    <path d="M 255,137 L 592,137" fill="none" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow-purple)" />
+
+    <rect x="380" y="60" width="180" height="50" rx="5" fill="#1e293b" stroke="#3b82f6" stroke-dasharray="4,4" />
+    <text x="390" y="78" fill="#94a3b8" font-size="9" font-family="monospace">Symlink Inode #8012</text>
+    <text x="390" y="94" fill="#3b82f6" font-size="9" font-family="monospace" font-weight="bold">Contents: 'report.txt'</text>
+
+    <rect x="600" y="107" width="160" height="50" rx="5" fill="#111827" stroke="#a855f7" stroke-width="1.5" />
+    <text x="610" y="128" fill="#e2e8f0" font-size="10" font-weight="bold">Inode #7182</text>
+    <text x="610" y="144" fill="#64748b" font-size="9" font-family="monospace">Real Data Blocks</text>
+  </svg>
+</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The difference between the two configurations is fundamental:
+* <strong>Hard Link</strong>: A direct path from multiple names to the <em>same target inode</em>.
+* <strong>Symbolic Link</strong>: A path from a name to a <em>new file object</em> whose data payload contains the text string of another path.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the target name <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">report.txt</code> is deleted, the symlink <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">latest.txt</code> remains behind but becomes a "broken link," resolving to a path that no longer exists.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">7. Relative vs. Absolute Paths</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Paths can be specified in two formats:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">* <strong>Absolute</strong>: Starts from the root token (<code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">/</code>), e.g., <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">/home/dev/projects/notes.txt</code>. Resolution always begins at root.
+* <strong>Relative</strong>: Does not start from root, e.g., <code style="font-family:var(--mono); font-size:0.9rem; color:#A5F3FC; padding:0.1rem 0.3rem; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148,163,184,0.08); border-radius:4px;">projects/notes.txt</code>. Resolution begins from a contextual environment—typically the process's <strong>Current Working Directory</strong> (CWD).</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">This context means the same relative path can resolve to different physical files depending on which folder the application is executed from.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">8. Real Operating-System Connection</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">While disk format structures vary across operating systems, the core programming interface remains uniform.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">For instance, Linux filesystems (like ext4) implement directory entries as tables mapping name strings to numerical index nodes (<strong>inodes</strong>). The inode contains all metadata and block addresses, but has no knowledge of the name itself. Regardless of the underlying operating system—be it Windows, macOS, or Linux—the OS presents the exact same unified namespace abstraction (names, paths, directories, and file objects) to user application processes.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">9. The Next Question</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">How does the filesystem keep track of all this information — the file's metadata, its directory entries, its data blocks, and the free space around them?</p></div>
+    
+    
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-about">
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
+        <h1 class="hero-title">
+          Engineering concepts you don't just read — <em>you experience</em>.
+        </h1>
+        <p class="hero-sub">
+          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
+        <p class="about-text">
+          Engineering is often taught as a collection of isolated concepts.<br><br>
+          A processor here.<br>
+          A protocol there.<br>
+          An operating system somewhere else.<br><br>
+          But real systems are built by connecting these layers.<br><br>
+          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
+          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
+        </p>
+      </div>
+      <div class="why-card">
+        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
+        <p class="why-text">
+          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
+          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
+          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
+        </p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-journey">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector"></div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta"></div>
+        <div class="node-cards fade-in" id="node-cards"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
+        </a>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-bare-metal">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Bare Metal</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      Software that runs directly on hardware without an operating system.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Operating Systems</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Bare Metal
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "Every embedded application begins long before main()."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Bare Metal')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-operating-systems">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Forest
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Operating Systems</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      An Operating System manages hardware and software resources so complex applications can work efficiently.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Operating Systems
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Bare Metal</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "When one loop is no longer enough to carry the burden."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Operating Systems')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-legal">
+  <div style="padding-top: 80px; min-height: 80vh;">
+    <div style="max-width: 760px; margin: 0 auto; padding: 3rem 2.5rem;">
+      <h2 style="font-family:'Syne', sans-serif; font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; color:#fff; margin-bottom:1.5rem; letter-spacing:-0.02em;">Legal Information</h2>
+      <p style="color:var(--muted); font-family:var(--mono); font-size:0.8rem; margin-bottom:2.5rem; letter-spacing:0.05em; text-transform:uppercase;">Product Terms & Licensing</p>
+      
+      <div style="display:flex; flex-direction:column; gap:2.5rem; color:#CBD5E1; font-size:0.95rem; line-height:1.75;">
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">1. Terms of Use</h3>
+          <p>
+            PrajnaEdge is an interactive learning platform designed for systems engineers, developers, and technology enthusiasts. The educational materials, simulation blocks, and visual code tracers are provided for instruction and concept validation. We make no warranty regarding their completeness or applicability to real-world industrial systems.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">2. Intellectual Property</h3>
+          <p>
+            The software, interactive widgets, diagrams, illustrations, custom SVG architectures, and textual documentation on this site are copyright &copy; 2026 PrajnaEdge. All rights reserved. Reproduction, modifications, or scraping of this content without prior written permission is strictly prohibited.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">3. Privacy Policy</h3>
+          <p>
+            PrajnaEdge is committed to learning privacy. We do not sell user data. Analytical event tracking is used solely to study click telemetry and help improve visual guides.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-left">
+      © 2026 PrajnaEdge&trade;
+    </div>
+    <div class="footer-center">
+      <div class="footer-logo-wrap">
+        <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      </div>
+      <div class="footer-text-column">
+        <div class="footer-title">PrajnaEdge</div>
+        <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
+        <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+      </div>
+    </div>
+    <div class="footer-right">
+      <a href="/sitemap.xml" target="_blank" class="footer-link">Sitemap</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/" target="_blank" class="footer-link">Legal</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

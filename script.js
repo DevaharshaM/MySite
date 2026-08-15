@@ -151,7 +151,14 @@ const systemsTreeNodes = {
       { id: "when-the-page-wasnt-there", title: "When the Page Wasn't There" },
       { id: "choosing-what-to-forget", title: "Choosing What to Forget" },
       { id: "segmentation", title: "When Memory Follows Meaning" },
-      { id: "there-is-no-perfect-fit", title: "There Is No Perfect Fit" }
+      { id: "there-is-no-perfect-fit", title: "There Is No Perfect Fit" },
+      { id: "where-does-a-file-actually-live", title: "Where Does a File Actually Live?" },
+      { id: "the-file-isnt-open", title: "The File Isn't Open" },
+      { id: "the-name-is-not-the-file", title: "The Name Is Not the File" },
+      { id: "how-does-the-filesystem-keep-track", title: "How Does the Filesystem Keep Track?" },
+      { id: "a-file-is-not-stored-as-a-file", title: "A File Is Not Stored as a File" },
+      { id: "the-disk-has-no-files", title: "The Disk Has No Files" },
+      { id: "when-the-disk-becomes-the-bottleneck", title: "When the Disk Becomes the Bottleneck" }
     ]
   }
 };
@@ -6078,6 +6085,11 @@ function openItem(id, type) {
     let blocks = sec.content.map(b => {
       if (b.type === 'p') {
         let txt = b.text;
+        let codeMatch = txt.match(/^```(\w*)\n([\s\S]*?)\n```$/);
+        if (codeMatch) {
+          let codeContent = codeMatch[2];
+          return `<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">${escHtml(codeContent)}</div>`;
+        }
         if (txt.startsWith('#### ')) {
           let headingText = txt.slice(5).trim();
           return `<h4 style="font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">${parseTextFormatting(escHtml(headingText))}</h4>`;
@@ -6562,6 +6574,14 @@ function initEdgeCase(containerId) {
     renderManthanaSegmentationExternal();
   } else if (containerId === 'allocation-strategies-edgecase') {
     renderAllocationStrategiesEdgeCase();
+  } else if (containerId === 'filesystem-tracker-edgecase') {
+    renderFilesystemTrackerEdgeCase();
+  } else if (containerId === 'file-to-blocks-edgecase') {
+    renderFileToBlocksEdgeCase();
+  } else if (containerId === 'disk-has-no-files-edgecase') {
+    renderDiskHasNoFilesEdgeCase();
+  } else if (containerId === 'disk-scheduling-edgecase') {
+    renderDiskSchedulingEdgeCase();
   }
 }
 
@@ -17437,6 +17457,1035 @@ function renderAllocationStrategiesEdgeCase() {
       <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:80px;">
         <div style="font-family:var(--mono); font-size:0.72rem; color:#A5F3FC; line-height:1.55;">
           ${statusText}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderFilesystemTrackerEdgeCase() {
+  const container = document.getElementById('filesystem-tracker-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0; // 0: idle, 1: create, 2: write, 3: read, 4: delete
+  let timerId = null;
+  let activeLog = 'Click "Start" to begin the automatic file lifecycle simulation.';
+  let directoryState = 'empty'; // 'empty', 'active'
+  let metadataState = 'empty'; // 'empty', 'allocated-empty', 'allocated-data'
+  let dataBlocksState = 'empty'; // 'empty', 'hello', 'stale'
+  let spaceState = 'all-free'; // 'all-free', '100-used'
+
+  window.startFilesystemTrackerSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 1;
+    updateStateForStep();
+    runSimulation();
+  };
+
+  window.resetFilesystemTrackerSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    directoryState = 'empty';
+    metadataState = 'empty';
+    dataBlocksState = 'empty';
+    spaceState = 'all-free';
+    activeLog = 'Click "Start" to begin the automatic file lifecycle simulation.';
+    render();
+  }
+
+  function updateStateForStep() {
+    if (simStep === 1) {
+      // Create Step
+      directoryState = 'active';
+      metadataState = 'allocated-empty';
+      dataBlocksState = 'empty';
+      spaceState = 'all-free';
+      activeLog = '<strong>[1/4] Step 1 — Create: <code>create("notes.txt")</code></strong><br>• The filesystem checks that the filename does not exist in the active namespace.<br>• It allocates a fresh metadata record (Inode #7182) and writes the mapping <code>notes.txt → #7182</code> to the directory table.<br>• File size starts at 0 bytes, and no storage blocks are allocated yet.';
+    } else if (simStep === 2) {
+      // Write Step
+      directoryState = 'active';
+      metadataState = 'allocated-data';
+      dataBlocksState = 'hello';
+      spaceState = '100-used';
+      activeLog = '<strong>[2/4] Step 2 — Write: <code>write("Hello")</code></strong><br>• The application writes 5 bytes. The filesystem allocates Block 100 from its free space tracker and marks it as USED.<br>• It writes the payload "Hello" to physical Block 100.<br>• Finally, the filesystem updates the metadata record size to 5 bytes and points its block reference to Block 100.';
+    } else if (simStep === 3) {
+      // Read Step
+      directoryState = 'active';
+      metadataState = 'allocated-data';
+      dataBlocksState = 'hello';
+      spaceState = '100-used';
+      activeLog = '<strong>[3/4] Step 3 — Read: <code>read()</code></strong><br>• The application requests file content. The OS looks up the metadata for Inode #7182 to locate the blocks.<br>• Finding Block 100, the kernel requests the storage device controller to read physical Block 100.<br>• The OS retrieves "Hello" and copies it into the application buffer. The application requires no physical block coordinates.';
+    } else if (simStep === 4) {
+      // Delete Step
+      directoryState = 'empty';
+      metadataState = 'empty';
+      dataBlocksState = 'stale';
+      spaceState = 'all-free';
+      activeLog = '<strong>[4/4] Step 4 — Delete: <code>delete("notes.txt")</code></strong><br>• The filesystem removes the name mapping <code>notes.txt</code> from the directory record and releases Inode #7182.<br>• It marks Block 100 as FREE in the space tracker.<br>• <strong>Key Realization:</strong> Deletion only updates filesystem indexing. The physical bytes "Hello" remain on disk as stale data until overwritten!';
+      simState = 'finished';
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function runSimulation() {
+    timerId = setInterval(() => {
+      if (!document.getElementById('filesystem-tracker-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      simStep++;
+      updateStateForStep();
+      render();
+    }, 4000); // 4 seconds per step to allow comfortable reading
+
+    render();
+  }
+
+  function render() {
+    // Render Directory HTML
+    let directoryHtml = '';
+    if (directoryState === 'empty') {
+      directoryHtml = `<span style="color:var(--muted); font-style:italic; font-size:0.75rem;">(Directory is empty)</span>`;
+    } else {
+      directoryHtml = `
+        <div style="display:flex; justify-content:space-between; align-items:center; width:100%; font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; font-weight:bold;">
+          <span>📄 notes.txt</span>
+          <span style="color:#60A5FA;">&rarr; Inode #7182</span>
+        </div>
+      `;
+    }
+
+    // Render Metadata HTML
+    let metadataHtml = '';
+    if (metadataState === 'empty') {
+      metadataHtml = `<div style="color:var(--muted); text-align:center; font-style:italic; font-size:0.75rem; margin-top:1.2rem;">(Inode #7182 is Unallocated)</div>`;
+    } else if (metadataState === 'allocated-empty') {
+      metadataHtml = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem; color:#E2E8F0;">
+          <div><span style="color:var(--muted)">Inode #:</span> <strong style="color:#60A5FA;">7182</strong></div>
+          <div><span style="color:var(--muted)">Type:</span> <strong>Regular File</strong></div>
+          <div><span style="color:var(--muted)">Size:</span> <strong style="color:#EF4444;">0 bytes</strong></div>
+          <div><span style="color:var(--muted)">Blocks:</span> <strong style="color:var(--muted)">(None)</strong></div>
+          <div style="grid-column: span 2;"><span style="color:var(--muted)">Permissions:</span> <strong style="color:#34D399; font-family:var(--mono)">rw-r--r--</strong></div>
+        </div>
+      `;
+    } else if (metadataState === 'allocated-data') {
+      metadataHtml = `
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem; color:#E2E8F0;">
+          <div><span style="color:var(--muted)">Inode #:</span> <strong style="color:#60A5FA;">7182</strong></div>
+          <div><span style="color:var(--muted)">Type:</span> <strong>Regular File</strong></div>
+          <div><span style="color:var(--muted)">Size:</span> <strong style="color:#10B981;">5 bytes</strong></div>
+          <div><span style="color:var(--muted)">Blocks:</span> <strong style="color:#10B981;">[100]</strong></div>
+          <div style="grid-column: span 2;"><span style="color:var(--muted)">Permissions:</span> <strong style="color:#34D399; font-family:var(--mono)">rw-r--r--</strong></div>
+        </div>
+      `;
+    }
+
+    // Render Free Space HTML
+    let freeSpaceHtml = '';
+    for (let b = 100; b <= 106; b++) {
+      let isUsed = (b === 100 && spaceState === '100-used');
+      let blockColor = isUsed ? '#EF4444' : '#10B981';
+      let blockBg = isUsed ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.08)';
+      let blockLabel = isUsed ? 'USED' : 'FREE';
+      let fontColor = isUsed ? '#FCA5A5' : '#A7F3D0';
+      freeSpaceHtml += `
+        <div style="display:flex; flex-direction:column; align-items:center; border:1px solid ${blockColor}; background:${blockBg}; border-radius:4px; padding:0.25rem; min-width:40px; font-family:var(--mono); font-size:0.65rem; transition:all 0.3s;">
+          <span style="color:#FFF; font-weight:bold; font-size:0.7rem; margin-bottom:0.1rem;">${b}</span>
+          <span style="color:${fontColor}; font-size:0.55rem; font-weight:bold;">${blockLabel}</span>
+        </div>
+      `;
+    }
+
+    // Render Data Blocks HTML
+    let dataBlocksHtml = '';
+    if (dataBlocksState === 'empty') {
+      dataBlocksHtml = `<span style="color:var(--muted); font-style:italic; font-size:0.75rem;">(All blocks empty/idle)</span>`;
+    } else if (dataBlocksState === 'hello') {
+      dataBlocksHtml = `
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span style="background:rgba(59,130,246,0.15); border:1px solid #3B82F6; border-radius:4px; padding:0.2rem 0.4rem; font-family:var(--mono); font-size:0.7rem; color:#60A5FA; font-weight:bold;">Block 100</span>
+            <span style="font-family:var(--mono); font-size:0.75rem; color:#FFF; font-weight:bold;">"Hello"</span>
+          </div>
+          <span style="color:#10B981; font-family:var(--mono); font-size:0.65rem; font-weight:bold;">[Active Payload]</span>
+        </div>
+      `;
+    } else if (dataBlocksState === 'stale') {
+      dataBlocksHtml = `
+        <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <span style="background:rgba(239,68,68,0.1); border:1px dashed #EF4444; border-radius:4px; padding:0.2rem 0.4rem; font-family:var(--mono); font-size:0.7rem; color:#FCA5A5;">Block 100</span>
+            <span style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-decoration:line-through; font-style:italic;">"Hello"</span>
+          </div>
+          <span style="color:#EF4444; font-family:var(--mono); font-size:0.65rem; font-weight:bold;">[Stale Data / Wiped from Index]</span>
+        </div>
+      `;
+    }
+
+    let statusBadgeHtml = '';
+    if (simState === 'idle') {
+      statusBadgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      statusBadgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Running</span>`;
+    } else if (simState === 'finished') {
+      statusBadgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Complete</span>`;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: Lifecycle of a File</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Track filesystem book-keeping during file creation, write, read, and deletion</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${statusBadgeHtml}
+          <button class="btn btn-primary" onclick="window.startFilesystemTrackerSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'running' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetFilesystemTrackerSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.25rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+        
+        <!-- Left Column: Directory & Metadata -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:1.2rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">DIRECTORY & METADATA</div>
+          
+          <!-- Directory entries -->
+          <div>
+            <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.03em;">Directory Mapping (Namespace)</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.75rem; min-height:48px; display:flex; align-items:center;">
+              ${directoryHtml}
+            </div>
+          </div>
+
+          <!-- Metadata Record -->
+          <div>
+            <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.03em;">Metadata Record Details</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.75rem; min-height:92px; display:flex; flex-direction:column; justify-content:center;">
+              ${metadataHtml}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Space & Data Blocks -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:1.2rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">SPACE & DATA TRACKING</div>
+          
+          <!-- Free space tracker -->
+          <div>
+            <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.03em;">Free Space Tracker (Storage Blocks)</div>
+            <div style="display:flex; gap:0.35rem; flex-wrap:wrap; background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.75rem; justify-content:center;">
+              ${freeSpaceHtml}
+            </div>
+          </div>
+
+          <!-- Data blocks on physical media -->
+          <div>
+            <div style="font-size:0.65rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.03em;">Physical Data Blocks</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.75rem; min-height:48px; display:flex; align-items:center;">
+              ${dataBlocksHtml}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderFileToBlocksEdgeCase() {
+  const container = document.getElementById('file-to-blocks-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0; // 0: idle, 1: split, 2: allocate, 3: read
+  let timerId = null;
+  let activeLog = 'Click "Start" to begin the file-to-blocks mapping simulation.';
+  let fileState = 'unified'; // 'unified', 'split'
+  let mappingState = 'empty'; // 'empty', 'mapped'
+  let readHighlight = false; // true during read step for Logical Block 1 -> Block 121
+
+  window.startFileToBlocksSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 1;
+    updateStateForStep();
+    runSimulation();
+  };
+
+  window.resetFileToBlocksSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    fileState = 'unified';
+    mappingState = 'empty';
+    readHighlight = false;
+    activeLog = 'Click "Start" to begin the file-to-blocks mapping simulation.';
+    render();
+  }
+
+  function updateStateForStep() {
+    if (simStep === 1) {
+      // Split Step
+      fileState = 'split';
+      mappingState = 'empty';
+      readHighlight = false;
+      activeLog = '<strong>[1/3] Step 1 — Split: File to Logical Blocks</strong><br>• The application sees <code>notes.txt</code> as a single 10 KB stream.<br>• Since the filesystem operates in 4 KB block increments, it partitions the file into 3 logical blocks:<br>&nbsp;&nbsp;- Logical Block 0: 4 KB<br>&nbsp;&nbsp;- Logical Block 1: 4 KB<br>&nbsp;&nbsp;- Logical Block 2: 2 KB (occupies a full 4 KB block with 2 KB internal fragmentation).';
+    } else if (simStep === 2) {
+      // Allocate Step
+      fileState = 'split';
+      mappingState = 'mapped';
+      readHighlight = false;
+      activeLog = '<strong>[2/3] Step 2 — Allocate: Mapping Blocks on Storage Device</strong><br>• The filesystem requests blocks from its free space tracker.<br>• It allocates non-contiguous blocks: 120, 121, and 245.<br>• It updates the metadata mapping table: Logical Block 0 &rarr; Storage Block 120, Logical Block 1 &rarr; Storage Block 121, Logical Block 2 &rarr; Storage Block 245.<br>• The storage device marks these blocks as USED.';
+    } else if (simStep === 3) {
+      // Read Step
+      fileState = 'split';
+      mappingState = 'mapped';
+      readHighlight = true;
+      activeLog = '<strong>[3/3] Step 3 — Translate: Read from Middle of File</strong><br>• The application requests data from the middle of the file (e.g. byte offset 5,000).<br>• The operating system calculates: 5,000 / 4,096 = Logical Block 1 (at offset 904).<br>• It looks up the metadata index, translates Logical Block 1 to physical Storage Block 121, and reads it.<br>• The application gets its data smoothly without ever knowing about the physical block number 121!';
+      simState = 'finished';
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function runSimulation() {
+    timerId = setInterval(() => {
+      if (!document.getElementById('file-to-blocks-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      simStep++;
+      updateStateForStep();
+      render();
+    }, 4000); // 4 seconds per step
+
+    render();
+  }
+
+  function render() {
+    // Render Logical File View
+    let logicalFileHtml = '';
+    if (fileState === 'unified') {
+      logicalFileHtml = `
+        <div style="background:rgba(59,130,246,0.15); border:1.5px solid #3B82F6; border-radius:6px; height:120px; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#FFF; font-family:'Syne',sans-serif; text-align:center;">
+          <span style="font-weight:bold; font-size:0.95rem;">notes.txt</span>
+          <span style="font-size:0.75rem; color:#93C5FD; font-family:var(--mono); margin-top:0.25rem;">Size: 10 KB</span>
+        </div>
+      `;
+    } else {
+      logicalFileHtml = `
+        <div style="display:flex; flex-direction:column; gap:0.6rem; height:120px; justify-content:center;">
+          <div style="background:rgba(59,130,246,0.1); border:1px solid #3B82F6; border-radius:4px; padding:0.4rem; display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:0.7rem; color:#FFF; transition:all 0.3s; ${(readHighlight && mappingState === 'mapped') ? 'opacity:0.4;' : ''}">
+            <span>Logical Block 0</span>
+            <span style="color:#93C5FD;">4 KB</span>
+          </div>
+          <div style="background:rgba(59,130,246,0.1); border:2px solid #60A5FA; border-radius:4px; padding:0.4rem; display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:0.7rem; color:#FFF; transition:all 0.3s; ${(readHighlight && mappingState === 'mapped') ? 'background:rgba(59,130,246,0.25); border-color:#FFF; box-shadow:0 0 10px rgba(96,165,250,0.5); font-weight:bold;' : ''}">
+            <span>Logical Block 1</span>
+            <span style="color:#60A5FA;">4 KB</span>
+          </div>
+          <div style="background:rgba(59,130,246,0.1); border:1px solid #3B82F6; border-radius:4px; padding:0.4rem; display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:0.7rem; color:#FFF; transition:all 0.3s; ${(readHighlight && mappingState === 'mapped') ? 'opacity:0.4;' : ''}">
+            <span>Logical Block 2</span>
+            <span style="color:#93C5FD;">2 KB <small style="color:rgba(239,68,68,0.85)">(2KB wasted)</small></span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Mapping Table HTML
+    let mappingHtml = '';
+    if (mappingState === 'empty') {
+      mappingHtml = `
+        <div style="color:var(--muted); text-align:center; font-style:italic; font-size:0.75rem; margin-top:2rem;">
+          (Unallocated / Not Mapped)
+        </div>
+      `;
+    } else {
+      mappingHtml = `
+        <div style="display:flex; flex-direction:column; gap:0.5rem; justify-content:center; height:120px; font-family:var(--mono); font-size:0.7rem; color:#E2E8F0;">
+          <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:0.25rem; font-weight:bold; color:var(--muted);">
+            <span>LOGICAL</span>
+            <span>STORAGE</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.15rem 0; transition:all 0.3s; ${readHighlight ? 'opacity:0.4;' : ''}">
+            <span>Block 0</span>
+            <span style="color:#FFF;">&rarr; Block 120</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.15rem 0; font-weight:bold; color:#FFF; transition:all 0.3s; ${readHighlight ? 'background:rgba(59,130,246,0.15); color:#60A5FA; padding:0.25rem 0.4rem; border-radius:4px; border:1px solid rgba(96,165,250,0.3);' : ''}">
+            <span>Block 1</span>
+            <span>&rarr; Block 121</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0.15rem 0; transition:all 0.3s; ${readHighlight ? 'opacity:0.4;' : ''}">
+            <span>Block 2</span>
+            <span style="color:#FFF;">&rarr; Block 245</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Storage View HTML
+    const renderBlockNode = (blockNum) => {
+      let isAllocated = (mappingState === 'mapped') && (blockNum === 120 || blockNum === 121 || blockNum === 245);
+      let isCurrentRead = isAllocated && readHighlight && (blockNum === 121);
+
+      let borderStyle = '1px solid var(--border)';
+      let bgColor = 'rgba(15,23,42,0.4)';
+      let textColor = 'var(--muted)';
+      let badgeHtml = '';
+
+      if (isCurrentRead) {
+        borderStyle = '2px solid #FFF';
+        bgColor = 'rgba(59,130,246,0.3)';
+        textColor = '#FFF';
+        badgeHtml = `<span style="font-size:0.5rem; background:#60A5FA; color:#1e293b; padding:1px 3px; border-radius:2px; font-weight:bold; position:absolute; bottom:-6px; right:2px;">READING</span>`;
+      } else if (isAllocated) {
+        borderStyle = '1px solid #10B981';
+        bgColor = 'rgba(16,185,129,0.15)';
+        textColor = '#A7F3D0';
+        badgeHtml = `<span style="font-size:0.5rem; color:#34D399; font-weight:bold; position:absolute; bottom:-6px; right:2px;">USED</span>`;
+      } else {
+        textColor = '#94A3B8';
+        badgeHtml = `<span style="font-size:0.5rem; color:var(--muted); position:absolute; bottom:-6px; right:2px;">FREE</span>`;
+      }
+
+      return `
+        <div style="position:relative; width:46px; height:46px; display:flex; flex-direction:column; justify-content:center; align-items:center; border:${borderStyle}; background:${bgColor}; border-radius:6px; font-family:var(--mono); font-size:0.65rem; transition:all 0.3s; ${isCurrentRead ? 'box-shadow: 0 0 12px #3B82F6;' : ''}">
+          <span style="color:${textColor}; font-weight:bold;">${blockNum}</span>
+          ${badgeHtml}
+        </div>
+      `;
+    };
+
+    let group1Html = `
+      <div style="display:flex; gap:0.4rem; justify-content:center; width:100%;">
+        ${renderBlockNode(118)}
+        ${renderBlockNode(119)}
+        ${renderBlockNode(120)}
+        ${renderBlockNode(121)}
+        ${renderBlockNode(122)}
+      </div>
+    `;
+
+    let group2Html = `
+      <div style="display:flex; gap:0.4rem; justify-content:center; width:100%; margin-top:0.6rem;">
+        ${renderBlockNode(243)}
+        ${renderBlockNode(244)}
+        ${renderBlockNode(245)}
+        ${renderBlockNode(246)}
+        ${renderBlockNode(247)}
+      </div>
+    `;
+
+    let statusBadgeHtml = '';
+    if (simState === 'idle') {
+      statusBadgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      statusBadgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Running</span>`;
+    } else if (simState === 'finished') {
+      statusBadgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Complete</span>`;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: From File to Storage Blocks</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Track block splitting, mapping indexes, and read translation mechanics</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${statusBadgeHtml}
+          <button class="btn btn-primary" onclick="window.startFileToBlocksSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'running' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetFileToBlocksSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1.2fr 1fr 1.3fr; gap:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+        
+        <!-- Logical File Panel -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Logical File View</div>
+          ${logicalFileHtml}
+        </div>
+
+        <!-- Metadata Mapping Table -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Metadata Mapping</div>
+          ${mappingHtml}
+        </div>
+
+        <!-- Physical Storage Grid -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.7rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Physical Blocks</div>
+          <div style="display:flex; flex-direction:column; justify-content:center; height:120px;">
+            ${group1Html}
+            ${group2Html}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderDiskHasNoFilesEdgeCase() {
+  const container = document.getElementById('disk-has-no-files-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // State
+  let simState = 'idle'; // 'idle', 'running', 'finished'
+  let simStep = 0; // 0: idle, 1: partition, 2: format, 3: write, 4: app
+  let timerId = null;
+  let activeLog = 'Click "Start" to begin the device-to-filesystem virtualization sequence.';
+  
+  let partitionState = 'none'; // 'none', 'partitioned'
+  let formatState = 'none'; // 'none', 'formatted'
+  let fileState = 'none'; // 'none', 'notes', 'all'
+
+  window.startDiskHasNoFilesSim = function() {
+    if (simState === 'running') return;
+    simState = 'running';
+    simStep = 1;
+    updateStateForStep();
+    runSimulation();
+  };
+
+  window.resetDiskHasNoFilesSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    simStep = 0;
+    partitionState = 'none';
+    formatState = 'none';
+    fileState = 'none';
+    activeLog = 'Click "Start" to begin the device-to-filesystem virtualization sequence.';
+    render();
+  }
+
+  function updateStateForStep() {
+    if (simStep === 1) {
+      // Partition Step
+      partitionState = 'partitioned';
+      formatState = 'none';
+      fileState = 'none';
+      activeLog = '<strong>[1/4] Step 1 — Partition Device</strong><br>• The operating system defines a partition mapping over a range of Logical Block Addresses (LBAs).<br>• Partition 1 is created for blocks 00 to 47. Blocks 48 to 63 remain unallocated.<br>• Note: This creates boundaries, but no file organization structures exist yet.';
+    } else if (simStep === 2) {
+      // Format Step
+      partitionState = 'partitioned';
+      formatState = 'formatted';
+      fileState = 'none';
+      activeLog = '<strong>[2/4] Step 2 — Create Filesystem Index (Formatting)</strong><br>• The OS writes the initial directory and metadata tracking structures into Partition 1.<br>• Blocks 00 to 03 are reserved for filesystem bookkeeping (superblocks, inodes, bitmaps).<br>• Blocks 04 to 47 are marked as free space ready to hold data.';
+    } else if (simStep === 3) {
+      // Write Step
+      partitionState = 'partitioned';
+      formatState = 'formatted';
+      fileState = 'notes';
+      activeLog = '<strong>[3/4] Step 3 — Write File: <code>create("notes.txt")</code></strong><br>• The filesystem registers <code>notes.txt</code> in its directory index (residing in Metadata Block 01).<br>• It assigns blocks 04 and 05 from its free-space bitmap and writes the file data directly to them.';
+    } else if (simStep === 4) {
+      // App / Layers Step
+      partitionState = 'partitioned';
+      formatState = 'formatted';
+      fileState = 'all';
+      activeLog = '<strong>[4/4] Step 4 — The Complete Storage Stack Abstraction</strong><br>• The application reads files via the filesystem without knowing anything about partitions or raw blocks.<br>• The filesystem hides the complexity: it translates names to partitions, maps logical offsets to LBA addresses, and lets the hardware do the rest.<br>• <strong>Key Realization:</strong> The disk has no files. Files are software constructs layered above raw blocks!';
+      simState = 'finished';
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  function runSimulation() {
+    timerId = setInterval(() => {
+      if (!document.getElementById('disk-has-no-files-edgecase')) {
+        clearInterval(timerId);
+        timerId = null;
+        return;
+      }
+      simStep++;
+      updateStateForStep();
+      render();
+    }, 4500); // 4.5 seconds per step
+
+    render();
+  }
+
+  function render() {
+    // Generate Left Pane Abstraction Levels
+    let partitionsHtml = `<span style="color:var(--muted); font-style:italic;">(None)</span>`;
+    let indexHtml = `<span style="color:var(--muted); font-style:italic;">(None)</span>`;
+    let filesHtml = `<span style="color:var(--muted); font-style:italic;">(None)</span>`;
+
+    if (partitionState === 'partitioned') {
+      partitionsHtml = `
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#A5F3FC;">
+          <div><strong style="color:#FFF;">Partition 1:</strong> Blocks 00–47</div>
+          <div style="color:var(--muted);">Unallocated: Blocks 48–63</div>
+        </div>
+      `;
+    }
+    if (formatState === 'formatted') {
+      indexHtml = `
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#FFF;">
+          <div>Metadata Blocks: 00–03</div>
+          <div style="color:#34D399;">Free Space: LBA Bitmaps initialized</div>
+        </div>
+      `;
+    }
+    if (fileState === 'notes') {
+      filesHtml = `
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#FFF;">
+          <div style="color:#93C5FD;">📄 notes.txt &rarr; #7182 [Blocks 04,05]</div>
+        </div>
+      `;
+    } else if (fileState === 'all') {
+      filesHtml = `
+        <div style="font-family:var(--mono); font-size:0.7rem; color:#FFF; display:flex; flex-direction:column; gap:0.2rem;">
+          <div style="color:#93C5FD;">📄 notes.txt &rarr; #7182 [Blocks 04,05]</div>
+          <div style="color:#A7F3D0;">📷 photo.jpg &rarr; #8221 [Blocks 06–15]</div>
+          <div style="color:#FBCFE8;">📄 resume.pdf &rarr; #8812 [Blocks 16–19]</div>
+        </div>
+      `;
+    }
+
+    // Generate Disk Grid Blocks
+    let gridBlocksHtml = '';
+    for (let i = 0; i < 64; i++) {
+      let bLabel = 'RAW';
+      let borderStyle = '1px solid var(--border)';
+      let bgColor = 'rgba(15,23,42,0.4)';
+      let textColor = 'var(--muted)';
+
+      let isP1 = (partitionState === 'partitioned' && i <= 47);
+      let isUnallocated = (partitionState === 'partitioned' && i > 47);
+      let isMeta = (formatState === 'formatted' && i <= 3);
+      let isDataFree = (formatState === 'formatted' && i > 3 && i <= 47);
+      
+      let isNotesFile = (fileState !== 'none' && (i === 4 || i === 5));
+      let isPhotoFile = (fileState === 'all' && (i >= 6 && i <= 15));
+      let isResumeFile = (fileState === 'all' && (i >= 16 && i <= 19));
+
+      if (isMeta) {
+        bLabel = 'META';
+        borderStyle = '1px solid #EF4444';
+        bgColor = 'rgba(239,68,68,0.15)';
+        textColor = '#FCA5A5';
+      } else if (isNotesFile) {
+        bLabel = 'notes';
+        borderStyle = '1px solid #3B82F6';
+        bgColor = 'rgba(59,130,246,0.2)';
+        textColor = '#93C5FD';
+      } else if (isPhotoFile) {
+        bLabel = 'photo';
+        borderStyle = '1px solid #10B981';
+        bgColor = 'rgba(16,185,129,0.15)';
+        textColor = '#A7F3D0';
+      } else if (isResumeFile) {
+        bLabel = 'resume';
+        borderStyle = '1px solid #EC4899';
+        bgColor = 'rgba(236,72,153,0.15)';
+        textColor = '#FBCFE8';
+      } else if (isDataFree) {
+        bLabel = 'FREE';
+        borderStyle = '1px solid rgba(16,185,129,0.4)';
+        bgColor = 'rgba(16,185,129,0.03)';
+        textColor = 'rgba(16,185,129,0.7)';
+      } else if (isP1) {
+        bLabel = 'PART 1';
+        borderStyle = '1px solid rgba(96,165,250,0.5)';
+        bgColor = 'rgba(96,165,250,0.05)';
+        textColor = '#93C5FD';
+      } else if (isUnallocated) {
+        bLabel = 'UNALL';
+        borderStyle = '1px dashed var(--border)';
+        bgColor = 'rgba(15,23,42,0.1)';
+        textColor = 'var(--muted)';
+      }
+
+      let padI = String(i).padStart(2, '0');
+
+      gridBlocksHtml += `
+        <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; border:${borderStyle}; background:${bgColor}; border-radius:3px; height:34px; font-family:var(--mono); font-size:0.55rem; transition:all 0.3s;">
+          <span style="color:rgba(255,255,255,0.25); font-size:0.45rem; line-height:1;">${padI}</span>
+          <span style="color:${textColor}; font-weight:bold; font-size:0.5rem; text-transform:uppercase; margin-top:1px; line-height:1;">${bLabel}</span>
+        </div>
+      `;
+    }
+
+    let statusBadgeHtml = '';
+    if (simState === 'idle') {
+      statusBadgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'running') {
+      statusBadgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Running</span>`;
+    } else if (simState === 'finished') {
+      statusBadgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Complete</span>`;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: From Raw Device to Filesystem</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Visualize device partitioning, indexing formatting, and file creations</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${statusBadgeHtml}
+          <button class="btn btn-primary" onclick="window.startDiskHasNoFilesSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'running' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetDiskHasNoFilesSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 2.2fr; gap:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+        
+        <!-- Left Column: Logical Abstraction Layers -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:1.2rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Logical Abstractions</div>
+          
+          <div>
+            <div style="font-size:0.62rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.3rem; text-transform:uppercase;">1. Active Partitions</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.6rem; min-height:42px; display:flex; align-items:center;">
+              ${partitionsHtml}
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:0.62rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.3rem; text-transform:uppercase;">2. Filesystem Index</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.6rem; min-height:42px; display:flex; align-items:center;">
+              ${indexHtml}
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:0.62rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.3rem; text-transform:uppercase;">3. File Objects</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.6rem; min-height:68px; display:flex; align-items:center;">
+              ${filesHtml}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Raw LBA blocks -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:1rem; box-sizing:border-box;">
+          <div style="font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:bold; color:#fff; border-bottom:1px solid var(--border); padding-bottom:0.4rem; text-transform:uppercase; letter-spacing:0.05em;">Storage LBAs (LBA 00–63)</div>
+          
+          <div style="display:grid; grid-template-columns: repeat(8, 1fr); gap:0.4rem; width:100%; box-sizing:border-box;">
+            ${gridBlocksHtml}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
+        </div>
+      </div>
+    `;
+  }
+
+  render();
+}
+
+function renderDiskSchedulingEdgeCase() {
+  const container = document.getElementById('disk-scheduling-edgecase');
+  if (!container) return;
+
+  container.className = 'edgecase-wrapper';
+
+  // Constants
+  const requests = [98, 183, 37, 122, 14, 124, 65, 67];
+  const startHead = 53;
+
+  // Paths definition
+  const paths = {
+    FCFS: [53, 98, 183, 37, 122, 14, 124, 65, 67],
+    SSTF: [53, 65, 67, 37, 14, 98, 122, 124, 183],
+    SCAN: [53, 37, 14, 0, 65, 67, 98, 122, 124, 183],
+    'C-SCAN': [53, 65, 67, 98, 122, 124, 183, 199, 0, 14, 37]
+  };
+
+  const logs = {
+    FCFS: '<strong>FCFS: First-Come, First-Served</strong><br>• Serves requests in the exact order they arrive, regardless of distance.<br>• Click "Start" to watch the head service requests sequentially.',
+    SSTF: '<strong>SSTF: Shortest Seek Time First</strong><br>• Services the closest pending request relative to the current head position.<br>• Click "Start" to animate the proximity-first sweeps.',
+    SCAN: '<strong>SCAN: The Elevator Algorithm</strong><br>• Sweeps back and forth, servicing requests along its active direction, then reverses at the edge.<br>• Click "Start" to watch the elevator sweep.',
+    'C-SCAN': '<strong>C-SCAN: Circular SCAN</strong><br>• Sweeps in one direction, then jumps back to the beginning track without servicing on the return sweep.<br>• Click "Start" to animate the unidirectional sweeps.'
+  };
+
+  // State
+  let simState = 'idle'; // 'idle', 'animating', 'finished'
+  let selectedAlgo = 'FCFS'; // 'FCFS', 'SSTF', 'SCAN', 'C-SCAN'
+  let pathIndex = 0;
+  let seekDistance = 0;
+  let timerId = null;
+  let activeLog = logs[selectedAlgo];
+
+  window.selectDiskSchedulingAlgo = function(algo) {
+    if (simState === 'animating') return;
+    selectedAlgo = algo;
+    resetSim();
+  };
+
+  window.startDiskSchedulingSim = function() {
+    if (simState === 'animating') return;
+    simState = 'animating';
+    pathIndex = 0;
+    seekDistance = 0;
+    activeLog = `<strong>Running ${selectedAlgo} scheduling...</strong>`;
+    render();
+    runStep();
+  };
+
+  window.resetDiskSchedulingSim = function() {
+    resetSim();
+  };
+
+  function resetSim() {
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+    simState = 'idle';
+    pathIndex = 0;
+    seekDistance = 0;
+    activeLog = logs[selectedAlgo];
+    render();
+  }
+
+  function calculateDistanceUpTo(algo, index) {
+    const p = paths[algo];
+    let dist = 0;
+    for (let i = 1; i <= index; i++) {
+      dist += Math.abs(p[i] - p[i - 1]);
+    }
+    return dist;
+  }
+
+  function runStep() {
+    const currentPath = paths[selectedAlgo];
+    if (pathIndex < currentPath.length - 1) {
+      pathIndex++;
+      seekDistance = calculateDistanceUpTo(selectedAlgo, pathIndex);
+      
+      // Update dynamic logs during run
+      const nextTarget = currentPath[pathIndex];
+      const prevPos = currentPath[pathIndex - 1];
+      const stepDiff = Math.abs(nextTarget - prevPos);
+      if (selectedAlgo === 'C-SCAN' && prevPos === 199 && nextTarget === 0) {
+        activeLog = `<strong>C-SCAN: Unidirectional jump</strong><br>• The head resets from LBA 199 to LBA 0 (no service on return jump).`;
+      } else {
+        activeLog = `<strong>Servicing Request: ${nextTarget}</strong><br>• Active LBA Cylinder: ${nextTarget}<br>• Head moved ${stepDiff} tracks from LBA ${prevPos}.<br>• Cumulative seek distance: ${seekDistance} cylinders.`;
+      }
+
+      render();
+      timerId = setTimeout(runStep, 800); // 800ms per step
+    } else {
+      simState = 'finished';
+      const totalCyl = seekDistance;
+      if (selectedAlgo === 'FCFS') {
+        activeLog = `<strong>FCFS Completed!</strong><br>• Total seek distance: <strong>${totalCyl} cylinders</strong>.<br>• Simple and fair, but notice the extremely high seek distance due to unoptimized sweeps.`;
+      } else if (selectedAlgo === 'SSTF') {
+        activeLog = `<strong>SSTF Completed!</strong><br>• Total seek distance: <strong>${totalCyl} cylinders</strong>.<br>• Proximity-first logic minimizes seek cost, but leaves outer tracks vulnerable to starvation.`;
+      } else if (selectedAlgo === 'SCAN') {
+        activeLog = `<strong>SCAN Completed!</strong><br>• Total seek distance: <strong>${totalCyl} cylinders</strong>.<br>• Sweep movement ensures fairness and bounds waiting times across the disk.`;
+      } else if (selectedAlgo === 'C-SCAN') {
+        activeLog = `<strong>C-SCAN Completed!</strong><br>• Total seek distance: <strong>${totalCyl} cylinders</strong>.<br>• Circular sweeps provide more uniform response times across all cylinders.`;
+      }
+      render();
+    }
+  }
+
+  function render() {
+    // Coordinate mapping LBA 0-199 -> X 40-460
+    const getX = (lba) => 40 + (lba / 199) * 420;
+    // Step index -> Y 35-165
+    const getY = (idx, maxIdx) => 35 + (idx / maxIdx) * 130;
+
+    // Build Request Marks HTML for bottom track
+    let requestMarks = '';
+    const uniqueReqs = [14, 37, 53, 65, 67, 98, 122, 124, 183];
+    uniqueReqs.forEach(req => {
+      let labelColor = req === 53 ? '#60A5FA' : 'var(--muted)';
+      let labelText = req === 53 ? 'Start (53)' : req;
+      if (req !== 53 && pathIndex > 0) {
+        // If serviced, highlight it green
+        const activePathSlice = paths[selectedAlgo].slice(0, pathIndex + 1);
+        if (activePathSlice.includes(req)) {
+          labelColor = '#34D399';
+        }
+      }
+
+      requestMarks += `
+        <line x1="${getX(req)}" y1="20" x2="${getX(req)}" y2="180" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+        <circle cx="${getX(req)}" cy="20" r="3" fill="${labelColor === '#34D399' ? '#34D399' : (req === 53 ? '#3B82F6' : 'rgba(255,255,255,0.3)')}" />
+        <text x="${getX(req)}" y="12" fill="${labelColor}" font-size="7" font-family="var(--mono)" text-anchor="middle">${labelText}</text>
+      `;
+    });
+
+    // Build Path Line HTML
+    let pathLinesHtml = '';
+    const p = paths[selectedAlgo];
+    let points = [];
+    for (let i = 0; i <= pathIndex; i++) {
+      points.push(`${getX(p[i])},${getY(i, p.length - 1)}`);
+    }
+    // Draw path line
+    if (points.length > 1) {
+      pathLinesHtml += `<polyline points="${points.join(' ')}" fill="none" stroke="#60A5FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />`;
+    }
+    // Draw completed points
+    for (let i = 0; i <= pathIndex; i++) {
+      let dotColor = i === pathIndex ? '#FFF' : '#3b82f6';
+      let dotRadius = i === pathIndex ? 5 : 3;
+      pathLinesHtml += `<circle cx="${getX(p[i])}" cy="${getY(i, p.length - 1)}" r="${dotRadius}" fill="${dotColor}" />`;
+    }
+
+    // SVG container HTML
+    let svgHtml = `
+      <svg viewBox="0 0 500 200" width="100%" height="100%" style="background:rgba(15,23,42,0.4); border-radius:6px; border:1px solid var(--border);">
+        <!-- Top Track LBA Scale -->
+        <line x1="40" y1="20" x2="460" y2="20" stroke="rgba(255,255,255,0.2)" stroke-width="2" />
+        <text x="40" y="192" fill="var(--muted)" font-size="8" font-family="var(--mono)" text-anchor="middle">LBA 0</text>
+        <text x="460" y="192" fill="var(--muted)" font-size="8" font-family="var(--mono)" text-anchor="middle">LBA 199</text>
+        
+        <!-- Grid/Request markings -->
+        ${requestMarks}
+
+        <!-- Scheduling lines -->
+        ${pathLinesHtml}
+      </svg>
+    `;
+
+    // Render Tab Buttons HTML
+    const renderTabButton = (algo) => {
+      const isActive = selectedAlgo === algo;
+      const disabledAttr = simState === 'animating' ? 'disabled style="opacity:0.5; cursor:default;"' : '';
+      const activeStyle = isActive 
+        ? 'background:var(--blue); color:#fff; border-color:var(--blue);' 
+        : 'background:rgba(255,255,255,0.05); color:#94A3B8; border-color:rgba(255,255,255,0.1);';
+
+      return `
+        <button class="btn" onclick="window.selectDiskSchedulingAlgo('${algo}')" style="padding:0.4rem 0.8rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; border-radius:4px; border:1px solid; cursor:pointer; ${activeStyle}" ${disabledAttr}>
+          ${algo}
+        </button>
+      `;
+    };
+
+    let tabsHtml = `
+      <div style="display:flex; gap:0.4rem; border-bottom:1px solid var(--border); padding-bottom:0.6rem; margin-bottom:0.8rem; justify-content:center;">
+        ${renderTabButton('FCFS')}
+        ${renderTabButton('SSTF')}
+        ${renderTabButton('SCAN')}
+        ${renderTabButton('C-SCAN')}
+      </div>
+    `;
+
+    let statusBadgeHtml = '';
+    if (simState === 'idle') {
+      statusBadgeHtml = `<span style="border:1px solid var(--border); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; color:var(--muted); letter-spacing:0.05em; text-transform:uppercase;">Status: IDLE</span>`;
+    } else if (simState === 'animating') {
+      statusBadgeHtml = `<span style="background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Running</span>`;
+    } else if (simState === 'finished') {
+      statusBadgeHtml = `<span style="background:#10B981; color:#fff; border:1px solid #10B981; border-radius:4px; padding:0.25rem 0.5rem; font-size:0.7rem; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Complete</span>`;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <span style="font-family:'Syne',sans-serif; font-weight:700; color:#FFF; font-size:1.1rem;">EdgeCase: Disk Scheduling Simulator</span>
+          <div style="font-size:0.72rem; color:var(--muted); font-family:var(--mono); margin-top:0.2rem;">Select scheduling profile to compare head sweeps and seek distance cylinders</div>
+        </div>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          ${statusBadgeHtml}
+          <button class="btn btn-primary" onclick="window.startDiskSchedulingSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;" ${simState === 'animating' ? 'disabled style="opacity:0.5; cursor:default;"' : ''}>Start</button>
+          <button class="btn btn-secondary" onclick="window.resetDiskSchedulingSim()" style="padding:0.45rem 1rem; font-size:0.75rem; font-family:'Syne',sans-serif; font-weight:bold; cursor:pointer;">Reset</button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1.25fr 2.8fr; gap:1.2rem; margin-bottom:1.5rem; width:100%; box-sizing:border-box;">
+        
+        <!-- Left Column: Settings and Metrics -->
+        <div style="border:1px solid var(--border); border-radius:8px; padding:1.2rem; background:rgba(30,41,59,0.15); display:flex; flex-direction:column; gap:0.8rem; box-sizing:border-box; justify-content:center;">
+          ${tabsHtml}
+          
+          <div>
+            <div style="font-size:0.62rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.3rem; text-transform:uppercase;">Request Queue</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.5rem; font-family:var(--mono); font-size:0.68rem; color:#A5F3FC; text-align:center;">
+              98 &rarr; 183 &rarr; 37 &rarr; 122 &rarr; 14 &rarr; 124 &rarr; 65 &rarr; 67
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:0.62rem; color:var(--muted); font-family:var(--mono); margin-bottom:0.3rem; text-transform:uppercase;">Scheduling Stats</div>
+            <div style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:6px; padding:0.6rem; min-height:65px; display:flex; align-items:center;">
+              <div style="font-family:var(--mono); font-size:0.72rem; color:#FFF; display:flex; flex-direction:column; gap:0.25rem;">
+                <div>Active Head: <strong style="color:#60A5FA;">LBA ${p[pathIndex]}</strong></div>
+                <div>Total Seek Cost: <strong style="color:#34D399;">${seekDistance} cylinders</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Visual plot mapping -->
+        <div style="display:flex; flex-direction:column; justify-content:center; box-sizing:border-box;">
+          ${svgHtml}
+        </div>
+
+      </div>
+
+      <!-- Action Log -->
+      <div style="background:rgba(15,23,42,0.6); border:1px solid var(--border); border-radius:6px; padding:0.85rem; width:100%; box-sizing:border-box; min-height:85px; display:flex; align-items:center;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:#A5F3FC; line-height:1.65; width:100%;">
+          ${activeLog}
         </div>
       </div>
     `;
