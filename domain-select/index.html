@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>When Nobody Could Move | PrajnaEdge</title>
+<title>Select Domain | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/when-nobody-could-move/" />
+<link rel="canonical" href="https://prajnaedge.dev/domain-select/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -22,11 +22,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
   <!-- External Premium Stylesheet -->
-  <link rel="stylesheet" href="../../style.css" />
+  <link rel="stylesheet" href="../style.css" />
   <!-- External Payment SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
   <!-- External Behavior and Logic -->
-  <script src="../../script.js" defer></script>
+  <script src="../script.js" defer></script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
 <script>
@@ -146,11 +146,11 @@
       <div class="homepage-video-container">
         <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
         <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
-          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+          <source src="../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
         </video>
         
         <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
-        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        <img id="final-frame" class="homepage-media" src="../HomepageAnimation/Final.jpg" alt="PrajnaEdge Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
         
         <!-- Subtle label overlay indicating the specific tree -->
         <div id="tree-label-overlay" class="tree-label-overlay">Embedded Systems Tree</div>
@@ -320,86 +320,11 @@
   </div>
 </div>
 
-<div class="page active" id="page-blog-post">
+<div class="page" id="page-blog-post">
   <div style="padding-top:80px">
     <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
       <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
-      <div id="blog-post-content">
-    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Operating Systems</div>
-    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">When Nobody Could Move</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">Why sometimes the safest system comes to a complete stop.</p>
-    <div class="tags" style="margin-bottom:3rem"><span class="tag">Operating Systems</span><span class="tag">Synchronization</span><span class="tag">Mutexes</span><span class="tag">Deadlocks</span><span class="tag">Process Management</span></div>
-    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
-    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. The Standstill</h2><div id="deadlock-manthana" class="manthana-container manthana-theme"></div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. The Deadlock</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">You just observed synchronization prevent progress.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A <strong>Deadlock</strong> is a state where two or more processes are unable to execute because each is waiting for a resource held by another.</p><div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin: 2rem 0; font-family: var(--mono); font-size: 0.8rem; width: 100%;">
-  <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">The Deadlock Loop</div>
-  <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; background: rgba(30, 41, 59, 0.25); max-width: 520px; width: 100%;">
-    <div style="text-align: center; border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem; width: 100px;">
-      <div style="color: #FFF; font-weight: bold;">Process 1</div>
-      <div style="font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;">Holds Mutex A</div>
-    </div>
-    <div style="font-size: 1.2rem; color: var(--blue);">➔</div>
-    <div style="text-align: center; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; width: 100px;">
-      <div style="color: var(--text);">Mutex B</div>
-      <div style="font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;">Held by P2</div>
-    </div>
-    <div style="font-size: 1.2rem; color: var(--blue);">➔</div>
-    <div style="text-align: center; border: 1px solid var(--blue); border-radius: 4px; padding: 0.5rem; width: 100px;">
-      <div style="color: #FFF; font-weight: bold;">Process 2</div>
-      <div style="font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;">Holds Mutex B</div>
-    </div>
-    <div style="font-size: 1.2rem; color: var(--blue);">➔</div>
-    <div style="text-align: center; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem; width: 100px;">
-      <div style="color: var(--text);">Mutex A</div>
-      <div style="font-size: 0.65rem; color: var(--muted); margin-top: 0.25rem;">Held by P1</div>
-    </div>
-    <div style="font-size: 1.2rem; color: var(--blue);">➔ (Back to P1)</div>
-  </div>
-</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Coffman Conditions</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A Deadlock can only occur if all four <strong>Coffman Conditions</strong> are met simultaneously:</p><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 2rem 0; text-align: left; @media(max-width:640px){grid-template-columns: 1fr;}">
-  <div class="panel-box" style="margin: 0; padding: 1.2rem; border-color: var(--border);">
-    <div style="font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;">1. Mutual Exclusion</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Only one process can hold a resource at a time. Other processes requesting it must wait.</div>
-  </div>
-  <div class="panel-box" style="margin: 0; padding: 1.2rem; border-color: var(--border);">
-    <div style="font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;">2. Hold and Wait</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">A process holding allocated resources can request additional resources without releasing its current keys.</div>
-  </div>
-  <div class="panel-box" style="margin: 0; padding: 1.2rem; border-color: var(--border);">
-    <div style="font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;">3. No Preemption</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Resources cannot be forcibly confiscated from a process; they must be released voluntarily.</div>
-  </div>
-  <div class="panel-box" style="margin: 0; padding: 1.2rem; border-color: var(--border);">
-    <div style="font-weight: bold; color: #FFF; font-size: 0.9rem; margin-bottom: 0.4rem;">4. Circular Wait</div>
-    <div style="font-size: 0.75rem; color: var(--muted); line-height: 1.4;">Process A waits for a resource held by B, which waits for a resource held by C, which waits for a resource held by A.</div>
-  </div>
-</div></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Mitigation Strategies</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Engineers resolve or bypass Deadlocks using three general approaches:</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">4.1 Prevention</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Prevention strategies eliminate one of the four Coffman conditions to make deadlocks mathematically impossible.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">One common Prevention strategy is to eliminate <strong>Circular Wait</strong>. By enforcing a strict lock acquisition order, the system guarantees that a circular dependency can never form.</p><h4 style="font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">4.1.1 EdgeCase: Lock Ordering</h4><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Watch how Lock Ordering prevents deadlocks. By requiring all processes to acquire Mutex A before Mutex B, Process 2 is suspended immediately at the first step, allowing Process 1 to complete and unlock the hardware.</p><div id="deadlock-edgecase" class="edgecase-container"></div><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">4.2 Avoidance</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Instead of preventing deadlocks by restricting behaviour, can the Operating System simply predict whether granting a resource request would eventually become dangerous? This naturally introduces the <strong>Banker's Algorithm</strong>.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Imagine a banker lending money. A banker never gives away all available money simply because someone asks. Instead, the banker first asks:</p><div class="blog-quote">*"If I approve this request, will everyone still be able to finish?"*</div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">If the answer is yes, approve the request. If the answer is no, make the process wait. This is exactly the philosophy behind resource Avoidance.</p><h4 style="font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:600; color:#fff; margin-top:1.25rem; margin-bottom:0.5rem; border-left: 2px dashed rgba(59,130,246,0.5); padding-left: 0.5rem;">4.2.1 EdgeCase: Banker's Algorithm</h4><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Watch how the OS dynamically checks resource safety. When a process requests resources, the OS pauses and simulates the future path. If a safe sequence exists, it grants the request (Green Path). If it leads to a dead-end, it makes the process wait (Red Path).</p><div id="bankers-edgecase" class="edgecase-container"></div><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">4.3 Detection &amp; Recovery</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Some operating systems choose to allow deadlocks to occur and run periodic checks to identify wait-loops. Recovery happens only after a deadlock has already occurred, using practical techniques such as:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">*   Terminating a waiting process
-*   Rolling back work
-*   Reclaiming resources
-*   Restarting the subsystem
-*   Allowing a hardware watchdog timer to reset the system in embedded products</p></div>
-    
-    
-      <div class="exploration-nav-block">
-        <div class="exploration-nav-header">
-          <span class="nav-node-label">System Tree Node</span>
-          <span class="nav-node-name">Operating Systems</span>
-        </div>
-        <div class="exploration-nav-grid">
-          <div class="nav-prev">
-            <span class="nav-dir-label">← Previous</span>
-            <a class="nav-link active" href="../../explorations/when-sharing-became-dangerous/" onclick="openItem('when-sharing-became-dangerous', 'blogs')">When Sharing Became Dangerous</a>
-        </div>
-          <div class="nav-current">
-            <span class="nav-dir-label">Current Exploration</span>
-            <span class="nav-title-current">When Nobody Could Move</span>
-          </div>
-          <div class="nav-next" id="exploration-nav-next">
-            <span class="nav-dir-label">Next →</span>
-            <a class="nav-link active" href="../../explorations/when-importance-wasnt-enough/" onclick="openItem('when-importance-wasnt-enough', 'blogs')">When Importance Wasn't Enough</a>
-        </div>
-        </div>
-      </div>
-    
-    </div>
+      <div id="blog-post-content"></div>
     </div>
   </div>
 </div>
@@ -709,7 +634,7 @@
   </div>
 </div>
 
-<div class="page" id="page-domain-select"></div>
+<div class="page active" id="page-domain-select"></div>
 
 <div class="page" id="page-foundation-select"></div>
 
@@ -814,12 +739,12 @@
     </div>
     <div class="footer-center">
       <div class="footer-logo-wrap">
-        <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+        <img src="../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
       </div>
       <div class="footer-text-column">
         <div class="footer-title">PrajnaEdge</div>
         <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
-        <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
+        <div class="footer-credits">Designed & Developed by <a href="../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
       </div>
     </div>
     <div class="footer-right">

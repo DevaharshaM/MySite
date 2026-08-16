@@ -5482,6 +5482,8 @@ function showPage(page) {
   if (page === 'journey' || page === 'creator') renderJourney();
   if (page === 'blogs') renderBlogs(currentBlogPage);
   if (page === 'demos') renderDemos(currentDemoPage);
+  if (page === 'domain-select') renderDomainSelectPortal();
+  if (page === 'foundation-select') renderFoundationSelectPortal();
 
   // URL State Syncing
   if (!isRouting && page !== 'blog-post') {
@@ -5550,6 +5552,12 @@ function renderHomeTree() {
     finalFrame.style.pointerEvents = 'auto';
     overlay.style.pointerEvents = 'auto';
     
+    // Show the "Embedded Systems Tree" label overlay
+    const label = document.getElementById('tree-label-overlay');
+    if (label) {
+      label.style.opacity = '1';
+    }
+    
     // Toggle button visibility: Replay becomes visible, Volume becomes hidden
     replayBtn.classList.add('visible');
     volumeBtn.classList.remove('visible');
@@ -5561,6 +5569,14 @@ function renderHomeTree() {
         video.style.display = 'none';
       }
     }, 200);
+
+    // Reveal blackhole portals after a short settling pause (700ms total)
+    setTimeout(() => {
+      if (finalFrame.style.opacity === '1') {
+        const portals = document.querySelectorAll('.portal-vortex');
+        portals.forEach(p => p.classList.add('visible'));
+      }
+    }, 700);
   }
 
   function startVideoPlayback() {
@@ -5572,6 +5588,14 @@ function renderHomeTree() {
     video.currentTime = 0;
     finalFrame.style.opacity = '0';
     overlay.style.pointerEvents = 'none'; // disable interaction during playback
+
+    // Hide tree label and blackhole portals during video intro sequence
+    const label = document.getElementById('tree-label-overlay');
+    if (label) {
+      label.style.opacity = '0';
+    }
+    const portals = document.querySelectorAll('.portal-vortex');
+    portals.forEach(p => p.classList.remove('visible'));
 
     // Load user's sound preference from sessionStorage
     const isSoundEnabled = sessionStorage.getItem('prajnaedge_sound_enabled') === 'true';
@@ -5596,10 +5620,27 @@ function renderHomeTree() {
     });
   }
 
+  // Store reference to startVideoPlayback globally so dismissNavigationTutorial can trigger it
+  window.startPrajnaEdgeIntro = startVideoPlayback;
+
   // 1. Session Intro Playback Skip Check
   const hasPlayed = sessionStorage.getItem('prajnaedge_intro_played');
+  const isFirstVisit = localStorage.getItem('prajnaedge_design_language_seen') !== 'true';
   
-  if (SKIP_INTRO_IF_PLAYED_IN_SESSION && hasPlayed === 'true') {
+  if (isFirstVisit) {
+    // Hold video playback
+    video.style.display = 'block';
+    video.currentTime = 0;
+    video.pause();
+    finalFrame.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    const label = document.getElementById('tree-label-overlay');
+    if (label) {
+      label.style.opacity = '0';
+    }
+    const portals = document.querySelectorAll('.portal-vortex');
+    portals.forEach(p => p.classList.remove('visible'));
+  } else if (SKIP_INTRO_IF_PLAYED_IN_SESSION && hasPlayed === 'true') {
     showFinalInteractiveState();
   } else {
     startVideoPlayback();
@@ -5669,7 +5710,7 @@ function renderHomeTree() {
       if (nodeId === 'NetworkingConnectivity') branchName = 'Networking & Connectivity';
       else if (nodeId === 'EdgeAI') branchName = 'Edge AI';
       else if (nodeId === 'AerospaceDefence') branchName = 'Aerospace & Defence';
-      label = `${branchName} — This branch has not awakened yet.`;
+      label = `${branchName} — Coming soon`;
     } else if (rawId.startsWith('hotspot-')) {
       nodeId = rawId.replace('hotspot-', ''); // "Matter", "Computation", etc.
       label = nodeId;
@@ -5769,9 +5810,9 @@ function filterNodeRoute(category) {
   if (backBtn) {
     backBtn.style.display = 'block';
     if (category === 'Bare Metal' || category === 'Operating Systems') {
-      backBtn.innerText = `← Return to ${category}`;
+      backBtn.innerText = '← Return to Setu';
     } else {
-      backBtn.innerText = '← Back to Systems Tree';
+      backBtn.innerText = '← Return to Tree';
     }
   }
 
@@ -11284,6 +11325,21 @@ function handleUrlRouting() {
     isRouting = false;
     return;
   }
+  if (relPath.startsWith('domain-select/')) {
+    showPage('domain-select');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('foundation-select/')) {
+    showPage('foundation-select');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('support/')) {
+    showPage('support');
+    isRouting = false;
+    return;
+  }
   if (relPath.startsWith('bare-metal/')) {
     showPage('bare-metal');
     isRouting = false;
@@ -11375,6 +11431,8 @@ function handleUrlRouting() {
       showPage('contact');
     } else if (page === 'legal') {
       showPage('legal');
+    } else if (page === 'support') {
+      showPage('support');
     } else {
       showPage('home');
     }
@@ -11420,6 +11478,287 @@ async function loadDynamicContent() {
   }
 }
 
+// ─── BLACKHOLE TRANSITION & NAVIGATION ENVIRONMENT ───────────────────────────
+function triggerBlackholeTransition(callback) {
+  const trans = document.getElementById('blackhole-transition-overlay');
+  if (!trans) {
+    if (callback) callback();
+    return;
+  }
+  
+  trans.classList.add('active');
+  setTimeout(() => {
+    if (callback) callback();
+    setTimeout(() => {
+      trans.classList.remove('active');
+    }, 300);
+  }, 500);
+}
+
+function showBranchNotAwakenedMessage(label, element, pageId) {
+  let tooltip = document.getElementById('portal-branch-tooltip-' + pageId);
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'portal-branch-tooltip-' + pageId;
+    tooltip.className = 'portal-branch-tooltip';
+    const container = document.getElementById(pageId);
+    if (container) container.appendChild(tooltip);
+  }
+  
+  tooltip.innerText = `${label} — Coming soon`;
+  tooltip.classList.add('active');
+  
+  const rect = element.getBoundingClientRect();
+  const container = document.getElementById(pageId);
+  if (container) {
+    const containerRect = container.getBoundingClientRect();
+    tooltip.style.left = `${rect.left - containerRect.left + rect.width / 2}px`;
+    tooltip.style.top = `${rect.top - containerRect.top - 15}px`;
+  }
+  
+  setTimeout(() => {
+    tooltip.classList.remove('active');
+  }, 2500);
+}
+
+function renderDomainSelectPortal() {
+  const container = document.getElementById('page-domain-select');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  // Cosmic star field
+  const starField = document.createElement('div');
+  starField.className = 'cosmic-star-field';
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('div');
+    star.className = 'cosmic-star';
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    const size = Math.random() * 2 + 1;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    star.style.opacity = Math.random() * 0.7 + 0.3;
+    if (Math.random() > 0.8) {
+      star.style.animation = `star-twinkle ${2 + Math.random() * 3}s infinite alternate`;
+    }
+    starField.appendChild(star);
+  }
+  container.appendChild(starField);
+  
+  // Return to Tree link
+  const returnLink = document.createElement('a');
+  returnLink.className = 'portal-return-link';
+  returnLink.innerHTML = '← Return to Tree';
+  returnLink.onclick = () => {
+    triggerBlackholeTransition(() => {
+      showPage('home');
+    });
+  };
+  container.appendChild(returnLink);
+  
+  // Center Blackhole
+  const centerPort = document.createElement('div');
+  centerPort.className = 'portal-selection-center';
+  centerPort.innerHTML = `
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="portal-center-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#1e1b4b" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#portal-center-glow)" />
+      <path d="M 50 10 A 40 40 0 0 1 80 30 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
+    </svg>
+    <div class="portal-center-title" style="font-size: 0.6rem;">Select Domain</div>
+  `;
+  container.appendChild(centerPort);
+  
+  // Exactly 9 domain nodes with deterministic layout coordinates
+  const nodes = [
+    { label: "Automotive", x: -220, y: -160 },
+    { label: "Aerospace & Defence", x: 0, y: -240 },
+    { label: "Consumer", x: 230, y: -170 },
+    { label: "Embedded AI", x: -280, y: -30 },
+    { label: "Industrial", x: 290, y: -20 },
+    { label: "Medical", x: -240, y: 120 },
+    { label: "Multimedia", x: -80, y: 220 },
+    { label: "Network & Connectivity", x: 100, y: 240 },
+    { label: "Robotics", x: 250, y: 130 }
+  ];
+  
+  nodes.forEach((b) => {
+    const el = document.createElement('div');
+    el.className = 'portal-branch-item dormant';
+    el.style.setProperty('--x', `${b.x}px`);
+    el.style.setProperty('--y', `${b.y}px`);
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', `${b.label} (unawakened domain)`);
+    
+    el.innerHTML = `
+      <span class="branch-dot"></span>
+      <span class="branch-text">${b.label}</span>
+    `;
+    
+    el.onclick = (e) => {
+      e.stopPropagation();
+      showBranchNotAwakenedMessage(b.label, el, 'page-domain-select');
+    };
+    
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.click();
+      }
+    });
+    
+    container.appendChild(el);
+  });
+}
+
+function renderFoundationSelectPortal() {
+  const container = document.getElementById('page-foundation-select');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  // Cosmic star field
+  const starField = document.createElement('div');
+  starField.className = 'cosmic-star-field';
+  for (let i = 0; i < 40; i++) {
+    const star = document.createElement('div');
+    star.className = 'cosmic-star';
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.top = `${Math.random() * 100}%`;
+    const size = Math.random() * 2 + 1;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    star.style.opacity = Math.random() * 0.7 + 0.3;
+    if (Math.random() > 0.8) {
+      star.style.animation = `star-twinkle ${2 + Math.random() * 3}s infinite alternate`;
+    }
+    starField.appendChild(star);
+  }
+  container.appendChild(starField);
+  
+  // Return to Tree link
+  const returnLink = document.createElement('a');
+  returnLink.className = 'portal-return-link';
+  returnLink.innerHTML = '← Return to Tree';
+  returnLink.onclick = () => {
+    triggerBlackholeTransition(() => {
+      showPage('home');
+    });
+  };
+  container.appendChild(returnLink);
+  
+  // Center Blackhole
+  const centerPort = document.createElement('div');
+  centerPort.className = 'portal-selection-center';
+  centerPort.innerHTML = `
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="portal-center-glow-bl" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#1e1b4b" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#portal-center-glow-bl)" />
+      <path d="M 50 10 A 40 40 0 0 1 80 30 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
+    </svg>
+    <div class="portal-center-title">Select</div>
+  `;
+  container.appendChild(centerPort);
+  
+  // Exactly 5 foundation nodes with deterministic layout coordinates
+  const nodes = [
+    { label: "Architecture", x: -210, y: -130 },
+    { label: "Controller", x: 220, y: -120 },
+    { label: "Digital", x: -250, y: 80 },
+    { label: "Programming", x: 240, y: 90 },
+    { label: "Processor", x: 0, y: 210 }
+  ];
+  
+  nodes.forEach((b) => {
+    const el = document.createElement('div');
+    el.className = 'portal-branch-item dormant';
+    el.style.setProperty('--x', `${b.x}px`);
+    el.style.setProperty('--y', `${b.y}px`);
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', `${b.label} (unawakened foundation)`);
+    
+    el.innerHTML = `
+      <span class="branch-dot"></span>
+      <span class="branch-text">${b.label}</span>
+    `;
+    
+    el.onclick = (e) => {
+      e.stopPropagation();
+      showBranchNotAwakenedMessage(b.label, el, 'page-foundation-select');
+    };
+    
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.click();
+      }
+    });
+    
+    container.appendChild(el);
+  });
+}
+
+// ─── DESIGN LANGUAGE GUIDE SYSTEM ───────────────────────────────────────────
+function initNavigationTutorial() {
+  const overlay = document.getElementById('nav-tutorial-overlay');
+  if (!overlay) return;
+  
+  const hasSeen = localStorage.getItem('prajnaedge_design_language_seen');
+  if (hasSeen !== 'true') {
+    overlay.classList.add('active');
+  }
+  
+  // Set up keyboard listeners for portals
+  const portals = document.querySelectorAll('.portal-vortex');
+  portals.forEach(p => {
+    p.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        p.click();
+      }
+    });
+  });
+}
+
+function dismissNavigationTutorial() {
+  const overlay = document.getElementById('nav-tutorial-overlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+  }
+  const wasAlreadySeen = localStorage.getItem('prajnaedge_design_language_seen') === 'true';
+  localStorage.setItem('prajnaedge_design_language_seen', 'true');
+  
+  if (!wasAlreadySeen && typeof window.startPrajnaEdgeIntro === 'function') {
+    window.startPrajnaEdgeIntro();
+  }
+}
+
+function openDesignLanguageGuide() {
+  const overlay = document.getElementById('nav-tutorial-overlay');
+  if (overlay) {
+    overlay.classList.add('active');
+  }
+}
+
 // ─── INITIALIZATION SEQUENCE (Awaits JSON content first) ──────────────────────
 async function initSite() {
   await loadDynamicContent();
@@ -11428,6 +11767,7 @@ async function initSite() {
   renderDemos(1);
   renderHomeTree();
   runTreeAwakeningAnimation();
+  initNavigationTutorial();
   handleUrlRouting();
 }
 
@@ -19140,5 +19480,169 @@ function renderProtectedDeviceEdgeCase() {
   }
 
   render();
+}
+
+// ─── SUPPORT PAGE PAYMENT FLOW ──────────────────────────────────────────────
+let selectedSupportAmount = null;
+
+function setSupportAmount(amount) {
+  selectedSupportAmount = amount;
+  
+  // Update button active classes
+  const buttons = document.querySelectorAll('.support-preset-btn');
+  buttons.forEach(btn => {
+    const btnAmount = btn.getAttribute('data-amount');
+    if (btnAmount === String(amount)) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+  
+  const customContainer = document.getElementById('custom-amount-container');
+  const payButton = document.getElementById('pay-button');
+  const statusMsg = document.getElementById('support-status-message');
+  
+  // Reset custom input
+  document.getElementById('custom-amount-input').value = '';
+  
+  if (amount === 'custom') {
+    customContainer.style.display = 'flex';
+    payButton.disabled = true;
+    payButton.textContent = 'Support PrajnaEdge';
+    statusMsg.innerHTML = '<span style="color: var(--muted);">Enter a custom support amount (minimum ₹1).</span>';
+  } else {
+    customContainer.style.display = 'none';
+    payButton.disabled = false;
+    payButton.textContent = `Support with ₹${amount}`;
+    statusMsg.innerHTML = `<span style="color: #A8A29E;">You have chosen to support with ₹${amount}.</span>`;
+  }
+}
+
+function onCustomAmountChange() {
+  const input = document.getElementById('custom-amount-input');
+  const payButton = document.getElementById('pay-button');
+  const statusMsg = document.getElementById('support-status-message');
+  const val = parseFloat(input.value);
+  
+  if (isNaN(val) || val < 1) {
+    payButton.disabled = true;
+    payButton.textContent = 'Support PrajnaEdge';
+    statusMsg.innerHTML = '<span style="color: #ef4444;">Please enter a valid amount of at least ₹1.</span>';
+  } else if (val > 100000) {
+    payButton.disabled = true;
+    payButton.textContent = 'Support PrajnaEdge';
+    statusMsg.innerHTML = '<span style="color: #ef4444;">Amount cannot exceed ₹100,000.</span>';
+  } else {
+    payButton.disabled = false;
+    payButton.textContent = `Support with ₹${val}`;
+    statusMsg.innerHTML = `<span style="color: #A8A29E;">You have chosen to support with ₹${val}.</span>`;
+  }
+}
+
+async function initiateSupportPayment() {
+  let finalAmount = selectedSupportAmount;
+  if (selectedSupportAmount === 'custom') {
+    const input = document.getElementById('custom-amount-input');
+    finalAmount = parseFloat(input.value);
+  }
+  
+  if (!finalAmount || isNaN(finalAmount) || finalAmount < 1) {
+    return;
+  }
+  
+  const payButton = document.getElementById('pay-button');
+  const statusMsg = document.getElementById('support-status-message');
+  
+  payButton.disabled = true;
+  statusMsg.innerHTML = '<span style="color: var(--blue);">Opening secure payment checkout...</span>';
+  
+  try {
+    const response = await fetch('/api/create-order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ amount: finalAmount })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to create order');
+    }
+    
+    const orderData = await response.json();
+    
+    const options = {
+      key: orderData.key_id,
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: 'PrajnaEdge',
+      description: 'Support PrajnaEdge',
+      image: '/Logo/Logo.png',
+      order_id: orderData.order_id,
+      handler: async function (response) {
+        statusMsg.innerHTML = '<span style="color: var(--blue);">Verifying signature...</span>';
+        try {
+          const verifyResponse = await fetch('/api/verify-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            })
+          });
+          
+          if (!verifyResponse.ok) {
+            throw new Error('Payment verification failed');
+          }
+          
+          const verifyResult = await verifyResponse.json();
+          if (verifyResult.status === 'success') {
+            statusMsg.innerHTML = '<strong style="color: #10b981; display: block; margin-bottom: 0.25rem;">Thank you for supporting PrajnaEdge.</strong><span style="color: #A8A29E;">Your support helps keep the platform growing.</span>';
+            payButton.style.display = 'none';
+            // Hide selection controls to prevent re-submission
+            const grid = document.querySelector('.support-presets-grid');
+            if (grid) grid.style.pointerEvents = 'none';
+            const custom = document.getElementById('custom-amount-container');
+            if (custom) custom.style.pointerEvents = 'none';
+          } else {
+            throw new Error('Verification response error');
+          }
+        } catch (err) {
+          console.error(err);
+          statusMsg.innerHTML = '<span style="color: #ef4444;">Payment verification failed. Please contact support.</span>';
+          payButton.disabled = false;
+          payButton.textContent = 'Support PrajnaEdge';
+        }
+      },
+      modal: {
+        ondismiss: function () {
+          statusMsg.innerHTML = '<span style="color: var(--muted);">Payment was cancelled.</span>';
+          payButton.disabled = false;
+          payButton.textContent = `Support with ₹${finalAmount}`;
+        }
+      },
+      theme: {
+        color: '#3B82F6'
+      }
+    };
+    
+    const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+      statusMsg.innerHTML = `<span style="color: #ef4444;">Payment could not be completed. Please try again.</span>`;
+      payButton.disabled = false;
+      payButton.textContent = `Support with ₹${finalAmount}`;
+    });
+    
+    rzp.open();
+  } catch (err) {
+    console.error(err);
+    statusMsg.innerHTML = '<span style="color: #ef4444;">Could not initialize checkout. Please try again later.</span>';
+    payButton.disabled = false;
+    payButton.textContent = 'Support PrajnaEdge';
+  }
 }
 

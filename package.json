@@ -1,0 +1,13 @@
+{
+  "name": "prajnaedge-website",
+  "version": "1.0.0",
+  "description": "PrajnaEdge website and serverless backend API",
+  "main": "api/create-order.js",
+  "dependencies": {
+    "razorpay": "^2.9.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

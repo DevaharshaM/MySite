@@ -23,6 +23,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
   <!-- External Premium Stylesheet -->
   <link rel="stylesheet" href="../../style.css" />
+  <!-- External Payment SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
   <!-- External Behavior and Logic -->
   <script src="../../script.js" defer></script>
   <!-- Google tag (gtag.js) -->
@@ -37,6 +39,89 @@
 </head>
 <body>
 
+<!-- Blackhole Transition Overlay -->
+<div class="blackhole-transition-overlay" id="blackhole-transition-overlay"></div>
+
+<!-- Design Language Guide Overlay -->
+<div class="nav-tutorial-overlay" id="nav-tutorial-overlay">
+  <div class="nav-tutorial-modal">
+    <h3>How PrajnaEdge Works</h3>
+    <p style="max-width: 500px; margin-left: auto; margin-right: auto;">
+      PrajnaEdge is not navigated like a conventional website. Knowledge is represented through paths, structures, and transitions.
+    </p>
+    
+    <div class="diagram-flow">
+      <!-- Exploration & Nodes Column -->
+      <div class="diagram-branch">
+        <div class="concept-visual card-visual" aria-hidden="true">
+          <div class="card-bar"></div>
+          <div class="card-line long"></div>
+          <div class="card-line short"></div>
+          <div class="card-bottom">
+            <div class="card-subline"></div>
+            <div class="card-dot"></div>
+          </div>
+        </div>
+        <strong>Exploration</strong>
+        <span>A guided journey through a concept.</span>
+        
+        <div class="divider-dashed"></div>
+        
+        <div class="concept-visual nodes-visual" aria-hidden="true">
+          <div class="node-dot"></div>
+          <div class="node-line"></div>
+          <div class="node-dot"></div>
+          <div class="node-line"></div>
+          <div class="node-dot"></div>
+        </div>
+        <strong>Nodes</strong>
+        <span>Concepts connected and learned in sequence.</span>
+      </div>
+      
+      <!-- Setu Column -->
+      <div class="diagram-branch">
+        <div class="concept-visual setu-visual" aria-hidden="true">
+          <svg viewBox="0 0 100 40" width="80" height="30">
+            <path d="M 10 25 Q 50 5 90 25" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,3" />
+            <circle cx="10" cy="25" r="3" fill="#d97706" />
+            <circle cx="90" cy="25" r="3" fill="#d97706" />
+            <polygon points="50,7 54,12 50,17 46,12" fill="#f59e0b" />
+          </svg>
+        </div>
+        <strong>Setu</strong>
+        <span>An independent concept or path that can stand on its own.</span>
+      </div>
+      
+      <!-- Vortex Column -->
+      <div class="diagram-branch">
+        <div class="concept-visual vortex-visual" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="50" height="50">
+            <defs>
+              <radialGradient id="guide-vortex-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#000" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="45" fill="url(#guide-vortex-glow)" />
+            <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+          </svg>
+        </div>
+        <strong>Vortex</strong>
+        <span>A transition beyond the current knowledge space.</span>
+        <span style="font-size: 0.65rem; color: rgba(148,163,184,0.4); font-style: italic; margin-top: -0.25rem;">It can lead to another knowledge area, community, or future path.</span>
+      </div>
+    </div>
+    
+    <button class="tutorial-dismiss-btn" onclick="dismissNavigationTutorial()">Begin Exploration</button>
+    <p style="font-size: 0.75rem; color: var(--muted); opacity: 0.7; margin-top: 1.5rem; margin-bottom: 0;">
+      For the best experience, open PrajnaEdge on a desktop or laptop screen.
+    </p>
+  </div>
+</div>
+
 <nav>
   <div class="nav-links">
     <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
@@ -45,6 +130,7 @@
     <a id="nav-about" onclick="showPage('about')">About</a>
     <a id="nav-contact" onclick="showPage('contact')">Contact</a>
   </div>
+  <button class="nav-help-btn" onclick="openDesignLanguageGuide()" aria-label="How PrajnaEdge Works" title="How PrajnaEdge Works">?</button>
 </nav>
 
 <div class="page" id="page-home">
@@ -52,9 +138,6 @@
     <div class="empty-title">PrajnaEdge</div>
     <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
       An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
-    <div style="font-size:0.8rem;color:var(--muted);font-family:var(--mono);margin-top:0.75rem">
-      Follow the awakened trunk to begin exploring.
-    </div>
     <!-- Cinematic Evolution Viewport Container -->
     <div class="tree-viewport" id="tree-viewport">
       <div class="tree-tooltip" id="tree-tooltip"></div>
@@ -67,7 +150,10 @@
         </video>
         
         <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
-        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Forest Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+        
+        <!-- Subtle label overlay indicating the specific tree -->
+        <div id="tree-label-overlay" class="tree-label-overlay">Embedded Systems Tree</div>
         
         <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
         <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
@@ -94,6 +180,56 @@
             <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
           </g>
         </svg>
+
+        <!-- Navigation Tutorial Highlight Pointers -->
+        <div class="tutorial-highlight-ring ring-tr"></div>
+        <div class="tutorial-highlight-ring ring-bl"></div>
+        <div class="tutorial-highlight-ring ring-center"></div>
+
+        <!-- Portal Vortices -->
+        <div class="portal-vortex portal-top-right" id="portal-top-right" role="button" tabindex="0" aria-label="Explore knowledge paths" onclick="triggerBlackholeTransition(() => showPage('domain-select'))">
+          <svg viewBox="0 0 100 100" width="100%" height="100%">
+            <defs>
+              <radialGradient id="vortex-glow-tr" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#000" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-tr)" />
+            <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+            <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+            <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
+            <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
+            <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
+            <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
+            <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+          </svg>
+        </div>
+
+        <div class="portal-vortex portal-bottom-left" id="portal-bottom-left" role="button" tabindex="0" aria-label="Enter another path" onclick="triggerBlackholeTransition(() => showPage('foundation-select'))">
+          <svg viewBox="0 0 100 100" width="100%" height="100%">
+            <defs>
+              <radialGradient id="vortex-glow-bl" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#000" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-bl)" />
+            <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+            <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+            <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
+            <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
+            <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
+            <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
+            <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+          </svg>
+        </div>
 
         <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
         <div class="homepage-controls-group">
@@ -435,7 +571,7 @@
   <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
     <!-- Minimal Header or Back Link -->
     <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
-      ← Return to Forest
+      ← Return to Tree
     </button>
     
     <!-- Title -->
@@ -487,7 +623,7 @@
   <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
     <!-- Minimal Header or Back Link -->
     <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
-      ← Return to Forest
+      ← Return to Tree
     </button>
     
     <!-- Title -->
@@ -533,6 +669,72 @@
     <button onclick="filterNodeRoute('Operating Systems')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
       Begin
     </button>
+  </div>
+</div>
+
+<div class="page" id="page-domain-select"></div>
+
+<div class="page" id="page-foundation-select"></div>
+
+<div class="page" id="page-support">
+  <div style="padding-top: 80px; min-height: 80vh;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 3rem 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 2rem; text-align: center;">
+      <!-- Return to Tree Link -->
+      <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#A8A29E';">
+        ← Return to Tree
+      </button>
+      
+      <!-- Title -->
+      <div>
+        <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(2.5rem, 5vw, 4rem); color:#FFF; margin:0; letter-spacing:-0.03em; line-height:1.1;">Support PrajnaEdge</h1>
+        <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+      </div>
+      
+      <!-- Short Message -->
+      <div style="font-family:'DM Sans', sans-serif; font-size:1.1rem; line-height:1.7; color:#E2E8F0; display:flex; flex-direction:column; gap:1.25rem; max-width:500px;">
+        <p style="margin:0; font-weight:500;">
+          PrajnaEdge is an independent education platform built to make knowledge freely accessible.
+        </p>
+        <p style="margin:0; font-size:0.95rem; color:var(--muted); font-weight:300;">
+          If you find PrajnaEdge useful, you can support its continued development.
+        </p>
+        <p style="margin:0; font-size:0.88rem; color:var(--muted); font-weight:300; opacity:0.85;">
+          Your support helps fund the time, tools, infrastructure, and experimentation that go into building and maintaining PrajnaEdge.
+        </p>
+      </div>
+      
+      <!-- Support Payment Options Container -->
+      <div class="support-payment-container" style="width:100%; border:1px solid rgba(148, 163, 184, 0.15); border-radius:12px; padding:2rem; background:rgba(30, 41, 59, 0.15); box-sizing:border-box; display:flex; flex-direction:column; gap:1.5rem; text-align:left;">
+        <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em;">Select Amount</div>
+        
+        <!-- Preset Grid -->
+        <div class="support-presets-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:0.75rem;">
+          <button class="support-preset-btn" onclick="setSupportAmount(100)" data-amount="100">₹100</button>
+          <button class="support-preset-btn" onclick="setSupportAmount(250)" data-amount="250">₹250</button>
+          <button class="support-preset-btn" onclick="setSupportAmount(500)" data-amount="500">₹500</button>
+          <button class="support-preset-btn" onclick="setSupportAmount('custom')" data-amount="custom">Custom</button>
+        </div>
+        
+        <!-- Custom Input Container -->
+        <div id="custom-amount-container" style="display:none; flex-direction:column; gap:0.5rem;">
+          <label style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Enter Custom Amount (INR)</label>
+          <div style="position:relative; display:flex; align-items:center;">
+            <span style="position:absolute; left:1rem; color:#fff; font-family:'DM Sans', sans-serif; font-weight:500;">₹</span>
+            <input type="number" id="custom-amount-input" min="1" max="100000" placeholder="Minimum ₹1" style="width:100%; padding:0.75rem 1rem 0.75rem 2rem; background:#0f172a; border:1px solid rgba(148, 163, 184, 0.2); border-radius:8px; color:#fff; font-family:'DM Sans', sans-serif; font-size:0.95rem; outline:none; box-sizing:border-box; transition:border-color 0.2s;" oninput="onCustomAmountChange()" />
+          </div>
+        </div>
+        
+        <!-- Status Messages -->
+        <div id="support-status-message" style="font-family:'DM Sans', sans-serif; font-size:0.85rem; color:var(--muted); line-height:1.5;">
+          Select an amount to support PrajnaEdge.
+        </div>
+        
+        <!-- Action CTA Button -->
+        <button id="pay-button" onclick="initiateSupportPayment()" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.9rem; padding:0.9rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.08em; text-align:center; transition:all 0.2s; display:flex; justify-content:center; align-items:center; gap:0.5rem; width:100%;" disabled>
+          Support PrajnaEdge
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -584,6 +786,8 @@
       </div>
     </div>
     <div class="footer-right">
+      <a href="/support/" onclick="event.preventDefault(); showPage('support')" class="footer-link">Support PrajnaEdge</a>
+      <span class="footer-sep">&middot;</span>
       <a href="/sitemap.xml" target="_blank" class="footer-link">Sitemap</a>
       <span class="footer-sep">&middot;</span>
       <a href="/legal/" target="_blank" class="footer-link">Legal</a>

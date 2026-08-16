@@ -652,7 +652,10 @@ def main():
         {"id": "blogs", "title": "Explorations | PrajnaEdge", "route": "explorations/"},
         {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/"},
         {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"},
-        {"id": "operating-systems", "title": "Operating Systems | PrajnaEdge", "route": "operating-systems/"}
+        {"id": "operating-systems", "title": "Operating Systems | PrajnaEdge", "route": "operating-systems/"},
+        {"id": "domain-select", "title": "Select Domain | PrajnaEdge", "route": "domain-select/"},
+        {"id": "foundation-select", "title": "Select | PrajnaEdge", "route": "foundation-select/"},
+        {"id": "support", "title": "Support PrajnaEdge | PrajnaEdge", "route": "support/"}
     ]
     
     for cfg in page_configs:
