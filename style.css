@@ -2330,3 +2330,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2.5rem;display:
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+
+.support-radio-label {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.support-radio-label:hover {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+.support-radio-label input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}

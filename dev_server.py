@@ -42,13 +42,14 @@ class DevServerHandler(http.server.SimpleHTTPRequestHandler):
         try:
             req_data = json.loads(post_data.decode('utf-8'))
             amount = req_data.get('amount')
+            currency = req_data.get('currency', 'INR')
             if not amount:
                 self.send_json_error(400, "Valid amount is required")
                 return
                 
             amount_val = float(amount)
             if amount_val < 1 or amount_val > 100000:
-                self.send_json_error(400, "Amount must be between ₹1 and ₹100,000")
+                self.send_json_error(400, "Amount must be between 1 and 100,000")
                 return
                 
             amount_in_paise = int(round(amount_val * 100))
@@ -64,7 +65,7 @@ class DevServerHandler(http.server.SimpleHTTPRequestHandler):
             url = "https://api.razorpay.com/v1/orders"
             payload = json.dumps({
                 "amount": amount_in_paise,
-                "currency": "INR",
+                "currency": currency.upper(),
                 "receipt": f"receipt_order_{int(time.time() * 1000)}"
             }).encode('utf-8')
             

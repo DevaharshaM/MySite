@@ -5484,6 +5484,7 @@ function showPage(page) {
   if (page === 'demos') renderDemos(currentDemoPage);
   if (page === 'domain-select') renderDomainSelectPortal();
   if (page === 'foundation-select') renderFoundationSelectPortal();
+  if (page === 'support') setSupportRegion('IN');
 
   // URL State Syncing
   if (!isRouting && page !== 'blog-post') {
@@ -19483,7 +19484,73 @@ function renderProtectedDeviceEdgeCase() {
 }
 
 // ─── SUPPORT PAGE PAYMENT FLOW ──────────────────────────────────────────────
+let selectedSupportRegion = 'IN';
 let selectedSupportAmount = null;
+
+function setSupportRegion(region) {
+  selectedSupportRegion = region;
+  selectedSupportAmount = null;
+  
+  // Update radio buttons check status in DOM
+  const radios = document.querySelectorAll('input[name="support-region"]');
+  radios.forEach(radio => {
+    if (radio.value === region) {
+      radio.checked = true;
+    }
+  });
+
+  const grid = document.getElementById('support-presets-grid');
+  if (grid) {
+    if (region === 'IN') {
+      grid.innerHTML = `
+        <button class="support-preset-btn" onclick="setSupportAmount(100)" data-amount="100">₹100</button>
+        <button class="support-preset-btn" onclick="setSupportAmount(200)" data-amount="200">₹200</button>
+        <button class="support-preset-btn" onclick="setSupportAmount('custom')" data-amount="custom">Custom</button>
+      `;
+    } else {
+      grid.innerHTML = `
+        <button class="support-preset-btn" onclick="setSupportAmount(1)" data-amount="1">$1</button>
+        <button class="support-preset-btn" onclick="setSupportAmount(5)" data-amount="5">$5</button>
+        <button class="support-preset-btn" onclick="setSupportAmount('custom')" data-amount="custom">Custom</button>
+      `;
+    }
+  }
+
+  const customContainer = document.getElementById('custom-amount-container');
+  const labelText = customContainer ? customContainer.querySelector('label') : null;
+  const symbol = customContainer ? customContainer.querySelector('span') : null;
+  const input = document.getElementById('custom-amount-input');
+  
+  if (customContainer) customContainer.style.display = 'none';
+  if (input) {
+    input.value = '';
+    if (region === 'IN') {
+      if (labelText) labelText.textContent = 'Enter Custom Amount (INR)';
+      if (symbol) symbol.textContent = '₹';
+      input.placeholder = 'Minimum ₹1';
+    } else {
+      if (labelText) labelText.textContent = 'Enter Custom Amount (USD)';
+      if (symbol) symbol.textContent = '$';
+      input.placeholder = 'Minimum $1';
+    }
+  }
+
+  const payButton = document.getElementById('pay-button');
+  const statusMsg = document.getElementById('support-status-message');
+  if (payButton) {
+    payButton.disabled = true;
+    payButton.textContent = 'Support PrajnaEdge';
+    payButton.style.display = 'flex';
+  }
+  if (statusMsg) {
+    statusMsg.innerHTML = 'Select an amount to support PrajnaEdge.';
+  }
+  
+  // Re-enable preset grid pointer events
+  const presetsGrid = document.querySelector('.support-presets-grid');
+  if (presetsGrid) presetsGrid.style.pointerEvents = 'auto';
+  if (customContainer) customContainer.style.pointerEvents = 'auto';
+}
 
 function setSupportAmount(amount) {
   selectedSupportAmount = amount;
@@ -19506,16 +19573,18 @@ function setSupportAmount(amount) {
   // Reset custom input
   document.getElementById('custom-amount-input').value = '';
   
+  const curSymbol = selectedSupportRegion === 'IN' ? '₹' : '$';
+  
   if (amount === 'custom') {
     customContainer.style.display = 'flex';
     payButton.disabled = true;
     payButton.textContent = 'Support PrajnaEdge';
-    statusMsg.innerHTML = '<span style="color: var(--muted);">Enter a custom support amount (minimum ₹1).</span>';
+    statusMsg.innerHTML = `<span style="color: var(--muted);">Enter a custom support amount (minimum ${curSymbol}1).</span>`;
   } else {
     customContainer.style.display = 'none';
     payButton.disabled = false;
-    payButton.textContent = `Support with ₹${amount}`;
-    statusMsg.innerHTML = `<span style="color: #A8A29E;">You have chosen to support with ₹${amount}.</span>`;
+    payButton.textContent = `Support with ${curSymbol}${amount}`;
+    statusMsg.innerHTML = `<span style="color: #A8A29E;">You have chosen to support with ${curSymbol}${amount}.</span>`;
   }
 }
 
@@ -19525,18 +19594,20 @@ function onCustomAmountChange() {
   const statusMsg = document.getElementById('support-status-message');
   const val = parseFloat(input.value);
   
+  const curSymbol = selectedSupportRegion === 'IN' ? '₹' : '$';
+  
   if (isNaN(val) || val < 1) {
     payButton.disabled = true;
     payButton.textContent = 'Support PrajnaEdge';
-    statusMsg.innerHTML = '<span style="color: #ef4444;">Please enter a valid amount of at least ₹1.</span>';
+    statusMsg.innerHTML = `<span style="color: #ef4444;">Please enter a valid amount of at least ${curSymbol}1.</span>`;
   } else if (val > 100000) {
     payButton.disabled = true;
     payButton.textContent = 'Support PrajnaEdge';
-    statusMsg.innerHTML = '<span style="color: #ef4444;">Amount cannot exceed ₹100,000.</span>';
+    statusMsg.innerHTML = `<span style="color: #ef4444;">Amount cannot exceed ${curSymbol}100,000.</span>`;
   } else {
     payButton.disabled = false;
-    payButton.textContent = `Support with ₹${val}`;
-    statusMsg.innerHTML = `<span style="color: #A8A29E;">You have chosen to support with ₹${val}.</span>`;
+    payButton.textContent = `Support with ${curSymbol}${val}`;
+    statusMsg.innerHTML = `<span style="color: #A8A29E;">You have chosen to support with ${curSymbol}${val}.</span>`;
   }
 }
 
@@ -19553,6 +19624,7 @@ async function initiateSupportPayment() {
   
   const payButton = document.getElementById('pay-button');
   const statusMsg = document.getElementById('support-status-message');
+  const curSymbol = selectedSupportRegion === 'IN' ? '₹' : '$';
   
   payButton.disabled = true;
   statusMsg.innerHTML = '<span style="color: var(--blue);">Opening secure payment checkout...</span>';
@@ -19563,7 +19635,10 @@ async function initiateSupportPayment() {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ amount: finalAmount })
+      body: JSON.stringify({ 
+        amount: finalAmount,
+        currency: selectedSupportRegion === 'IN' ? 'INR' : 'USD'
+      })
     });
     
     if (!response.ok) {
@@ -19622,7 +19697,7 @@ async function initiateSupportPayment() {
         ondismiss: function () {
           statusMsg.innerHTML = '<span style="color: var(--muted);">Payment was cancelled.</span>';
           payButton.disabled = false;
-          payButton.textContent = `Support with ₹${finalAmount}`;
+          payButton.textContent = `Support with ${curSymbol}${finalAmount}`;
         }
       },
       theme: {
@@ -19634,7 +19709,7 @@ async function initiateSupportPayment() {
     rzp.on('payment.failed', function (response) {
       statusMsg.innerHTML = `<span style="color: #ef4444;">Payment could not be completed. Please try again.</span>`;
       payButton.disabled = false;
-      payButton.textContent = `Support with ₹${finalAmount}`;
+      payButton.textContent = `Support with ${curSymbol}${finalAmount}`;
     });
     
     rzp.open();

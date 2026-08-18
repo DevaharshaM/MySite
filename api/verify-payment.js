@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Missing required payment details' });
   }
 
-  const secret = process.env.RAZORPAY_KEY_SECRET;
+  const secret = process.env.RAZORPAY_KEY_SECRET?.trim().replace(/['"]/g, '');
   if (!secret) {
     console.error('RAZORPAY_KEY_SECRET is not configured on the server');
     return res.status(500).json({ error: 'Internal server configuration error' });
