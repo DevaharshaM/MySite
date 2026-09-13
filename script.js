@@ -12,6 +12,8 @@ let currentSortOrder = "newest";
 let currentDemoSortOrder = "newest";
 let activePostId = null;
 let activePostType = null;
+let explorationListContext = "tree";
+let portalReturnTarget = null;
 
 // ─── DATA ARRAYS (PRESERVED INTACT) ──────────────────────────────────────────
 const nodes = [
@@ -163,6 +165,23 @@ const systemsTreeNodes = {
       { id: "the-boundary-between-software-and-hardware", title: "The Boundary Between Software and Hardware" },
       { id: "not-every-os-has-the-same-job", title: "Not Every OS Has the Same Job" },
       { id: "when-time-becomes-a-requirement", title: "When Time Becomes a Requirement" }
+    ]
+  },
+  Processor: {
+    title: "Processor",
+    description: "The architectural foundations, instruction machinery, and execution engines of computation.",
+    explorations: [
+      { id: "microprocessor-the-brain-behind-computation", title: "Microprocessor — The Brain Behind Computation" },
+      { id: "inside-the-microprocessor-from-instruction-to-execution", title: "Inside the Microprocessor — From Instruction to Execution" },
+      { id: "von-neumann-architecture-where-instructions-and-data-meet", title: "Where Instructions and Data Meet" }
+    ]
+  },
+  Controller: {
+    title: "Controller",
+    description: "Compact computing systems engineered to sense, decide, and act directly in physical machines.",
+    explorations: [
+      { id: "microcontroller-the-computer-inside-the-machine", title: "Microcontroller — The Computer Inside the Machine" },
+      { id: "two-paths-one-controller", title: "Two Paths, One Controller" }
     ]
   }
 };
@@ -5349,6 +5368,14 @@ function updateSeoMetadata(page) {
     title = "Operating Systems | PrajnaEdge";
   } else if (page === 'legal') {
     title = "Legal | PrajnaEdge";
+  } else if (page === 'products') {
+    title = "Products | PrajnaEdge";
+  } else if (page === 'playground') {
+    title = "Playground | PrajnaEdge";
+  } else if (page === 'playground-edge-ai') {
+    title = "Image Classification | Edge AI Playground | PrajnaEdge";
+  } else if (page === 'playground-on-device-ai') {
+    title = "On-Device AI | Playground | PrajnaEdge";
   } else if (page === 'blogs') {
     if (selectedCategoryFilter) {
       title = `${selectedCategoryFilter} | Explorations | PrajnaEdge`;
@@ -5447,7 +5474,7 @@ function showPage(page) {
   
   document.getElementById('page-' + page).classList.add('active');
   
-  const navKey = (page === 'blog-post') ? 'blogs' : page;
+  const navKey = (page === 'blog-post') ? 'blogs' : (page.startsWith('playground') ? 'playground' : page);
   const navEl = document.getElementById('nav-' + navKey);
   if (navEl) navEl.classList.add('active');
   
@@ -5458,6 +5485,19 @@ function showPage(page) {
       nav.style.display = 'none';
     } else {
       nav.style.display = 'flex';
+    }
+  }
+
+  // Scoped Instructions Experience: visible only in Exploration context
+  const isExploration = (page === 'blogs' || page === 'blog-post');
+  const helpBtn = document.querySelector('.nav-help-btn');
+  if (helpBtn) {
+    helpBtn.style.display = isExploration ? 'flex' : 'none';
+  }
+  if (!isExploration) {
+    const overlay = document.getElementById('nav-tutorial-overlay');
+    if (overlay) {
+      overlay.classList.remove('active');
     }
   }
   
@@ -5471,8 +5511,14 @@ function showPage(page) {
     }
   }
   
+  if (page !== 'blog-post') {
+    document.body.classList.remove('theme-hidden-exploration');
+  }
+
   if (page === 'bare-metal' || page === 'operating-systems') {
     document.body.style.backgroundColor = '#171210';
+  } else if (page === 'blog-post' && document.body.classList.contains('theme-hidden-exploration')) {
+    document.body.style.backgroundColor = '#171426';
   } else {
     document.body.style.backgroundColor = '#0F172A';
   }
@@ -5485,6 +5531,8 @@ function showPage(page) {
   if (page === 'domain-select') renderDomainSelectPortal();
   if (page === 'foundation-select') renderFoundationSelectPortal();
   if (page === 'support') setSupportRegion('IN');
+  if (page === 'playground') initPlaygroundPage();
+  if (page === 'playground-edge-ai') initImageClassificationPlayground();
 
   // URL State Syncing
   if (!isRouting && page !== 'blog-post') {
@@ -5603,19 +5651,22 @@ function renderHomeTree() {
     video.muted = !isSoundEnabled;
     updateVolumeIcon(video.muted);
 
-    let safetyTimeout = setTimeout(() => {
-      console.warn("Video load timeout. Falling back to static tree.");
-      showFinalInteractiveState();
-    }, 4000);
+    let safetyTimeout = null;
+    if (video.readyState < 3) {
+      safetyTimeout = setTimeout(() => {
+        console.warn("Video load timeout. Falling back to static tree.");
+        showFinalInteractiveState();
+      }, 4000);
 
-    const onCanPlay = () => {
-      clearTimeout(safetyTimeout);
-      video.removeEventListener('canplay', onCanPlay);
-    };
-    video.addEventListener('canplay', onCanPlay);
+      const onCanPlay = () => {
+        if (safetyTimeout) clearTimeout(safetyTimeout);
+        video.removeEventListener('canplay', onCanPlay);
+      };
+      video.addEventListener('canplay', onCanPlay);
+    }
 
     video.play().catch(err => {
-      clearTimeout(safetyTimeout);
+      if (safetyTimeout) clearTimeout(safetyTimeout);
       console.warn("Autoplay blocked or failed, showing static tree:", err);
       showFinalInteractiveState();
     });
@@ -5767,40 +5818,90 @@ function runTreeAwakeningAnimation() {
 }
 
 function handleBlogsBackClick() {
-  if (selectedCategoryFilter === 'Bare Metal') {
-    showPage('bare-metal');
-  } else if (selectedCategoryFilter === 'Operating Systems') {
-    showPage('operating-systems');
-  } else {
-    clearBlogFilterAndGoHome();
-  }
+  openDirectExplorations();
 }
 
 function openDirectExplorations() {
+  portalReturnTarget = null;
+  explorationListContext = 'tree';
   selectedCategoryFilter = null;
   currentSortOrder = 'newest';
   const sortSelect = document.getElementById('blogSortOrderSelect');
   if (sortSelect) sortSelect.value = 'newest';
   
-  const controlHousing = document.querySelector('#page-blogs .control-housing');
-  if (controlHousing) controlHousing.style.display = 'flex';
+  const controlHousing = document.querySelector('#page-blogs .control-housing-wrapper');
+  if (controlHousing) controlHousing.style.display = 'none';
 
   document.getElementById('blogsBackToTreeBtn').style.display = 'none';
-  document.getElementById('blogsPageTitle').innerText = 'Articles & Write-ups';
-  document.getElementById('blogsPageSubtitle').innerText = 'Exploring how systems evolve from hardware to integration.';
-  renderBlogs(1);
+  
+  // Hide separate Explorations title, set descriptive subtitle
+  const titleEl = document.getElementById('blogsPageTitle');
+  if (titleEl) {
+    titleEl.style.display = 'none';
+    titleEl.innerText = 'Explorations';
+  }
+  
+  const subtitleEl = document.getElementById('blogsPageSubtitle');
+  if (subtitleEl) {
+    subtitleEl.style.display = 'block';
+    subtitleEl.innerText = 'Explore the ideas, systems and connections that shape technology — choose any node to begin your journey.';
+  }
+
+  const treeViewport = document.getElementById('tree-viewport');
+  const enlargeBtn = document.getElementById('enlarge-tree-btn');
+  const listBtn = document.getElementById('exploration-list-btn');
+  const blogList = document.getElementById('blogList');
+  const sortControl = document.getElementById('blogs-sort-control-wrapper');
+  
+  if (treeViewport) treeViewport.style.display = 'block';
+  if (enlargeBtn) enlargeBtn.style.display = 'flex'; // Changed to flex for icon button
+  if (listBtn) listBtn.style.display = 'block';
+  if (blogList) blogList.style.display = 'none';
+  if (sortControl) sortControl.style.display = 'none';
+
+  // Show page first to make the video container visible
   showPage('blogs');
+
+  renderHomeTree();
+  
+  // Trigger design language guide overlay on first visit to explorations
+  const hasSeen = localStorage.getItem('prajnaedge_design_language_seen');
+  if (hasSeen !== 'true') {
+    const overlay = document.getElementById('nav-tutorial-overlay');
+    if (overlay) {
+      overlay.classList.add('active');
+    }
+  }
 }
 
 function filterNodeRoute(category) {
+  portalReturnTarget = null;
+  showPage('blogs');
+  explorationListContext = 'node';
   selectedCategoryFilter = category;
   currentSortOrder = 'oldest';
   const sortSelect = document.getElementById('blogSortOrderSelect');
   if (sortSelect) sortSelect.value = 'oldest';
 
-  const controlHousing = document.querySelector('#page-blogs .control-housing');
+  // Trigger design language guide overlay on first visit to explorations
+  const hasSeen = localStorage.getItem('prajnaedge_design_language_seen');
+  if (hasSeen !== 'true') {
+    const overlay = document.getElementById('nav-tutorial-overlay');
+    if (overlay) {
+      overlay.classList.add('active');
+    }
+  }
+
+  // Automatically close enlarged mode when selecting a node
+  toggleEnlargeTree(false);
+
+  // Hide sort toggle wrapper for node specific lists
+  const sortControl = document.getElementById('blogs-sort-control-wrapper');
+  if (sortControl) sortControl.style.display = 'none';
+
+  const controlHousing = document.querySelector('#page-blogs .control-housing-wrapper');
   if (controlHousing) {
-    if (category === 'Bare Metal' || category === 'Operating Systems') {
+    if (category === 'Bare Metal' || category === 'Operating Systems' || category === 'Processor' || category === 'Controller') {
       controlHousing.style.display = 'none';
     } else {
       controlHousing.style.display = 'flex';
@@ -5810,15 +5911,43 @@ function filterNodeRoute(category) {
   const backBtn = document.getElementById('blogsBackToTreeBtn');
   if (backBtn) {
     backBtn.style.display = 'block';
-    if (category === 'Bare Metal' || category === 'Operating Systems') {
-      backBtn.innerText = '← Return to Setu';
+    if (category === 'Processor' || category === 'Controller') {
+      backBtn.innerText = '← Return to Depth';
+      backBtn.onclick = () => {
+        triggerBlackholeTransition(() => {
+          showPage('foundation-select');
+        });
+      };
     } else {
       backBtn.innerText = '← Return to Tree';
+      backBtn.onclick = () => {
+        openDirectExplorations();
+      };
     }
   }
 
-  document.getElementById('blogsPageTitle').innerText = category;
-  document.getElementById('blogsPageSubtitle').innerText = systemsTreeNodes[category].description;
+  const treeViewport = document.getElementById('tree-viewport');
+  const enlargeBtn = document.getElementById('enlarge-tree-btn');
+  const curListBtn = document.getElementById('exploration-list-btn');
+  const blogList = document.getElementById('blogList');
+
+  if (treeViewport) treeViewport.style.display = 'none';
+  if (enlargeBtn) enlargeBtn.style.display = 'none';
+  if (curListBtn) curListBtn.style.display = 'none';
+  if (blogList) blogList.style.display = 'flex';
+
+  // Show page title when node is selected
+  const titleEl = document.getElementById('blogsPageTitle');
+  if (titleEl) {
+    titleEl.style.display = 'block';
+    titleEl.innerText = category;
+  }
+  
+  const subtitleEl = document.getElementById('blogsPageSubtitle');
+  if (subtitleEl) {
+    subtitleEl.innerText = systemsTreeNodes[category].description;
+  }
+  
   renderBlogs(1);
 
   // URL State Syncing for filtered category
@@ -5877,7 +6006,7 @@ function handleSortChange(type) {
 }
 
 function getBlogChronoIndex(id) {
-  const nodeOrder = ["Matter", "Computation", "Interaction", "Coordination", "Integration", "Bare Metal", "Operating Systems"];
+  const nodeOrder = ["Matter", "Computation", "Interaction", "Coordination", "Integration", "Bare Metal", "Operating Systems", "Processor"];
   let index = 0;
   for (let i = 0; i < nodeOrder.length; i++) {
     const node = systemsTreeNodes[nodeOrder[i]];
@@ -5952,7 +6081,7 @@ function renderBlogs(page) {
     publishedItems.sort((a, b) => {
       const timeA = parseDateString(a.date);
       const timeB = parseDateString(b.date);
-      const order = (selectedCategoryFilter === 'Bare Metal' || selectedCategoryFilter === 'Operating Systems') ? 'oldest' : currentSortOrder;
+      const order = (selectedCategoryFilter === 'Bare Metal' || selectedCategoryFilter === 'Operating Systems' || selectedCategoryFilter === 'Processor') ? 'oldest' : currentSortOrder;
       if (timeA !== timeB) {
         return order === "newest" ? timeB - timeA : timeA - timeB;
       }
@@ -5964,14 +6093,16 @@ function renderBlogs(page) {
     finalItems = [...publishedItems, ...comingSoonItems];
   } else {
     // Discovery Mode: Direct/Unfiltered
-    let processed = blogPosts.map(post => ({
-      id: post.id,
-      title: post.title,
-      subtitle: post.subtitle,
-      date: post.date,
-      tags: post.tags,
-      isPublished: true
-    }));
+    let processed = blogPosts
+      .filter(post => post.type !== 'hidden' && post.category !== 'Hidden Exploration')
+      .map(post => ({
+        id: post.id,
+        title: post.title,
+        subtitle: post.subtitle,
+        date: post.date,
+        tags: post.tags,
+        isPublished: true
+      }));
 
     // Sort processed by actual date, fallback to chronological tree sequence index
     processed.sort((a, b) => {
@@ -6089,7 +6220,7 @@ function renderPagination(totalPages, type) {
   }
 
   wrap.innerHTML = parts.join('');
-  document.getElementById(parentId).after(wrap);
+  document.getElementById(parentId).appendChild(wrap);
 }
 
 // ─── POST READER ENGINE ──────────────────────────────────────────────────────
@@ -6099,10 +6230,17 @@ function openItem(id, type) {
   if (!item) return;
 
   const backBtn = document.getElementById('readerBackBtn');
+  const isHidden = (item.type === 'hidden' || item.category === 'Hidden Exploration' || item.category === 'Antarguha');
   if (type === 'blogs') {
-    if (selectedCategoryFilter) {
+    if (isHidden) {
+      backBtn.innerText = "← Return to Explorations";
+      backBtn.setAttribute('onclick', "openDirectExplorations()");
+    } else if (explorationListContext === 'node') {
       backBtn.innerText = `← Back to ${item.category}`;
       backBtn.setAttribute('onclick', `filterNodeRoute('${item.category}')`);
+    } else if (explorationListContext === 'global') {
+      backBtn.innerText = "← Back to Exploration List";
+      backBtn.setAttribute('onclick', "openExplorationList()");
     } else {
       backBtn.innerText = "← Back to Exploration";
       backBtn.setAttribute('onclick', "openDirectExplorations()");
@@ -6110,6 +6248,15 @@ function openItem(id, type) {
   } else {
     backBtn.innerText = "← Back to Demonstration";
     backBtn.setAttribute('onclick', "showPage('demos')");
+  }
+
+  // Toggle theme class and body background
+  if (isHidden) {
+    document.body.classList.add('theme-hidden-exploration');
+    document.body.style.backgroundColor = '#171426';
+  } else {
+    document.body.classList.remove('theme-hidden-exploration');
+    document.body.style.backgroundColor = '#0F172A';
   }
 
   activePostId = id;
@@ -6154,12 +6301,16 @@ function openItem(id, type) {
       if (b.type === 'code') return `<div class="blog-code" style="color:#A5F3FC;">${escHtml(b.text)}</div>`;
       if (b.type === 'image' || b.type === 'img') {
         let imgSrc = b.src;
-        if (imgSrc.startsWith('Images/')) {
+        if (imgSrc.startsWith('../../Images/')) {
+          imgSrc = siteBase + imgSrc.substring(6);
+        } else if (imgSrc.startsWith('../Images/')) {
+          imgSrc = siteBase + imgSrc.substring(3);
+        } else if (imgSrc.startsWith('Images/')) {
           imgSrc = siteBase + imgSrc;
         }
         return `<div class="blog-img-wrap"><img src="${escHtml(imgSrc)}" alt="${escHtml(b.alt)}">${b.caption ? `<div class="blog-img-caption">${escHtml(b.caption)}</div>` : ''}</div>`;
       }
-      if (b.type === 'html') return parseTextFormatting(b.html);
+      if (b.type === 'html') return b.html;
       if (b.type === 'edgecase') return `<div id="${escHtml(b.id)}" class="edgecase-container"></div>`;
       return '';
     }).join('');
@@ -6194,6 +6345,11 @@ function openItem(id, type) {
           prevHtml = `
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" onclick="showPage('operating-systems')">Return to Operating Systems</a>
+          `;
+        } else if (nodeKey === "Processor" || nodeKey === "Controller") {
+          prevHtml = `
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" onclick="triggerBlackholeTransition(() => showPage('foundation-select'))">Return to Depth</a>
           `;
         } else if (nodeIndex > 0) {
           const prevNodeKey = nodeOrder[nodeIndex - 1];
@@ -6347,6 +6503,14 @@ function openItem(id, type) {
               <span class="nav-link locked">None</span>
             `;
           }
+        } else if (nodeKey === "Integration") {
+          nextHtml = `
+            <select id="nav-explore-select" class="nav-explore-select" onchange="handleExploreNavChange(this)" aria-label="Explore paths">
+              <option value="" disabled selected>Explore ▾</option>
+              <option value="domain-select">By Domain</option>
+              <option value="foundation-select">In Depth</option>
+            </select>
+          `;
         } else {
           nextHtml = `
             <span class="nav-dir-label">Next →</span>
@@ -6376,21 +6540,26 @@ function openItem(id, type) {
   }
 
   console.log(`[DEBUG] openItem: Rendering HTML into DOM element #blog-post-content`);
+  const catBadge = isHidden ? '<div class="hidden-exploration-badge">Antarguha</div>' : `<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">${escHtml(label)}</div>`;
+  const subColor = isHidden ? '#DDD6FE' : '#64748B';
+  const divBorder = isHidden ? 'border-top:1px solid rgba(196, 181, 253, 0.18);margin-bottom:3rem' : 'border-top:1px solid var(--border);margin-bottom:3rem';
+
   document.getElementById('blog-post-content').innerHTML = `
-    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">${escHtml(label)}</div>
+    ${catBadge}
     <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">${escHtml(item.title)}</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">${escHtml(item.subtitle)}</p>
+    <p style="color:${subColor};font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">${escHtml(item.subtitle)}</p>
     <div class="tags" style="margin-bottom:3rem">${item.tags.map(t => `<span class="tag">${escHtml(t)}</span>`).join('')}</div>
-    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="${divBorder}"></div>
     ${sectionsHtml}
+    ${(item.closing && (item.closing.heading || (item.closing.paragraphs && item.closing.paragraphs.length) || item.closing.quote)) ? `
     <div style="margin-bottom:2.5rem">
-      <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(item.closing.heading)}</h2>
-      ${item.closing.paragraphs.map(p => {
+      ${item.closing.heading ? `<h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">${escHtml(item.closing.heading)}</h2>` : ''}
+      ${(item.closing.paragraphs || []).map(p => {
         let textContent = escHtml(p);
         return `<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">${parseTextFormatting(textContent)}</p>`;
       }).join('')}
-      <div class="blog-quote">${escHtml(item.closing.quote)}</div>
-    </div>
+      ${item.closing.quote ? `<div class="blog-quote">${escHtml(item.closing.quote)}</div>` : ''}
+    </div>` : ''}
     ${navHtml}
   `;
   isRouting = true;
@@ -6490,7 +6659,7 @@ function parseTextFormatting(text) {
     } else if (target.startsWith('http') || target.startsWith('mailto:') || target.startsWith('/') || target.endsWith('.html')) {
       return `<a href="${target}" target="_blank" rel="noopener noreferrer" style="color:var(--blue); text-decoration:underline;">${label}</a>`;
     } else {
-      return `<a onclick="openItem('${target}', 'blogs')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">${label}</a>`;
+      return `<a href="${typeof siteBase !== 'undefined' ? siteBase : ''}explorations/${target}/" onclick="openItem('${target}', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">${label}</a>`;
     }
   });
   
@@ -11341,6 +11510,26 @@ function handleUrlRouting() {
     isRouting = false;
     return;
   }
+  if (relPath.startsWith('products/')) {
+    showPage('products');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('playground/')) {
+    showPage('playground');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('playground-edge-ai/')) {
+    showPage('playground-edge-ai');
+    isRouting = false;
+    return;
+  }
+  if (relPath.startsWith('playground-on-device-ai/')) {
+    showPage('playground-on-device-ai');
+    isRouting = false;
+    return;
+  }
   if (relPath.startsWith('bare-metal/')) {
     showPage('bare-metal');
     isRouting = false;
@@ -11547,15 +11736,26 @@ function renderDomainSelectPortal() {
   }
   container.appendChild(starField);
   
-  // Return to Tree link
+  // Return link
   const returnLink = document.createElement('a');
   returnLink.className = 'portal-return-link';
-  returnLink.innerHTML = '← Return to Tree';
-  returnLink.onclick = () => {
-    triggerBlackholeTransition(() => {
-      showPage('home');
-    });
-  };
+  if (portalReturnTarget === 'when-one-processor-wasnt-enough') {
+    returnLink.innerHTML = '← Return to Exploration';
+    returnLink.onclick = () => {
+      portalReturnTarget = null;
+      triggerBlackholeTransition(() => {
+        openItem('when-one-processor-wasnt-enough', 'blogs');
+      });
+    };
+  } else {
+    returnLink.innerHTML = '← Return to Tree';
+    returnLink.onclick = () => {
+      portalReturnTarget = null;
+      triggerBlackholeTransition(() => {
+        openDirectExplorations();
+      });
+    };
+  }
   container.appendChild(returnLink);
   
   // Center Blackhole
@@ -11647,15 +11847,26 @@ function renderFoundationSelectPortal() {
   }
   container.appendChild(starField);
   
-  // Return to Tree link
+  // Return link
   const returnLink = document.createElement('a');
   returnLink.className = 'portal-return-link';
-  returnLink.innerHTML = '← Return to Tree';
-  returnLink.onclick = () => {
-    triggerBlackholeTransition(() => {
-      showPage('home');
-    });
-  };
+  if (portalReturnTarget === 'when-one-processor-wasnt-enough') {
+    returnLink.innerHTML = '← Return to Exploration';
+    returnLink.onclick = () => {
+      portalReturnTarget = null;
+      triggerBlackholeTransition(() => {
+        openItem('when-one-processor-wasnt-enough', 'blogs');
+      });
+    };
+  } else {
+    returnLink.innerHTML = '← Return to Tree';
+    returnLink.onclick = () => {
+      portalReturnTarget = null;
+      triggerBlackholeTransition(() => {
+        openDirectExplorations();
+      });
+    };
+  }
   container.appendChild(returnLink);
   
   // Center Blackhole
@@ -11675,37 +11886,46 @@ function renderFoundationSelectPortal() {
       <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
       <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
     </svg>
-    <div class="portal-center-title">Select</div>
+    <div class="portal-center-title" style="font-size: 0.6rem;">Select Depth</div>
   `;
   container.appendChild(centerPort);
   
   // Exactly 5 foundation nodes with deterministic layout coordinates
   const nodes = [
     { label: "Architecture", x: -210, y: -130 },
-    { label: "Controller", x: 220, y: -120 },
+    { label: "Controller", x: 220, y: -120, active: true },
     { label: "Digital", x: -250, y: 80 },
     { label: "Programming", x: 240, y: 90 },
-    { label: "Processor", x: 0, y: 210 }
+    { label: "Processor", x: 0, y: 210, active: true }
   ];
   
   nodes.forEach((b) => {
     const el = document.createElement('div');
-    el.className = 'portal-branch-item dormant';
+    if (b.active) {
+      el.className = 'portal-branch-item active';
+      el.setAttribute('aria-label', `${b.label} (foundation)`);
+      el.onclick = () => {
+        triggerBlackholeTransition(() => {
+          filterNodeRoute(b.label);
+        });
+      };
+    } else {
+      el.className = 'portal-branch-item dormant';
+      el.setAttribute('aria-label', `${b.label} (unawakened foundation)`);
+      el.onclick = (e) => {
+        e.stopPropagation();
+        showBranchNotAwakenedMessage(b.label, el, 'page-foundation-select');
+      };
+    }
     el.style.setProperty('--x', `${b.x}px`);
     el.style.setProperty('--y', `${b.y}px`);
     el.setAttribute('tabindex', '0');
     el.setAttribute('role', 'button');
-    el.setAttribute('aria-label', `${b.label} (unawakened foundation)`);
     
     el.innerHTML = `
       <span class="branch-dot"></span>
       <span class="branch-text">${b.label}</span>
     `;
-    
-    el.onclick = (e) => {
-      e.stopPropagation();
-      showBranchNotAwakenedMessage(b.label, el, 'page-foundation-select');
-    };
     
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -11722,11 +11942,6 @@ function renderFoundationSelectPortal() {
 function initNavigationTutorial() {
   const overlay = document.getElementById('nav-tutorial-overlay');
   if (!overlay) return;
-  
-  const hasSeen = localStorage.getItem('prajnaedge_design_language_seen');
-  if (hasSeen !== 'true') {
-    overlay.classList.add('active');
-  }
   
   // Set up keyboard listeners for portals
   const portals = document.querySelectorAll('.portal-vortex');
@@ -11754,6 +11969,10 @@ function dismissNavigationTutorial() {
 }
 
 function openDesignLanguageGuide() {
+  const isExploration = document.getElementById('page-blogs')?.classList.contains('active') ||
+                        document.getElementById('page-blog-post')?.classList.contains('active');
+  if (!isExploration) return;
+
   const overlay = document.getElementById('nav-tutorial-overlay');
   if (overlay) {
     overlay.classList.add('active');
@@ -11764,10 +11983,16 @@ function openDesignLanguageGuide() {
 async function initSite() {
   await loadDynamicContent();
   
+  // Storage reset helper for testing first-visit logic via ?reset=true in query parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reset') === 'true') {
+    localStorage.removeItem('prajnaedge_design_language_seen');
+    sessionStorage.removeItem('prajnaedge_intro_played');
+    console.log("PrajnaEdge storage reset successfully!");
+  }
+  
   renderBlogs(1);
   renderDemos(1);
-  renderHomeTree();
-  runTreeAwakeningAnimation();
   initNavigationTutorial();
   handleUrlRouting();
 }
@@ -19720,4 +19945,607 @@ async function initiateSupportPayment() {
     payButton.textContent = 'Support PrajnaEdge';
   }
 }
+
+// ─── PLAYGROUND TAB SYSTEM ──────────────────────────────────────────────────
+const playgroundCategories = [
+  { 
+    id: 'edge-ai', 
+    label: 'Edge AI',
+    description: 'AI inference runs at or near the point where data is generated, rather than relying on a remote cloud.'
+  },
+  { 
+    id: 'on-device-ai', 
+    label: 'On-device AI',
+    description: 'AI inference runs directly on the device, without sending the data to another system for inference.'
+  }
+];
+
+function initPlaygroundPage() {
+  const container = document.getElementById('playground-tabs-segmented');
+  if (!container) return;
+
+  // Clear existing buttons
+  container.innerHTML = '';
+
+  // Render buttons dynamically from list
+  playgroundCategories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'playground-tab-btn' + (cat.id === 'edge-ai' ? ' active' : '');
+    btn.id = `playground-tab-${cat.id}`;
+    btn.textContent = cat.label;
+    btn.onclick = () => switchPlaygroundTab(cat.id);
+    container.appendChild(btn);
+  });
+
+  // Default select Edge AI
+  switchPlaygroundTab('edge-ai');
+}
+
+function switchPlaygroundTab(targetId) {
+  const targetPane = document.getElementById('playground-pane-' + targetId);
+  if (!targetPane) return;
+
+  // Update button active state
+  document.querySelectorAll('.playground-tab-btn').forEach(btn => {
+    if (btn.id === `playground-tab-${targetId}`) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Update category explanation with smooth transition
+  const descEl = document.getElementById('playground-category-description');
+  const catObj = playgroundCategories.find(c => c.id === targetId);
+  if (descEl && catObj) {
+    if (descEl.textContent !== catObj.description) {
+      descEl.style.opacity = '0';
+      setTimeout(() => {
+        descEl.textContent = catObj.description;
+        descEl.style.opacity = '1';
+      }, 120);
+    } else {
+      descEl.style.opacity = '1';
+    }
+  }
+
+  const currentPane = document.querySelector('.playground-tab-pane.active');
+
+  if (currentPane) {
+    if (currentPane === targetPane) return;
+    
+    // Fade out current pane
+    currentPane.classList.remove('show');
+    
+    setTimeout(() => {
+      currentPane.classList.remove('active');
+      currentPane.style.display = 'none';
+      
+      targetPane.style.display = 'block';
+      targetPane.offsetHeight; // trigger reflow
+      targetPane.classList.add('active');
+      targetPane.classList.add('show');
+    }, 150);
+  } else {
+    // No active pane initially
+    targetPane.style.display = 'block';
+    targetPane.offsetHeight; // trigger reflow
+    targetPane.classList.add('active');
+    targetPane.classList.add('show');
+  }
+}
+
+function toggleEnlargeTree(enlarge) {
+  const viewport = document.getElementById('tree-viewport');
+  if (!viewport) return;
+  
+  if (enlarge) {
+    viewport.classList.add('tree-enlarged');
+    document.body.style.overflow = 'hidden'; // prevent page scroll
+  } else {
+    viewport.classList.remove('tree-enlarged');
+    document.body.style.overflow = ''; // restore page scroll
+  }
+}
+
+function openExplorationList() {
+  portalReturnTarget = null;
+  showPage('blogs');
+  explorationListContext = 'global';
+  selectedCategoryFilter = null;
+  currentSortOrder = 'newest';
+  
+  // Update select value in sorting control
+  const selectEl = document.getElementById('blogSortOrderSelect');
+  if (selectEl) {
+    selectEl.value = 'newest';
+  }
+
+  const treeViewport = document.getElementById('tree-viewport');
+  const enlargeBtn = document.getElementById('enlarge-tree-btn');
+  const listBtn = document.getElementById('exploration-list-btn');
+  const blogList = document.getElementById('blogList');
+  const backBtn = document.getElementById('blogsBackToTreeBtn');
+  const titleEl = document.getElementById('blogsPageTitle');
+  const subtitleEl = document.getElementById('blogsPageSubtitle');
+  const sortControl = document.getElementById('blogs-sort-control-wrapper');
+
+  if (treeViewport) treeViewport.style.display = 'none';
+  if (enlargeBtn) enlargeBtn.style.display = 'none';
+  if (listBtn) listBtn.style.display = 'none';
+  if (blogList) blogList.style.display = 'flex';
+  if (sortControl) sortControl.style.display = 'flex';
+
+  if (titleEl) {
+    titleEl.style.display = 'block';
+    titleEl.innerText = 'Exploration List';
+  }
+  if (subtitleEl) {
+    subtitleEl.style.display = 'none';
+  }
+
+  if (backBtn) {
+    backBtn.style.display = 'block';
+    backBtn.innerText = '← Return to Tree';
+    backBtn.setAttribute('onclick', 'openDirectExplorations()');
+  }
+
+  renderBlogs(1);
+}
+
+function handleSortSelectChange() {
+  const selectEl = document.getElementById('blogSortOrderSelect');
+  if (selectEl) {
+    currentSortOrder = selectEl.value;
+    renderBlogs(1);
+  }
+}
+
+function handleExploreNavChange(selectEl) {
+  const dest = selectEl.value;
+  if (!dest) return;
+  selectEl.selectedIndex = 0;
+  if (dest === 'domain-select' || dest === 'foundation-select') {
+    portalReturnTarget = 'when-one-processor-wasnt-enough';
+    triggerBlackholeTransition(() => {
+      showPage(dest);
+    });
+  }
+}
+
+// ─── EDGE AI PLAYGROUND: IMAGE CLASSIFICATION ──────────────────────────────
+const modelRepresentations = [
+  {
+    name: "FP32",
+    fileName: "baseline_fp32.tflite",
+    size: "4.91 MiB",
+    activation: "~625 KiB",
+    accuracy: "99.11%",
+    isQuantized: false
+  },
+  {
+    name: "FP16",
+    fileName: "baseline_fp16.tflite",
+    size: "2.46 MiB",
+    activation: "~625 KiB",
+    accuracy: "99.11%",
+    isQuantized: false
+  },
+  {
+    name: "INT8",
+    fileName: "baseline_int8.tflite",
+    size: "1.23 MiB",
+    activation: "~156 KiB",
+    accuracy: "99.11%",
+    isQuantized: true,
+    inScale: 1.0,
+    inZeroPoint: -128,
+    outScale: 0.00390625,
+    outZeroPoint: -128
+  }
+];
+
+const PLAYGROUND_CLASSES = ["Apple", "Banana", "Orange"];
+let currentModelIndex = 0;
+let uploadedPlaygroundFile = null;
+let uploadedPlaygroundImageBitmap = null;
+let uploadedPlaygroundImageSrc = null;
+const playgroundModelRunners = {}; // Cache of TFLiteWebModelRunner instances
+let isPlaygroundInferring = false;
+
+function setModelRepresentation(index) {
+  if (index < 0 || index >= modelRepresentations.length) return;
+  currentModelIndex = index;
+  const model = modelRepresentations[index];
+
+  // Update slider input value
+  const slider = document.getElementById('playground-model-slider');
+  if (slider && parseInt(slider.value, 10) !== index) {
+    slider.value = index;
+  }
+
+  // Update ticks
+  for (let i = 0; i < 3; i++) {
+    const tick = document.getElementById('tick-' + i);
+    if (tick) {
+      if (i === index) {
+        tick.classList.add('active');
+      } else {
+        tick.classList.remove('active');
+      }
+    }
+  }
+
+  // Update slider labels
+  ['FP32', 'FP16', 'INT8'].forEach((name, i) => {
+    const lbl = document.getElementById('label-' + name);
+    if (lbl) {
+      if (i === index) {
+        lbl.classList.add('active');
+      } else {
+        lbl.classList.remove('active');
+      }
+    }
+  });
+
+  // Update compact metrics instrumentation
+  const sizeEl = document.getElementById('playground-metric-size');
+  const actEl = document.getElementById('playground-metric-activation');
+  const accEl = document.getElementById('playground-metric-accuracy');
+
+  if (sizeEl) sizeEl.textContent = model.size;
+  if (actEl) actEl.textContent = model.activation;
+  if (accEl) accEl.textContent = model.accuracy;
+}
+
+function showUploadError(msg) {
+  const errEl = document.getElementById('playground-upload-error');
+  if (errEl) {
+    errEl.textContent = msg;
+    errEl.style.display = 'flex';
+  }
+  const emptyZone = document.getElementById('playground-upload-empty');
+  const previewWrap = document.getElementById('playground-upload-preview-wrap');
+  const experimentBtn = document.getElementById('playground-experiment-btn');
+  const openCodeBox = document.getElementById('playground-open-code-box');
+
+  if (emptyZone) emptyZone.style.display = 'flex';
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (experimentBtn) {
+    experimentBtn.disabled = true;
+    experimentBtn.classList.add('disabled');
+  }
+  if (openCodeBox) openCodeBox.style.display = 'none';
+  uploadedPlaygroundFile = null;
+  uploadedPlaygroundImageBitmap = null;
+  uploadedPlaygroundImageSrc = null;
+  const fileInput = document.getElementById('playground-file-input');
+  if (fileInput) fileInput.value = '';
+}
+
+function clearUploadError() {
+  const errEl = document.getElementById('playground-upload-error');
+  if (errEl) {
+    errEl.textContent = '';
+    errEl.style.display = 'none';
+  }
+}
+
+async function handlePlaygroundImageUpload(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  clearUploadError();
+  const resultsArea = document.getElementById('playground-results-area');
+  if (resultsArea) resultsArea.style.display = 'none';
+  const openCodeBox = document.getElementById('playground-open-code-box');
+  if (openCodeBox) openCodeBox.style.display = 'none';
+
+  // 1. File extension validation
+  const extMatch = file.name.match(/\.([0-9a-z]+)$/i);
+  const ext = extMatch ? extMatch[1].toLowerCase() : '';
+  if (!['jpg', 'jpeg', 'png'].includes(ext)) {
+    showUploadError("Unsupported file format. Please upload a valid JPG, JPEG, or PNG image.");
+    return;
+  }
+
+  // 2. File size check (reject 0 bytes or excessive size > 25MB)
+  if (file.size === 0 || file.size > 25 * 1024 * 1024) {
+    showUploadError("Invalid file size. Please upload an image under 25 MB.");
+    return;
+  }
+
+  // 3. Magic bytes validation
+  try {
+    const sliceBuf = await file.slice(0, 8).arrayBuffer();
+    const bytes = new Uint8Array(sliceBuf);
+    const isJpeg = (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF);
+    const isPng = (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47 &&
+                   bytes[4] === 0x0D && bytes[5] === 0x0A && bytes[6] === 0x1A && bytes[7] === 0x0A);
+    if (!isJpeg && !isPng) {
+      showUploadError("Unsupported file format. The file content is not a genuine JPG or PNG image.");
+      return;
+    }
+  } catch (e) {
+    showUploadError("Could not read file data. Please try another image.");
+    return;
+  }
+
+  // 4. Image decoding validation
+  const objectUrl = URL.createObjectURL(file);
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = function() {
+    if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+      URL.revokeObjectURL(objectUrl);
+      showUploadError("Unable to decode image. Please choose a valid image file.");
+      return;
+    }
+
+    uploadedPlaygroundFile = file;
+    uploadedPlaygroundImageBitmap = img;
+    uploadedPlaygroundImageSrc = objectUrl;
+
+    const emptyZone = document.getElementById('playground-upload-empty');
+    const previewWrap = document.getElementById('playground-upload-preview-wrap');
+    const previewImg = document.getElementById('playground-preview-img');
+    const filenameDisplay = document.getElementById('playground-filename-display');
+    const experimentBtn = document.getElementById('playground-experiment-btn');
+
+    if (emptyZone) emptyZone.style.display = 'none';
+    if (previewWrap) previewWrap.style.display = 'flex';
+    if (previewImg) previewImg.src = objectUrl;
+    if (filenameDisplay) filenameDisplay.textContent = file.name;
+
+    // Visually and functionally enable "Let's Experiment" button
+    if (experimentBtn) {
+      experimentBtn.disabled = false;
+      experimentBtn.classList.remove('disabled');
+    }
+  };
+  img.onerror = function() {
+    URL.revokeObjectURL(objectUrl);
+    showUploadError("Unable to decode image. Please choose a valid image file.");
+  };
+  img.src = objectUrl;
+}
+
+// Ensure TFLite WebAssembly engine is loaded
+async function ensureTFLiteEngine() {
+  if (window.tfweb && window.tfweb.TFLiteWebModelRunner) {
+    return;
+  }
+  // Wait up to 8 seconds for defer script to initialize
+  const startTime = Date.now();
+  while (Date.now() - startTime < 8000) {
+    if (window.tfweb && window.tfweb.TFLiteWebModelRunner) {
+      return;
+    }
+    await new Promise(r => setTimeout(r, 50));
+  }
+  throw new Error("TensorFlow Lite WebAssembly engine failed to load. Please check your internet connection.");
+}
+
+// Fetch ArrayBuffer of model file with resilient fallback resolution
+async function fetchModelArrayBuffer(fileName) {
+  const candidateUrls = [
+    `models/${fileName}`,
+    `../models/${fileName}`,
+    `/models/${fileName}`,
+    `https://raw.githubusercontent.com/DevaharshaM/EmbeddedAI/inception/Image_Classifier/Models/${fileName}`
+  ];
+
+  let lastError = null;
+  for (const url of candidateUrls) {
+    try {
+      const resp = await fetch(url);
+      if (resp.ok) {
+        const buf = await resp.arrayBuffer();
+        if (buf && buf.byteLength > 1000) {
+          return buf;
+        }
+      }
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw new Error(`Could not load model file ${fileName} (${lastError ? lastError.message : 'Network error'})`);
+}
+
+// Load or retrieve cached TFLiteWebModelRunner instance
+async function getOrLoadModelRunner(modelConfig) {
+  if (playgroundModelRunners[modelConfig.name]) {
+    return playgroundModelRunners[modelConfig.name];
+  }
+
+  if (window.tflite && typeof window.tflite.setWasmPath === 'function') {
+    window.tflite.setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.10/wasm/');
+  }
+
+  await ensureTFLiteEngine();
+  const arrayBuffer = await fetchModelArrayBuffer(modelConfig.fileName);
+
+  // Single-threaded SIMD/WASM execution avoids SharedArrayBuffer/COOP/COEP restrictions
+  const runner = await window.tfweb.TFLiteWebModelRunner.create(arrayBuffer, { numThreads: 1 });
+  playgroundModelRunners[modelConfig.name] = runner;
+  return runner;
+}
+
+// Preprocess uploaded image to Float32Array of 100x100x3 RGB pixels [0.0..255.0]
+function preprocessImage(imgElement) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 100;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(imgElement, 0, 0, 100, 100);
+  const imgData = ctx.getImageData(0, 0, 100, 100).data;
+
+  const rgbPixels = new Float32Array(100 * 100 * 3);
+  for (let i = 0; i < 100 * 100; i++) {
+    rgbPixels[i * 3 + 0] = imgData[i * 4 + 0]; // Red [0.0, 255.0]
+    rgbPixels[i * 3 + 1] = imgData[i * 4 + 1]; // Green [0.0, 255.0]
+    rgbPixels[i * 3 + 2] = imgData[i * 4 + 2]; // Blue [0.0, 255.0]
+  }
+  return rgbPixels;
+}
+
+// Primary inference trigger
+async function handleExperimentClick() {
+  if (!uploadedPlaygroundImageBitmap || isPlaygroundInferring) return;
+
+  const modelConfig = modelRepresentations[currentModelIndex];
+  const experimentBtn = document.getElementById('playground-experiment-btn');
+  const resultsArea = document.getElementById('playground-results-area');
+  const loadingEl = document.getElementById('playground-results-loading');
+  const contentEl = document.getElementById('playground-results-content');
+  const errorEl = document.getElementById('playground-inference-error');
+
+  isPlaygroundInferring = true;
+  if (experimentBtn) {
+    experimentBtn.disabled = true;
+    experimentBtn.classList.add('disabled');
+  }
+
+  // Show results area with loading spinner
+  if (resultsArea) resultsArea.style.display = 'block';
+  if (loadingEl) loadingEl.style.display = 'flex';
+  if (contentEl) contentEl.style.display = 'none';
+  const openCodeBoxInit = document.getElementById('playground-open-code-box');
+  if (openCodeBoxInit) openCodeBoxInit.style.display = 'none';
+  if (errorEl) {
+    errorEl.style.display = 'none';
+    errorEl.textContent = '';
+  }
+
+  // Allow browser to render loading UI before running heavy WASM inference
+  await new Promise(r => setTimeout(r, 40));
+
+  try {
+    const runner = await getOrLoadModelRunner(modelConfig);
+    const rgbPixels = preprocessImage(uploadedPlaygroundImageBitmap);
+
+    const inInfo = runner.getInputs()[0];
+    const inBuf = inInfo.data();
+
+    if (modelConfig.isQuantized) {
+      // Quantize: round(val / scale + zeroPoint) clamped to [-128, 127]
+      const scale = modelConfig.inScale;
+      const zp = modelConfig.inZeroPoint;
+      for (let i = 0; i < rgbPixels.length; i++) {
+        const q = Math.round(rgbPixels[i] / scale + zp);
+        inBuf[i] = Math.max(-128, Math.min(127, q));
+      }
+    } else {
+      // Float32 raw pixels [0.0, 255.0]
+      inBuf.set(rgbPixels);
+    }
+
+    // Measure high-precision inference latency
+    const tStart = performance.now();
+    const success = runner.infer();
+    const tEnd = performance.now();
+
+    if (!success) {
+      throw new Error("Model inference execution returned false.");
+    }
+
+    const inferenceTimeMs = Math.max(1, Math.round(tEnd - tStart));
+
+    // Read and dequantize output probabilities
+    const outInfo = runner.getOutputs()[0];
+    const outBuf = outInfo.data();
+    let probs = [];
+
+    if (modelConfig.isQuantized) {
+      // Dequantize: (quant - zeroPoint) * scale
+      const scale = modelConfig.outScale;
+      const zp = modelConfig.outZeroPoint;
+      for (let i = 0; i < outBuf.length; i++) {
+        probs.push((outBuf[i] - zp) * scale);
+      }
+    } else {
+      probs = Array.from(outBuf);
+    }
+
+    // Probability normalization safeguard
+    let sum = probs.reduce((acc, v) => acc + Math.max(0, v), 0);
+    if (sum > 0) {
+      probs = probs.map(v => Math.max(0, v) / sum);
+    }
+
+    // Determine predicted class
+    let maxIdx = 0;
+    let maxProb = -1;
+    probs.forEach((p, idx) => {
+      if (p > maxProb) {
+        maxProb = p;
+        maxIdx = idx;
+      }
+    });
+    const winningClass = PLAYGROUND_CLASSES[maxIdx];
+
+    // Render results in DOM
+    const predEl = document.getElementById('playground-pred-class');
+    if (predEl) predEl.textContent = winningClass;
+
+    const probsListEl = document.getElementById('playground-probs-list');
+    if (probsListEl) {
+      probsListEl.innerHTML = PLAYGROUND_CLASSES.map((clsName, i) => {
+        const p = probs[i] || 0;
+        const pct = (p * 100).toFixed(1);
+        const isWinner = (i === maxIdx);
+        return `
+          <div class="playground-prob-row">
+            <div class="playground-prob-info">
+              <span class="playground-prob-class ${isWinner ? 'winner' : ''}">${clsName}</span>
+              <span class="playground-prob-val ${isWinner ? 'winner' : ''}">${pct}%</span>
+            </div>
+            <div class="playground-prob-bar-track">
+              <div class="playground-prob-bar-fill ${isWinner ? 'winner' : ''}" style="width: ${pct}%;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Update browser inference time readout (only result metric displayed)
+    const bTime = document.getElementById('playground-bench-time');
+    if (bTime) bTime.textContent = `${inferenceTimeMs} ms`;
+
+    // Display content
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (contentEl) contentEl.style.display = 'flex';
+
+    // Show Open Code button only after successful inference
+    const openCodeBox = document.getElementById('playground-open-code-box');
+    if (openCodeBox) openCodeBox.style.display = 'flex';
+
+    if (resultsArea) {
+      resultsArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+  } catch (err) {
+    console.error("Playground inference error:", err);
+    if (loadingEl) loadingEl.style.display = 'none';
+    const openCodeBox = document.getElementById('playground-open-code-box');
+    if (openCodeBox) openCodeBox.style.display = 'none';
+    if (errorEl) {
+      errorEl.textContent = `Inference failed: ${err.message || err}`;
+      errorEl.style.display = 'flex';
+    }
+  } finally {
+    isPlaygroundInferring = false;
+    if (experimentBtn) {
+      experimentBtn.disabled = false;
+      experimentBtn.classList.remove('disabled');
+    }
+  }
+}
+
+function initImageClassificationPlayground() {
+  setModelRepresentation(currentModelIndex || 0);
+  const openCodeBox = document.getElementById('playground-open-code-box');
+  if (openCodeBox) openCodeBox.style.display = 'none';
+}
+
 

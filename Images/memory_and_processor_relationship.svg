@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="mem-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <marker id="mem-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38BDF8" />
+    </marker>
+    <marker id="mem-arrow-amber" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#F59E0B" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#mem-grid)" />
+  <rect x="10" y="10" width="700" height="260" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <text x="360" y="32" fill="#E2E8F0" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.08em">ONE MEMORY, TWO KINDS OF INFORMATION</text>
+
+  <!-- Left: Unified Memory Container -->
+  <rect x="40" y="55" width="280" height="195" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.6" />
+  <rect x="40" y="55" width="280" height="26" rx="8" fill="rgba(56, 189, 248, 0.12)" />
+  <text x="180" y="72" fill="#38BDF8" font-size="9.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">UNIFIED MEMORY SPACE</text>
+
+  <!-- Memory Section A: Instructions -->
+  <rect x="55" y="92" width="250" height="66" rx="6" fill="#0F172A" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1.2" />
+  <text x="70" y="110" fill="#60A5FA" font-size="8.5" font-weight="700" letter-spacing="0.04em">INSTRUCTIONS (What to do)</text>
+  <g fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="8">
+    <text x="70" y="128">0x00: ADD R1, R2</text>
+    <text x="70" y="144">0x04: LOAD R3, [0x20]</text>
+  </g>
+
+  <!-- Memory Section B: Data -->
+  <rect x="55" y="168" width="250" height="66" rx="6" fill="#0F172A" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1.2" />
+  <text x="70" y="186" fill="#FCD34D" font-size="8.5" font-weight="700" letter-spacing="0.04em">DATA (Values to work on)</text>
+  <g fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="8">
+    <text x="70" y="204">0x20: 42</text>
+    <text x="70" y="220">0x24: 17</text>
+  </g>
+
+  <!-- Center: Communication Channel -->
+  <g transform="translate(320, 115)">
+    <!-- Top line (Instructions fetched) -->
+    <path d="M 10 10 L 80 10" stroke="#38BDF8" stroke-width="2" marker-end="url(#mem-arrow-blue)" />
+    <text x="45" y="3" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">Fetch Code</text>
+
+    <!-- Bottom line (Data read/write) -->
+    <path d="M 80 65 L 10 65" stroke="#F59E0B" stroke-width="2" marker-end="url(#mem-arrow-amber)" />
+    <path d="M 10 65 L 80 65" stroke="#F59E0B" stroke-width="2" marker-end="url(#mem-arrow-amber)" />
+    <text x="45" y="82" fill="#F59E0B" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">Read / Write Data</text>
+  </g>
+
+  <!-- Right: Processor -->
+  <rect x="420" y="70" width="260" height="165" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1.8" />
+  <rect x="420" y="70" width="260" height="28" rx="8" fill="rgba(59, 130, 246, 0.15)" />
+  <circle cx="438" cy="84" r="3" fill="#3B82F6" />
+  <text x="550" y="88" fill="#3B82F6" font-size="10" font-weight="800" text-anchor="middle" letter-spacing="0.06em">MICROPROCESSOR</text>
+
+  <rect x="440" y="112" width="220" height="42" rx="5" fill="#0F172A" stroke="rgba(59, 130, 246, 0.3)" stroke-width="1" />
+  <text x="550" y="130" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Fetches instructions from memory</text>
+  <text x="550" y="144" fill="#94A3B8" font-size="7.5" text-anchor="middle">Decodes what operation to perform</text>
+
+  <rect x="440" y="165" width="220" height="42" rx="5" fill="#0F172A" stroke="rgba(245, 158, 11, 0.3)" stroke-width="1" />
+  <text x="550" y="183" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Loads &amp; stores data values</text>
+  <text x="550" y="197" fill="#94A3B8" font-size="7.5" text-anchor="middle">Computes and updates state</text>
+</svg>

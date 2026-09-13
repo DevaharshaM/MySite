@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 250" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="engine-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="cpu-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="engine-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3B82F6" />
+    </marker>
+    <marker id="green-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#engine-grid)" />
+  <rect x="10" y="10" width="660" height="230" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="6" />
+
+  <text x="340" y="32" fill="#E2E8F0" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.06em">THE COMPUTATIONAL ENGINE: TURNING INERT STATE INTO CONSEQUENCE</text>
+
+  <!-- Left Block: Inert State & Environment -->
+  <rect x="35" y="60" width="170" height="150" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1.2" />
+  <text x="120" y="82" fill="#94A3B8" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.05em">INERT SYSTEM STATE</text>
+  <line x1="50" y1="92" x2="190" y2="92" stroke="rgba(148,163,184,0.1)" stroke-width="1" />
+  
+  <rect x="50" y="104" width="140" height="26" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  <text x="120" y="120" fill="#CBD5E1" font-size="8" text-anchor="middle">Stored Code (Flash/ROM)</text>
+  
+  <rect x="50" y="137" width="140" height="26" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  <text x="120" y="153" fill="#CBD5E1" font-size="8" text-anchor="middle">Data in Memory (RAM)</text>
+  
+  <rect x="50" y="170" width="140" height="26" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  <text x="120" y="186" fill="#CBD5E1" font-size="8" text-anchor="middle">Raw Sensor Voltages</text>
+
+  <!-- Flow 1: Input to Processor -->
+  <path d="M 205 135 L 255 135" fill="none" stroke="#3B82F6" stroke-width="2" marker-end="url(#engine-arrow)" />
+  <text x="230" y="124" fill="#3B82F6" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">FETCH</text>
+
+  <!-- Center Block: Microprocessor -->
+  <rect x="260" y="50" width="160" height="170" rx="8" fill="url(#cpu-grad)" stroke="#3B82F6" stroke-width="1.8" />
+  <circle cx="275" cy="65" r="3" fill="#3B82F6" opacity="0.8" />
+  <text x="340" y="75" fill="#3B82F6" font-weight="800" font-size="10.5" text-anchor="middle" letter-spacing="0.04em">MICROPROCESSOR</text>
+  <text x="340" y="90" fill="#94A3B8" font-size="7" text-anchor="middle">The Integrated Silicon Core</text>
+
+  <rect x="275" y="102" width="130" height="24" rx="4" fill="#1E293B" stroke="rgba(59,130,246,0.3)" stroke-width="1" />
+  <text x="340" y="117" fill="#E2E8F0" font-size="7.5" font-weight="600" text-anchor="middle">Instruction Decoder</text>
+
+  <rect x="275" y="132" width="130" height="24" rx="4" fill="#1E293B" stroke="rgba(59,130,246,0.3)" stroke-width="1" />
+  <text x="340" y="147" fill="#E2E8F0" font-size="7.5" font-weight="600" text-anchor="middle">Arithmetic &amp; Logic (ALU)</text>
+
+  <rect x="275" y="162" width="130" height="24" rx="4" fill="#1E293B" stroke="rgba(59,130,246,0.3)" stroke-width="1" />
+  <text x="340" y="177" fill="#E2E8F0" font-size="7.5" font-weight="600" text-anchor="middle">High-Speed Register File</text>
+
+  <text x="340" y="206" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">Autonomous Cycle Execution</text>
+
+  <!-- Flow 2: Processor to Action -->
+  <path d="M 420 135 L 470 135" fill="none" stroke="#10B981" stroke-width="2" marker-end="url(#green-arrow)" />
+  <text x="445" y="124" fill="#10B981" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">ACTUATE</text>
+
+  <!-- Right Block: Physical Consequence & Action -->
+  <rect x="475" y="60" width="170" height="150" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1.2" />
+  <text x="560" y="82" fill="#10B981" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.05em">DYNAMIC CONSEQUENCE</text>
+  <line x1="490" y1="92" x2="630" y2="92" stroke="rgba(148,163,184,0.1)" stroke-width="1" />
+
+  <rect x="490" y="104" width="140" height="26" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  <text x="560" y="120" fill="#CBD5E1" font-size="8" text-anchor="middle">Motor PWM &amp; Actuation</text>
+
+  <rect x="490" y="137" width="140" height="26" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  <text x="560" y="153" fill="#CBD5E1" font-size="8" text-anchor="middle">Display Pixel Updates</text>
+
+  <rect x="490" y="170" width="140" height="26" rx="3" fill="#0F172A" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+  <text x="560" y="186" fill="#CBD5E1" font-size="8" text-anchor="middle">Network Transmission Packets</text>
+</svg>

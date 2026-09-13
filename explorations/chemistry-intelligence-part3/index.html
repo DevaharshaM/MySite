@@ -6,7 +6,7 @@
 <title>The Architecture of the Wafer | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/chemistry-intelligence-part3/" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/chemistry-intelligence-part3/"
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -25,6 +25,8 @@
   <link rel="stylesheet" href="../../style.css" />
   <!-- External Payment SDK -->
   <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+  <!-- TensorFlow Lite WebAssembly Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.10/dist/tf-tflite.min.js" defer></script>
   <!-- External Behavior and Logic -->
   <script src="../../script.js" defer></script>
   <!-- Google tag (gtag.js) -->
@@ -51,7 +53,7 @@
     </p>
     
     <div class="diagram-flow">
-      <!-- 1. Nodes -->
+      <!-- 1. Node -->
       <div class="diagram-branch">
         <div class="concept-visual nodes-click-visual" aria-hidden="true">
           <div class="guide-mini-node active">
@@ -62,33 +64,11 @@
             </svg>
           </div>
         </div>
-        <strong>Nodes</strong>
+        <strong>Node</strong>
         <span>Click a node name to enter that concept and continue along the awakened path.</span>
       </div>
 
-      <!-- 2. Exploration List -->
-      <div class="diagram-branch">
-        <div class="concept-visual start-exploration-visual" aria-hidden="true">
-          <div class="guide-mini-list">
-            <div class="guide-mini-card active">
-              <div class="guide-mini-card-title"></div>
-              <div class="guide-mini-card-sub"></div>
-              <!-- Hover Cursor Icon -->
-              <svg viewBox="0 0 24 24" class="guide-cursor-hand">
-                <path d="M4 3l12 6-4.5 1.5L16 15l-2 1-4.5-4.5L5 15V3z" />
-              </svg>
-            </div>
-            <div class="guide-mini-card">
-              <div class="guide-mini-card-title"></div>
-              <div class="guide-mini-card-sub"></div>
-            </div>
-          </div>
-        </div>
-        <strong>Exploration List</strong>
-        <span>Begin your journey by selecting an exploration from the exploration list.</span>
-      </div>
-
-      <!-- 3. Exploration -->
+      <!-- 2. Explorations -->
       <div class="diagram-branch">
         <div class="concept-visual card-visual" aria-hidden="true">
           <div class="card-bar"></div>
@@ -99,11 +79,11 @@
             <div class="card-dot"></div>
           </div>
         </div>
-        <strong>Exploration</strong>
-        <span>An Exploration is the main step-by-step learning experience containing theory, visuals, and interactive elements.</span>
+        <strong>Explorations</strong>
+        <span>Step-by-step learning experiences containing theory, architecture, and interactive elements.</span>
       </div>
 
-      <!-- 4. Setu -->
+      <!-- 3. Setu -->
       <div class="diagram-branch">
         <div class="concept-visual setu-visual" aria-hidden="true">
           <svg viewBox="0 0 100 40" width="80" height="30">
@@ -117,7 +97,7 @@
         <span>A Setu connects related concepts that can be explored independently from the main sequence.</span>
       </div>
 
-      <!-- 5. Vortex -->
+      <!-- 4. Vortex -->
       <div class="diagram-branch">
         <div class="concept-visual vortex-visual" aria-hidden="true">
           <svg viewBox="0 0 100 100" width="50" height="50">
@@ -137,6 +117,115 @@
         <strong>Vortex</strong>
         <span>A Vortex opens a path toward another knowledge area, foundation, or future domain.</span>
       </div>
+
+      <!-- 5. Blackhole -->
+      <div class="diagram-branch">
+        <div class="concept-visual blackhole-visual" aria-hidden="true">
+          <svg viewBox="0 0 110 56" width="110" height="56">
+            <!-- Dark spatial field -->
+            <rect x="1" y="1" width="108" height="54" rx="6" fill="#020617" stroke="rgba(59, 130, 246, 0.28)" stroke-width="1" />
+            
+            <!-- Sparse white cosmic stars -->
+            <circle cx="16" cy="18" r="0.75" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="28" cy="40" r="0.55" fill="#FFFFFF" opacity="0.5" />
+            <circle cx="46" cy="8" r="0.7" fill="#FFFFFF" opacity="0.75" />
+            <circle cx="64" cy="48" r="0.6" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="82" cy="10" r="0.65" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="98" cy="22" r="0.75" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="94" cy="44" r="0.5" fill="#FFFFFF" opacity="0.5" />
+            <circle cx="20" cy="30" r="0.5" fill="#FFFFFF" opacity="0.4" />
+            
+            <!-- Central glowing blue depth selector / Vortex control -->
+            <defs>
+              <radialGradient id="guide-bh-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.95" />
+                <stop offset="45%" stop-color="#1E1B4B" stop-opacity="0.75" />
+                <stop offset="100%" stop-color="#020617" stop-opacity="0.9" />
+              </radialGradient>
+            </defs>
+            <circle cx="55" cy="28" r="16.5" fill="url(#guide-bh-glow)" />
+            <path d="M 55 14 A 14 14 0 0 1 66 22 A 7 7 0 0 1 55 28" stroke="#60A5FA" stroke-width="0.9" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 55 42 A 14 14 0 0 1 44 34 A 7 7 0 0 1 55 28" stroke="#60A5FA" stroke-width="0.9" stroke-linecap="round" fill="none" opacity="0.8" />
+            <circle cx="55" cy="28" r="11" fill="#020617" stroke="#3B82F6" stroke-width="1.2" />
+            <text x="55" y="26.2" font-family="'Syne', sans-serif" font-size="3" font-weight="800" fill="#60A5FA" text-anchor="middle" letter-spacing="0.06em">SELECT</text>
+            <text x="55" y="31" font-family="'Syne', sans-serif" font-size="3" font-weight="800" fill="#93C5FD" text-anchor="middle" letter-spacing="0.06em">DEPTH</text>
+            
+            <!-- Floating conceptual nodes from actual Blackhole page -->
+            <!-- Architecture -->
+            <rect x="5" y="5" width="31" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(148, 163, 184, 0.22)" stroke-width="0.5" />
+            <circle cx="8.5" cy="9.25" r="1.1" fill="#3B82F6" />
+            <text x="12" y="11.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="500" fill="#CBD5E1">Architecture</text>
+            
+            <!-- Controller (active) -->
+            <rect x="74" y="5" width="30" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(59, 130, 246, 0.55)" stroke-width="0.6" />
+            <circle cx="77.5" cy="9.25" r="1.1" fill="#60A5FA" />
+            <text x="81" y="11.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="600" fill="#FFFFFF">Controller</text>
+            
+            <!-- Digital -->
+            <rect x="6" y="42" width="22" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(148, 163, 184, 0.18)" stroke-width="0.5" />
+            <circle cx="9.5" cy="46.25" r="1.1" fill="#64748B" />
+            <text x="13" y="48.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="500" fill="#94A3B8">Digital</text>
+            
+            <!-- Processor (active) -->
+            <rect x="76" y="42" width="28" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(59, 130, 246, 0.55)" stroke-width="0.6" />
+            <circle cx="79.5" cy="46.25" r="1.1" fill="#60A5FA" />
+            <text x="83" y="48.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="600" fill="#FFFFFF">Processor</text>
+          </svg>
+        </div>
+        <strong>Blackhole</strong>
+        <span>A deeper exploration space opened through the Vortex, where you select the depth of investigation.</span>
+      </div>
+
+      <!-- 6. Antarguha -->
+      <div class="diagram-branch">
+        <div class="concept-visual antarguha-visual" aria-hidden="true">
+          <svg viewBox="0 0 110 56" width="110" height="56">
+            <!-- Concealed Exploration document (tucked behind regular path layer) -->
+            <g>
+              <!-- Antarguha Exploration page canvas -->
+              <rect x="7" y="3" width="76" height="50" rx="4" fill="#171426" stroke="rgba(251, 191, 36, 0.6)" stroke-width="1" />
+              
+              <!-- Mini return to explorations link -->
+              <line x1="13" y1="8" x2="28" y2="8" stroke="#A78BFA" stroke-width="1" stroke-linecap="round" opacity="0.65" />
+              
+              <!-- Clear ✦ ANTARGUHA designation -->
+              <text x="13" y="14.5" font-family="'IBM Plex Mono', monospace" font-size="4.2" font-weight="700" fill="#FBBF24" letter-spacing="0.06em">✦ ANTARGUHA</text>
+              
+              <!-- Title line (Microprocessor vs Microcontroller) -->
+              <rect x="13" y="18" width="48" height="3" rx="1" fill="#FFFFFF" opacity="0.95" />
+              <rect x="13" y="23" width="32" height="1.8" rx="0.9" fill="#DDD6FE" opacity="0.75" />
+              
+              <!-- Conceptual tags -->
+              <rect x="13" y="27" width="13" height="3" rx="1" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.35)" stroke-width="0.5" />
+              <rect x="28" y="27" width="14" height="3" rx="1" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.35)" stroke-width="0.5" />
+              <rect x="44" y="27" width="13" height="3" rx="1" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.35)" stroke-width="0.5" />
+              
+              <!-- Article content lines -->
+              <line x1="13" y1="34" x2="68" y2="34" stroke="#CBD5E1" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="13" y1="38" x2="56" y2="38" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="13" y1="42" x2="62" y2="42" stroke="#64748B" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="13" y1="46" x2="48" y2="46" stroke="#475569" stroke-width="1.2" stroke-linecap="round" />
+            </g>
+            
+            <!-- Concealing Foreground Layer (normal visible path concealing the exploration) -->
+            <g>
+              <path d="M 52 54 L 103 54 L 103 16 L 70 16 Z" fill="#0B1120" stroke="rgba(148, 163, 184, 0.25)" stroke-width="1" />
+              <!-- Normal visible path on foreground surface -->
+              <line x1="73" y1="26" x2="98" y2="26" stroke="#334155" stroke-width="1.5" stroke-linecap="round" />
+              <circle cx="77" cy="26" r="2.2" fill="#3B82F6" />
+              <line x1="84" y1="26" x2="98" y2="26" stroke="#475569" stroke-width="1" stroke-linecap="round" />
+              
+              <line x1="73" y1="35" x2="96" y2="35" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="73" y1="42" x2="90" y2="42" stroke="#1E293B" stroke-width="2" stroke-linecap="round" />
+              
+              <!-- Subtle dashed discovery boundary where concealed exploration emerges -->
+              <line x1="52" y1="54" x2="70" y2="16" stroke="rgba(251, 191, 36, 0.45)" stroke-width="1" stroke-dasharray="2 2" />
+            </g>
+          </svg>
+        </div>
+        <strong>Antarguha</strong>
+        <span>A concealed exploration existing outside the regular path, waiting to be discovered within the system.</span>
+      </div>
     </div>
     
     <button class="tutorial-dismiss-btn" onclick="dismissNavigationTutorial()">Begin Exploration</button>
@@ -149,164 +238,422 @@
 <nav>
   <div class="nav-links">
     <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
-    <a id="nav-blogs" onclick="openDirectExplorations()">Exploration</a>
-    <a id="nav-demos" onclick="showPage('demos')">Demonstration</a>
-    <a id="nav-about" onclick="showPage('about')">About</a>
-    <a id="nav-contact" onclick="showPage('contact')">Contact</a>
+    <a id="nav-blogs" onclick="openDirectExplorations()">Explorations</a>
+    <a id="nav-playground" onclick="showPage('playground')">Playground</a>
+    <a id="nav-products" onclick="showPage('products')">Products</a>
+    <a id="nav-about" onclick="showPage('about')">About Us</a>
+    <a id="nav-contact" onclick="showPage('contact')">Contact Us</a>
   </div>
-  <button class="nav-help-btn" onclick="openDesignLanguageGuide()" aria-label="How PrajnaEdge Works" title="How PrajnaEdge Works">?</button>
+  <button class="nav-help-btn" onclick="openDesignLanguageGuide()" aria-label="How PrajnaEdge Works" title="How PrajnaEdge Works" style="display: none;">?</button>
 </nav>
 
 <div class="page" id="page-home">
-  <div class="empty-page">
-    <div class="empty-title">PrajnaEdge</div>
-    <div class="empty-sub" style="max-width:580px;text-align:center;line-height:1.7;color:var(--text);margin-top:0.5rem">
-      An interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.    </div>
-    <!-- Cinematic Evolution Viewport Container -->
-    <div class="tree-viewport" id="tree-viewport">
-      <div class="tree-tooltip" id="tree-tooltip"></div>
-      
-      <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
-      <div class="homepage-video-container">
-        <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
-        <video id="intro-video" class="homepage-media" playsinline muted autoplay preload="auto">
-          <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
-        </video>
-        
-        <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
-        <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
-        
-        <!-- Subtle label overlay indicating the specific tree -->
-        <div id="tree-label-overlay" class="tree-label-overlay">Embedded Systems Tree</div>
-        
-        <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
-        <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
-          <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
-            <!-- Active Trunk Nodes -->
-            <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
-            <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
-            <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
-            <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
-            <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
-            
-            <!-- Special Paths (Future/Interlinked) -->
-            <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
-            <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
-            
-            <!-- Industry Branches (Dormant) -->
-            <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
-            <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
-            <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
-            <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
-            <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
-            <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
-            <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
-            <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
-          </g>
-        </svg>
-
-        <!-- Navigation Tutorial Highlight Pointers -->
-        <div class="tutorial-highlight-ring ring-tr"></div>
-        <div class="tutorial-highlight-ring ring-bl"></div>
-        <div class="tutorial-highlight-ring ring-center"></div>
-
-        <!-- Portal Vortices -->
-        <div class="portal-vortex portal-top-right" id="portal-top-right" role="button" tabindex="0" aria-label="Explore knowledge paths" onclick="triggerBlackholeTransition(() => showPage('domain-select'))">
-          <svg viewBox="0 0 100 100" width="100%" height="100%">
-            <defs>
-              <radialGradient id="vortex-glow-tr" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
-                <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
-                <stop offset="100%" stop-color="#000" stop-opacity="0" />
-              </radialGradient>
-            </defs>
-            <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-tr)" />
-            <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
-            <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
-            <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
-            <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
-            <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
-            <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
-            <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
-            <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
-            <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
-          </svg>
-        </div>
-
-        <div class="portal-vortex portal-bottom-left" id="portal-bottom-left" role="button" tabindex="0" aria-label="Enter another path" onclick="triggerBlackholeTransition(() => showPage('foundation-select'))">
-          <svg viewBox="0 0 100 100" width="100%" height="100%">
-            <defs>
-              <radialGradient id="vortex-glow-bl" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
-                <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
-                <stop offset="100%" stop-color="#000" stop-opacity="0" />
-              </radialGradient>
-            </defs>
-            <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-bl)" />
-            <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
-            <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
-            <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
-            <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
-            <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
-            <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
-            <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
-            <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
-            <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
-          </svg>
-        </div>
-
-        <!-- 4. Floating Playback Controls (fades in/out depending on playback state) -->
-        <div class="homepage-controls-group">
-          <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
-            <!-- SVG icon injected dynamically via JS based on mute state -->
-          </button>
-          
-          <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-            </svg>
-            <span>Replay</span>
-          </button>
-        </div>
-      </div>
+  <div class="empty-page" style="padding-top: 140px;">
+    <div class="empty-title" style="margin-bottom: 1.5rem;">PrajnaEdge</div>
+    <div class="empty-sub" style="max-width:600px;text-align:center;line-height:1.75;color:var(--muted);font-size:0.98rem;font-family:'DM Sans', sans-serif;margin-bottom:3rem;">
+      A curiosphere for curious minds who want to understand, experiment with, and experience technology.
     </div>
 
-    <div style="margin-top:3.5rem;text-align:center">
-      <div style="font-size:0.8rem;color:var(--muted);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:1rem">On the Horizon</div>
-      <div style="display:inline-block;opacity:0.85;border:1px solid var(--blue);border-radius:8px;padding:0.85rem 1.5rem;text-align:left;min-width:200px;cursor:default;transition:all 0.2s;background:var(--blue-glow);"
-           onmouseover="this.style.borderColor='var(--blue)'">
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem;color:#FFF;margin-bottom:0.3rem">PravahaPath</div>
-        <div style="font-family:var(--mono);font-size:0.65rem;color:var(--blue);letter-spacing:0.08em">Something new is taking shape.</div>
+    <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.2em; margin-bottom:1.5rem; opacity:0.8;">
+      To continue exploring
+    </div>
+
+    <!-- Exploration Path Selection -->
+    <div class="explore-options-grid">
+      <!-- UNDERSTAND -->
+      <a class="explore-option-card" onclick="openDirectExplorations()">
+        <span class="option-verb">Understand</span>
+        <span class="option-desc">Explore knowledge</span>
+      </a>
+
+      <!-- EXPERIMENT -->
+      <a class="explore-option-card" onclick="showPage('playground')">
+        <span class="option-verb">Experiment</span>
+        <span class="option-desc">Explore technology</span>
+      </a>
+
+      <!-- PLAY WITH -->
+      <a class="explore-option-card" onclick="showPage('products')">
+        <span class="option-verb">Play With</span>
+        <span class="option-desc">Experience products</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-products">
+  <div class="empty-page">
+    <div class="empty-title" style="font-family:'Syne', sans-serif; font-weight:700; font-size:clamp(1.5rem, 5vw, 2.2rem); color:#FFF; text-align:center;">
+      Technology, made tangible.
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-playground">
+  <div class="playground-page-wrapper">
+    <!-- Page Header (sits on existing site background) -->
+    <div class="playground-header">
+      <h1 class="playground-title">Where does intelligence run?</h1>
+      <p class="playground-intro">
+        Explore AI that moves inference closer to the data — from the edge to the device itself.
+      </p>
+    </div>
+
+    <!-- Dedicated Playground Workspace (Contained Overlay/Panel) -->
+    <div class="playground-workspace">
+      <!-- Workspace Header / Category Strip -->
+      <div class="playground-workspace-header">
+        <!-- Segmented Tab Control -->
+        <div class="playground-tabs-container">
+          <div class="playground-tabs-segmented" id="playground-tabs-segmented">
+            <button class="playground-tab-btn active" id="playground-tab-edge-ai" onclick="switchPlaygroundTab('edge-ai')">Edge AI</button>
+            <button class="playground-tab-btn" id="playground-tab-on-device-ai" onclick="switchPlaygroundTab('on-device-ai')">On-device AI</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Category Explanation -->
+        <div class="playground-category-description" id="playground-category-description">
+          AI inference runs at or near the point where data is generated, rather than relying on a remote cloud.
+        </div>
+      </div>
+
+      <!-- Workspace Interactive Canvas -->
+      <div class="playground-workspace-canvas">
+        <!-- Dynamic Playground Tab Panes -->
+        <div class="playground-tab-pane active show" id="playground-pane-edge-ai">
+          <div class="playground-item-card" onclick="showPage('playground-edge-ai')">
+            <div class="playground-card-top">
+              <span class="playground-card-badge">Edge AI</span>
+              <span class="playground-card-tag">Computer Vision</span>
+            </div>
+            <h3 class="playground-card-title">Image Classification</h3>
+            <p class="playground-card-desc">
+              Can this image classifier maintain its intelligence while becoming small enough for the edge?
+            </p>
+            <div class="playground-card-footer">
+              <span class="playground-card-action">Open Experiment →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="playground-tab-pane" id="playground-pane-on-device-ai">
+          <div class="playground-placeholder-card">
+            <div class="playground-status-tag">// Coming soon</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<div class="page" id="page-playground-edge-ai">
+  <div class="playground-detail-page-wrapper">
+    <div class="playground-detail-container">
+      <!-- Back Navigation (same style as Exploration detail pages) -->
+      <button class="blog-back-btn" onclick="showPage('playground')">← Back to Playground</button>
+
+      <!-- 1. Header / Problem Statement -->
+      <div class="playground-detail-header">
+        <div class="playground-detail-badge">Edge AI Playground</div>
+        <h1 class="playground-detail-title">Image Classification</h1>
+        <p class="playground-detail-problem">
+          Can this image classifier maintain its intelligence while becoming small enough for the edge?
+        </p>
+      </div>
+
+      <!-- Architectural Workbench Container -->
+      <div class="playground-experiment-workbench">
+        <!-- 2. Input Image Section -->
+        <div class="playground-exp-section">
+          <h2 class="playground-exp-heading">Choose an image</h2>
+          
+          <div class="playground-upload-container">
+            <input type="file" id="playground-file-input" accept=".jpg, .jpeg, .png, image/jpeg, image/png" style="display: none;" onchange="handlePlaygroundImageUpload(event)">
+            
+            <!-- Empty Upload State -->
+            <div id="playground-upload-empty" class="playground-upload-zone" onclick="document.getElementById('playground-file-input').click()">
+              <div class="playground-upload-icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <div class="playground-upload-btn-text">Upload an image</div>
+              <div class="playground-upload-hint">Supports JPG, JPEG, PNG</div>
+            </div>
+
+            <!-- Selected Image Preview State -->
+            <div id="playground-upload-preview-wrap" class="playground-preview-zone" style="display: none;">
+              <div class="playground-preview-frame">
+                <img id="playground-preview-img" src="" alt="Uploaded image preview" class="playground-preview-img">
+              </div>
+              <div class="playground-preview-actions">
+                <span id="playground-filename-display" class="playground-filename-display"></span>
+                <button type="button" class="playground-change-btn" onclick="document.getElementById('playground-file-input').click()">
+                  Change image
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Error Notice -->
+            <div id="playground-upload-error" class="playground-error-box" style="display: none;"></div>
+          </div>
+          <div class="playground-scope-note">
+            This classifier recognizes only Apple, Banana, and Orange. Other objects may be incorrectly classified as one of these classes.
+          </div>
+        </div>
+
+        <!-- 3. Model Selection Section -->
+        <div class="playground-exp-section">
+          <h2 class="playground-exp-heading">Choose the model</h2>
+          
+          <div class="playground-slider-wrap">
+            <div class="playground-slider-track-box">
+              <input type="range" min="0" max="2" step="1" value="0" id="playground-model-slider" class="playground-slider" oninput="setModelRepresentation(parseInt(this.value, 10))" aria-label="Choose model precision">
+              <div class="playground-slider-ticks">
+                <span class="playground-tick active" id="tick-0" onclick="setModelRepresentation(0)"></span>
+                <span class="playground-tick" id="tick-1" onclick="setModelRepresentation(1)"></span>
+                <span class="playground-tick" id="tick-2" onclick="setModelRepresentation(2)"></span>
+              </div>
+            </div>
+            <div class="playground-slider-labels">
+              <button type="button" class="playground-slider-label active" id="label-FP32" onclick="setModelRepresentation(0)">FP32</button>
+              <button type="button" class="playground-slider-label" id="label-FP16" onclick="setModelRepresentation(1)">FP16</button>
+              <button type="button" class="playground-slider-label" id="label-INT8" onclick="setModelRepresentation(2)">INT8</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Model Information Section (Compact Instrumentation) -->
+        <div class="playground-exp-section">
+          <div class="playground-metrics-grid">
+            <div class="playground-metric-item">
+              <div class="playground-metric-label">Model size</div>
+              <div class="playground-metric-value" id="playground-metric-size">4.91 MiB</div>
+            </div>
+            <div class="playground-metric-item">
+              <div class="playground-metric-label">Largest activation</div>
+              <div class="playground-metric-value" id="playground-metric-activation">~625 KiB</div>
+            </div>
+            <div class="playground-metric-item">
+              <div class="playground-metric-label">Test accuracy</div>
+              <div class="playground-metric-value" id="playground-metric-accuracy">99.11%</div>
+              <div class="playground-metric-subtext">Measured model accuracy</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Primary Action Button & Privacy Note -->
+        <div class="playground-action-area">
+          <button id="playground-experiment-btn" class="playground-primary-btn disabled" disabled onclick="handleExperimentClick()">
+            Let's Experiment
+          </button>
+          <div class="playground-privacy-note">Your image is processed locally in your browser.</div>
+        </div>
+
+        <!-- 6. Results Area -->
+        <div id="playground-results-area" class="playground-results-area" style="display: none;">
+          <!-- Loading State -->
+          <div id="playground-results-loading" class="playground-results-loading" style="display: none;">
+            <div class="playground-spinner"></div>
+            <div class="playground-loading-text">Running locally...</div>
+          </div>
+
+          <!-- Structured Results -->
+          <div id="playground-results-content" class="playground-results-content" style="display: none;">
+            <div class="playground-result-header">
+              <div class="playground-result-label">PREDICTION</div>
+              <div class="playground-result-prediction" id="playground-pred-class">--</div>
+            </div>
+
+            <div class="playground-probabilities-section">
+              <div class="playground-probs-heading">Class Probabilities</div>
+              <div class="playground-probs-list" id="playground-probs-list">
+                <!-- Injected dynamically via JS -->
+              </div>
+            </div>
+
+            <div class="playground-result-timing">
+              <span class="playground-timing-label">Browser inference time</span>
+              <span class="playground-timing-val" id="playground-bench-time">-- ms</span>
+            </div>
+
+            <!-- Open Code Link (shown only after successful inference) -->
+            <div class="playground-open-code-box" id="playground-open-code-box" style="display: none;">
+              <a href="https://github.com/DevaharshaM/EmbeddedAI/blob/inception/Image_Classifier/Image_Classifier_EdgeAI.ipynb" target="_blank" rel="noopener noreferrer" class="playground-open-code-link">
+                Open Code →
+              </a>
+            </div>
+          </div>
+
+          <!-- Inference Error Box -->
+          <div id="playground-inference-error" class="playground-error-box" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-playground-on-device-ai">
+  <div class="empty-page">
+    <div class="empty-label">On-Device AI</div>
+    <div class="empty-title">On-Device AI Playground</div>
+    <div class="empty-sub">// Coming soon</div>
+    <button onclick="showPage('playground')" class="btn-ghost" style="margin-top: 2rem;">← Return to Playground</button>
+  </div>
+</div>
+
 <div class="page" id="page-blogs">
   <div style="padding-top:80px;min-height:100vh">
-    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem;display:flex;flex-direction:column;align-items:center;">
       
-      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none; margin-bottom:2rem; align-self:flex-start;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
-        <div>
-          <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem">Articles &amp; Write-ups</h2>
-          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="blogsPageSubtitle">
-            Exploring how systems evolve from hardware to integration.
-          </p>
-        </div>
+      <div style="text-align:center; margin-bottom:2rem; width:100%;">
+        <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem; text-align:center; display:none;">Explorations</h2>
+        <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem; text-align:center; max-width:600px; margin:0 auto;" id="blogsPageSubtitle">
+          Explore the ideas, systems and connections that shape technology — choose any node to begin your journey.
+        </p>
+      </div>
+
+      <!-- Cinematic Evolution Viewport Container -->
+      <div class="tree-viewport" id="tree-viewport" style="margin-bottom:1.5rem;">
+        <button class="close-tree-btn" id="close-tree-btn" aria-label="Close Tree" title="Close Tree" onclick="toggleEnlargeTree(false)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="tree-tooltip" id="tree-tooltip"></div>
         
-        <div style="display:flex; align-items:center; gap:0.75rem;">
-          <div class="control-housing">
-            <span class="control-label">Sort:</span>
-            <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortChange('blogs')">
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-            </select>
+        <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+        <div class="homepage-video-container">
+          <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+          <video id="intro-video" class="homepage-media" playsinline muted preload="auto">
+            <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+          </video>
+          
+          <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+          <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+          
+          <!-- Subtle label overlay indicating the specific tree -->
+          <div id="tree-label-overlay" class="tree-label-overlay">Embedded Systems Tree</div>
+          
+          <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+          <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+            <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+              <!-- Active Trunk Nodes -->
+              <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+              <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+              <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+              <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+              <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+              
+              <!-- Special Paths (Future/Interlinked) -->
+              <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+              <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+              
+              <!-- Industry Branches (Dormant) -->
+              <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+              <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+              <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+              <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+              <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+              <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+              <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+              <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+            </g>
+          </svg>
+
+          <!-- Portal Vortices -->
+          <div class="portal-vortex portal-top-right" id="portal-top-right" role="button" tabindex="0" aria-label="Explore knowledge paths" onclick="triggerBlackholeTransition(() => showPage('domain-select'))">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <defs>
+                <radialGradient id="vortex-glow-tr" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                  <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                  <stop offset="100%" stop-color="#000" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-tr)" />
+              <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <div class="portal-vortex portal-bottom-left" id="portal-bottom-left" role="button" tabindex="0" aria-label="Enter another path" onclick="triggerBlackholeTransition(() => showPage('foundation-select'))">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <defs>
+                <radialGradient id="vortex-glow-bl" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                  <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                  <stop offset="100%" stop-color="#000" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-bl)" />
+              <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <!-- 4. Floating Playback Controls -->
+          <div class="homepage-controls-group">
+            <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+              <!-- SVG icon injected dynamically via JS based on mute state -->
+            </button>
+            
+            <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Replay</span>
+            </button>
           </div>
         </div>
       </div>
-      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+
+      <!-- Enlarge Tree Icon Control -->
+      <button id="enlarge-tree-btn" class="enlarge-tree-icon-btn" aria-label="Enlarge Tree" title="Enlarge Tree" onclick="toggleEnlargeTree(true)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="11" y1="8" x2="11" y2="14"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </button>
+
+      <!-- Exploration List Control -->
+      <button id="exploration-list-btn" class="blog-back-btn" style="margin-bottom:2rem; cursor:pointer;" onclick="openExplorationList()">
+        Exploration List &rarr;
+      </button>
+
+      <!-- Sorting Toggles -->
+      <div style="display:none; justify-content:flex-end; align-items:center; gap:0.5rem; width:100%; margin-bottom:1.5rem;" class="control-housing-wrapper" id="blogs-sort-control-wrapper">
+        <div class="control-housing" style="display:flex; align-items:center; gap:0.5rem;">
+          <span class="control-label" style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Sort by:</span>
+          <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortSelectChange()">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem;width:100%;"></div>
     </div>
   </div>
 </div>
@@ -358,7 +705,7 @@
     
         <div style="margin-bottom:2.5rem">
           <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">Closing Thought</h2>
-          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem"></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The modern processor is often imagined as a tiny object hidden inside a device.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But before it becomes a processor, it first exists as a carefully engineered surface designed for microscopic construction.</p>
+          <p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">The modern processor is often imagined as a tiny object hidden inside a device.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">But before it becomes a processor, it first exists as a carefully engineered surface designed for microscopic construction.</p>
           <div class="blog-quote">Before computation can emerge, matter must first become manufacturable.</div>
         </div>
         
@@ -390,42 +737,65 @@
 </div>
 
 <div class="page" id="page-about">
-  <section id="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-grid">
-      <div>
-        <div class="hero-tag">ABOUT PRAJNAEDGE</div>
-        <h1 class="hero-title">
-          Engineering concepts you don't just read — <em>you experience</em>.
-        </h1>
-        <p class="hero-sub">
-          PrajnaEdge is an interactive engineering platform where complex concepts become experiences—through visual explorations, simulations, and practical understanding.
-        </p>
+  <!-- Hero Section -->
+  <section id="about-hero" style="padding-top: 140px; padding-bottom: 3rem;">
+    <div style="max-width: 800px; margin: 0 auto; padding: 0 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+      <h1 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 6vw, 4rem); color: #FFF; margin: 0;">PrajnaEdge</h1>
+      <div style="font-family: var(--mono); font-size: 0.9rem; color: var(--blue); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.25rem;">
+        Engineering concepts you don't just read — you experience.
+      </div>
+      <div style="font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem;">
+        Founded in 2026.
+      </div>
+      <p style="font-size: 1.05rem; line-height: 1.75; color: #CBD5E1; max-width: 680px; font-weight: 300; margin: 0;">
+        PrajnaEdge is a technology company exploring the space between understanding technology, experimenting with ideas, and turning them into things that can be experienced.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission & Vision Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border); background: rgba(30, 41, 59, 0.08);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;" class="about-split-grid">
+      <!-- Our Mission -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <h2 style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.35rem; color: #FFF; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Our Mission</h2>
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.2rem, 3vw, 1.6rem); color: #FFF; line-height: 1.4;">
+          To make technology easier to explore, deeper to understand, and more exciting to experience.
+        </div>
+      </div>
+
+      <!-- Our Vision -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <h2 style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.35rem; color: #FFF; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Our Vision</h2>
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.2rem, 3vw, 1.6rem); color: #FFF; line-height: 1.4;">
+          To build a technology ecosystem where curiosity, experimentation and creation continuously lead to one another.
+        </div>
       </div>
     </div>
   </section>
-  <section id="about">
-    <div class="about-grid">
-      <div>
-        <h2 class="section-title">WHY PRAJNAEDGE EXISTS</h2>
-        <p class="about-text">
-          Engineering is often taught as a collection of isolated concepts.<br><br>
-          A processor here.<br>
-          A protocol there.<br>
-          An operating system somewhere else.<br><br>
-          But real systems are built by connecting these layers.<br><br>
-          <strong>PrajnaEdge exists to make those connections visible.</strong><br><br>
-          Each exploration starts with a question, builds an intuition, and gradually reveals the system underneath through visualizations, simulations, practical scenarios, and connections between concepts.
-        </p>
+
+  <!-- Where it Began Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 600px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.25rem;">
+      <h2 style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.35rem; color: #FFF; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Where it began</h2>
+      <div style="font-family: var(--mono); font-size: 0.95rem; color: var(--blue); line-height: 1.6; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;">
+        Embedded Systems
       </div>
-      <div class="why-card">
-        <div class="why-title">HOW PRAJNAEDGE WORKS</div>
-        <p class="why-text">
-          PrajnaEdge is designed around exploration rather than passive reading.<br><br>
-          Concepts are introduced progressively, visualized when they benefit from seeing them, and brought to life through interactive EdgeCases and simulations where appropriate.<br><br>
-          The goal is not simply to explain what a system does, but to help the learner understand why it works the way it does.
-        </p>
-      </div>
+      <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.75; font-weight: 300; margin: 0;">
+        PrajnaEdge began with Embedded Systems — exploring the foundations that connect hardware, software and intelligent computation.
+      </p>
+      <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.75; font-weight: 300; margin: 0;">
+        The first technology universe is built around that foundation. The journey will expand as new ideas, experiments and products emerge.
+      </p>
+    </div>
+  </section>
+
+  <!-- Creator Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+      <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.75; max-width: 500px; margin: 0; font-weight: 300;">
+        PrajnaEdge is a technology company created by <a href="/creator/" target="_blank" style="color: var(--blue); cursor: pointer; text-decoration: underline; transition: color 0.2s;" onmouseover="this.style.color='#2563EB'" onmouseout="this.style.color='var(--blue)'">Devaharsha Meesarapu</a>.
+      </p>
     </div>
   </section>
 </div>

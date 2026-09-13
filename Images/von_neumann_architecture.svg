@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="vn-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <marker id="vn-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38BDF8" />
+    </marker>
+    <marker id="vn-arrow-blue-rev" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38BDF8" />
+    </marker>
+    <marker id="vn-arrow-amber" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#F59E0B" />
+    </marker>
+    <marker id="vn-arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" />
+    </marker>
+    <marker id="vn-arrow-purple" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#A855F7" />
+    </marker>
+  </defs>
+
+  <!-- Background and Frame -->
+  <rect width="100%" height="100%" fill="url(#vn-grid)" />
+  <rect x="12" y="12" width="736" height="356" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <text x="380" y="36" fill="#E2E8F0" font-size="11.5" font-weight="700" text-anchor="middle" letter-spacing="0.08em">VON NEUMANN ARCHITECTURE</text>
+  <text x="380" y="52" fill="#94A3B8" font-size="8" text-anchor="middle">Central Processing Unit, Unified Memory, and Input/Output connected via a Single Shared Bus</text>
+
+  <!-- Central Processing Unit (CPU) Box (Top Left) -->
+  <g transform="translate(36, 70)">
+    <rect width="250" height="150" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="1.6" />
+    <rect width="250" height="26" rx="8" fill="rgba(59, 130, 246, 0.15)" />
+    <circle cx="16" cy="13" r="3" fill="#3B82F6" />
+    <text x="125" y="17" fill="#60A5FA" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">CENTRAL PROCESSING UNIT (CPU)</text>
+
+    <!-- Control Unit -->
+    <rect x="14" y="38" width="222" height="46" rx="5" fill="#0F172A" stroke="rgba(59, 130, 246, 0.35)" stroke-width="1" />
+    <text x="125" y="56" fill="#E2E8F0" font-size="8.5" font-weight="700" text-anchor="middle">Control Unit (CU)</text>
+    <text x="125" y="72" fill="#94A3B8" font-size="7.5" text-anchor="middle">Fetches &amp; decodes instructions · coordinates system</text>
+
+    <!-- Arithmetic & Logic Unit -->
+    <rect x="14" y="92" width="222" height="46" rx="5" fill="#0F172A" stroke="rgba(59, 130, 246, 0.35)" stroke-width="1" />
+    <text x="125" y="110" fill="#E2E8F0" font-size="8.5" font-weight="700" text-anchor="middle">Arithmetic Logic Unit (ALU) &amp; Registers</text>
+    <text x="125" y="126" fill="#94A3B8" font-size="7.5" text-anchor="middle">Executes calculations · holds temporary operands</text>
+  </g>
+
+  <!-- Memory Unit Box (Top Right) -->
+  <g transform="translate(474, 70)">
+    <rect width="250" height="150" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.6" />
+    <rect width="250" height="26" rx="8" fill="rgba(245, 158, 11, 0.15)" />
+    <circle cx="16" cy="13" r="3" fill="#F59E0B" />
+    <text x="125" y="17" fill="#FBBF24" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.06em">UNIFIED MEMORY UNIT</text>
+
+    <!-- Instructions partition -->
+    <rect x="14" y="38" width="222" height="46" rx="5" fill="#0F172A" stroke="rgba(56, 189, 248, 0.35)" stroke-width="1" />
+    <text x="125" y="56" fill="#38BDF8" font-size="8.5" font-weight="700" text-anchor="middle">Instructions (Program)</text>
+    <text x="125" y="72" fill="#94A3B8" font-size="7.5" text-anchor="middle">Sequences of operations stored as numeric codes</text>
+
+    <!-- Data partition -->
+    <rect x="14" y="92" width="222" height="46" rx="5" fill="#0F172A" stroke="rgba(245, 158, 11, 0.35)" stroke-width="1" />
+    <text x="125" y="110" fill="#FCD34D" font-size="8.5" font-weight="700" text-anchor="middle">Data (Operands &amp; State)</text>
+    <text x="125" y="126" fill="#94A3B8" font-size="7.5" text-anchor="middle">Values manipulated and produced by the program</text>
+  </g>
+
+  <!-- SHARED SYSTEM BUS (Center Horizontal Trunk) -->
+  <g transform="translate(36, 246)">
+    <!-- Main Bus Bar -->
+    <rect width="688" height="34" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1.8" />
+    <rect x="2" y="2" width="684" height="30" rx="4" fill="rgba(56, 189, 248, 0.08)" />
+
+    <text x="344" y="18" fill="#38BDF8" font-size="9" font-weight="800" text-anchor="middle" letter-spacing="0.08em">SHARED SYSTEM BUS (CONTROL · ADDRESS · DATA)</text>
+    <text x="344" y="29" fill="#94A3B8" font-size="7" text-anchor="middle">A single communication highway shared by both instructions and data</text>
+  </g>
+
+  <!-- Connections between CPU and Shared Bus -->
+  <line x1="161" y1="220" x2="161" y2="246" stroke="#3B82F6" stroke-width="2.5" marker-start="url(#vn-arrow-blue-rev)" marker-end="url(#vn-arrow-blue)" />
+  <rect x="126" y="226" width="70" height="15" rx="3" fill="#0F172A" stroke="rgba(59, 130, 246, 0.4)" stroke-width="1" />
+  <text x="161" y="237" fill="#60A5FA" font-size="6.8" font-weight="600" text-anchor="middle">Bidirectional</text>
+
+  <!-- Connections between Memory and Shared Bus -->
+  <line x1="599" y1="220" x2="599" y2="246" stroke="#F59E0B" stroke-width="2.5" marker-start="url(#vn-arrow-amber)" marker-end="url(#vn-arrow-amber)" />
+  <rect x="564" y="226" width="70" height="15" rx="3" fill="#0F172A" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1" />
+  <text x="599" y="237" fill="#FBBF24" font-size="6.8" font-weight="600" text-anchor="middle">Bidirectional</text>
+
+  <!-- Bottom: Input and Output Devices -->
+  <!-- Input Box -->
+  <g transform="translate(90, 304)">
+    <rect width="200" height="50" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.4" />
+    <text x="100" y="22" fill="#34D399" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">INPUT INTERFACE</text>
+    <text x="100" y="38" fill="#94A3B8" font-size="7.5" text-anchor="middle">Keyboards, sensors, storage, network</text>
+    <!-- Arrow pointing up into Bus -->
+    <line x1="100" y1="0" x2="100" y2="-24" stroke="#10B981" stroke-width="2" marker-end="url(#vn-arrow-green)" />
+  </g>
+
+  <!-- Output Box -->
+  <g transform="translate(470, 304)">
+    <rect width="200" height="50" rx="6" fill="#1E293B" stroke="#A855F7" stroke-width="1.4" />
+    <text x="100" y="22" fill="#C084FC" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.04em">OUTPUT INTERFACE</text>
+    <text x="100" y="38" fill="#94A3B8" font-size="7.5" text-anchor="middle">Displays, actuators, storage, network</text>
+    <!-- Arrow pointing down from Bus -->
+    <line x1="100" y1="-24" x2="100" y2="0" stroke="#A855F7" stroke-width="2" marker-end="url(#vn-arrow-purple)" />
+  </g>
+
+  <!-- Center Highlight Annotation -->
+  <g transform="translate(315, 130)">
+    <rect width="130" height="60" rx="6" fill="#0F172A" stroke="rgba(148, 163, 184, 0.25)" stroke-dasharray="3 3" stroke-width="1" />
+    <text x="65" y="20" fill="#E2E8F0" font-size="7.5" font-weight="700" text-anchor="middle">THE CORE INSIGHT</text>
+    <text x="65" y="35" fill="#94A3B8" font-size="7" text-anchor="middle">Programs are data.</text>
+    <text x="65" y="47" fill="#94A3B8" font-size="7" text-anchor="middle">Both travel the same bus.</text>
+  </g>
+</svg>

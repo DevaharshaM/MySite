@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 250" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="rhythm-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <marker id="rhythm-arrow-amber" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#F59E0B" />
+    </marker>
+    <marker id="rhythm-arrow-emerald" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" />
+    </marker>
+    <marker id="rhythm-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#38BDF8" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#rhythm-grid)" />
+  <rect x="10" y="10" width="700" height="230" fill="none" stroke="rgba(148,163,184,0.1)" stroke-width="1" rx="8" />
+
+  <text x="360" y="32" fill="#E2E8F0" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE FUNDAMENTAL RHYTHM: FETCH • DECODE • EXECUTE</text>
+
+  <!-- Step 1: FETCH -->
+  <rect x="35" y="55" width="190" height="125" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.6" />
+  <rect x="35" y="55" width="190" height="26" rx="8" fill="rgba(56, 189, 248, 0.12)" />
+  <text x="130" y="72" fill="#38BDF8" font-size="9" font-weight="800" text-anchor="middle" letter-spacing="0.08em">01 • FETCH</text>
+  <text x="130" y="106" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle">"Get the next instruction."</text>
+  <text x="130" y="132" fill="#94A3B8" font-size="8" text-anchor="middle">Reads the instruction code</text>
+  <text x="130" y="146" fill="#94A3B8" font-size="8" text-anchor="middle">from memory.</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 230 115 L 265 115" fill="none" stroke="#F59E0B" stroke-width="2" marker-end="url(#rhythm-arrow-amber)" />
+
+  <!-- Step 2: DECODE -->
+  <rect x="270" y="55" width="190" height="125" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.6" />
+  <rect x="270" y="55" width="190" height="26" rx="8" fill="rgba(245, 158, 11, 0.12)" />
+  <text x="365" y="72" fill="#F59E0B" font-size="9" font-weight="800" text-anchor="middle" letter-spacing="0.08em">02 • DECODE</text>
+  <text x="365" y="106" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle">"Figure out what it asks."</text>
+  <text x="365" y="132" fill="#94A3B8" font-size="8" text-anchor="middle">Translates the bits</text>
+  <text x="365" y="146" fill="#94A3B8" font-size="8" text-anchor="middle">into internal control paths.</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 465 115 L 500 115" fill="none" stroke="#10B981" stroke-width="2" marker-end="url(#rhythm-arrow-emerald)" />
+
+  <!-- Step 3: EXECUTE -->
+  <rect x="505" y="55" width="180" height="125" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.6" />
+  <rect x="505" y="55" width="180" height="26" rx="8" fill="rgba(16, 185, 129, 0.12)" />
+  <text x="595" y="72" fill="#10B981" font-size="9" font-weight="800" text-anchor="middle" letter-spacing="0.08em">03 • EXECUTE</text>
+  <text x="595" y="106" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle">"Make it happen."</text>
+  <text x="595" y="132" fill="#94A3B8" font-size="8" text-anchor="middle">Performs the calculation,</text>
+  <text x="595" y="146" fill="#94A3B8" font-size="8" text-anchor="middle">changes the system state.</text>
+
+  <!-- Cyclic Return Path -->
+  <path d="M 595 185 V 205 H 130 V 185" fill="none" stroke="#38BDF8" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#rhythm-arrow-blue)" />
+  <rect x="250" y="196" width="230" height="18" rx="4" fill="#0F172A" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1" />
+  <text x="365" y="209" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">Repeats billions of times each second</text>
+</svg>

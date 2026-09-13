@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="stage-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <marker id="stage-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3B82F6" />
+    </marker>
+    <marker id="stage-arrow-amber" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#F59E0B" />
+    </marker>
+    <marker id="stage-arrow-emerald" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#stage-grid)" />
+  <rect x="10" y="10" width="700" height="200" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <text x="360" y="32" fill="#E2E8F0" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.08em">FROM INSTRUCTION TO ACTION: THREE STAGES</text>
+
+  <!-- Left: Inbound Instruction -->
+  <rect x="25" y="65" width="115" height="110" rx="8" fill="#1E293B" stroke="rgba(148,163,184,0.3)" stroke-width="1.2" />
+  <text x="82" y="86" fill="#94A3B8" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">INSTRUCTION</text>
+  <rect x="35" y="100" width="95" height="30" rx="4" fill="#0F172A" stroke="rgba(148,163,184,0.2)" stroke-width="1" />
+  <text x="82" y="120" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700" text-anchor="middle">ADD R1, R2</text>
+  <text x="82" y="152" fill="#64748B" font-size="7.5" text-anchor="middle">Enters the chip</text>
+
+  <!-- Flow into processor -->
+  <path d="M 140 120 L 170 120" stroke="#3B82F6" stroke-width="2" marker-end="url(#stage-arrow-blue)" />
+
+  <!-- Center: Microprocessor Boundary -->
+  <rect x="175" y="52" width="410" height="135" rx="8" fill="rgba(30, 41, 59, 0.3)" stroke="#3B82F6" stroke-width="1.5" />
+  <text x="190" y="68" fill="#3B82F6" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" letter-spacing="0.08em">MICROPROCESSOR</text>
+
+  <!-- Stage 1: Fetch -->
+  <rect x="190" y="78" width="115" height="95" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1.4" />
+  <rect x="190" y="78" width="115" height="20" rx="6" fill="rgba(56, 189, 248, 0.12)" />
+  <text x="247" y="92" fill="#38BDF8" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">FETCH</text>
+  <text x="247" y="122" fill="#FFFFFF" font-size="9" font-weight="600" text-anchor="middle">"Get the</text>
+  <text x="247" y="134" fill="#FFFFFF" font-size="9" font-weight="600" text-anchor="middle">instruction."</text>
+  <text x="247" y="156" fill="#94A3B8" font-size="7.5" text-anchor="middle">Retrieved to core</text>
+
+  <!-- Arrow 1 to 2 -->
+  <path d="M 305 125 L 325 125" stroke="#F59E0B" stroke-width="2" marker-end="url(#stage-arrow-amber)" />
+
+  <!-- Stage 2: Decode -->
+  <rect x="330" y="78" width="115" height="95" rx="6" fill="#1E293B" stroke="#F59E0B" stroke-width="1.4" />
+  <rect x="330" y="78" width="115" height="20" rx="6" fill="rgba(245, 158, 11, 0.12)" />
+  <text x="387" y="92" fill="#F59E0B" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">DECODE</text>
+  <text x="387" y="122" fill="#FFFFFF" font-size="9" font-weight="600" text-anchor="middle">"Understand what</text>
+  <text x="387" y="134" fill="#FFFFFF" font-size="9" font-weight="600" text-anchor="middle">it asks for."</text>
+  <text x="387" y="156" fill="#94A3B8" font-size="7.5" text-anchor="middle">Identifies operation</text>
+
+  <!-- Arrow 2 to 3 -->
+  <path d="M 445 125 L 465 125" stroke="#10B981" stroke-width="2" marker-end="url(#stage-arrow-emerald)" />
+
+  <!-- Stage 3: Execute -->
+  <rect x="470" y="78" width="105" height="95" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.4" />
+  <rect x="470" y="78" width="105" height="20" rx="6" fill="rgba(16, 185, 129, 0.12)" />
+  <text x="522" y="92" fill="#10B981" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">EXECUTE</text>
+  <text x="522" y="122" fill="#FFFFFF" font-size="9" font-weight="600" text-anchor="middle">"Perform the</text>
+  <text x="522" y="134" fill="#FFFFFF" font-size="9" font-weight="600" text-anchor="middle">operation."</text>
+  <text x="522" y="156" fill="#94A3B8" font-size="7.5" text-anchor="middle">Calculates result</text>
+
+  <!-- Flow out of processor -->
+  <path d="M 585 120 L 610 120" stroke="#10B981" stroke-width="2" marker-end="url(#stage-arrow-emerald)" />
+
+  <!-- Right: Result -->
+  <rect x="615" y="65" width="85" height="110" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.4" />
+  <text x="657" y="86" fill="#10B981" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">RESULT</text>
+  <rect x="625" y="100" width="65" height="30" rx="4" fill="#0F172A" stroke="rgba(16, 185, 129, 0.3)" stroke-width="1" />
+  <text x="657" y="120" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="700" text-anchor="middle">Action</text>
+  <text x="657" y="152" fill="#64748B" font-size="7.5" text-anchor="middle">State updated</text>
+</svg>

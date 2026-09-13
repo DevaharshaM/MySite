@@ -87,10 +87,19 @@ systemsTreeNodes = {
     "the-boundary-between-software-and-hardware",
     "not-every-os-has-the-same-job",
     "when-time-becomes-a-requirement"
+  ],
+  "Processor": [
+    "microprocessor-the-brain-behind-computation",
+    "inside-the-microprocessor-from-instruction-to-execution",
+    "von-neumann-architecture-where-instructions-and-data-meet"
+  ],
+  "Controller": [
+    "microcontroller-the-computer-inside-the-machine",
+    "two-paths-one-controller"
   ]
 }
 
-node_order = ["Matter", "Computation", "Interaction", "Coordination", "Integration", "Bare Metal"]
+node_order = ["Matter", "Computation", "Interaction", "Coordination", "Integration"]
 
 def esc_html(str_val):
     return str_val.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -117,7 +126,7 @@ def parse_text_formatting(text):
         elif target.startswith('http') or target.startswith('mailto:') or target.startswith('/') or target.endswith('.html'):
             return f'<a href="{target}" target="_blank" rel="noopener noreferrer" style="color:var(--blue); text-decoration:underline;">{label}</a>'
         else:
-            return f'<a href="../../explorations/{target}/" onclick="openItem(\'{target}\', \'blogs\')" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
+            return f'<a href="../../explorations/{target}/" onclick="openItem(\'{target}\', \'blogs\'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
     
     parsed = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', link_repl, parsed)
     return parsed
@@ -172,29 +181,31 @@ def parse_markdown_table(p_text):
         
     # Construct HTML table
     html = []
-    html.append('<table class="blog-table">')
+    html.append('<div class="blog-table-wrap">')
+    html.append('  <table class="blog-table">')
     
     # Thead
-    html.append('  <thead>')
-    html.append('    <tr>')
+    html.append('    <thead>')
+    html.append('      <tr>')
     for idx, h in enumerate(headers):
         align_style = f' style="text-align:{aligns[idx]}"' if aligns[idx] != 'left' else ''
         h_formatted = parse_text_formatting(h)
-        html.append(f'      <th{align_style}>{h_formatted}</th>')
-    html.append('    </tr>')
-    html.append('  </thead>')
+        html.append(f'        <th{align_style}>{h_formatted}</th>')
+    html.append('      </tr>')
+    html.append('    </thead>')
     
     # Tbody
-    html.append('  <tbody>')
+    html.append('    <tbody>')
     for row in rows:
-        html.append('    <tr>')
+        html.append('      <tr>')
         for idx, cell in enumerate(row):
             align_style = f' style="text-align:{aligns[idx]}"' if aligns[idx] != 'left' else ''
             cell_formatted = parse_text_formatting(cell)
-            html.append(f'      <td{align_style}>{cell_formatted}</td>')
-        html.append('    </tr>')
-    html.append('  </tbody>')
-    html.append('</table>')
+            html.append(f'        <td{align_style}>{cell_formatted}</td>')
+        html.append('      </tr>')
+    html.append('    </tbody>')
+    html.append('  </table>')
+    html.append('</div>')
     
     return '\n'.join(html)
 
@@ -233,7 +244,7 @@ def parse_markdown_file(filepath):
             key = key.strip()
             val = val.strip()
             if val.startswith('[') and val.endswith(']'):
-                metadata[key] = [strip_quotes(item) for item in val[1:-1].split(',')]
+                metadata[key] = [strip_quotes(item) for item in val[1:-1].split(',') if item.strip()]
             else:
                 metadata[key] = strip_quotes(val)
                 current_key = key
@@ -408,6 +419,11 @@ def build_navigation_html(post, all_posts_dict):
             <span class="nav-dir-label">← Previous</span>
             <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">Return to Operating Systems</a>
         """
+    elif category in ("Processor", "Controller"):
+        prev_html = """
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../foundation-select/" onclick="triggerBlackholeTransition(() => showPage('foundation-select'))">Return to Depth</a>
+        """
     elif categoryIndex > 0:
         prev_category = node_order[categoryIndex - 1]
         prev_html = f"""
@@ -449,6 +465,14 @@ def build_navigation_html(post, all_posts_dict):
             next_html = """
                 <span class="nav-dir-label">Next →</span>
                 <a class="nav-link active" href="../../operating-systems/" onclick="showPage('operating-systems')">New path is awakening</a>
+            """
+        elif category == "Integration":
+            next_html = """
+                <select id="nav-explore-select" class="nav-explore-select" onchange="handleExploreNavChange(this)" aria-label="Explore paths">
+                  <option value="" disabled selected>Explore ▾</option>
+                  <option value="domain-select">By Domain</option>
+                  <option value="foundation-select">In Depth</option>
+                </select>
             """
         else:
             next_html = """
@@ -504,7 +528,7 @@ def build_post_html(post, all_posts_dict):
                         p_content = esc_html(p_content)
                         blocks_html.append(f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">{parse_text_formatting(p_content)}</p>')
             elif b["type"] == 'quote':
-                blocks_html.append(f'<div class="blog-quote">{esc_html(b["text"])}</div>')
+                blocks_html.append(f'<div class="blog-quote">{parse_text_formatting(esc_html(b["text"]))}</div>')
             elif b["type"] == 'code':
                 blocks_html.append(f'<div class="blog-code" style="color:#A5F3FC; white-space:pre-wrap;">{esc_html(b["text"])}</div>')
             elif b["type"] == 'html':
@@ -525,24 +549,37 @@ def build_post_html(post, all_posts_dict):
     sections_html = "".join(sections_html_parts)
     nav_html = build_navigation_html(post, all_posts_dict)
     
-    closing_p_html = "".join([f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">{parse_text_formatting(esc_html(p))}</p>' for p in post["closing"]["paragraphs"]])
+    valid_closing_p = [p for p in post["closing"]["paragraphs"] if p.strip()]
+    closing_p_html = "".join([f'<p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem">{parse_text_formatting(esc_html(p))}</p>' for p in valid_closing_p])
     
     closing_html = ""
-    if post["closing"]["heading"] or post["closing"]["paragraphs"] or post["closing"]["quote"]:
+    if post["closing"]["heading"] or valid_closing_p or post["closing"]["quote"]:
+        heading_tag = f'<h2 style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">{esc_html(post["closing"]["heading"])}</h2>' if post["closing"]["heading"] else ""
+        quote_tag = f'<div class="blog-quote">{esc_html(post["closing"]["quote"])}</div>' if post["closing"]["quote"] else ""
         closing_html = f"""
         <div style="margin-bottom:2.5rem">
-          <h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">{esc_html(post["closing"]["heading"])}</h2>
+          {heading_tag}
           {closing_p_html}
-          <div class="blog-quote">{esc_html(post["closing"]["quote"])}</div>
+          {quote_tag}
         </div>
         """
 
+    is_hidden = post.get("type") == "hidden" or post.get("category") == "Hidden Exploration"
+    if is_hidden:
+        cat_badge = '<div class="hidden-exploration-badge">Hidden Exploration</div>'
+        sub_color = '#DDD6FE'
+        div_border = 'border-top:1px solid rgba(196, 181, 253, 0.18);margin-bottom:3rem'
+    else:
+        cat_badge = f'<div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">{esc_html(post["category"])}</div>'
+        sub_color = '#64748B'
+        div_border = 'border-top:1px solid var(--border);margin-bottom:3rem'
+
     post_html = f"""
-    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">{esc_html(post["category"])}</div>
+    {cat_badge}
     <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">{esc_html(post["title"])}</h1>
-    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">{esc_html(post["subtitle"])}</p>
+    <p style="color:{sub_color};font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">{esc_html(post["subtitle"])}</p>
     <div class="tags" style="margin-bottom:3rem">{"".join([f'<span class="tag">{esc_html(t)}</span>' for t in post["tags"]])}</div>
-    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="{div_border}"></div>
     {sections_html}
     {closing_html}
     {nav_html}
@@ -613,7 +650,13 @@ def main():
         pre_rendered_html = pre_rendered_html.replace('<div class="page" id="page-blog-post">', '<div class="page active" id="page-blog-post">')
         pre_rendered_html = pre_rendered_html.replace('<div id="blog-post-content"></div>', f'<div id="blog-post-content">{post_html}</div>')
         pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge</title>', f'<title>{post["title"]} | PrajnaEdge</title>')
-        pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/explorations/{post_id}/" />')
+        pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/explorations/{post_id}/"')
+        
+        is_hidden = post.get("type") == "hidden" or post.get("category") == "Hidden Exploration"
+        if is_hidden:
+            pre_rendered_html = pre_rendered_html.replace('<body>', '<body class="theme-hidden-exploration">')
+            pre_rendered_html = pre_rendered_html.replace('<button id="readerBackBtn" class="blog-back-btn" onclick="showPage(\'blogs\')">← Back to Exploration</button>', '<button id="readerBackBtn" class="blog-back-btn" onclick="openDirectExplorations()">← Return to Explorations</button>')
+            
         pre_rendered_html = make_paths_relative(pre_rendered_html, depth=2)
         
         out_filepath = os.path.join(post_dir, "index.html")
@@ -654,8 +697,12 @@ def main():
         {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"},
         {"id": "operating-systems", "title": "Operating Systems | PrajnaEdge", "route": "operating-systems/"},
         {"id": "domain-select", "title": "Select Domain | PrajnaEdge", "route": "domain-select/"},
-        {"id": "foundation-select", "title": "Select | PrajnaEdge", "route": "foundation-select/"},
-        {"id": "support", "title": "Support PrajnaEdge | PrajnaEdge", "route": "support/"}
+        {"id": "foundation-select", "title": "Select Depth | PrajnaEdge", "route": "foundation-select/"},
+        {"id": "support", "title": "Support PrajnaEdge | PrajnaEdge", "route": "support/"},
+        {"id": "products", "title": "Products | PrajnaEdge", "route": "products/"},
+        {"id": "playground", "title": "Playground | PrajnaEdge", "route": "playground/"},
+        {"id": "playground-edge-ai", "title": "Image Classification | Edge AI Playground | PrajnaEdge", "route": "playground-edge-ai/"},
+        {"id": "playground-on-device-ai", "title": "On-Device AI | Playground | PrajnaEdge", "route": "playground-on-device-ai/"}
     ]
     
     for cfg in page_configs:

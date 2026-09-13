@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 280" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="sys-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <marker id="sys-arrow-blue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3B82F6" />
+    </marker>
+    <marker id="sys-arrow-emerald" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#sys-grid)" />
+  <rect x="10" y="10" width="700" height="260" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <text x="360" y="30" fill="#E2E8F0" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE COMPUTING LOOP: TURNING INCOMING SIGNALS INTO ACTION</text>
+
+  <!-- Block 1: INPUT -->
+  <rect x="35" y="48" width="165" height="110" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.4" />
+  <rect x="35" y="48" width="165" height="24" rx="8" fill="rgba(16, 185, 129, 0.12)" />
+  <text x="117" y="64" fill="#10B981" font-size="9" font-weight="700" text-anchor="middle">INPUT</text>
+  <text x="117" y="90" fill="#FFFFFF" font-size="10" font-weight="600" text-anchor="middle">Provides</text>
+  <text x="117" y="112" fill="#94A3B8" font-size="8" text-anchor="middle">Touch, keys, packets,</text>
+  <text x="117" y="126" fill="#94A3B8" font-size="8" text-anchor="middle">sensor telemetry</text>
+  <rect x="55" y="136" width="125" height="16" rx="3" fill="#0F172A" />
+  <text x="117" y="148" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="7" text-anchor="middle">Signal Arrives</text>
+
+  <!-- Flow 1: Input to Processor -->
+  <path d="M 200 103 L 245 103" fill="none" stroke="#3B82F6" stroke-width="2" marker-end="url(#sys-arrow-blue)" />
+
+  <!-- Block 2: PROCESSOR (Center) -->
+  <rect x="250" y="42" width="220" height="122" rx="8" fill="#1E293B" stroke="#3B82F6" stroke-width="2" />
+  <rect x="250" y="42" width="220" height="26" rx="8" fill="rgba(59, 130, 246, 0.15)" />
+  <circle cx="268" cy="55" r="3" fill="#3B82F6" />
+  <text x="360" y="59" fill="#3B82F6" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.06em">PROCESSOR (COMPUTES)</text>
+  <text x="360" y="88" fill="#FFFFFF" font-size="10" font-weight="600" text-anchor="middle">Decides &amp; Transforms</text>
+  <text x="360" y="108" fill="#CBD5E1" font-size="8" text-anchor="middle">Evaluates code • Updates state</text>
+  <text x="360" y="122" fill="#CBD5E1" font-size="8" text-anchor="middle">Coordinates with Memory</text>
+  <rect x="280" y="134" width="160" height="18" rx="3" fill="#0F172A" stroke="rgba(59, 130, 246, 0.4)" stroke-width="1" />
+  <text x="360" y="147" fill="#60A5FA" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">Memory Stores • CPU Computes</text>
+
+  <!-- Flow 2: Processor to Output -->
+  <path d="M 470 103 L 515 103" fill="none" stroke="#10B981" stroke-width="2" marker-end="url(#sys-arrow-emerald)" />
+
+  <!-- Block 3: OUTPUT -->
+  <rect x="520" y="48" width="165" height="110" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1.4" />
+  <rect x="520" y="48" width="165" height="24" rx="8" fill="rgba(168, 85, 247, 0.12)" />
+  <text x="602" y="64" fill="#A855F7" font-size="9" font-weight="700" text-anchor="middle">OUTPUT</text>
+  <text x="602" y="90" fill="#FFFFFF" font-size="10" font-weight="600" text-anchor="middle">Responds</text>
+  <text x="602" y="112" fill="#94A3B8" font-size="8" text-anchor="middle">Displays, motors,</text>
+  <text x="602" y="126" fill="#94A3B8" font-size="8" text-anchor="middle">network transmissions</text>
+  <rect x="540" y="136" width="125" height="16" rx="3" fill="#0F172A" />
+  <text x="602" y="148" fill="#D8B4FE" font-family="'IBM Plex Mono', monospace" font-size="7" text-anchor="middle">Physical Action</text>
+
+  <!-- Divider Line -->
+  <line x1="40" y1="185" x2="680" y2="185" stroke="rgba(148,163,184,0.15)" stroke-width="1" />
+
+  <!-- Lower Section: Real-World Embodiments -->
+  <text x="360" y="208" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle" letter-spacing="0.08em">EVERYWHERE COMPUTATION IS NEEDED</text>
+
+  <g transform="translate(45, 220)">
+    <!-- Computer -->
+    <rect x="0" y="0" width="115" height="34" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1" />
+    <text x="57" y="21" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Computer</text>
+
+    <!-- Phone -->
+    <rect x="130" y="0" width="115" height="34" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1" />
+    <text x="187" y="21" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Phone</text>
+
+    <!-- Server -->
+    <rect x="260" y="0" width="115" height="34" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1" />
+    <text x="317" y="21" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Server</text>
+
+    <!-- Automotive -->
+    <rect x="390" y="0" width="115" height="34" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1" />
+    <text x="447" y="21" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Automotive</text>
+
+    <!-- Industrial -->
+    <rect x="520" y="0" width="110" height="34" rx="6" fill="#1E293B" stroke="rgba(148,163,184,0.15)" stroke-width="1" />
+    <text x="575" y="21" fill="#E2E8F0" font-size="8.5" font-weight="600" text-anchor="middle">Industrial</text>
+  </g>
+</svg>

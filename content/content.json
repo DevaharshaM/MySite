@@ -2026,6 +2026,635 @@
       }
     },
     {
+      "id": "inside-the-microprocessor-from-instruction-to-execution",
+      "category": "Processor",
+      "series": "Processor",
+      "title": "Inside the Microprocessor \u2014 From Instruction to Execution",
+      "subtitle": "How raw instructions become the rhythm of pipelined computation.",
+      "date": "24 August 2026",
+      "tags": [
+        "Processor",
+        "Instruction",
+        "Execution",
+        "Pipeline",
+        "Computer Architecture"
+      ],
+      "footer": "Foundational explorations in processor architecture, execution machinery, and computer systems \u2014 PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. The instruction",
+          "content": [
+            {
+              "type": "p",
+              "text": "*But what happens inside when it computes?*"
+            },
+            {
+              "type": "p",
+              "text": "A microprocessor doesn't simply \"think\" about a task."
+            },
+            {
+              "type": "p",
+              "text": "It follows instructions."
+            },
+            {
+              "type": "p",
+              "text": "Every computation begins with an instruction. An instruction tells the processor what operation to perform \u2014 and on what data."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/simple_instruction_anatomy.svg",
+              "alt": "Anatomy of an instruction",
+              "caption": "Anatomy of an instruction"
+            },
+            {
+              "type": "quote",
+              "text": "The collection of instructions a processor understands is its **Instruction Set**."
+            }
+          ]
+        },
+        {
+          "heading": "2. From instruction to action",
+          "content": [
+            {
+              "type": "p",
+              "text": "To turn an instruction into an action, the processor moves through three fundamental stages:"
+            },
+            {
+              "type": "p",
+              "text": "* **Fetch**: Get the instruction.\n* **Decode**: Understand what it asks for.\n* **Execute**: Perform the operation."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/instruction_execution_stages.svg",
+              "alt": "From instruction to action",
+              "caption": "From instruction to action"
+            },
+            {
+              "type": "p",
+              "text": "An instruction enters. The processor resolves its meaning. The operation takes place, and the system state updates."
+            }
+          ]
+        },
+        {
+          "heading": "3. The processor keeps moving",
+          "content": [
+            {
+              "type": "p",
+              "text": "*But does a processor finish one instruction before starting the next?*"
+            },
+            {
+              "type": "p",
+              "text": "If it did, parts of the processor would sit idle while waiting for the rest to finish."
+            },
+            {
+              "type": "p",
+              "text": "Instead, modern execution overlaps:"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/instruction_pipelining.svg",
+              "alt": "Pipelining: the overlapping rhythm",
+              "caption": "Pipelining: the overlapping rhythm"
+            },
+            {
+              "type": "p",
+              "text": "Instead of waiting for one instruction to completely finish, different instructions can occupy different stages at the same time."
+            },
+            {
+              "type": "p",
+              "text": "While one instruction is being executed, the next is being decoded, and a third is already being fetched."
+            },
+            {
+              "type": "p",
+              "text": "This overlapping rhythm is **pipelining** \u2014 allowing the processor to keep moving without pause."
+            }
+          ]
+        },
+        {
+          "heading": "4. Where did the instruction come from?",
+          "content": [
+            {
+              "type": "p",
+              "text": "Zoom back out."
+            },
+            {
+              "type": "p",
+              "text": "The processor is actively fetching, decoding, executing, and pipelining instructions."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/instruction_source_mystery.svg",
+              "alt": "Where did the instruction come from?",
+              "caption": "Where did the instruction come from?"
+            },
+            {
+              "type": "p",
+              "text": "But where did the instruction come from?"
+            },
+            {
+              "type": "p",
+              "text": "Where was it stored before the processor fetched it?"
+            }
+          ]
+        },
+        {
+          "heading": "5. The next question",
+          "content": [
+            {
+              "type": "p",
+              "text": "We now know what happens inside the processor."
+            },
+            {
+              "type": "p",
+              "text": "Instructions enter.  \nThey are fetched, understood, and executed."
+            },
+            {
+              "type": "p",
+              "text": "And the pipeline allows the processor to keep moving."
+            },
+            {
+              "type": "p",
+              "text": "But computation cannot begin with an instruction that doesn't exist somewhere."
+            },
+            {
+              "type": "p",
+              "text": "*So where does the processor get its instructions \u2014 and how does it access them?*"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
+      "id": "microcontroller-the-computer-inside-the-machine",
+      "category": "Controller",
+      "series": "Controller",
+      "title": "Microcontroller \u2014 The Computer Inside the Machine",
+      "subtitle": "How computation, memory, and hardware interfaces came together inside a single chip to control the physical world.",
+      "date": "25 August 2026",
+      "tags": [
+        "Controller",
+        "Microcontroller",
+        "Embedded Systems",
+        "Sensors",
+        "Actuators",
+        "Hardware"
+      ],
+      "footer": "Foundational explorations in microcontroller architecture, embedded control, and hardware integration \u2014 PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. A machine needs a mind",
+          "content": [
+            {
+              "type": "p",
+              "text": "A motor can spin.  \nA sensor can sense.  \nAn LED can respond."
+            },
+            {
+              "type": "p",
+              "text": "But none of them knows what to do."
+            },
+            {
+              "type": "p",
+              "text": "A machine needs something that can sense, decide, and act."
+            },
+            {
+              "type": "p",
+              "text": "Where does that intelligence live?"
+            }
+          ]
+        },
+        {
+          "heading": "2. The computer inside",
+          "content": [
+            {
+              "type": "p",
+              "text": "That small computer is the **microcontroller**."
+            },
+            {
+              "type": "p",
+              "text": "A microcontroller is a compact computing system designed to control and interact with the world around it."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/microcontroller_sense_decide_act.svg",
+              "alt": "Sense, Decide, Act: How a microcontroller connects physical inputs to physical actions",
+              "caption": "Sense, Decide, Act: How a microcontroller connects physical inputs to physical actions"
+            },
+            {
+              "type": "p",
+              "text": "It sits directly between physical inputs and physical outputs \u2014 continually reading signals, evaluating conditions, and coordinating action."
+            },
+            {
+              "type": "p",
+              "text": "Its counterpart in general-purpose computing is the [microprocessor](microprocessor-the-brain-behind-computation)."
+            }
+          ]
+        },
+        {
+          "heading": "3. More than a processor",
+          "content": [
+            {
+              "type": "p",
+              "text": "A microcontroller contains a processor core \u2014 but the processor is only part of the story."
+            },
+            {
+              "type": "p",
+              "text": "Around the core lives an entire ecosystem of integrated hardware:"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/microcontroller_integrated_architecture.svg",
+              "alt": "Integrated Architecture of a Microcontroller: Processor Core, Flash, RAM, Timers, ADC, and Hardware Interfaces on a single silicon die",
+              "caption": "Integrated Architecture of a Microcontroller: Processor Core, Flash, RAM, Timers, ADC, and Hardware Interfaces on a single silicon die"
+            },
+            {
+              "type": "p",
+              "text": "* **CPU Core**: The execution engine that runs instructions.\n* **Flash Memory**: Holds the program firmware permanently, even when power is disconnected.\n* **RAM**: Provides fast working memory for runtime variables and operational state.\n* **GPIO**: General-purpose pins that read digital signals and drive external circuits.\n* **Timers**: Measure precise time intervals and generate high-speed control pulses.\n* **ADC**: Converts continuous physical voltages from sensors into digital numbers.\n* **Communication Interfaces**: Serial channels to exchange data with other devices."
+            },
+            {
+              "type": "p",
+              "text": "*Computation, memory, and interaction \u2014 brought together in one small system.*"
+            }
+          ]
+        },
+        {
+          "heading": "4. Why put everything together?",
+          "content": [
+            {
+              "type": "p",
+              "text": "Instead of building a computer around a separate processor, separate memory modules, and external interface chips, much of what a machine needs lives inside one chip."
+            },
+            {
+              "type": "p",
+              "text": "This single-chip integration changes everything:"
+            },
+            {
+              "type": "p",
+              "text": "* **Compact**: Fits into tiny enclosures, hand tools, and dense mechanical assemblies.\n* **Low Power**: Operates efficiently on batteries and enters deep sleep states when idle.\n* **Predictable**: Direct on-chip bus connections ensure fast, deterministic hardware responses.\n* **Dedicated Control**: Sits quietly inside the machine, focused entirely on its assigned task."
+            },
+            {
+              "type": "p",
+              "text": "Rather than running desktop applications, it is engineered for direct interaction with hardware."
+            }
+          ]
+        },
+        {
+          "heading": "5. A computer built for the world",
+          "content": [
+            {
+              "type": "p",
+              "text": "The microcontroller is not trying to be a general-purpose computer."
+            },
+            {
+              "type": "p",
+              "text": "It is built to become part of a machine."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/microcontroller_embedded_in_machines.svg",
+              "alt": "Microcontrollers embedded across real-world machines: appliances, automotive ECUs, robotics, and sensors",
+              "caption": "Microcontrollers embedded across real-world machines: appliances, automotive ECUs, robotics, and sensors"
+            },
+            {
+              "type": "p",
+              "text": "From the washing machine regulating its water valves and drum rotation, to the automotive ECU timing fuel injection to the microsecond, to smart thermostats and precision motor drives \u2014 the same stored-program intelligence is embedded silently into the machine itself."
+            },
+            {
+              "type": "p",
+              "text": "A processor can compute."
+            },
+            {
+              "type": "p",
+              "text": "A microcontroller turns that computation into control."
+            },
+            {
+              "type": "p",
+              "text": "But how are all these pieces organized inside such a small chip?"
+            },
+            {
+              "type": "p",
+              "text": "*Let's look at the architecture that makes it possible.*"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
+      "id": "microprocessor-the-brain-behind-computation",
+      "category": "Processor",
+      "series": "Processor",
+      "title": "Microprocessor \u2014 The Brain Behind Computation",
+      "subtitle": "The engine that turns computation into action.",
+      "date": "24 August 2026",
+      "tags": [
+        "Processor",
+        "Computer Architecture",
+        "Microprocessor",
+        "Silicon"
+      ],
+      "footer": "Foundational explorations in processor architecture, execution machinery, and computer systems \u2014 PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. Something is missing",
+          "content": [
+            {
+              "type": "p",
+              "text": "Everything is ready.  \nMemory can hold.  \nInput can provide.  \nOutput can respond.  \nYet nothing happens."
+            },
+            {
+              "type": "p",
+              "text": "What is missing?"
+            }
+          ]
+        },
+        {
+          "heading": "2. The missing piece",
+          "content": [
+            {
+              "type": "quote",
+              "text": "**The Microprocessor** \u2014 the engine that turns computation into action."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/microprocessor_revealed.svg",
+              "alt": "The missing piece revealed",
+              "caption": "The missing piece revealed"
+            },
+            {
+              "type": "p",
+              "text": "A microprocessor is the computational engine of a system \u2014 a processor built entirely onto a single integrated circuit."
+            },
+            {
+              "type": "p",
+              "text": "Where memory passively stores and interfaces merely convey signals, the microprocessor is what actively evaluates, transforms, and coordinates the machine."
+            },
+            {
+              "type": "p",
+              "text": "Its counterpart in the embedded world is the [microcontroller](microcontroller-the-computer-inside-the-machine)."
+            }
+          ]
+        },
+        {
+          "heading": "3. Look inside",
+          "content": [
+            {
+              "type": "p",
+              "text": "There is a processor."
+            },
+            {
+              "type": "p",
+              "text": "But what is actually inside that tiny piece of silicon?"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/microprocessor_internal_architecture.svg",
+              "alt": "Inside the silicon: cooperating parts",
+              "caption": "Inside the silicon: cooperating parts"
+            },
+            {
+              "type": "p",
+              "text": "Open the chip, and the mystery dissolves:"
+            },
+            {
+              "type": "p",
+              "text": "* **ALU**: Calculates. Performs the arithmetic and logic.\n* **Control Unit**: Coordinates. Directs the flow of work.\n* **Registers**: Holds what it needs now. Immediate working storage.\n* **Cache**: Keeps data close. High-speed local memory buffer.\n* **Clock**: Sets the rhythm. Synchronizes every state change.\n* **Interfaces**: Connects outward. Communicates with the rest of the board."
+            },
+            {
+              "type": "p",
+              "text": "It is not one mysterious box."
+            },
+            {
+              "type": "p",
+              "text": "It is a collection of cooperating parts working together to make computation possible."
+            }
+          ]
+        },
+        {
+          "heading": "4. Zoom back out",
+          "content": [
+            {
+              "type": "p",
+              "text": "Where does the microprocessor fit in the larger machine?"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/system_reconnected.svg",
+              "alt": "The system reconnected",
+              "caption": "The system reconnected"
+            },
+            {
+              "type": "p",
+              "text": "At the center sits the microprocessor.  \nIt is where the system's computation happens.  \nWithout it, the machine is silent.  \nWith it, information can become behavior."
+            }
+          ]
+        },
+        {
+          "heading": "5. The open question",
+          "content": [
+            {
+              "type": "p",
+              "text": "We started with a machine that could store, sense, and respond."
+            },
+            {
+              "type": "p",
+              "text": "Something was missing."
+            },
+            {
+              "type": "p",
+              "text": "Now we know what it was."
+            },
+            {
+              "type": "p",
+              "text": "The microprocessor."
+            },
+            {
+              "type": "p",
+              "text": "One chip.  \nMany cooperating parts.  \nOne purpose: computation."
+            },
+            {
+              "type": "p",
+              "text": "*But what happens inside when it computes?*"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
+      "id": "microprocessor-vs-microcontroller",
+      "category": "Hidden Exploration",
+      "type": "hidden",
+      "series": "Setu",
+      "title": "Microprocessor vs Microcontroller",
+      "subtitle": "Two systems born from the same foundation, shaped by different purposes.",
+      "date": "25 August 2026",
+      "tags": [
+        "Processor",
+        "Controller",
+        "Architecture",
+        "Systems",
+        "Bridge"
+      ],
+      "footer": "Foundational bridges connecting computer architecture and embedded systems \u2014 PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "The Question",
+          "content": [
+            {
+              "type": "p",
+              "text": "At first glance, they look almost identical."
+            },
+            {
+              "type": "p",
+              "text": "Both are silicon chips.\nBoth execute instructions.\nBoth perform computation."
+            },
+            {
+              "type": "p",
+              "text": "Yet they are fundamentally different systems built for completely different purposes."
+            },
+            {
+              "type": "p",
+              "text": "To understand why both exist, we must look at the problem each was created to solve."
+            }
+          ]
+        },
+        {
+          "heading": "The Shared Foundation",
+          "content": [
+            {
+              "type": "p",
+              "text": "Every digital computing machine begins from the same essential lineage:"
+            },
+            {
+              "type": "p",
+              "text": "A processor core that decodes and executes.\nA stream of instructions defining what to do.\nA physical process of computation that changes state."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/shared_foundation_computation.svg",
+              "alt": "The Shared Foundation",
+              "caption": "The Shared Foundation"
+            },
+            {
+              "type": "p",
+              "text": "Both microprocessors and microcontrollers start with this exact question:"
+            },
+            {
+              "type": "p",
+              "text": "*How do we execute instructions to perform work?*"
+            },
+            {
+              "type": "p",
+              "text": "At their physical core, both contain an Arithmetic Logic Unit (ALU), internal registers to hold working state, and a control unit orchestrating the execution cycle."
+            },
+            {
+              "type": "p",
+              "text": "Yet almost immediately from this shared core, their engineering philosophies diverge."
+            }
+          ]
+        },
+        {
+          "heading": "How They Diverge in Silicon",
+          "content": [
+            {
+              "type": "p",
+              "text": "The difference is not what happens inside the execution core \u2014 it is what surrounds it on the silicon die."
+            },
+            {
+              "type": "p",
+              "text": "A **microprocessor** is an engine designed for computational scale. It contains the processor core, high-speed caches, and complex memory management units, but deliberately leaves main memory, long-term storage, and peripheral controllers on separate external chips. This modularity allows it to connect to gigabytes of high-bandwidth RAM and drive rich operating systems."
+            },
+            {
+              "type": "p",
+              "text": "A **microcontroller** is a complete, self-contained computer on a single chip. Integrated directly alongside the CPU core are non-volatile Flash memory for the program, SRAM for working variables, and physical peripherals like GPIO pins, timers, ADCs, and serial communication engines. It requires no external chips to think, decide, and act."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/microprocessor_vs_microcontroller_divergence.svg",
+              "alt": "How They Diverge in Silicon",
+              "caption": "How They Diverge in Silicon"
+            },
+            {
+              "type": "p",
+              "text": "One is built to calculate within an expanding board-level ecosystem; the other is built to control as an all-in-one embedded entity."
+            }
+          ]
+        },
+        {
+          "heading": "Same Ingredients, Different Philosophy",
+          "content": [
+            {
+              "type": "p",
+              "text": "Because their physical integration differs, their operational priorities are completely distinct:"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/same_ingredients_different_philosophy.svg",
+              "alt": "Same Ingredients, Different Philosophy",
+              "caption": "Same Ingredients, Different Philosophy"
+            },
+            {
+              "type": "p",
+              "text": "The microprocessor maximizes raw throughput, flexible multitasking, and data capacity. It executes billions of instructions per second across complex memory hierarchies, adapting dynamically to unpredictable workloads."
+            },
+            {
+              "type": "p",
+              "text": "The microcontroller optimizes for determinism, direct physical control, and energy efficiency. It wakes up in microseconds, consumes milliwatts, and toggles hardware pins with clock-cycle precision."
+            }
+          ]
+        },
+        {
+          "heading": "The Core Distinctions",
+          "content": [
+            {
+              "type": "p",
+              "text": "<div class=\"blog-table-wrap\">\n  <table class=\"blog-table\">\n    <thead>\n      <tr>\n        <th>Dimension</th>\n        <th>Microprocessor</th>\n        <th>Microcontroller</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>Primary Role</strong></td>\n        <td>General-purpose computation & data processing</td>\n        <td>Dedicated control of physical machines</td>\n      </tr>\n      <tr>\n        <td><strong>Silicon Architecture</strong></td>\n        <td>Processor core only (Memory & I/O external)</td>\n        <td>Self-contained system (Core + Memory + I/O on one die)</td>\n      </tr>\n      <tr>\n        <td><strong>Operating Model</strong></td>\n        <td>Typically runs an operating system (Linux, Windows)</td>\n        <td>Runs bare-metal firmware or a real-time OS (RTOS)</td>\n      </tr>\n      <tr>\n        <td><strong>Physical Agency</strong></td>\n        <td>Communicates through high-speed bus interfaces</td>\n        <td>Direct electrical pin control (GPIO, ADC, PWM)</td>\n      </tr>\n      <tr>\n        <td><strong>Power Consumption</strong></td>\n        <td>Generally higher, especially in high-performance systems</td>\n        <td>Generally lower, designed for power-efficient embedded operation</td>\n      </tr>\n      <tr>\n        <td><strong>System Focus</strong></td>\n        <td>Throughput, multitasking, and computational scale</td>\n        <td>Determinism, low latency, and energy efficiency</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
+              "html": true
+            }
+          ]
+        },
+        {
+          "heading": "Two Sides of Computation",
+          "content": [
+            {
+              "type": "p",
+              "text": "A processor can become part of a computer that runs complex software, renders graphics, and manipulates immense datasets."
+            },
+            {
+              "type": "p",
+              "text": "A microcontroller becomes the nervous system inside a machine \u2014 sensing pressure, timing fuel injectors, reading medical signals, and responding to physical reality in real time."
+            },
+            {
+              "type": "p",
+              "text": "They are not rivals or competing technologies. They are two manifestations of computing, each designed for the domain it was meant to govern."
+            },
+            {
+              "type": "html",
+              "html": "<div class=\"hidden-gateways-section\">\n  <div class=\"hidden-gateways-header\">\n    <span class=\"hidden-gateways-tag\">CHOOSE YOUR PATH</span>\n    <h3 class=\"hidden-gateways-prompt\">Where will you journey next?</h3>\n    <p class=\"hidden-gateways-subtext\">Explore the general-purpose mind of computation, or enter the dedicated world of physical control.</p>\n  </div>\n  <div class=\"hidden-gateways-container\">\n    <a class=\"hidden-gateway-card\" href=\"../../explorations/?node=Processor\" onclick=\"filterNodeRoute('Processor'); return false;\">\n      <div>\n        <div class=\"hidden-gateway-eyebrow\">NODE EXPLORATION</div>\n        <div class=\"hidden-gateway-title\">Explore Microprocessor</div>\n        <div class=\"hidden-gateway-desc\">Understand the computational core, instruction execution, and the architecture that powers modern computers.</div>\n      </div>\n      <div class=\"hidden-gateway-action\">Enter the Processor node &rarr;</div>\n    </a>\n    <a class=\"hidden-gateway-card\" href=\"../../explorations/?node=Controller\" onclick=\"filterNodeRoute('Controller'); return false;\">\n      <div>\n        <div class=\"hidden-gateway-eyebrow\">NODE EXPLORATION</div>\n        <div class=\"hidden-gateway-title\">Explore Microcontroller</div>\n        <div class=\"hidden-gateway-desc\">Discover the self-contained computer, integrated peripherals, and the intelligence built directly into physical machines.</div>\n      </div>\n      <div class=\"hidden-gateway-action\">Enter the Controller node &rarr;</div>\n    </a>\n  </div>\n</div>"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
       "id": "not-every-os-has-the-same-job",
       "category": "Operating Systems",
       "series": "Operating Systems",
@@ -3917,7 +4546,7 @@
           "content": [
             {
               "type": "p",
-              "text": "<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Property</th>\n      <th>Core Responsibility</th>\n      <th>Physical CPU Mechanism</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>I/O Device Management</strong></td>\n      <td>Abstraction and device configuration</td>\n      <td>I/O Ports, DMA, Interrupt Lines</td>\n    </tr>\n    <tr>\n      <td><strong>Protection / Security</strong></td>\n      <td>Isolation and access restriction</td>\n      <td>Privilege Rings (User vs. Kernel), Page Tables</td>\n    </tr>\n  </tbody>\n</table>",
+              "text": "<div class=\"blog-table-wrap\">\n  <table class=\"blog-table\">\n    <thead>\n      <tr>\n        <th>Property</th>\n        <th>Core Responsibility</th>\n        <th>Physical CPU Mechanism</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>I/O Device Management</strong></td>\n        <td>Abstraction and device configuration</td>\n        <td>I/O Ports, DMA, Interrupt Lines</td>\n      </tr>\n      <tr>\n        <td><strong>Protection / Security</strong></td>\n        <td>Isolation and access restriction</td>\n        <td>Privilege Rings (User vs. Kernel), Page Tables</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
               "html": true
             },
             {
@@ -6072,7 +6701,7 @@
             },
             {
               "type": "p",
-              "text": "<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Virtual Page Number</th>\n      <th>Valid Bit</th>\n      <th>Physical Frame Number</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>0x00</strong></td>\n      <td>1</td>\n      <td>0x07</td>\n    </tr>\n    <tr>\n      <td><strong>0x01</strong></td>\n      <td>1</td>\n      <td>0x02</td>\n    </tr>\n    <tr>\n      <td><strong>0x02</strong></td>\n      <td>1</td>\n      <td>0x0A</td>\n    </tr>\n    <tr>\n      <td><strong>0x03</strong></td>\n      <td>1</td>\n      <td>0x05</td>\n    </tr>\n  </tbody>\n</table>",
+              "text": "<div class=\"blog-table-wrap\">\n  <table class=\"blog-table\">\n    <thead>\n      <tr>\n        <th>Virtual Page Number</th>\n        <th>Valid Bit</th>\n        <th>Physical Frame Number</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>0x00</strong></td>\n        <td>1</td>\n        <td>0x07</td>\n      </tr>\n      <tr>\n        <td><strong>0x01</strong></td>\n        <td>1</td>\n        <td>0x02</td>\n      </tr>\n      <tr>\n        <td><strong>0x02</strong></td>\n        <td>1</td>\n        <td>0x0A</td>\n      </tr>\n      <tr>\n        <td><strong>0x03</strong></td>\n        <td>1</td>\n        <td>0x05</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
               "html": true
             },
             {
@@ -7014,6 +7643,155 @@
       }
     },
     {
+      "id": "two-paths-one-controller",
+      "category": "Controller",
+      "series": "Controller",
+      "title": "Two Paths, One Controller",
+      "subtitle": "How separating instruction memory and data memory gives the microcontroller its rhythm.",
+      "date": "25 August 2026",
+      "tags": [
+        "Controller",
+        "Harvard Architecture",
+        "Memory",
+        "Flash",
+        "SRAM",
+        "Embedded Systems"
+      ],
+      "footer": "Foundational explorations in microcontroller architecture, memory organization, and embedded systems \u2014 PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. Two things to carry",
+          "content": [
+            {
+              "type": "p",
+              "text": "A controller needs instructions to know what to do."
+            },
+            {
+              "type": "p",
+              "text": "It also needs data to work with."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/instructions_and_data_duality.svg",
+              "alt": "Two fundamental requirements: Instructions (what to do) and Data (what to work with)",
+              "caption": "Two fundamental requirements: Instructions (what to do) and Data (what to work with)"
+            },
+            {
+              "type": "p",
+              "text": "Every decision, state change, and control signal inside an embedded machine comes down to these two kinds of information."
+            }
+          ]
+        },
+        {
+          "heading": "2. What if they could travel separately?",
+          "content": [
+            {
+              "type": "p",
+              "text": "In a system where instructions and data travel across the same shared pathway, they must take turns."
+            },
+            {
+              "type": "p",
+              "text": "The processor cannot fetch an instruction and read or write data across that path at the exact same instant."
+            },
+            {
+              "type": "p",
+              "text": "*What if they didn't have to share the same path?*"
+            },
+            {
+              "type": "p",
+              "text": "What if instruction memory and data memory were kept completely separate \u2014 each with its own direct highway to the processor?"
+            }
+          ]
+        },
+        {
+          "heading": "3. Harvard Architecture",
+          "content": [
+            {
+              "type": "p",
+              "text": "This organization is known as **Harvard Architecture**."
+            },
+            {
+              "type": "p",
+              "text": "Instructions and data have separate memory spaces and separate paths to the processor."
+            },
+            {
+              "type": "image",
+              "src": "../../Images/harvard_architecture_concept.svg",
+              "alt": "Harvard Architecture: Separate memory spaces and independent communication paths",
+              "caption": "Harvard Architecture: Separate memory spaces and independent communication paths"
+            },
+            {
+              "type": "p",
+              "text": "Instead of a single shared pathway, the processor communicates across two independent channels."
+            }
+          ]
+        },
+        {
+          "heading": "4. A different rhythm",
+          "content": [
+            {
+              "type": "p",
+              "text": "Because instructions and data have separate paths, the processor can access them independently."
+            },
+            {
+              "type": "p",
+              "text": "Instruction access and data access don't have to compete for the same path."
+            },
+            {
+              "type": "p",
+              "text": "While the processor is reading or writing data from one memory, it can simultaneously fetch its next instruction from the other."
+            },
+            {
+              "type": "p",
+              "text": "They move in parallel."
+            }
+          ]
+        },
+        {
+          "heading": "5. Built into the chip",
+          "content": [
+            {
+              "type": "p",
+              "text": "Inside a real microcontroller, this separation takes physical form."
+            },
+            {
+              "type": "p",
+              "text": "Flash stores the program \u2014 the instructions the controller needs to execute."
+            },
+            {
+              "type": "p",
+              "text": "SRAM provides the working space for data while the program runs."
+            },
+            {
+              "type": "p",
+              "text": "They serve different purposes, and the processor accesses them through their respective paths."
+            },
+            {
+              "type": "p",
+              "text": "The controller has a place for its program."
+            },
+            {
+              "type": "p",
+              "text": "It has a place for the data that program works with."
+            },
+            {
+              "type": "p",
+              "text": "But that still leaves the most important part of a controller unexplored."
+            },
+            {
+              "type": "p",
+              "text": "*How does it interact with the world around it?*"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
+      }
+    },
+    {
       "id": "uart-structured-asynchronous-communication",
       "category": "Interaction",
       "series": "System Explorations",
@@ -7124,6 +7902,158 @@
           "UART remains the ultimate baseline interface because it demonstrates that system coordination is not a matter of speed, but of agreement."
         ],
         "quote": "Time is the invisible wire in asynchronous communication. When we agree on time, we only need a single wire for the conversation."
+      }
+    },
+    {
+      "id": "von-neumann-architecture-where-instructions-and-data-meet",
+      "category": "Processor",
+      "series": "Processor",
+      "title": "Where Instructions and Data Meet",
+      "subtitle": "How instructions and data came to share one memory and a single path.",
+      "date": "24 August 2026",
+      "tags": [
+        "Processor",
+        "Von Neumann",
+        "Memory",
+        "Bus",
+        "Computer Architecture"
+      ],
+      "footer": "Foundational explorations in processor architecture, memory systems, and computer engineering \u2014 PrajnaEdge.dev",
+      "sections": [
+        {
+          "heading": "1. The processor needs a place to work",
+          "content": [
+            {
+              "type": "p",
+              "text": "A processor can execute instructions rapidly."
+            },
+            {
+              "type": "p",
+              "text": "But by itself, it has nowhere to keep them."
+            },
+            {
+              "type": "p",
+              "text": "And it has nowhere to keep the information it operates on."
+            },
+            {
+              "type": "p",
+              "text": "It needs memory."
+            }
+          ]
+        },
+        {
+          "heading": "2. Instructions and data",
+          "content": [
+            {
+              "type": "p",
+              "text": "There are two fundamental things a processor deals with:"
+            },
+            {
+              "type": "p",
+              "text": "* **Instructions**: What operation to perform.\n* **Data**: The values to operate on."
+            },
+            {
+              "type": "p",
+              "text": "Earlier computing machines often kept them completely separate \u2014 sometimes housed in entirely different physical mechanisms."
+            },
+            {
+              "type": "p",
+              "text": "Then came a unifying idea:"
+            },
+            {
+              "type": "p",
+              "text": "What if instructions and data were stored together in the same memory?"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/memory_and_processor_relationship.svg",
+              "alt": "One memory holding both instructions and data connected to the processor",
+              "caption": "One memory holding both instructions and data connected to the processor"
+            }
+          ]
+        },
+        {
+          "heading": "3. One path to the processor",
+          "content": [
+            {
+              "type": "p",
+              "text": "If instructions and data live in the same memory, they also need a way to reach the processor."
+            },
+            {
+              "type": "p",
+              "text": "They share a communication pathway \u2014 a bus."
+            },
+            {
+              "type": "p",
+              "text": "The processor cannot fetch an instruction and read or write data across this shared pathway at the exact same instant."
+            },
+            {
+              "type": "p",
+              "text": "They must take turns."
+            },
+            {
+              "type": "p",
+              "text": "This simple design choice shapes everything about modern computers."
+            }
+          ]
+        },
+        {
+          "heading": "4. Von Neumann",
+          "content": [
+            {
+              "type": "p",
+              "text": "This elegant blueprint is known as the **Von Neumann Architecture**:"
+            },
+            {
+              "type": "image",
+              "src": "../../Images/von_neumann_architecture.svg",
+              "alt": "Von Neumann Architecture: Central Processing Unit, Unified Memory, and Input/Output connected via a Single Shared Bus",
+              "caption": "Von Neumann Architecture: Central Processing Unit, Unified Memory, and Input/Output connected via a Single Shared Bus"
+            },
+            {
+              "type": "p",
+              "text": "Everything communicates through one shared path."
+            },
+            {
+              "type": "p",
+              "text": "Instructions and data share the same space."
+            }
+          ]
+        },
+        {
+          "heading": "5. A simple idea with a lasting influence",
+          "content": [
+            {
+              "type": "p",
+              "text": "This model became the foundation of modern general-purpose computing."
+            },
+            {
+              "type": "p",
+              "text": "From the smallest microcontroller to the most powerful server, almost every system we use today builds on this stored-program concept."
+            },
+            {
+              "type": "p",
+              "text": "Instructions have a place.\nData has a place.\nAnd the processor has a path to both."
+            },
+            {
+              "type": "p",
+              "text": "But the processor itself is not one single thing."
+            },
+            {
+              "type": "p",
+              "text": "Inside it, different parts work together to turn an instruction into action."
+            },
+            {
+              "type": "p",
+              "text": "*Let's look inside.*"
+            }
+          ]
+        }
+      ],
+      "closing": {
+        "heading": "",
+        "paragraphs": [],
+        "quote": ""
       }
     },
     {
@@ -9971,7 +10901,7 @@
             },
             {
               "type": "p",
-              "text": "<table class=\"blog-table\">\n  <thead>\n    <tr>\n      <th>Algorithm</th>\n      <th>Core Selection Rule</th>\n      <th>Major Strength</th>\n      <th>Major Weakness</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td><strong>FCFS</strong></td>\n      <td>Serves by arrival order</td>\n      <td>Simple, fair, no starvation</td>\n      <td>High seek distance</td>\n    </tr>\n    <tr>\n      <td><strong>SSTF</strong></td>\n      <td>Serves closest request</td>\n      <td>Minimizes total seek time</td>\n      <td>Vulnerable to starvation</td>\n    </tr>\n    <tr>\n      <td><strong>SCAN</strong></td>\n      <td>Sweeps back and forth</td>\n      <td>Prevents starvation</td>\n      <td>Uneven edge wait times</td>\n    </tr>\n    <tr>\n      <td><strong>C-SCAN</strong></td>\n      <td>Sweeps in one direction</td>\n      <td>Uniform response times</td>\n      <td>Wasteful return sweep</td>\n    </tr>\n  </tbody>\n</table>",
+              "text": "<div class=\"blog-table-wrap\">\n  <table class=\"blog-table\">\n    <thead>\n      <tr>\n        <th>Algorithm</th>\n        <th>Core Selection Rule</th>\n        <th>Major Strength</th>\n        <th>Major Weakness</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td><strong>FCFS</strong></td>\n        <td>Serves by arrival order</td>\n        <td>Simple, fair, no starvation</td>\n        <td>High seek distance</td>\n      </tr>\n      <tr>\n        <td><strong>SSTF</strong></td>\n        <td>Serves closest request</td>\n        <td>Minimizes total seek time</td>\n        <td>Vulnerable to starvation</td>\n      </tr>\n      <tr>\n        <td><strong>SCAN</strong></td>\n        <td>Sweeps back and forth</td>\n        <td>Prevents starvation</td>\n        <td>Uneven edge wait times</td>\n      </tr>\n      <tr>\n        <td><strong>C-SCAN</strong></td>\n        <td>Sweeps in one direction</td>\n        <td>Uniform response times</td>\n        <td>Wasteful return sweep</td>\n      </tr>\n    </tbody>\n  </table>\n</div>",
               "html": true
             }
           ]
