@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <!-- Background Grid -->
+    <pattern id="grid-8051-chip" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+
+    <!-- Metallic Pin Gradient -->
+    <linearGradient id="pin-metallic" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#64748B" />
+      <stop offset="50%" stop-color="#CBD5E1" />
+      <stop offset="100%" stop-color="#475569" />
+    </linearGradient>
+
+    <!-- IC Plastic Body Gradient -->
+    <linearGradient id="ic-body" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="40%" stop-color="#182234" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <!-- Subtle Blue Glow for Highlight -->
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" fill="url(#grid-8051-chip)" />
+  <rect x="12" y="12" width="736" height="376" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="380" y="36" fill="#E2E8F0" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE INTEL 8051 · INTRODUCED 1980</text>
+  <text x="380" y="52" fill="#94A3B8" font-size="8.5" text-anchor="middle">The landmark 40-pin Dual In-line Package (DIP) that unified embedded computation</text>
+
+  <!-- Main Chip Assembly (Centered at x=380) -->
+  <g transform="translate(260, 68)">
+
+    <!-- 20 Pins on Left Side (Pins 1 to 20) -->
+    <g fill="url(#pin-metallic)">
+      <!-- Pin 1 to 20: y starts at 22, spacing 13.5 -->
+      <!-- P1.0 to P1.7 (Pins 1 to 8) -->
+      <rect x="-24" y="18" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="32" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="46" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="60" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="74" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="88" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="102" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="116" width="26" height="7" rx="1.5" />
+      <!-- RST (Pin 9) -->
+      <rect x="-24" y="130" width="26" height="7" rx="1.5" fill="#38BDF8" />
+      <!-- P3.0 to P3.7 (Pins 10 to 17) -->
+      <rect x="-24" y="144" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="158" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="172" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="186" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="200" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="214" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="228" width="26" height="7" rx="1.5" />
+      <rect x="-24" y="242" width="26" height="7" rx="1.5" />
+      <!-- XTAL2, XTAL1 (Pins 18, 19) -->
+      <rect x="-24" y="256" width="26" height="7" rx="1.5" fill="#FBBF24" />
+      <rect x="-24" y="270" width="26" height="7" rx="1.5" fill="#FBBF24" />
+      <!-- GND (Pin 20) -->
+      <rect x="-24" y="284" width="26" height="7" rx="1.5" fill="#94A3B8" />
+    </g>
+
+    <!-- 20 Pins on Right Side (Pins 40 down to 21) -->
+    <g fill="url(#pin-metallic)">
+      <!-- VCC (Pin 40) -->
+      <rect x="238" y="18" width="26" height="7" rx="1.5" fill="#F43F5E" />
+      <!-- P0.0 to P0.7 (Pins 39 down to 32) -->
+      <rect x="238" y="32" width="26" height="7" rx="1.5" />
+      <rect x="238" y="46" width="26" height="7" rx="1.5" />
+      <rect x="238" y="60" width="26" height="7" rx="1.5" />
+      <rect x="238" y="74" width="26" height="7" rx="1.5" />
+      <rect x="238" y="88" width="26" height="7" rx="1.5" />
+      <rect x="238" y="102" width="26" height="7" rx="1.5" />
+      <rect x="238" y="116" width="26" height="7" rx="1.5" />
+      <rect x="238" y="130" width="26" height="7" rx="1.5" />
+      <!-- Control pins: EA, ALE, PSEN (Pins 31, 30, 29) -->
+      <rect x="238" y="144" width="26" height="7" rx="1.5" fill="#A78BFA" />
+      <rect x="238" y="158" width="26" height="7" rx="1.5" fill="#A78BFA" />
+      <rect x="238" y="172" width="26" height="7" rx="1.5" fill="#A78BFA" />
+      <!-- P2.0 to P2.7 (Pins 28 down to 21) -->
+      <rect x="238" y="186" width="26" height="7" rx="1.5" />
+      <rect x="238" y="200" width="26" height="7" rx="1.5" />
+      <rect x="238" y="214" width="26" height="7" rx="1.5" />
+      <rect x="238" y="228" width="26" height="7" rx="1.5" />
+      <rect x="238" y="242" width="26" height="7" rx="1.5" />
+      <rect x="238" y="256" width="26" height="7" rx="1.5" />
+      <rect x="238" y="270" width="26" height="7" rx="1.5" />
+      <rect x="238" y="284" width="26" height="7" rx="1.5" />
+    </g>
+
+    <!-- Main DIP-40 Epoxy Body -->
+    <rect x="0" y="6" width="240" height="298" rx="8" fill="url(#ic-body)" stroke="#3B82F6" stroke-width="1.6" />
+
+    <!-- Top Orientation Notch (Half circle) -->
+    <path d="M 104 6 A 16 16 0 0 0 136 6 Z" fill="#0F172A" stroke="#3B82F6" stroke-width="1.4" />
+
+    <!-- Pin 1 Index Dot -->
+    <circle cx="22" cy="24" r="4.5" fill="#1E293B" stroke="#60A5FA" stroke-width="1.2" />
+
+    <!-- Silkscreen Text / Markings -->
+    <g text-anchor="middle" font-family="'IBM Plex Mono', monospace">
+      <text x="120" y="70" fill="#60A5FA" font-size="14" font-weight="700" letter-spacing="0.12em">intel</text>
+      <text x="120" y="98" fill="#FFFFFF" font-size="15" font-weight="700" letter-spacing="0.1em">P8051AH</text>
+      <text x="120" y="118" fill="#93C5FD" font-size="7.5" letter-spacing="0.08em">8-BIT MICROCONTROLLER</text>
+
+      <line x1="40" y1="134" x2="200" y2="134" stroke="rgba(148,163,184,0.2)" stroke-width="1" />
+
+      <!-- High-level feature highlights etched on chip -->
+      <text x="120" y="154" fill="#CBD5E1" font-size="7.5" font-weight="500">4 KB ROM · 128 B RAM</text>
+      <text x="120" y="170" fill="#CBD5E1" font-size="7.5" font-weight="500">32 I/O LINES · 4 PORTS</text>
+      <text x="120" y="186" fill="#CBD5E1" font-size="7.5" font-weight="500">2 × 16-BIT TIMERS</text>
+      <text x="120" y="202" fill="#CBD5E1" font-size="7.5" font-weight="500">UART · FULL DUPLEX</text>
+      <text x="120" y="218" fill="#CBD5E1" font-size="7.5" font-weight="500">5-SOURCE INTERRUPTS</text>
+
+      <line x1="40" y1="234" x2="200" y2="234" stroke="rgba(148,163,184,0.2)" stroke-width="1" />
+
+      <text x="120" y="254" fill="#64748B" font-size="7" letter-spacing="0.06em">MCS-51 ARCHITECTURE</text>
+      <text x="120" y="268" fill="#475569" font-size="6.5">DIP-40 CERAMIC / PLASTIC</text>
+    </g>
+  </g>
+
+  <!-- Left Pin Group Annotations -->
+  <g font-family="'IBM Plex Mono', monospace" font-size="7" fill="#94A3B8">
+    <text x="226" y="92" text-anchor="end"><tspan fill="#38BDF8" font-weight="600">Port 1</tspan> (Pins 1–8 · P1.0–P1.7)</text>
+    <line x1="230" y1="90" x2="236" y2="90" stroke="#38BDF8" stroke-width="1" />
+
+    <text x="226" y="202" text-anchor="end"><tspan fill="#38BDF8" font-weight="600">Reset</tspan> (Pin 9 · RST)</text>
+    <line x1="230" y1="200" x2="236" y2="200" stroke="#38BDF8" stroke-width="1" />
+
+    <text x="226" y="255" text-anchor="end"><tspan fill="#38BDF8" font-weight="600">Port 3</tspan> (Pins 10–17 · Special I/O)</text>
+    <line x1="230" y1="253" x2="236" y2="253" stroke="#38BDF8" stroke-width="1" />
+
+    <text x="226" y="334" text-anchor="end"><tspan fill="#FBBF24" font-weight="600">Clock</tspan> (XTAL1, XTAL2) · <tspan fill="#64748B">GND</tspan></text>
+    <line x1="230" y1="332" x2="236" y2="332" stroke="#FBBF24" stroke-width="1" />
+  </g>
+
+  <!-- Right Pin Group Annotations -->
+  <g font-family="'IBM Plex Mono', monospace" font-size="7" fill="#94A3B8">
+    <text x="534" y="92" text-anchor="start"><tspan fill="#F43F5E" font-weight="600">VCC</tspan> (+5V Power · Pin 40)</text>
+    <line x1="524" y1="90" x2="530" y2="90" stroke="#F43F5E" stroke-width="1" />
+
+    <text x="534" y="152" text-anchor="start"><tspan fill="#38BDF8" font-weight="600">Port 0</tspan> (Pins 32–39 · Addr/Data bus)</text>
+    <line x1="524" y1="150" x2="530" y2="150" stroke="#38BDF8" stroke-width="1" />
+
+    <text x="534" y="228" text-anchor="start"><tspan fill="#A78BFA" font-weight="600">Control</tspan> (EA, ALE, PSEN)</text>
+    <line x1="524" y1="226" x2="530" y2="226" stroke="#A78BFA" stroke-width="1" />
+
+    <text x="534" y="318" text-anchor="start"><tspan fill="#38BDF8" font-weight="600">Port 2</tspan> (Pins 21–28 · High Addr)</text>
+    <line x1="524" y1="316" x2="530" y2="316" stroke="#38BDF8" stroke-width="1" />
+  </g>
+
+  <!-- Footnote -->
+  <text x="380" y="386" fill="#64748B" font-size="7.5" text-anchor="middle">Intel 8051 (MCS-51 family) — 40 pins provided the complete physical bridge between software and machine</text>
+</svg>

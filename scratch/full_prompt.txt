@@ -1,0 +1,593 @@
+<USER_REQUEST>
+Create the next exploration in the 8051 series for PrajnaEdge.
+
+TITLE:
+THE 8051 — FOUR SHAPES OF TIME
+
+DATE:
+28 August 2026
+
+NODE:
+Controller → 8051
+
+==================================================
+CONTEXT
+==================================================
+
+The previous exploration is:
+
+"The 8051 — When Time Becomes a Signal"
+
+It established:
+
+- Timer vs Counter
+- C/T bit in TMOD
+- Timer 0 and Timer 1
+- TH0/TL0 and TH1/TL1
+- TMOD
+- TCON
+- TR0/TR1
+- TF0/TF1
+- the hardware/software boundary
+
+Most importantly, the previous exploration deliberately introduced the TMOD mode bits:
+
+M1
+M0
+
+without deeply explaining their behavior.
+
+The previous exploration should therefore feel like it left four doors unopened.
+
+This exploration opens those doors.
+
+==================================================
+CORE IDEA
+==================================================
+
+The central question is:
+
+"What actually changes when the 8051 timer mode changes?"
+
+The same timer/counter hardware can take different forms depending on M1/M0.
+
+Reveal the four classic 8051 timer modes:
+
+MODE 0
+13-bit timer/counter
+
+MODE 1
+16-bit timer/counter
+
+MODE 2
+8-bit timer/counter with auto-reload
+
+MODE 3
+Timer 0 split into two independent 8-bit counting sections
+
+The exploration should make the reader SEE that these are not merely four labels in a datasheet.
+
+The hardware itself changes shape.
+
+==================================================
+CONTINUITY
+==================================================
+
+Begin by connecting directly to:
+
+"The 8051 — When Time Becomes a Signal"
+
+The previous exploration ended with:
+
+Software establishes rules in TMOD.
+The clock supplies the rhythm.
+THx/TLx accumulate the count.
+TCON exposes the live state.
+
+Now say, conceptually:
+
+"We have seen the switches.
+
+Now we turn them."
+
+Do not copy this wording literally.
+
+Make it feel like a natural PrajnaEdge continuation.
+
+Also maintain the connection to the main Tree's:
+
+"The Architecture of Time"
+
+The previous exploration already links to it.
+
+Do not add another unnecessary link unless there is a natural reason.
+
+==================================================
+IMPORTANT: DO NOT REPEAT THE PREVIOUS EXPLORATION
+==================================================
+
+Do not spend large sections explaining again:
+
+- what a timer is
+- what a counter is
+- why hardware timers exist
+- why CPU delay loops are inefficient
+- what TCON is
+- what TMOD is
+
+Those concepts have already been established.
+
+This exploration should move forward.
+
+The subject is now:
+
+HOW THE MODE BITS CHANGE THE HARDWARE BEHAVIOR.
+
+==================================================
+SUGGESTED NARRATIVE
+==================================================
+
+Use this as a conceptual structure, not as rigid section titles.
+
+--------------------------------------------------
+1. THE SWITCHES WE LEFT BEHIND
+--------------------------------------------------
+
+Return briefly to TMOD.
+
+Show:
+
+M1 M0
+
+and explain that these two bits determine the shape of the timer.
+
+Do not immediately list all four modes as a textbook table.
+
+Create curiosity first.
+
+Something like:
+
+One counter.
+
+Four possible architectures.
+
+Then reveal the modes progressively.
+
+--------------------------------------------------
+2. MODE 0 — WHEN 16 BITS BECOME 13
+--------------------------------------------------
+
+Explain the classic 13-bit structure accurately.
+
+Show how:
+
+THx + lower 5 bits of TLx
+
+form the 13-bit counting mechanism.
+
+Make the visual representation unmistakable:
+
+THx:
+8 bits
+
+TLx:
+only lower 5 bits participate
+
+Total:
+13 bits
+
+Show the count range:
+
+0000H → 1FFFH
+
+Explain the upper 3 bits of TLx are not part of the 13-bit count.
+
+Do not overdo calculations.
+
+The important idea:
+
+The same physical registers exist, but the counting path changes.
+
+--------------------------------------------------
+3. MODE 1 — THE FULL 16-BIT COUNTER
+--------------------------------------------------
+
+This should feel familiar because the previous exploration already introduced:
+
+THx:TLx
+
+Now reveal:
+
+Mode 1 uses the complete 16-bit pair.
+
+THx
++
+TLx
+=
+16-bit counter
+
+Range:
+
+0000H → FFFFH
+
+This is the cleanest representation.
+
+Show overflow clearly.
+
+This is also a good place for one small timing/count calculation example, but keep it conceptual rather than turning the section into exam preparation.
+
+--------------------------------------------------
+4. MODE 2 — WHEN THE COUNT COMES BACK
+--------------------------------------------------
+
+This should be the conceptual highlight before the EdgeCase.
+
+Explain:
+
+TLx is the 8-bit counter.
+
+THx stores the reload value.
+
+When TLx reaches FFH and overflows:
+
+TLx → reload value from THx
+
+The important realization:
+
+The timer does not need software to reload the starting value every time.
+
+Hardware remembers the value.
+
+Show:
+
+THx
+│
+└── reload value
+       ↓
+TLx → FFH
+       ↓
+    overflow
+       ↓
+TLx ← THx
+       ↓
+    count again
+
+This is where "auto-reload" becomes a physical hardware behavior rather than a definition.
+
+--------------------------------------------------
+5. MODE 3 — WHEN ONE TIMER BECOMES TWO
+--------------------------------------------------
+
+This should be the most surprising section.
+
+Explain the classic 8051 behavior accurately:
+
+Timer 0 is split into two separate 8-bit counting sections:
+
+TL0
+and
+TH0
+
+They operate as separate 8-bit timers/counters using the Timer 0 hardware resources.
+
+Show the control relationship clearly.
+
+Be particularly careful with the behavior of:
+
+TR0 / TF0
+TR1 / TF1
+
+in Mode 3.
+
+Do not simplify this incorrectly.
+
+Explain what happens to Timer 1 when Timer 0 is configured in Mode 3, including the classic 8051 behavior.
+
+This section should make the title "Four Shapes of Time" feel earned.
+
+==================================================
+6. ONE TMOD BYTE, FOUR HARDWARE SHAPES
+==================================================
+
+Now bring everything together visually.
+
+Show the M1/M0 combinations:
+
+M1 M0
+0  0 → Mode 0
+0  1 → Mode 1
+1  0 → Mode 2
+1  1 → Mode 3
+
+But do NOT present this as just a memorization table.
+
+Show a visual transformation:
+
+M1/M0
+   ↓
+┌─────────────────────────┐
+│ 0 0 → 13-bit structure │
+│ 0 1 → 16-bit structure │
+│ 1 0 → 8-bit reload      │
+│ 1 1 → split structure   │
+└─────────────────────────┘
+
+The reader should understand that changing two bits changes the architecture through which the counter operates.
+
+==================================================
+7. EDGECASE — TURN THE HARDWARE SWITCHES
+==================================================
+
+THIS SHOULD BE THE MAIN EDGECASE.
+
+Unlike the previous exploration, this EdgeCase is essential here.
+
+The user should configure the timer and SEE what happens.
+
+Provide controls such as:
+
+TIMER:
+[ Timer 0 ] [ Timer 1 ]
+
+SOURCE:
+[ Timer ] [ Counter ]
+
+MODE:
+[ Mode 0 ] [ Mode 1 ] [ Mode 2 ] [ Mode 3 ]
+
+Then the visualization changes based on the selected configuration.
+
+IMPORTANT:
+
+Do not make this a quiz.
+
+Do not ask the user to calculate an answer.
+
+The user is experimenting with the architecture.
+
+Examples:
+
+MODE 0:
+Show a 13-bit counter.
+Visually show that only 5 bits of TLx participate.
+
+MODE 1:
+Show THx + TLx as one 16-bit counter.
+
+MODE 2:
+Show TLx counting 00H → FFH, then automatically reloading from THx.
+
+MODE 3:
+Show Timer 0 splitting into two 8-bit counting paths.
+
+TIMER MODE:
+Show internal machine-cycle pulses.
+
+COUNTER MODE:
+Show external T0/T1 pulses.
+
+The most important part:
+
+When the user changes the mode, the visual architecture itself should change.
+
+The user should be able to say:
+
+"Ah — these two TMOD bits actually change the hardware."
+
+That is the purpose of the EdgeCase.
+
+==================================================
+8. WATCH THE SAME VALUE MEAN DIFFERENT THINGS
+==================================================
+
+Use one small conceptual example.
+
+For example, show what happens when the counter reaches FFH.
+
+In Mode 1:
+the 16-bit counter continues toward FFFFH.
+
+In Mode 2:
+the 8-bit TLx overflows and reloads from THx.
+
+In Mode 0:
+the 13-bit range determines the rollover.
+
+In Mode 3:
+the relevant 8-bit section behaves independently.
+
+This should reinforce that the same counting operation is interpreted differently depending on the architecture selected.
+
+==================================================
+9. THE DEEPER REALIZATION
+==================================================
+
+End in PrajnaEdge style.
+
+Do NOT say:
+
+"In the next exploration..."
+
+Do NOT preview interrupts, serial communication, waveform generation, etc.
+
+Do NOT write a conventional summary.
+
+The realization should be around this idea:
+
+The 8051 did not build four completely different timers.
+
+It built a configurable piece of hardware whose structure changes according to a few control bits.
+
+Two bits in a register can decide whether time is counted through 13 bits, 16 bits, an automatically reloading 8-bit counter, or a split architecture.
+
+The machine is not merely counting.
+
+It is reshaping how counting happens.
+
+Write this naturally and elegantly rather than copying it literally.
+
+==================================================
+PRAJNAEDGE STYLE
+==================================================
+
+This must NOT read like:
+
+"8051 Timer Modes — Complete Notes"
+
+Avoid:
+
+- long tables
+- exam-oriented wording
+- "Important for GATE"
+- memorization language
+- repetitive register descriptions
+- excessive bullet points
+- conventional summary sections
+
+Use:
+
+- conceptual discoveries
+- visual transformations
+- continuity with previous exploration
+- subtle callbacks
+- hardware/software boundaries
+- concise technical prose
+- diagrams that explain architecture
+
+The user should feel that they are opening the timer and seeing its internal architecture change.
+
+==================================================
+TECHNICAL ACCURACY
+==================================================
+
+Use the classic 8051 architecture as the baseline.
+
+Verify carefully:
+
+Mode 0:
+13-bit timer/counter.
+
+Mode 1:
+16-bit timer/counter.
+
+Mode 2:
+8-bit auto-reload timer/counter.
+
+Mode 3:
+Timer 0 split into two 8-bit sections.
+
+Be precise about:
+
+- THx/TLx usage
+- reload behavior
+- overflow behavior
+- TRx/TFx behavior
+- C/T selection
+- external T0/T1 inputs
+- Timer 1 behavior when Timer 0 is in Mode 3
+- which control bits operate which section in Mode 3
+
+Do not make derivative-specific claims.
+
+Do not simplify Mode 3 in a way that becomes technically wrong.
+
+==================================================
+EDGECASE TECHNICAL BEHAVIOR
+==================================================
+
+The EdgeCase must simulate the classic 8051 architecture rather than merely changing labels.
+
+For every mode:
+
+- show the relevant counter width
+- show which register bits participate
+- show the count progression
+- show overflow
+- show reload where applicable
+- show the relevant flag behavior
+
+For Counter mode:
+
+show external pulses arriving at T0/T1.
+
+For Timer mode:
+
+show internal machine-cycle timing.
+
+The user should see a causal hardware process, not a decorative animation.
+
+==================================================
+VISUALS
+==================================================
+
+Important visuals:
+
+1. TMOD M1/M0 selector
+2. Mode 0 13-bit structure
+3. Mode 1 16-bit structure
+4. Mode 2 auto-reload structure
+5. Mode 3 split structure
+6. One visual showing the four architectures side-by-side
+7. The interactive EdgeCase
+
+The register structures should look like actual hardware/register diagrams.
+
+Do not represent them merely as colored text.
+
+==================================================
+FORMATTING
+==================================================
+
+Do not allow raw LaTeX or mathematical markup to appear in the rendered page.
+
+Never visibly render strings such as:
+
+frac{...}{...}
+overline{...}
+mu
+mus
+text{...}
+
+Use normal HTML/text or properly rendered mathematical notation that is verified in the browser.
+
+Check the entire exploration after rendering.
+
+==================================================
+FINAL QUALITY CHECK
+==================================================
+
+Read this exploration together with:
+
+1. The 8051 — Where Software Touches Hardware
+2. The 8051 — When Time Becomes a Signal
+3. The Architecture of Time
+
+The progression should feel like:
+
+The Architecture of Time
+→ What is machine timing?
+
+Where Software Touches Hardware
+→ Where does the 8051 expose hardware control?
+
+When Time Becomes a Signal
+→ How does the 8051 timer/counter architecture work?
+
+Four Shapes of Time
+→ How do TMOD mode bits reshape that hardware?
+
+The EdgeCase should be the payoff.
+
+Do not make this exploration unnecessarily large.
+
+Target approximately 12–16 pages depending on the EdgeCase and diagrams.
+
+Do not modify the previous explorations.
+
+Do not modify "The Architecture of Time".
+
+Do not commit, push, or deploy.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-26T16:56:20+05:30.
+</ADDITIONAL_METADATA>

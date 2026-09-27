@@ -1,0 +1,302 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 530" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <!-- Background Grid -->
+    <pattern id="grid-arch" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+
+    <!-- Bus Gradient -->
+    <linearGradient id="bus-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#60A5FA" stop-opacity="1" />
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0.8" />
+    </linearGradient>
+
+    <!-- Subsystem Box Shadows -->
+    <filter id="shadow-box" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="100%" height="100%" fill="url(#grid-arch)" />
+  <rect x="12" y="12" width="736" height="506" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Title Header -->
+  <text x="380" y="36" fill="#E2E8F0" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE CLASSIC 8051 INTERNAL ARCHITECTURAL MAP</text>
+  <text x="380" y="52" fill="#94A3B8" font-size="8.5" text-anchor="middle">A complete computer on a single die: CPU, memories, SFRs, peripherals, and four 8-bit I/O ports</text>
+
+  <!-- ============================================================ -->
+  <!-- CENTRAL 8-BIT INTERNAL DATA BUS (y = 230 to 250)             -->
+  <!-- ============================================================ -->
+  <g transform="translate(40, 236)">
+    <rect x="0" y="0" width="680" height="20" rx="4" fill="#1E293B" stroke="#3B82F6" stroke-width="1.4" />
+    <line x1="10" y1="10" x2="670" y2="10" stroke="#60A5FA" stroke-width="1" stroke-dasharray="4,4" />
+    <text x="340" y="13.5" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.1em">8-BIT INTERNAL DATA BUS</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- TOP ROW: MEMORY & REGISTER BLOCKS                           -->
+  <!-- ============================================================ -->
+
+  <!-- 1. CPU CORE REGISTERS (A, B, ALU, PSW) Top-Left -->
+  <g transform="translate(40, 72)" filter="url(#shadow-box)">
+    <rect width="210" height="144" rx="6" fill="#131B2A" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1.2" />
+    <rect width="210" height="22" rx="6" fill="rgba(56, 189, 248, 0.12)" />
+    <circle cx="12" cy="11" r="3" fill="#38BDF8" />
+    <text x="105" y="15" fill="#38BDF8" font-size="8" font-weight="700" text-anchor="middle" letter-spacing="0.05em">CPU CORE &amp; ARITHMETIC</text>
+
+    <!-- Sub-blocks inside CPU -->
+    <!-- Accumulator (A) -->
+    <rect x="12" y="30" width="88" height="28" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="0.9" />
+    <text x="56" y="44" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">ACC (A)</text>
+    <text x="56" y="53" fill="#94A3B8" font-size="6.5" text-anchor="middle">Primary 8-Bit Reg</text>
+
+    <!-- B Register -->
+    <rect x="110" y="30" width="88" height="28" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="0.9" />
+    <text x="154" y="44" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">B REGISTER</text>
+    <text x="154" y="53" fill="#94A3B8" font-size="6.5" text-anchor="middle">Mul / Div / Gen</text>
+
+    <!-- ALU (Arithmetic Logic Unit) -->
+    <polygon points="40,68 170,68 150,98 60,98" fill="#1E293B" stroke="#60A5FA" stroke-width="1.2" />
+    <text x="105" y="86" fill="#60A5FA" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="700" text-anchor="middle">8-BIT ALU</text>
+
+    <!-- Program Status Word (PSW) -->
+    <rect x="12" y="106" width="186" height="26" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.3)" stroke-width="0.9" />
+    <text x="105" y="119" fill="#FBBF24" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">PSW (Program Status Word)</text>
+    <text x="105" y="127.5" fill="#94A3B8" font-size="6.5" text-anchor="middle">Flags (CY, AC, OV, P) &amp; Bank Select</text>
+
+    <!-- Bus link down to 8-bit bus -->
+    <line x1="105" y1="144" x2="105" y2="164" stroke="#38BDF8" stroke-width="1.5" />
+    <polygon points="105,164 102,158 108,158" fill="#38BDF8" />
+  </g>
+
+  <!-- 2. INTERNAL MEMORIES (Center Top) -->
+  <!-- Program ROM (4 KB) -->
+  <g transform="translate(265, 72)" filter="url(#shadow-box)">
+    <rect width="140" height="66" rx="6" fill="#131B2A" stroke="rgba(167, 139, 250, 0.35)" stroke-width="1.2" />
+    <rect width="140" height="20" rx="6" fill="rgba(167, 139, 250, 0.14)" />
+    <circle cx="12" cy="10" r="3" fill="#A78BFA" />
+    <text x="70" y="14" fill="#C4B5FD" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.05em">PROGRAM MEMORY</text>
+
+    <text x="70" y="38" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="600" text-anchor="middle">4 KB ON-CHIP ROM</text>
+    <text x="70" y="52" fill="#94A3B8" font-size="6.8" text-anchor="middle">Firmware / Code (Up to 64 KB)</text>
+
+    <!-- Link down to bus -->
+    <line x1="70" y1="66" x2="70" y2="164" stroke="#A78BFA" stroke-width="1.2" />
+    <polygon points="70,164 67,158 73,158" fill="#A78BFA" />
+  </g>
+
+  <!-- Internal RAM (128 B) -->
+  <g transform="translate(420, 72)" filter="url(#shadow-box)">
+    <rect width="140" height="66" rx="6" fill="#131B2A" stroke="rgba(52, 211, 153, 0.35)" stroke-width="1.2" />
+    <rect width="140" height="20" rx="6" fill="rgba(52, 211, 153, 0.14)" />
+    <circle cx="12" cy="10" r="3" fill="#34D399" />
+    <text x="70" y="14" fill="#6EE7B7" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.05em">INTERNAL DATA RAM</text>
+
+    <text x="70" y="38" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="600" text-anchor="middle">128 BYTES RAM</text>
+    <text x="70" y="52" fill="#94A3B8" font-size="6.8" text-anchor="middle">Banks, Bit-Addr, Scratchpad</text>
+
+    <!-- Link down to bus -->
+    <line x1="70" y1="66" x2="70" y2="164" stroke="#34D399" stroke-width="1.2" />
+    <polygon points="70,164 67,158 73,158" fill="#34D399" />
+  </g>
+
+  <!-- 3. SPECIAL FUNCTION REGISTERS (SFRs) (Top-Right) -->
+  <g transform="translate(575, 72)" filter="url(#shadow-box)">
+    <rect width="145" height="144" rx="6" fill="#131B2A" stroke="rgba(245, 158, 11, 0.35)" stroke-width="1.2" />
+    <rect width="145" height="22" rx="6" fill="rgba(245, 158, 11, 0.12)" />
+    <circle cx="12" cy="11" r="3" fill="#F59E0B" />
+    <text x="75" y="15" fill="#FBBF24" font-size="8" font-weight="700" text-anchor="middle" letter-spacing="0.05em">SPECIAL FUNCTION REGISTERS</text>
+
+    <text x="72.5" y="42" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="600" text-anchor="middle">SFR SPACE (80H - FFH)</text>
+    <text x="72.5" y="56" fill="#94A3B8" font-size="6.8" text-anchor="middle">Control &amp; Status of Entire System</text>
+
+    <!-- SFR sample list pills -->
+    <g transform="translate(10, 68)" font-family="'IBM Plex Mono', monospace" font-size="6.5">
+      <rect x="0" y="0" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="19" y="11" fill="#FDE68A" text-anchor="middle">P0-P3</text>
+      <rect x="43" y="0" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="62" y="11" fill="#FDE68A" text-anchor="middle">TCON</text>
+      <rect x="86" y="0" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="105" y="11" fill="#FDE68A" text-anchor="middle">TMOD</text>
+
+      <rect x="0" y="20" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="19" y="31" fill="#FDE68A" text-anchor="middle">SCON</text>
+      <rect x="43" y="20" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="62" y="31" fill="#FDE68A" text-anchor="middle">SBUF</text>
+      <rect x="86" y="20" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="105" y="31" fill="#FDE68A" text-anchor="middle">IE / IP</text>
+
+      <rect x="22" y="40" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="41" y="51" fill="#FDE68A" text-anchor="middle">PCON</text>
+      <rect x="65" y="40" width="38" height="15" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+      <text x="84" y="51" fill="#FDE68A" text-anchor="middle">PSW</text>
+    </g>
+
+    <!-- Link down to bus -->
+    <line x1="72.5" y1="144" x2="72.5" y2="164" stroke="#F59E0B" stroke-width="1.5" />
+    <polygon points="72.5,164 69.5,158 75.5,158" fill="#F59E0B" />
+  </g>
+
+  <!-- Program Counter (PC) & Data Pointer (DPTR) (Below ROM/RAM on bus) -->
+  <g transform="translate(265, 150)" filter="url(#shadow-box)">
+    <!-- 16-Bit PC -->
+    <rect x="0" y="0" width="140" height="66" rx="5" fill="#131B2A" stroke="rgba(167, 139, 250, 0.35)" stroke-width="1.2" />
+    <text x="70" y="16" fill="#C4B5FD" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">PROGRAM COUNTER (PC)</text>
+    <text x="70" y="30" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="600" text-anchor="middle">16-BIT REGISTER</text>
+    <text x="70" y="44" fill="#94A3B8" font-size="6.5" text-anchor="middle">Addresses 64 KB Code Space</text>
+    <text x="70" y="56" fill="#64748B" font-size="6" text-anchor="middle">+ Internal Incrementer</text>
+  </g>
+
+  <g transform="translate(420, 150)" filter="url(#shadow-box)">
+    <!-- 16-Bit DPTR & 8-Bit SP -->
+    <rect x="0" y="0" width="140" height="66" rx="5" fill="#131B2A" stroke="rgba(52, 211, 153, 0.35)" stroke-width="1.2" />
+    <text x="70" y="16" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">DPTR &amp; STACK POINTER</text>
+
+    <!-- DPTR split -->
+    <rect x="10" y="24" width="56" height="20" rx="3" fill="#1E293B" stroke="rgba(52, 211, 153, 0.25)" />
+    <text x="38" y="37" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">DPH (8b)</text>
+
+    <rect x="74" y="24" width="56" height="20" rx="3" fill="#1E293B" stroke="rgba(52, 211, 153, 0.25)" />
+    <text x="102" y="37" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">DPL (8b)</text>
+
+    <!-- SP -->
+    <rect x="10" y="47" width="120" height="14" rx="2" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" />
+    <text x="70" y="57.5" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.5" font-weight="600" text-anchor="middle">SP: Stack Pointer (8b)</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM ROW: PERIPHERALS, TIMING, AND FOUR I/O PORTS         -->
+  <!-- ============================================================ -->
+
+  <!-- 1. OSCILLATOR & TIMING GENERATOR (Bottom-Left) -->
+  <g transform="translate(40, 276)" filter="url(#shadow-box)">
+    <rect width="140" height="114" rx="6" fill="#131B2A" stroke="rgba(244, 63, 94, 0.3)" stroke-width="1.2" />
+    <rect width="140" height="20" rx="6" fill="rgba(244, 63, 94, 0.12)" />
+    <circle cx="12" cy="10" r="3" fill="#FB7185" />
+    <text x="70" y="14" fill="#FDA4AF" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.05em">OSCILLATOR &amp; CLOCK</text>
+
+    <text x="70" y="38" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">ON-CHIP OSCILLATOR</text>
+    <text x="70" y="52" fill="#94A3B8" font-size="6.8" text-anchor="middle">External Quartz Crystal</text>
+    <text x="70" y="66" fill="#FDA4AF" font-family="'IBM Plex Mono', monospace" font-size="7" text-anchor="middle">XTAL1 / XTAL2 Pins</text>
+
+    <rect x="10" y="76" width="120" height="26" rx="3" fill="#1E293B" stroke="rgba(244, 63, 94, 0.2)" />
+    <text x="70" y="88" fill="#E2E8F0" font-size="6.5" font-weight="600" text-anchor="middle">12 OSC Periods = 1 Machine Cycle</text>
+    <text x="70" y="97" fill="#64748B" font-size="6" text-anchor="middle">12 MHz Crystal → 1 µs Cycle</text>
+  </g>
+
+  <!-- 2. TIMERS / COUNTERS (Center Bottom Left) -->
+  <g transform="translate(195, 276)" filter="url(#shadow-box)">
+    <rect width="165" height="114" rx="6" fill="#131B2A" stroke="rgba(234, 179, 8, 0.3)" stroke-width="1.2" />
+    <rect width="165" height="20" rx="6" fill="rgba(234, 179, 8, 0.12)" />
+    <circle cx="12" cy="10" r="3" fill="#FACC15" />
+    <text x="82.5" y="14" fill="#FDE047" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.05em">16-BIT TIMERS / COUNTERS</text>
+
+    <!-- Timer 0 -->
+    <rect x="10" y="28" width="145" height="34" rx="3" fill="#1E293B" stroke="rgba(234, 179, 8, 0.25)" />
+    <text x="20" y="44" fill="#FDE047" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700">TIMER 0</text>
+    <text x="20" y="54" fill="#94A3B8" font-size="6.5">TH0 (8b) + TL0 (8b)</text>
+    <text x="145" y="48" fill="#CBD5E1" font-size="6.5" text-anchor="end">Pin T0 (P3.4)</text>
+
+    <!-- Timer 1 -->
+    <rect x="10" y="68" width="145" height="34" rx="3" fill="#1E293B" stroke="rgba(234, 179, 8, 0.25)" />
+    <text x="20" y="84" fill="#FDE047" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700">TIMER 1</text>
+    <text x="20" y="94" fill="#94A3B8" font-size="6.5">TH1 (8b) + TL1 (8b)</text>
+    <text x="145" y="88" fill="#CBD5E1" font-size="6.5" text-anchor="end">Pin T1 (P3.5)</text>
+  </g>
+
+  <!-- 3. SERIAL INTERFACE (UART) (Center Bottom Right) -->
+  <g transform="translate(375, 276)" filter="url(#shadow-box)">
+    <rect width="165" height="114" rx="6" fill="#131B2A" stroke="rgba(14, 165, 233, 0.3)" stroke-width="1.2" />
+    <rect width="165" height="20" rx="6" fill="rgba(14, 165, 233, 0.12)" />
+    <circle cx="12" cy="10" r="3" fill="#38BDF8" />
+    <text x="82.5" y="14" fill="#7DD3FC" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.05em">SERIAL PORT (UART)</text>
+
+    <text x="82.5" y="38" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">FULL-DUPLEX SERIAL</text>
+    <text x="82.5" y="50" fill="#94A3B8" font-size="6.8" text-anchor="middle">TxD (P3.1) &amp; RxD (P3.0) Pins</text>
+
+    <rect x="10" y="62" width="145" height="42" rx="3" fill="#1E293B" stroke="rgba(14, 165, 233, 0.2)" />
+    <text x="82.5" y="76" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600" text-anchor="middle">SBUF (Data Buffer Register)</text>
+    <text x="82.5" y="88" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">SCON (Serial Control Register)</text>
+    <text x="82.5" y="98" fill="#64748B" font-size="6" text-anchor="middle">Baud Rate via Timer 1 Overflow</text>
+  </g>
+
+  <!-- 4. INTERRUPT CONTROLLER (Bottom-Right) -->
+  <g transform="translate(555, 276)" filter="url(#shadow-box)">
+    <rect width="165" height="114" rx="6" fill="#131B2A" stroke="rgba(236, 72, 153, 0.3)" stroke-width="1.2" />
+    <rect width="165" height="20" rx="6" fill="rgba(236, 72, 153, 0.12)" />
+    <circle cx="12" cy="10" r="3" fill="#F472B6" />
+    <text x="82.5" y="14" fill="#F472B6" font-size="7.5" font-weight="700" text-anchor="middle" letter-spacing="0.05em">INTERRUPT CONTROLLER</text>
+
+    <text x="82.5" y="36" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">5 HARDWARE SOURCES</text>
+    
+    <g transform="translate(10, 44)" font-size="6.5" fill="#CBD5E1">
+      <text x="0" y="10">• Ext 0 (/INT0 - P3.2)</text>
+      <text x="0" y="22">• Timer 0 Overflow (TF0)</text>
+      <text x="0" y="34">• Ext 1 (/INT1 - P3.3)</text>
+      <text x="0" y="46">• Timer 1 Overflow (TF1)</text>
+      <text x="0" y="58">• Serial Comm (RI/TI)</text>
+    </g>
+
+    <rect x="100" y="48" width="55" height="46" rx="3" fill="#1E293B" stroke="rgba(236, 72, 153, 0.25)" />
+    <text x="127.5" y="62" fill="#F472B6" font-family="'IBM Plex Mono', monospace" font-size="6.5" font-weight="600" text-anchor="middle">PRIORITY</text>
+    <text x="127.5" y="74" fill="#94A3B8" font-size="6" text-anchor="middle">2 Levels</text>
+    <text x="127.5" y="84" fill="#64748B" font-size="5.8" text-anchor="middle">IE &amp; IP Regs</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- FOUR PARALLEL I/O PORTS ROW (y = 410 to 495)                -->
+  <!-- ============================================================ -->
+  <!-- Port 0 -->
+  <g transform="translate(40, 412)" filter="url(#shadow-box)">
+    <rect width="160" height="84" rx="6" fill="#131B2A" stroke="rgba(59, 130, 246, 0.35)" stroke-width="1.2" />
+    <rect width="160" height="20" rx="6" fill="rgba(59, 130, 246, 0.15)" />
+    <text x="80" y="14" fill="#60A5FA" font-size="8" font-weight="700" text-anchor="middle">PORT 0 · 8-BIT I/O (Pins 32-39)</text>
+    <text x="80" y="36" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">PORT 0 LATCH &amp; DRIVER</text>
+    <text x="80" y="49" fill="#94A3B8" font-size="6.5" text-anchor="middle">Open-Drain Bi-Directional</text>
+    <rect x="10" y="58" width="140" height="18" rx="3" fill="#1E293B" stroke="rgba(59, 130, 246, 0.25)" />
+    <text x="80" y="70" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="6.5" font-weight="600" text-anchor="middle">Multiplexed: AD0 – AD7</text>
+  </g>
+
+  <!-- Port 1 -->
+  <g transform="translate(213, 412)" filter="url(#shadow-box)">
+    <rect width="160" height="84" rx="6" fill="#131B2A" stroke="rgba(59, 130, 246, 0.35)" stroke-width="1.2" />
+    <rect width="160" height="20" rx="6" fill="rgba(59, 130, 246, 0.15)" />
+    <text x="80" y="14" fill="#60A5FA" font-size="8" font-weight="700" text-anchor="middle">PORT 1 · 8-BIT I/O (Pins 1-8)</text>
+    <text x="80" y="36" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">PORT 1 LATCH &amp; DRIVER</text>
+    <text x="80" y="49" fill="#94A3B8" font-size="6.5" text-anchor="middle">Quasi-Bi-Directional with Pull-ups</text>
+    <rect x="10" y="58" width="140" height="18" rx="3" fill="#1E293B" stroke="rgba(59, 130, 246, 0.25)" />
+    <text x="80" y="70" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="6.5" font-weight="600" text-anchor="middle">Dedicated General I/O (P1.0 - P1.7)</text>
+  </g>
+
+  <!-- Port 2 -->
+  <g transform="translate(386, 412)" filter="url(#shadow-box)">
+    <rect width="160" height="84" rx="6" fill="#131B2A" stroke="rgba(59, 130, 246, 0.35)" stroke-width="1.2" />
+    <rect width="160" height="20" rx="6" fill="rgba(59, 130, 246, 0.15)" />
+    <text x="80" y="14" fill="#60A5FA" font-size="8" font-weight="700" text-anchor="middle">PORT 2 · 8-BIT I/O (Pins 21-28)</text>
+    <text x="80" y="36" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">PORT 2 LATCH &amp; DRIVER</text>
+    <text x="80" y="49" fill="#94A3B8" font-size="6.5" text-anchor="middle">Quasi-Bi-Directional with Pull-ups</text>
+    <rect x="10" y="58" width="140" height="18" rx="3" fill="#1E293B" stroke="rgba(59, 130, 246, 0.25)" />
+    <text x="80" y="70" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="6.5" font-weight="600" text-anchor="middle">Higher Address Bus: A8 – A15</text>
+  </g>
+
+  <!-- Port 3 -->
+  <g transform="translate(560, 412)" filter="url(#shadow-box)">
+    <rect width="160" height="84" rx="6" fill="#131B2A" stroke="rgba(59, 130, 246, 0.35)" stroke-width="1.2" />
+    <rect width="160" height="20" rx="6" fill="rgba(59, 130, 246, 0.15)" />
+    <text x="80" y="14" fill="#60A5FA" font-size="8" font-weight="700" text-anchor="middle">PORT 3 · 8-BIT I/O (Pins 10-17)</text>
+    <text x="80" y="36" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="600" text-anchor="middle">PORT 3 LATCH &amp; DRIVER</text>
+    <text x="80" y="49" fill="#94A3B8" font-size="6.5" text-anchor="middle">Multi-Function Bi-Directional</text>
+    <rect x="10" y="58" width="140" height="18" rx="3" fill="#1E293B" stroke="rgba(59, 130, 246, 0.25)" />
+    <text x="80" y="70" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="6.5" font-weight="600" text-anchor="middle">RxD, TxD, /INT0, /INT1, T0, T1, /WR, /RD</text>
+  </g>
+
+  <!-- Bus Connections Arrows -->
+  <g stroke="#3B82F6" stroke-width="1.2" fill="#3B82F6">
+    <line x1="120" y1="256" x2="120" y2="412" stroke-dasharray="2,2" opacity="0.6" />
+    <line x1="293" y1="256" x2="293" y2="412" stroke-dasharray="2,2" opacity="0.6" />
+    <line x1="466" y1="256" x2="466" y2="412" stroke-dasharray="2,2" opacity="0.6" />
+    <line x1="640" y1="256" x2="640" y2="412" stroke-dasharray="2,2" opacity="0.6" />
+  </g>
+</svg>

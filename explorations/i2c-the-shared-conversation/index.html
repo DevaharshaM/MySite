@@ -6,7 +6,7 @@
 <title>I2C: The Shared Conversation | PrajnaEdge</title>
 <meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
 <meta name="author" content="Devaharsha Meesarapu" />
-<link rel="canonical" href="https://prajnaedge.dev/explorations/i2c-the-shared-conversation/"
+<link rel="canonical" href="https://prajnaedge.dev/explorations/i2c-the-shared-conversation/" />
 <meta name="robots" content="index, follow" />
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
@@ -240,12 +240,12 @@
 
 <nav>
   <div class="nav-links">
-    <a id="nav-home" class="active" onclick="showPage('home')">Home</a>
-    <a id="nav-blogs" onclick="openDirectExplorations()">Explorations</a>
-    <a id="nav-playground" onclick="showPage('playground')">Playground</a>
-    <a id="nav-products" onclick="showPage('products')">Products</a>
-    <a id="nav-about" onclick="showPage('about')">About Us</a>
-    <a id="nav-contact" onclick="showPage('contact')">Contact Us</a>
+    <a id="nav-home" class="active" href="/" onclick="showPage('home'); return false;">Home</a>
+    <a id="nav-blogs" href="/explorations/" onclick="openDirectExplorations(); return false;">Explorations</a>
+    <a id="nav-playground" href="/playground/" onclick="showPage('playground'); return false;">Playground</a>
+    <a id="nav-products" href="/products/" onclick="showPage('products'); return false;">Products</a>
+    <a id="nav-about" href="/about/" onclick="showPage('about'); return false;">About Us</a>
+    <a id="nav-contact" href="/contact/" onclick="showPage('contact'); return false;">Contact Us</a>
   </div>
   <button class="nav-help-btn" onclick="openDesignLanguageGuide()" aria-label="How PrajnaEdge Works" title="How PrajnaEdge Works" style="display: none;">?</button>
 </nav>
@@ -253,30 +253,49 @@
 <div class="page" id="page-home">
   <div class="empty-page" style="padding-top: 140px;">
     <div class="empty-title" style="margin-bottom: 1.5rem;">PrajnaEdge</div>
-    <div class="empty-sub" style="max-width:600px;text-align:center;line-height:1.75;color:var(--muted);font-size:0.98rem;font-family:'DM Sans', sans-serif;margin-bottom:3rem;">
+    <div class="empty-sub" style="max-width:600px;text-align:center;line-height:1.75;color:var(--muted);font-size:0.98rem;font-family:'DM Sans', sans-serif;margin-bottom:2.25rem;">
       A curiosphere for curious minds who want to understand, experiment with, and experience technology.
     </div>
 
-    <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.2em; margin-bottom:1.5rem; opacity:0.8;">
+    <!-- Technology / Worldview Statement -->
+    <div class="home-tech-statement home-domains-overview" aria-label="Technology Statement">
+      <h2 class="home-tech-heading">Technology is a system of connections.</h2>
+      
+      <div class="home-tech-body">
+        <p>
+          Modern technology is built from layers that continuously interact with one another. At the physical level, electronic devices transform electrical signals into digital information. Digital logic turns that information into computation, while processors, memory and communication interfaces provide the machinery needed to execute instructions and move data. As these components become part of embedded systems, they begin to interact with the physical world through sensors, controllers, actuators and real-time software.
+        </p>
+
+        <p>
+          But computation does not exist in isolation. Operating systems coordinate hardware and software, firmware gives specialized machines their behaviour, and communication protocols allow independent systems to exchange information. At the same time, machine learning is moving beyond the cloud into edge and on-device systems, where models must operate within real constraints such as memory, processing power, latency and energy consumption.
+        </p>
+
+        <p>
+          PrajnaEdge explores these connections as one continuous technology landscape &mdash; and takes them beyond explanation. From computing foundations and embedded systems to intelligent machines and edge AI, ideas can be understood, experimented with, and eventually turned into technology that can be experienced in the real world.
+        </p>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.2em; margin-bottom:1.25rem; opacity:0.8;">
       To continue exploring
     </div>
 
     <!-- Exploration Path Selection -->
-    <div class="explore-options-grid">
+    <div class="explore-options-grid" style="margin-top: 0;">
       <!-- UNDERSTAND -->
-      <a class="explore-option-card" onclick="openDirectExplorations()">
+      <a class="explore-option-card" href="/explorations/" onclick="openDirectExplorations(); return false;">
         <span class="option-verb">Understand</span>
         <span class="option-desc">Explore knowledge</span>
       </a>
 
       <!-- EXPERIMENT -->
-      <a class="explore-option-card" onclick="showPage('playground')">
+      <a class="explore-option-card" href="/playground/" onclick="showPage('playground'); return false;">
         <span class="option-verb">Experiment</span>
         <span class="option-desc">Explore technology</span>
       </a>
 
       <!-- PLAY WITH -->
-      <a class="explore-option-card" onclick="showPage('products')">
+      <a class="explore-option-card" href="/products/" onclick="showPage('products'); return false;">
         <span class="option-verb">Play With</span>
         <span class="option-desc">Experience products</span>
       </a>
@@ -285,9 +304,17 @@
 </div>
 
 <div class="page" id="page-products">
-  <div class="empty-page">
-    <div class="empty-title" style="font-family:'Syne', sans-serif; font-weight:700; font-size:clamp(1.5rem, 5vw, 2.2rem); color:#FFF; text-align:center;">
-      Technology, made tangible.
+  <div class="empty-page" style="padding-top: 140px;">
+    <div class="portal-badge" style="display:inline-block; font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:1.25rem;">
+      Products
+    </div>
+    <h1 class="empty-title" style="margin-bottom: 1.25rem;">Technology, made tangible.</h1>
+    <div class="empty-sub" style="max-width:520px; text-align:center; line-height:1.75; color:var(--muted); font-size:0.98rem; font-family:'DM Sans', sans-serif; margin-bottom:2rem;">
+      PrajnaEdge products and technology experiences are currently in development.
+    </div>
+    <div style="display:inline-flex; align-items:center; gap:0.6rem; padding:0.5rem 1rem; border-radius:999px; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148, 163, 184, 0.15); font-family:var(--mono); font-size:0.75rem; color:#94A3B8; letter-spacing:0.05em;">
+      <span style="width:6px; height:6px; border-radius:50%; background:#3B82F6; opacity:0.8;"></span>
+      In Development
     </div>
   </div>
 </div>
@@ -296,9 +323,9 @@
   <div class="playground-page-wrapper">
     <!-- Page Header (sits on existing site background) -->
     <div class="playground-header">
-      <h1 class="playground-title">Where does intelligence run?</h1>
+      <h1 class="playground-title">Playground</h1>
       <p class="playground-intro">
-        Explore AI that moves inference closer to the data — from the edge to the device itself.
+        Experiment with intelligence beyond the cloud.
       </p>
     </div>
 
@@ -316,7 +343,7 @@
 
         <!-- Dynamic Category Explanation -->
         <div class="playground-category-description" id="playground-category-description">
-          AI inference runs at or near the point where data is generated, rather than relying on a remote cloud.
+          AI runs closer to where data is generated — reducing dependence on distant cloud infrastructure and enabling faster, more responsive systems.
         </div>
       </div>
 
@@ -340,8 +367,18 @@
         </div>
 
         <div class="playground-tab-pane" id="playground-pane-on-device-ai">
-          <div class="playground-placeholder-card">
-            <div class="playground-status-tag">// Coming soon</div>
+          <div class="playground-item-card playground-card-disabled">
+            <div class="playground-card-top">
+              <span class="playground-card-badge disabled-badge">On-Device AI</span>
+              <span class="playground-card-tag coming-later-tag">Coming later</span>
+            </div>
+            <h3 class="playground-card-title disabled-title">On-Device Intelligence</h3>
+            <p class="playground-card-desc">
+              AI runs directly on the device where data is generated, bringing intelligence into the device itself while operating within its compute, memory, power and latency constraints.
+            </p>
+            <div class="playground-card-footer">
+              <span class="playground-card-action disabled-action">Experimental Surface · In Development</span>
+            </div>
           </div>
         </div>
       </div>
@@ -499,11 +536,23 @@
 </div>
 
 <div class="page" id="page-playground-on-device-ai">
-  <div class="empty-page">
-    <div class="empty-label">On-Device AI</div>
-    <div class="empty-title">On-Device AI Playground</div>
-    <div class="empty-sub">// Coming soon</div>
-    <button onclick="showPage('playground')" class="btn-ghost" style="margin-top: 2rem;">← Return to Playground</button>
+  <div class="playground-detail-page-wrapper">
+    <div class="playground-detail-container" style="max-width: 600px; text-align: center; padding-top: 3rem;">
+      <button class="blog-back-btn" onclick="showPage('playground')" style="margin-bottom: 2rem;">← Back to Playground</button>
+      
+      <div class="portal-badge" style="display:inline-block; font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:1.25rem;">
+        Playground · Future Area
+      </div>
+      <h1 class="empty-title" style="font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 1rem;">On-Device AI</h1>
+      <p class="empty-sub" style="max-width: 500px; margin: 0 auto 2rem; line-height: 1.75; color: var(--muted); font-size: 0.95rem;">
+        AI runs directly on the device where data is generated, bringing intelligence into the device itself while operating within its compute, memory, power and latency constraints.
+      </p>
+      
+      <div style="display:inline-flex; align-items:center; gap:0.6rem; padding:0.5rem 1rem; border-radius:999px; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148, 163, 184, 0.15); font-family:var(--mono); font-size:0.75rem; color:#94A3B8; letter-spacing:0.05em;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#64748B; opacity:0.8;"></span>
+        Coming later
+      </div>
+    </div>
   </div>
 </div>
 
@@ -819,7 +868,7 @@
           I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
         </p>
         <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
-          <a href="https://drive.google.com/file/d/1N0FEqXctJbjt8NKBZdKQWAo_sHxjvdD2/view"
+          <a href="https://drive.google.com/file/d/1BXr4KyzmVKIraQVAOSr-tPsPYPG-GBk4/view?usp=sharing"
              target="_blank" rel="noopener noreferrer" class="btn-primary"
              onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
              onmouseout="this.style.transform='translateY(0) scale(1)'">
@@ -883,10 +932,41 @@
     <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
       <div class="section-label">// career_journey</div>
       <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
-      <div class="node-selector" id="node-selector"></div>
+      <div class="node-selector" id="node-selector">
+        <button class="node-btn active" onclick="setNode(0)"><span class="step-num">01</span>Foundations</button>
+        <button class="node-btn" onclick="setNode(1)"><span class="step-num">02</span>Systems</button>
+        <button class="node-btn" onclick="setNode(2)"><span class="step-num">03</span>Intelligence</button>
+        <button class="node-btn" onclick="setNode(3)"><span class="step-num">04</span>Current Focus</button>
+      </div>
       <div class="journey-content">
-        <div class="node-meta fade-in" id="node-meta"></div>
-        <div class="node-cards fade-in" id="node-cards"></div>
+        <div class="node-meta fade-in" id="node-meta">
+          <span class="node-badge">BTech · ECE</span>
+          <h3 class="node-heading">Foundations</h3>
+          <p class="node-desc">Where it all began — understanding the physical layer of computation. Circuits, signals, and systems gave me a mental model of how information moves through hardware.</p>
+          <div class="node-connector">
+            <div class="connector-icon">⬡</div>
+            <div class="connector-text"><strong>Connects to Systems</strong><br>Understanding circuits directly enables writing firmware that talks to peripherals at the register level.</div>
+          </div>
+        </div>
+        <div class="node-cards fade-in" id="node-cards">
+          <div class="info-card">
+            <div class="info-card-label">What it is</div>
+            <div class="info-card-title">BTech in Electronics and Communication</div>
+            <div class="info-card-text">Undergraduate foundation covering analog &amp; digital circuits, signal processing, microprocessors, and communication systems.</div>
+            <div class="tags"><span class="tag">Circuits</span><span class="tag">Signal Processing</span><span class="tag">Microprocessors</span><span class="tag">VLSI</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">What I did</div>
+            <div class="info-card-title">Core Engineering Fundamentals</div>
+            <div class="info-card-text">Studied semiconductor physics, digital logic design, and embedded microcontrollers. Built prototypes using 8-bit MCUs.</div>
+            <div class="tags"><span class="tag">8051</span><span class="tag">Logic Design</span><span class="tag">PCB Basics</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">What I learned</div>
+            <div class="info-card-title">The Hardware Mental Model</div>
+            <div class="info-card-text">Every software abstraction sits on physical reality. Understanding silicon teaches you why timing, power, and noise are first-class engineering problems.</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1067,9 +1147,127 @@
   </div>
 </div>
 
-<div class="page" id="page-domain-select"></div>
+<div class="page" id="page-domain-select">
+  <div class="cosmic-star-field">
+    <div class="cosmic-star" style="left: 15%; top: 20%; width: 2px; height: 2px; opacity: 0.8;"></div>
+    <div class="cosmic-star" style="left: 75%; top: 15%; width: 3px; height: 3px; opacity: 0.9;"></div>
+    <div class="cosmic-star" style="left: 85%; top: 60%; width: 1.5px; height: 1.5px; opacity: 0.6;"></div>
+    <div class="cosmic-star" style="left: 25%; top: 75%; width: 2.5px; height: 2.5px; opacity: 0.7;"></div>
+    <div class="cosmic-star" style="left: 50%; top: 85%; width: 2px; height: 2px; opacity: 0.5;"></div>
+  </div>
+  
+  <a class="portal-return-link" href="/explorations/" onclick="portalReturnTarget = null; triggerBlackholeTransition(() => openDirectExplorations()); return false;">
+    ← Return to Systems Tree
+  </a>
 
-<div class="page" id="page-foundation-select"></div>
+  <div class="portal-selection-center">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="portal-center-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#1e1b4b" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#portal-center-glow)" />
+      <path d="M 50 10 A 40 40 0 0 1 80 30 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
+    </svg>
+    <div class="portal-center-title" style="font-size: 0.6rem;">Select Domain</div>
+    <div class="portal-center-subtitle">Explore application domains branching from the Systems Tree</div>
+  </div>
+
+  <div class="portal-branch-item dormant" style="--x: -220px; --y: -160px;" tabindex="0" role="button" aria-label="Automotive (unawakened domain)" onclick="showBranchNotAwakenedMessage('Automotive', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Automotive</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 0px; --y: -240px;" tabindex="0" role="button" aria-label="Aerospace & Defence (unawakened domain)" onclick="showBranchNotAwakenedMessage('Aerospace & Defence', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Aerospace & Defence</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 230px; --y: -170px;" tabindex="0" role="button" aria-label="Consumer (unawakened domain)" onclick="showBranchNotAwakenedMessage('Consumer', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Consumer</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -280px; --y: -30px;" tabindex="0" role="button" aria-label="Embedded AI (unawakened domain)" onclick="showBranchNotAwakenedMessage('Embedded AI', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Embedded AI</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 290px; --y: -20px;" tabindex="0" role="button" aria-label="Industrial (unawakened domain)" onclick="showBranchNotAwakenedMessage('Industrial', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Industrial</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -240px; --y: 120px;" tabindex="0" role="button" aria-label="Medical (unawakened domain)" onclick="showBranchNotAwakenedMessage('Medical', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Medical</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -80px; --y: 220px;" tabindex="0" role="button" aria-label="Multimedia (unawakened domain)" onclick="showBranchNotAwakenedMessage('Multimedia', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Multimedia</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 100px; --y: 240px;" tabindex="0" role="button" aria-label="Network & Connectivity (unawakened domain)" onclick="showBranchNotAwakenedMessage('Network & Connectivity', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Network & Connectivity</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 250px; --y: 130px;" tabindex="0" role="button" aria-label="Robotics (unawakened domain)" onclick="showBranchNotAwakenedMessage('Robotics', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Robotics</span>
+  </div>
+
+  <div class="portal-action-bridge">
+    <a href="/explorations/" onclick="openDirectExplorations(); return false;" class="portal-action-link">
+      Explore Active Systems Tree →
+    </a>
+  </div>
+</div>
+
+<div class="page" id="page-foundation-select">
+  <div class="cosmic-star-field">
+    <div class="cosmic-star" style="left: 20%; top: 25%; width: 2px; height: 2px; opacity: 0.8;"></div>
+    <div class="cosmic-star" style="left: 80%; top: 20%; width: 3px; height: 3px; opacity: 0.9;"></div>
+    <div class="cosmic-star" style="left: 70%; top: 70%; width: 1.5px; height: 1.5px; opacity: 0.6;"></div>
+    <div class="cosmic-star" style="left: 30%; top: 80%; width: 2.5px; height: 2.5px; opacity: 0.7;"></div>
+  </div>
+
+  <a class="portal-return-link" href="/explorations/" onclick="portalReturnTarget = null; triggerBlackholeTransition(() => openDirectExplorations()); return false;">
+    ← Return to Systems Tree
+  </a>
+
+  <div class="portal-selection-center">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="portal-center-glow-bl" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#1e1b4b" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#portal-center-glow-bl)" />
+      <path d="M 50 10 A 40 40 0 0 1 80 30 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
+    </svg>
+    <div class="portal-center-title" style="font-size: 0.6rem;">Select Depth</div>
+    <div class="portal-center-subtitle">Examine computation through architectural depth layers</div>
+  </div>
+
+  <div class="portal-branch-item dormant" style="--x: -210px; --y: -130px;" tabindex="0" role="button" aria-label="Architecture (unawakened foundation)" onclick="showBranchNotAwakenedMessage('Architecture', this, 'page-foundation-select')">
+    <span class="branch-dot"></span><span class="branch-text">Architecture</span>
+  </div>
+  <div class="portal-branch-item active" style="--x: 220px; --y: -120px;" tabindex="0" role="button" aria-label="Controller (foundation)" onclick="triggerBlackholeTransition(() => filterNodeRoute('Controller'))">
+    <span class="branch-dot"></span><span class="branch-text">Controller</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -250px; --y: 80px;" tabindex="0" role="button" aria-label="Digital (unawakened foundation)" onclick="showBranchNotAwakenedMessage('Digital', this, 'page-foundation-select')">
+    <span class="branch-dot"></span><span class="branch-text">Digital</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 240px; --y: 90px;" tabindex="0" role="button" aria-label="Programming (unawakened foundation)" onclick="showBranchNotAwakenedMessage('Programming', this, 'page-foundation-select')">
+    <span class="branch-dot"></span><span class="branch-text">Programming</span>
+  </div>
+  <div class="portal-branch-item active" style="--x: 0px; --y: 210px;" tabindex="0" role="button" aria-label="Processor (foundation)" onclick="triggerBlackholeTransition(() => filterNodeRoute('Processor'))">
+    <span class="branch-dot"></span><span class="branch-text">Processor</span>
+  </div>
+
+  <div class="portal-action-bridge">
+    <a href="/explorations/?category=Processor" onclick="filterNodeRoute('Processor'); return false;" class="portal-action-link">
+      Explore Processors →
+    </a>
+    <a href="/explorations/?category=Controller" onclick="filterNodeRoute('Controller'); return false;" class="portal-action-link">
+      Explore Controllers →
+    </a>
+  </div>
+</div>
 
 <div class="page" id="page-support">
   <div style="padding-top: 80px; min-height: 80vh;">
@@ -1147,58 +1345,150 @@
 </div>
 
 <div class="page" id="page-legal">
-  <div style="padding-top: 80px; min-height: 80vh;">
-    <div style="max-width: 760px; margin: 0 auto; padding: 3rem 2.5rem;">
-      <h2 style="font-family:'Syne', sans-serif; font-size:clamp(1.5rem, 4vw, 2.2rem); font-weight:800; color:#fff; margin-bottom:1.5rem; letter-spacing:-0.02em;">Legal Information</h2>
-      <p style="color:var(--muted); font-family:var(--mono); font-size:0.8rem; margin-bottom:2.5rem; letter-spacing:0.05em; text-transform:uppercase;">Product Terms & Licensing</p>
-      
-      <div style="display:flex; flex-direction:column; gap:2.5rem; color:#CBD5E1; font-size:0.95rem; line-height:1.75;">
-        <div>
-          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">1. Terms of Use</h3>
-          <p>
-            PrajnaEdge is an interactive learning platform designed for systems engineers, developers, and technology enthusiasts. The educational materials, simulation blocks, and visual code tracers are provided for instruction and concept validation. We make no warranty regarding their completeness or applicability to real-world industrial systems.
-          </p>
-        </div>
+  <div class="legal-page-wrapper">
+    <div class="legal-content-container">
+      <header class="legal-page-header">
+        <h1 class="legal-main-title">Legal &amp; Privacy</h1>
+        <p class="legal-meta-date">Last updated: September 2026</p>
+      </header>
 
-        <div>
-          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">2. Intellectual Property</h3>
-          <p>
-            The software, interactive widgets, diagrams, illustrations, custom SVG architectures, and textual documentation on this site are copyright &copy; 2026 PrajnaEdge. All rights reserved. Reproduction, modifications, or scraping of this content without prior written permission is strictly prohibited.
-          </p>
-        </div>
+      <!-- Section Navigation Strip -->
+      <nav class="legal-nav-strip" aria-label="Legal sections">
+        <a href="#terms" class="legal-nav-pill">1. Terms of Use</a>
+        <a href="#privacy" class="legal-nav-pill">2. Privacy Policy</a>
+        <a href="#adsense-cookies" class="legal-nav-pill">3. Advertising &amp; Cookies</a>
+        <a href="#analytics" class="legal-nav-pill">4. Analytics</a>
+        <a href="#contact-rights" class="legal-nav-pill">5. User Rights &amp; Contact</a>
+      </nav>
 
-        <div>
-          <h3 style="font-family:'Syne', sans-serif; font-size:1.15rem; color:#fff; margin-bottom:0.75rem; border-left:3px solid var(--blue); padding-left:0.75rem;">3. Privacy Policy</h3>
-          <p>
-            PrajnaEdge is committed to learning privacy. We do not sell user data. Analytical event tracking is used solely to study click telemetry and help improve visual guides.
-          </p>
+      <!-- SECTION 1: TERMS OF USE -->
+      <section class="legal-section" id="terms">
+        <h2 class="legal-section-title">1. Terms of Use</h2>
+        <p>
+          Welcome to PrajnaEdge (<a href="/" style="color:var(--blue); text-decoration:underline;">prajnaedge.dev</a>), an independent engineering and technology platform created and maintained by Devaharsha Meesarapu. By using this website, you agree to these terms.
+        </p>
+        <p>
+          <strong>Educational &amp; Research Focus:</strong> PrajnaEdge publishes interactive technical explorations, architectural models, and simulation walk-throughs covering embedded systems, computer architecture, operating systems, and edge artificial intelligence. All materials, interactive tools, and code demonstrations are provided solely for educational and conceptual understanding.
+        </p>
+        <p>
+          <strong>Hardware &amp; Firmware Disclaimer:</strong> Embedded programming interacts directly with hardware registers, physical voltages, and precise timing. While all writeups and code demonstrations are prepared with care, they are provided "as is" without warranty of any kind. You are responsible for reviewing component datasheets, circuit schematics, and electrical ratings before deploying code to physical microcontrollers or custom hardware.
+        </p>
+        <p>
+          <strong>Intellectual Property:</strong> All original articles, custom SVG architectures, interactive simulators, curriculum sequences, and source code are the intellectual property of Devaharsha Meesarapu (&copy; 2026 PrajnaEdge. All rights reserved). Non-commercial educational study and citation are welcome with proper attribution. Direct republication, unauthorized mirroring, or mass scraping of content is not permitted.
+        </p>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 2: PRIVACY POLICY -->
+      <section class="legal-section" id="privacy">
+        <h2 class="legal-section-title">2. Privacy Policy</h2>
+        <p>
+          PrajnaEdge is committed to user privacy and minimal data collection. We do not sell, rent, or monetize your personal information.
+        </p>
+        <ul>
+          <li>
+            <strong>Voluntary Correspondence:</strong> When you submit a message through the Contact or Feedback forms, or write directly to <a href="mailto:contact@prajnaedge.dev" style="color:var(--blue); text-decoration:underline;">contact@prajnaedge.dev</a>, we receive your name, email address, and message. This information is used strictly to reply to your inquiry.
+          </li>
+          <li>
+            <strong>Server Diagnostics:</strong> Standard web hosting infrastructure automatically logs basic technical access data (such as IP address, browser type, and timestamps) for server security, performance monitoring, and error diagnostics.
+          </li>
+          <li>
+            <strong>Local Storage:</strong> PrajnaEdge uses client-side browser <code>localStorage</code> purely to remember your interface preferences on your device (such as sound preferences for animations and tutorial display states). No personal identity data is stored in localStorage.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 3: ADVERTISING & COOKIES -->
+      <section class="legal-section" id="adsense-cookies">
+        <h2 class="legal-section-title">3. Advertising &amp; Cookies</h2>
+        <p>
+          To help support platform operation and hosting, PrajnaEdge displays advertisements served by third-party advertising partners, including Google AdSense.
+        </p>
+        <ul>
+          <li>
+            <strong>Advertising Cookies:</strong> Google and other third-party vendors use cookies to serve ads based on your prior visits to this website and other websites across the Internet.
+          </li>
+          <li>
+            <strong>DoubleClick / DART Cookie:</strong> Google's use of advertising cookies enables it and its partners to serve ads based on your visit to PrajnaEdge and other sites on the web.
+          </li>
+          <li>
+            <strong>Personalized Ad Controls:</strong> You may opt out of personalized advertising at any time by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">Google Ads Settings</a>. You can also opt out of third-party advertising cookies by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">www.aboutads.info/choices/</a> or the Network Advertising Initiative at <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">optout.networkadvertising.org</a>.
+          </li>
+          <li>
+            <strong>Third-Party Ad Networks:</strong> When advertisements are requested by your browser, third-party ad networks automatically receive your IP address and may use technologies such as cookies or web beacons to measure ad effectiveness. PrajnaEdge does not control these cookies set by third-party advertisers.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 4: ANALYTICS -->
+      <section class="legal-section" id="analytics">
+        <h2 class="legal-section-title">4. Analytics</h2>
+        <p>
+          We use Google Analytics (measurement tag: <code>G-6Y8ZVQB1V0</code>) to evaluate anonymous, aggregate usage trends across our technical writeups.
+        </p>
+        <ul>
+          <li>
+            <strong>Aggregate Telemetry:</strong> Google Analytics uses cookies to collect anonymous metrics such as page visit counts, device screen sizes, and navigation flows. This data helps us optimize responsive layouts and focus on high-interest topics.
+          </li>
+          <li>
+            <strong>Opting Out:</strong> You can prevent Google Analytics from collecting your usage data by installing the official <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">Google Analytics Opt-out Browser Add-on</a>.
+          </li>
+          <li>
+            <strong>Voluntary Support (Razorpay):</strong> If you choose to support PrajnaEdge through the Support page, transactions are handled through Razorpay's PCI-DSS compliant checkout interface. PrajnaEdge never handles, collects, or stores payment card numbers, UPI PINs, or banking credentials.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 5: USER RIGHTS & CONTACT -->
+      <section class="legal-section" id="contact-rights">
+        <h2 class="legal-section-title">5. User Rights &amp; Contact</h2>
+        <p>
+          Depending on your jurisdiction (including rights under GDPR, CCPA/CPRA, and applicable privacy laws), you have the right to request access to, correction of, or deletion of any personal communications you have submitted. We do not sell personal data.
+        </p>
+        <p>
+          For any questions regarding these terms, privacy practices, or data inquiries, contact the creator directly:
+        </p>
+        <div class="legal-card">
+          <div><strong>Platform:</strong> PrajnaEdge</div>
+          <div><strong>Creator &amp; Developer:</strong> Devaharsha Meesarapu</div>
+          <div><strong>Inquiries:</strong> <a href="mailto:contact@prajnaedge.dev">contact@prajnaedge.dev</a></div>
+          <div><strong>Website:</strong> <a href="https://prajnaedge.dev">https://prajnaedge.dev</a></div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </div>
 
 <footer class="site-footer">
   <div class="footer-container">
-    <div class="footer-left">
-      © 2026 PrajnaEdge&trade;
+    <div class="footer-brand-row">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      <span class="footer-tagline">Engineering concepts you don't just read — you experience.</span>
     </div>
-    <div class="footer-center">
-      <div class="footer-logo-wrap">
-        <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
-      </div>
-      <div class="footer-text-column">
-        <div class="footer-title">PrajnaEdge</div>
-        <div class="footer-tagline">Engineering concepts you don't just read — you experience</div>
-        <div class="footer-credits">Designed & Developed by <a href="../../creator/" target="_blank" class="footer-creator-link">Devaharsha Meesarapu</a> • © 2026</div>
-      </div>
+    <div class="footer-nav-row">
+      <a href="/about/" onclick="showPage('about'); return false;" class="footer-link">About Us</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/contact/" onclick="showPage('contact'); return false;" class="footer-link">Contact</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/support/" onclick="showPage('support'); return false;" class="footer-link">Support PrajnaEdge</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/#privacy" target="_blank" rel="noopener" class="footer-link">Privacy Policy</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/#terms" target="_blank" rel="noopener" class="footer-link">Terms of Use</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/sitemap.xml" target="_blank" rel="noopener" class="footer-link">Sitemap</a>
     </div>
-    <div class="footer-right">
-      <a href="/support/" onclick="event.preventDefault(); showPage('support')" class="footer-link">Support PrajnaEdge</a>
+    <div class="footer-meta-row">
+      <span>&copy; 2026 PrajnaEdge&trade;</span>
       <span class="footer-sep">&middot;</span>
-      <a href="/sitemap.xml" target="_blank" class="footer-link">Sitemap</a>
-      <span class="footer-sep">&middot;</span>
-      <a href="/legal/" target="_blank" class="footer-link">Legal</a>
+      <span>Designed &amp; Developed by <a href="/creator/" target="_blank" rel="noopener" class="footer-creator-link">Devaharsha Meesarapu</a></span>
     </div>
   </div>
 </footer>

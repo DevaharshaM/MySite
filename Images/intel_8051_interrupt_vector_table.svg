@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 390" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">THE 8051 FIXED VECTOR TABLE</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Hardware branches directly to fixed program addresses in low ROM space</text>
+
+  <!-- ROM MEMORY BLOCK -->
+  <g transform="translate(60, 85)">
+    <rect width="820" height="205" rx="8" fill="url(#cardGrad)" stroke="#38BDF8" stroke-width="1.5" />
+    <rect width="820" height="26" rx="8" fill="#0C4A6E" />
+    <text x="410" y="18" text-anchor="middle" fill="#7DD3FC" font-size="11" font-weight="700">LOWER PROGRAM ROM ADDRESS SPACE (0000H &#8212; 002FH)</text>
+
+    <!-- 6 Vector Slots -->
+    <!-- Slot 0: Reset -->
+    <g transform="translate(20, 36)">
+      <rect width="120" height="75" rx="4" fill="#0F172A" stroke="#64748B" />
+      <text x="60" y="16" text-anchor="middle" fill="#94A3B8" font-size="9" font-weight="600">RESET VECTOR</text>
+      <text x="60" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">0000H</text>
+      <rect x="10" y="46" width="100" height="20" rx="3" fill="#1E293B" />
+      <text x="60" y="60" text-anchor="middle" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="9">LJMP MAIN</text>
+    </g>
+
+    <!-- Slot 1: INT0 -->
+    <g transform="translate(150, 36)">
+      <rect width="120" height="75" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+      <text x="60" y="16" text-anchor="middle" fill="#6EE7B7" font-size="9" font-weight="700">EXT INT 0 (INT0)</text>
+      <text x="60" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">0003H</text>
+      <rect x="10" y="46" width="100" height="20" rx="3" fill="#0F172A" />
+      <text x="60" y="60" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="9">LJMP EX0_ISR</text>
+    </g>
+
+    <!-- Slot 2: Timer 0 -->
+    <g transform="translate(280, 36)">
+      <rect width="120" height="75" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="60" y="16" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="700">TIMER 0 (TF0)</text>
+      <text x="60" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">000BH</text>
+      <rect x="10" y="46" width="100" height="20" rx="3" fill="#0F172A" />
+      <text x="60" y="60" text-anchor="middle" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="9">LJMP T0_ISR</text>
+    </g>
+
+    <!-- Slot 3: INT1 -->
+    <g transform="translate(410, 36)">
+      <rect width="120" height="75" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+      <text x="60" y="16" text-anchor="middle" fill="#6EE7B7" font-size="9" font-weight="700">EXT INT 1 (INT1)</text>
+      <text x="60" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">0013H</text>
+      <rect x="10" y="46" width="100" height="20" rx="3" fill="#0F172A" />
+      <text x="60" y="60" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="9">LJMP EX1_ISR</text>
+    </g>
+
+    <!-- Slot 4: Timer 1 -->
+    <g transform="translate(540, 36)">
+      <rect width="120" height="75" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="60" y="16" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="700">TIMER 1 (TF1)</text>
+      <text x="60" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">001BH</text>
+      <rect x="10" y="46" width="100" height="20" rx="3" fill="#0F172A" />
+      <text x="60" y="60" text-anchor="middle" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="9">LJMP T1_ISR</text>
+    </g>
+
+    <!-- Slot 5: Serial -->
+    <g transform="translate(670, 36)">
+      <rect width="120" height="75" rx="4" fill="#581C87" stroke="#A855F7" stroke-width="1.5" />
+      <text x="60" y="16" text-anchor="middle" fill="#E9D5FF" font-size="9" font-weight="700">SERIAL (RI/TI)</text>
+      <text x="60" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">0023H</text>
+      <rect x="10" y="46" width="100" height="20" rx="3" fill="#0F172A" />
+      <text x="60" y="60" text-anchor="middle" fill="#C084FC" font-family="'IBM Plex Mono', monospace" font-size="9">LJMP UART_ISR</text>
+    </g>
+
+    <!-- Spacing Callout -->
+    <g transform="translate(20, 125)">
+      <rect width="770" height="65" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="385" y="24" text-anchor="middle" fill="#FBBF24" font-size="11" font-weight="700">THE 8-BYTE SPACING WINDOW &#8212; WHY EVERY VECTOR HAS AN LJMP</text>
+      <text x="385" y="44" text-anchor="middle" fill="#CBD5E1" font-size="10">Notice: 0003H &#8594; 000BH is exactly 8 bytes. 000BH &#8594; 0013H is exactly 8 bytes. 8 bytes is far too small for a complete handler.</text>
+      <text x="385" y="58" text-anchor="middle" fill="#94A3B8" font-size="9">Engineers place a 3-byte jump instruction (LJMP target, opcode 02H) at the vector to branch to the actual ISR body located safely in high memory.</text>
+    </g>
+  </g>
+
+  <!-- Explanatory note below -->
+  <text x="470" y="325" text-anchor="middle" fill="#64748B" font-size="11">Direct hardware PC forcing: the 8051 pushes PC to stack, then sets the Program Counter to the fixed vector address.</text>
+</svg>

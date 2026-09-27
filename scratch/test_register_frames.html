@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { background: #0B1120; color: #E2E8F0; font-family: -apple-system, sans-serif; padding: 2rem; }
+  .reg-container { margin: 1.5rem 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .reg-card { min-width: 580px; background: #0F172A; border: 1.5px solid #334155; border-radius: 8px; padding: 1.25rem; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+  .reg-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid #1E293B; padding-bottom: 0.5rem; }
+  .reg-title { font-family: 'Courier New', monospace; font-size: 0.85rem; font-weight: 700; color: #38BDF8; letter-spacing: 0.05em; }
+  .reg-badge { font-size: 0.7rem; color: #94A3B8; background: #1E293B; padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'Courier New', monospace; }
+  .bit-grid { display: grid; grid-template-columns: repeat(8, 1fr); border: 2px solid #475569; border-radius: 6px; overflow: hidden; background: #020617; }
+  .bit-cell { border-right: 1px solid #334155; padding: 0.6rem 0.2rem; text-align: center; }
+  .bit-cell:last-child { border-right: none; }
+  .bit-name { font-family: 'Courier New', monospace; font-size: 0.85rem; font-weight: 700; color: #F8FAFC; margin-bottom: 0.2rem; }
+  .bit-sub { font-size: 0.65rem; color: #64748B; font-family: 'Courier New', monospace; }
+  .bit-nums { display: grid; grid-template-columns: repeat(8, 1fr); text-align: center; margin-top: 0.4rem; font-family: 'Courier New', monospace; font-size: 0.75rem; color: #64748B; }
+  .group-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 0.75rem; font-size: 0.7rem; text-align: center; font-weight: 600; }
+  .group-t1 { background: rgba(99, 102, 241, 0.15); border: 1px solid #4F46E5; color: #A5B4FC; padding: 0.3rem; border-radius: 4px; }
+  .group-t0 { background: rgba(16, 185, 129, 0.15); border: 1px solid #059669; color: #6EE7B7; padding: 0.3rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- TMOD Register Frame -->
+<div class="reg-container">
+  <div class="reg-card">
+    <div class="reg-header">
+      <span class="reg-title">TMOD (89H) &mdash; TIMER / COUNTER MODE REGISTER</span>
+      <span class="reg-badge">BYTE-ONLY &bull; RESET: 00H</span>
+    </div>
+    
+    <div class="bit-grid">
+      <!-- Bit 7 -->
+      <div class="bit-cell" style="background:#0F172A;">
+        <div class="bit-name" style="color:#A5B4FC;">GATE</div>
+        <div class="bit-sub">T1</div>
+      </div>
+      <!-- Bit 6 -->
+      <div class="bit-cell" style="background:#0F172A;">
+        <div class="bit-name" style="color:#A5B4FC;">C/T</div>
+        <div class="bit-sub">T1</div>
+      </div>
+      <!-- Bit 5 -->
+      <div class="bit-cell" style="background:#0F172A;">
+        <div class="bit-name" style="color:#A5B4FC;">M1</div>
+        <div class="bit-sub">T1</div>
+      </div>
+      <!-- Bit 4 -->
+      <div class="bit-cell" style="background:#0F172A;">
+        <div class="bit-name" style="color:#A5B4FC;">M0</div>
+        <div class="bit-sub">T1</div>
+      </div>
+      <!-- Bit 3 -->
+      <div class="bit-cell" style="background:#064E3B; background-opacity:0.3;">
+        <div class="bit-name" style="color:#34D399;">GATE</div>
+        <div class="bit-sub">T0</div>
+      </div>
+      <!-- Bit 2 -->
+      <div class="bit-cell" style="background:#064E3B; background-opacity:0.3;">
+        <div class="bit-name" style="color:#34D399;">C/T</div>
+        <div class="bit-sub">T0</div>
+      </div>
+      <!-- Bit 1 -->
+      <div class="bit-cell" style="background:#064E3B; background-opacity:0.3;">
+        <div class="bit-name" style="color:#34D399;">M1</div>
+        <div class="bit-sub">T0</div>
+      </div>
+      <!-- Bit 0 -->
+      <div class="bit-cell" style="background:#064E3B; background-opacity:0.3;">
+        <div class="bit-name" style="color:#34D399;">M0</div>
+        <div class="bit-sub">T0</div>
+      </div>
+    </div>
+
+    <!-- Bit numbers -->
+    <div class="bit-nums">
+      <span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span>
+    </div>
+
+    <!-- Functional split banners -->
+    <div class="group-row">
+      <div class="group-t1">&larr; TIMER 1 CONFIGURATION (Bits 7..4) &rarr;</div>
+      <div class="group-t0">&larr; TIMER 0 CONFIGURATION (Bits 3..0) &rarr;</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

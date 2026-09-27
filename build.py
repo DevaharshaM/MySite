@@ -1,6 +1,19 @@
 import os
 import re
 import json
+import datetime
+import html
+
+def parse_date_epoch(date_str):
+    if not date_str:
+        return 0
+    cleaned = re.sub(r'(\d+)(st|nd|rd|th)', r'\1', date_str).strip()
+    for fmt in ('%d %B %Y', '%d %b %Y'):
+        try:
+            return datetime.datetime.strptime(cleaned, fmt).timestamp()
+        except Exception:
+            pass
+    return 0
 
 root_dir = os.path.dirname(os.path.abspath(__file__))
 blogs_content_dir = os.path.join(root_dir, "content", "explorations")
@@ -95,7 +108,16 @@ systemsTreeNodes = {
   ],
   "Controller": [
     "microcontroller-the-computer-inside-the-machine",
-    "two-paths-one-controller"
+    "two-paths-one-controller",
+    "inside-the-controller",
+    "the-8051-the-controller-that-started-a-generation",
+    "inside-the-8051",
+    "the-8051-memory-map",
+    "the-8051-where-software-touches-hardware",
+    "the-8051-when-time-becomes-a-signal",
+    "the-8051-four-shapes-of-time",
+    "the-8051-when-hardware-decides-to-interrupt",
+    "the-8051-when-the-controller-learns-to-speak"
   ]
 }
 
@@ -123,12 +145,46 @@ def parse_text_formatting(text):
         target = match.group(2)
         if target == 'operating-systems':
             return f'<a href="../../operating-systems/" onclick="showPage(\'operating-systems\'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
+        elif target.startswith('/explorations/'):
+            clean_id = target.strip('/').split('/')[-1]
+            return f'<a href="../../explorations/{clean_id}/" onclick="openItem(\'{clean_id}\', \'blogs\'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
         elif target.startswith('http') or target.startswith('mailto:') or target.startswith('/') or target.endswith('.html'):
             return f'<a href="{target}" target="_blank" rel="noopener noreferrer" style="color:var(--blue); text-decoration:underline;">{label}</a>'
         else:
             return f'<a href="../../explorations/{target}/" onclick="openItem(\'{target}\', \'blogs\'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">{label}</a>'
     
     parsed = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', link_repl, parsed)
+
+    # Block math: $$...$$ -> centered block equation
+    def block_math_repl(m):
+        html = m.group(1)
+        html = re.sub(r'\\text\{(.*?)\}', r'\1', html)
+        html = re.sub(r'\\+rightarrow', r' &rarr; ', html)
+        html = re.sub(r'\\+sum_\{?(.*?)\}?\^\{?(.*?)\}?', r'<span style="font-size:1.2rem;position:relative;top:1px">&Sigma;</span><sub>\1</sub><sup>\2</sup>', html)
+        html = re.sub(r'\\+', '', html)
+        html = re.sub(r'([a-zA-Z0-9]+)_\{?([a-zA-Z0-9_=-]+)\}?', r'\1<sub>\2</sub>', html)
+        html = re.sub(r'([a-zA-Z0-9]+)\^\{?([a-zA-Z0-9_=-]+)\}?', r'\1<sup>\2</sup>', html)
+        return f'<div class="math-block" style="text-align:center; margin:1.5rem 0; padding:1.2rem; background:rgba(30, 41, 59, 0.4); border: 1px solid rgba(148, 163, 184, 0.1); border-radius:8px; font-family:var(--mono); color:#3B82F6; font-size:1rem; letter-spacing:0.02em; box-shadow:inset 0 1px 3px rgba(0,0,0,0.2);">{html}</div>'
+
+    parsed = re.sub(r'\$\$(.*?)\$\$', block_math_repl, parsed)
+
+    # Inline math: $...$ or \(...\)
+    def inline_math_repl(m):
+        html = m.group(1)
+        if 'V_{OUT}' in html or 'V_OUT' in html or 'frac' in html:
+            return '<span class="math-inline" style="font-family:var(--mono); font-size:0.9rem; color:#60A5FA; padding:0.1rem 0.2rem; background:rgba(30, 41, 59, 0.3); border-radius:4px;"><i>V</i><sub>OUT</sub> = <i>V</i><sub>REF</sub> &times; <sup>Digital Code</sup>&frasl;<sub>2<sup>N</sup> - 1</sub></span>'
+        html = re.sub(r'\\text\{(.*?)\}', r'\1', html)
+        html = re.sub(r'V_\{?REF\}?', r'<i>V</i><sub>REF</sub>', html)
+        html = re.sub(r'V_\{?OUT\}?', r'<i>V</i><sub>OUT</sub>', html)
+        html = re.sub(r'2\^\{?([a-zA-Z0-9_-]+)\}?', r'2<sup>\1</sup>', html)
+        html = re.sub(r'([a-zA-Z0-9]+)\^\{?([a-zA-Z0-9_=-]+)\}?', r'\1<sup>\2</sup>', html)
+        html = re.sub(r'([a-zA-Z0-9]+)_\{?([a-zA-Z0-9_=-]+)\}?', r'\1<sub>\2</sub>', html)
+        html = re.sub(r'\\times', '&times;', html)
+        html = re.sub(r'\\+', '', html)
+        return f'<span class="math-inline" style="font-family:var(--mono); font-size:0.9rem; color:#60A5FA; padding:0.1rem 0.2rem; background:rgba(30, 41, 59, 0.3); border-radius:4px;">{html}</span>'
+
+    parsed = re.sub(r'(?:\$|\\\(|\&#40;)(.*?)(?:\$|\\\)|\&#41;)', inline_math_repl, parsed)
+
     return parsed
 
 def strip_quotes(val):
@@ -650,7 +706,7 @@ def main():
         pre_rendered_html = pre_rendered_html.replace('<div class="page" id="page-blog-post">', '<div class="page active" id="page-blog-post">')
         pre_rendered_html = pre_rendered_html.replace('<div id="blog-post-content"></div>', f'<div id="blog-post-content">{post_html}</div>')
         pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge</title>', f'<title>{post["title"]} | PrajnaEdge</title>')
-        pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/explorations/{post_id}/"')
+        pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/explorations/{post_id}/" />')
         
         is_hidden = post.get("type") == "hidden" or post.get("category") == "Hidden Exploration"
         if is_hidden:
@@ -688,21 +744,22 @@ def main():
         
     # 6. Generate Pre-rendered static pages: about, contact, journey, explorations, demonstrations
     page_configs = [
-        {"id": "about", "title": "About | PrajnaEdge", "route": "about/"},
-        {"id": "contact", "title": "Connect | PrajnaEdge", "route": "contact/"},
-        {"id": "journey", "title": "Interactive Career Journey | PrajnaEdge", "route": "journey/"},
-        {"id": "creator", "title": "Devaharsha Meesarapu | PrajnaEdge", "route": "creator/"},
-        {"id": "blogs", "title": "Explorations | PrajnaEdge", "route": "explorations/"},
-        {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/"},
-        {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/"},
-        {"id": "operating-systems", "title": "Operating Systems | PrajnaEdge", "route": "operating-systems/"},
-        {"id": "domain-select", "title": "Select Domain | PrajnaEdge", "route": "domain-select/"},
-        {"id": "foundation-select", "title": "Select Depth | PrajnaEdge", "route": "foundation-select/"},
-        {"id": "support", "title": "Support PrajnaEdge | PrajnaEdge", "route": "support/"},
-        {"id": "products", "title": "Products | PrajnaEdge", "route": "products/"},
-        {"id": "playground", "title": "Playground | PrajnaEdge", "route": "playground/"},
-        {"id": "playground-edge-ai", "title": "Image Classification | Edge AI Playground | PrajnaEdge", "route": "playground-edge-ai/"},
-        {"id": "playground-on-device-ai", "title": "On-Device AI | Playground | PrajnaEdge", "route": "playground-on-device-ai/"}
+        {"id": "about", "title": "About | PrajnaEdge", "route": "about/", "in_sitemap": True, "noindex": False},
+        {"id": "contact", "title": "Connect | PrajnaEdge", "route": "contact/", "in_sitemap": True, "noindex": False},
+        {"id": "journey", "title": "Interactive Career Journey | PrajnaEdge", "route": "journey/", "in_sitemap": True, "noindex": False},
+        {"id": "creator", "title": "Devaharsha Meesarapu | PrajnaEdge", "route": "creator/", "in_sitemap": True, "noindex": False},
+        {"id": "blogs", "title": "Explorations | PrajnaEdge", "route": "explorations/", "in_sitemap": True, "noindex": False},
+        {"id": "demos", "title": "Demonstrations | PrajnaEdge", "route": "demonstrations/", "in_sitemap": True, "noindex": False},
+        {"id": "bare-metal", "title": "Bare Metal | PrajnaEdge", "route": "bare-metal/", "in_sitemap": False, "noindex": False},
+        {"id": "operating-systems", "title": "Operating Systems | PrajnaEdge", "route": "operating-systems/", "in_sitemap": False, "noindex": False},
+        {"id": "domain-select", "title": "Select Domain | PrajnaEdge", "route": "domain-select/", "in_sitemap": False, "noindex": True},
+        {"id": "foundation-select", "title": "Select Depth | PrajnaEdge", "route": "foundation-select/", "in_sitemap": False, "noindex": True},
+        {"id": "support", "title": "Support PrajnaEdge | PrajnaEdge", "route": "support/", "in_sitemap": True, "noindex": False},
+        {"id": "legal", "title": "Legal & Privacy | PrajnaEdge", "route": "legal/", "in_sitemap": True, "noindex": False},
+        {"id": "products", "title": "Products | PrajnaEdge", "route": "products/", "in_sitemap": False, "noindex": True},
+        {"id": "playground", "title": "Playground | PrajnaEdge", "route": "playground/", "in_sitemap": True, "noindex": False},
+        {"id": "playground-edge-ai", "title": "Image Classification | Edge AI Playground | PrajnaEdge", "route": "playground-edge-ai/", "in_sitemap": True, "noindex": False},
+        {"id": "playground-on-device-ai", "title": "On-Device AI | Playground | PrajnaEdge", "route": "playground-on-device-ai/", "in_sitemap": False, "noindex": True}
     ]
     
     for cfg in page_configs:
@@ -714,6 +771,84 @@ def main():
         pre_rendered_html = pre_rendered_html.replace(f'<div class="page" id="page-{cfg["id"]}">', f'<div class="page active" id="page-{cfg["id"]}">')
         pre_rendered_html = pre_rendered_html.replace('<title>PrajnaEdge</title>', f'<title>{cfg["title"]}</title>')
         pre_rendered_html = pre_rendered_html.replace('<link rel="canonical" href="https://prajnaedge.dev/" />', f'<link rel="canonical" href="https://prajnaedge.dev/{cfg["route"]}" />')
+        
+        if cfg.get("noindex"):
+            pre_rendered_html = pre_rendered_html.replace('<meta name="robots" content="index, follow" />', '<meta name="robots" content="noindex, follow" />')
+            
+        if cfg["id"] == "blogs":
+            sorted_blogs = [b for b in blogs if b.get('type') != 'hidden' and b.get('category') != 'Hidden Exploration']
+            
+            # Chronological sequence index fallback matching script.js getBlogChronoIndex
+            full_node_order = ["Matter", "Computation", "Interaction", "Coordination", "Integration", "Bare Metal", "Operating Systems", "Processor", "Controller"]
+            chrono_index_map = {}
+            c_idx = 0
+            for node_name in full_node_order:
+                if node_name in systemsTreeNodes:
+                    for exp_id in systemsTreeNodes[node_name]:
+                        chrono_index_map[exp_id] = c_idx
+                        c_idx += 1
+                        
+            def blog_sort_key(b):
+                return (parse_date_epoch(b.get('date', '')), chrono_index_map.get(b['id'], 999))
+                
+            sorted_blogs.sort(key=blog_sort_key, reverse=True)
+            first_page_blogs = sorted_blogs[:6]
+            cards_html = []
+            for item in first_page_blogs:
+                cat = item.get('category', '')
+                tags = list(item.get('tags', []))
+                if cat and cat not in tags and cat != 'Hidden Exploration':
+                    tags.insert(0, cat)
+                    
+                tags_html = "".join([f'<span class="tag">{html.escape(t)}</span>' for t in tags])
+                cards_html.append(f'''
+        <a href="/explorations/{item["id"]}/" class="blog-card" onclick="openItem('{item["id"]}', 'blogs'); return false;" style="display:block; text-decoration:none; color:inherit;">
+          <article>
+            <h3 class="blog-title" style="margin-bottom: 0.5rem;">{html.escape(item.get("title", ""))}</h3>
+            <p class="blog-subtitle" style="margin-bottom: 0.85rem;">{html.escape(item.get("subtitle", ""))}</p>
+            <div class="blog-meta" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+              <span>{html.escape(item.get("date", ""))}</span>
+              <div class="tags">{tags_html}</div>
+            </div>
+          </article>
+        </a>''')
+
+            # Pre-rendered pagination matching script.js renderPagination(totalPages, 'blogs')
+            total_pages = (len(sorted_blogs) + 5) // 6
+            pag_parts = []
+            pag_parts.append('<button style="background:var(--blue);border:1px solid var(--blue);color:#fff;border-radius:6px;font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.75rem;cursor:pointer;">1</button>')
+            for p_num in range(2, total_pages + 1):
+                pag_parts.append(f'<button onclick="renderBlogs({p_num})" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.75rem;cursor:pointer;">{p_num}</button>')
+            if total_pages > 1:
+                pag_parts.append('<button onclick="renderBlogs(2)" style="background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:0.75rem;padding:0.4rem 0.85rem;cursor:pointer;">Next →</button>')
+            
+            pagination_html = f'''
+        <div id="blogPagination" style="margin-top:2.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap">
+          {"".join(pag_parts)}
+        </div>'''
+
+            blogs_inner_html = "\n".join(cards_html) + "\n" + pagination_html
+            pre_rendered_html = pre_rendered_html.replace(
+                '<div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem;width:100%;"></div>',
+                f'<div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem;width:100%;">{blogs_inner_html}</div>'
+            )
+            
+        if cfg["id"] == "demos":
+            demo_cards_html = []
+            for item in demos:
+                demo_cards_html.append(f'''
+        <a href="/demonstrations/{item["id"]}/" class="blog-card" onclick="openItem('{item["id"]}', 'demos'); return false;" style="display:block; text-decoration:none; color:inherit;">
+          <div class="blog-series" style="color:var(--blue);">{html.escape(item.get("series", ""))} &middot; Layer: {html.escape(item.get("category", ""))}</div>
+          <div class="blog-title">{html.escape(item.get("title", ""))}</div>
+          <div class="blog-subtitle">{html.escape(item.get("subtitle", ""))}</div>
+          <div class="blog-meta"><span>{html.escape(item.get("date", ""))}</span></div>
+        </a>''')
+            demos_inner_html = "\n".join(demo_cards_html)
+            pre_rendered_html = pre_rendered_html.replace(
+                '<div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>',
+                f'<div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem">{demos_inner_html}</div>'
+            )
+            
         pre_rendered_html = make_paths_relative(pre_rendered_html, depth=1)
         
         out_filepath = os.path.join(cfg_dir, "index.html")
@@ -770,11 +905,11 @@ def main():
     max_date = max(post_dates) if post_dates else "2026-07-28"
 
     sitemap_entries = [
-        f'  <url>\n    <loc>https://prajnaedge.dev/</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>',
-        f'  <url>\n    <loc>https://prajnaedge.dev/legal/</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>'
+        f'  <url>\n    <loc>https://prajnaedge.dev/</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>'
     ]
     for cfg in page_configs:
-        sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/{cfg["route"]}</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>')
+        if cfg.get("in_sitemap"):
+            sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/{cfg["route"]}</loc>\n    <lastmod>{max_date}</lastmod>\n  </url>')
     for post in blogs:
         iso = formatted_post_dates.get(post["id"], "2026-07-28")
         sitemap_entries.append(f'  <url>\n    <loc>https://prajnaedge.dev/explorations/{post["id"]}/</loc>\n    <lastmod>{iso}</lastmod>\n  </url>')

@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <!-- Background Grid -->
+    <pattern id="grid-8bit" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+
+    <!-- Bit Cell Gradient -->
+    <linearGradient id="bit-glow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" fill="url(#grid-8bit)" />
+  <rect x="12" y="12" width="736" height="376" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="380" y="36" fill="#E2E8F0" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.08em">WHAT "8-BIT" ACTUALLY MEANS IN A MICROCONTROLLER</text>
+  <text x="380" y="52" fill="#94A3B8" font-size="8.5" text-anchor="middle">A fundamental measure of the CPU's internal data-processing width</text>
+
+  <!-- Left Card: 8-Bit Data Word & Arithmetic (x=30, width=380) -->
+  <g transform="translate(30, 68)">
+    <rect width="380" height="298" rx="8" fill="#131B2A" stroke="rgba(59, 130, 246, 0.28)" stroke-width="1.2" />
+    <rect width="380" height="26" rx="8" fill="rgba(59, 130, 246, 0.14)" />
+    <circle cx="14" cy="13" r="3.5" fill="#3B82F6" />
+    <text x="190" y="17" fill="#60A5FA" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">DATA WIDTH · 1 BYTE (8 BITS)</text>
+
+    <!-- 8-Bit Cell Visual -->
+    <g transform="translate(18, 38)">
+      <text x="0" y="0" fill="#94A3B8" font-size="7.5" font-weight="600">BIT POSITIONS (D7 → D0)</text>
+
+      <!-- 8 Bit Boxes -->
+      <!-- D7 -->
+      <g transform="translate(0, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D7</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">128</text>
+      </g>
+      <!-- D6 -->
+      <g transform="translate(43, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D6</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">64</text>
+      </g>
+      <!-- D5 -->
+      <g transform="translate(86, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D5</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">32</text>
+      </g>
+      <!-- D4 -->
+      <g transform="translate(129, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D4</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">16</text>
+      </g>
+      <!-- D3 -->
+      <g transform="translate(172, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D3</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">8</text>
+      </g>
+      <!-- D2 -->
+      <g transform="translate(215, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D2</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">4</text>
+      </g>
+      <!-- D1 -->
+      <g transform="translate(258, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D1</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">2</text>
+      </g>
+      <!-- D0 -->
+      <g transform="translate(301, 10)">
+        <rect width="39" height="32" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2" />
+        <text x="19.5" y="15" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">D0</text>
+        <text x="19.5" y="26" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="middle">1</text>
+      </g>
+    </g>
+
+    <!-- Range Indicator -->
+    <g transform="translate(18, 98)" font-family="'IBM Plex Mono', monospace">
+      <rect width="344" height="28" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.16)" stroke-width="1" />
+      <text x="172" y="18" fill="#FBBF24" font-size="8" font-weight="600" text-anchor="middle">
+        00000000₂ → 11111111₂ (256 values · 0 to 255)
+      </text>
+    </g>
+
+    <!-- 8-Bit Addition Example -->
+    <g transform="translate(18, 142)">
+      <text x="0" y="0" fill="#94A3B8" font-size="7.5" font-weight="600">PARALLEL 8-BIT ALU ADDITION</text>
+      <rect x="0" y="10" width="344" height="106" rx="6" fill="#0F172A" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1" />
+
+      <g font-family="'IBM Plex Mono', monospace" font-size="9" text-anchor="start">
+        <text x="70" y="38" fill="#CBD5E1">Operand A:  <tspan fill="#38BDF8" font-weight="600">0011 0110</tspan>  <tspan fill="#64748B" font-size="8">(54)</tspan></text>
+        <text x="70" y="58" fill="#CBD5E1">+ Operand B: <tspan fill="#38BDF8" font-weight="600">0000 1101</tspan>  <tspan fill="#64748B" font-size="8">(13)</tspan></text>
+        <line x1="70" y1="68" x2="274" y2="68" stroke="#60A5FA" stroke-width="1.2" />
+        <text x="70" y="86" fill="#CBD5E1">= Result:    <tspan fill="#10B981" font-weight="700">0100 0011</tspan>  <tspan fill="#34D399" font-size="8">(67)</tspan></text>
+        <text x="70" y="102" fill="#94A3B8" font-size="7">Processed in a single 8-bit CPU operation</text>
+      </g>
+    </g>
+
+    <text x="190" y="284" fill="#64748B" font-size="7" text-anchor="middle">The CPU ALU operates on all 8 bits simultaneously</text>
+  </g>
+
+  <!-- Right Card: The Crucial Architectural Distinction (x=430, width=300) -->
+  <g transform="translate(430, 68)">
+    <rect width="300" height="298" rx="8" fill="#131B2A" stroke="rgba(167, 139, 250, 0.28)" stroke-width="1.2" />
+    <rect width="300" height="26" rx="8" fill="rgba(167, 139, 250, 0.14)" />
+    <circle cx="14" cy="13" r="3.5" fill="#A78BFA" />
+    <text x="150" y="17" fill="#C4B5FD" font-size="8.5" font-weight="700" text-anchor="middle" letter-spacing="0.06em">THE INTERVIEW-LEVEL DISTINCTION</text>
+
+    <!-- Crucial Rule Callout -->
+    <g transform="translate(16, 38)">
+      <rect width="268" height="52" rx="5" fill="rgba(167, 139, 250, 0.08)" stroke="#A78BFA" stroke-width="1" />
+      <text x="134" y="18" fill="#E2E8F0" font-size="7.5" font-weight="700" text-anchor="middle">"8-Bit" DOES NOT MEAN EVERYTHING IS 8 BITS</text>
+      <text x="134" y="32" fill="#94A3B8" font-size="7" text-anchor="middle">It defines the CPU's arithmetic &amp; data width.</text>
+      <text x="134" y="44" fill="#C4B5FD" font-size="7" font-weight="600" text-anchor="middle">Address registers in the 8051 are 16 bits wide!</text>
+    </g>
+
+    <!-- 16-Bit Register 1: Program Counter (PC) -->
+    <g transform="translate(16, 102)">
+      <rect width="268" height="66" rx="6" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2" />
+      <text x="12" y="18" fill="#FBBF24" font-size="8" font-weight="700">PROGRAM COUNTER (PC)</text>
+      <rect x="190" y="7" width="66" height="15" rx="3" fill="rgba(245, 158, 11, 0.2)" />
+      <text x="223" y="18" fill="#FBBF24" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="700" text-anchor="middle">16 BITS</text>
+      <text x="12" y="36" fill="#CBD5E1" font-size="7.5">Holds the next instruction address</text>
+      <text x="12" y="50" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7">Addresses 2¹⁶ = 65,536 Bytes (64 KB)</text>
+    </g>
+
+    <!-- 16-Bit Register 2: Data Pointer (DPTR) -->
+    <g transform="translate(16, 178)">
+      <rect width="268" height="66" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.2" />
+      <text x="12" y="18" fill="#34D399" font-size="8" font-weight="700">DATA POINTER (DPTR)</text>
+      <rect x="190" y="7" width="66" height="15" rx="3" fill="rgba(16, 185, 129, 0.2)" />
+      <text x="223" y="18" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="700" text-anchor="middle">16 BITS</text>
+      <text x="12" y="36" fill="#CBD5E1" font-size="7.5">DPH (High byte) + DPL (Low byte)</text>
+      <text x="12" y="50" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7">Points to 64 KB external RAM/ROM</text>
+    </g>
+
+    <!-- Key Takeaway -->
+    <g transform="translate(16, 254)">
+      <rect width="268" height="30" rx="4" fill="#0F172A" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1" />
+      <text x="134" y="14" fill="#60A5FA" font-size="7" font-weight="600" text-anchor="middle">8-bit data processing width</text>
+      <text x="134" y="24" fill="#94A3B8" font-size="6.5" text-anchor="middle">combined with 16-bit address reach</text>
+    </g>
+  </g>
+
+  <!-- Footnote -->
+  <text x="380" y="386" fill="#64748B" font-size="7.5" text-anchor="middle">The 8051 handles 8-bit data in its accumulator and registers, while using 16-bit address paths for memory expansion</text>
+</svg>

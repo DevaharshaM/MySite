@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">TWO TIMERS, ONE ARCHITECTURAL PATTERN</text>
+  <text x="450" y="62" text-anchor="middle" fill="#94A3B8" font-size="13">Independent 16-bit hardware counters orchestrated through shared control SFRs</text>
+
+  <!-- SHARED CONTROL PANEL ROW -->
+  <g transform="translate(60, 85)">
+    <!-- TMOD (89H) -->
+    <g transform="translate(0, 0)">
+      <rect width="365" height="85" rx="8" fill="url(#cardGrad)" stroke="#38BDF8" stroke-width="1.5" />
+      <rect width="365" height="26" rx="8" fill="#0C4A6E" />
+      <text x="182" y="18" text-anchor="middle" fill="#7DD3FC" font-size="11" font-weight="700">TMOD (89H) &#8212; MODE CONFIGURATION (BYTE-ONLY)</text>
+      
+      <!-- Bit Split -->
+      <g transform="translate(15, 36)">
+        <rect width="160" height="36" rx="4" fill="#0F172A" stroke="#334155" />
+        <text x="80" y="16" text-anchor="middle" fill="#818CF8" font-size="10" font-weight="600">Timer 1 Config (Bits 7..4)</text>
+        <text x="80" y="30" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="9">GATE | C/T | M1 | M0</text>
+
+        <rect x="175" y="0" width="160" height="36" rx="4" fill="#0F172A" stroke="#334155" />
+        <text x="255" y="16" text-anchor="middle" fill="#34D399" font-size="10" font-weight="600">Timer 0 Config (Bits 3..0)</text>
+        <text x="255" y="30" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="9">GATE | C/T | M1 | M0</text>
+      </g>
+    </g>
+
+    <!-- TCON (88H) -->
+    <g transform="translate(415, 0)">
+      <rect width="365" height="85" rx="8" fill="url(#cardGrad)" stroke="#10B981" stroke-width="1.5" />
+      <rect width="365" height="26" rx="8" fill="#064E3B" />
+      <text x="182" y="18" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="700">TCON (88H) &#8212; RUN / STATUS LEVERS (BIT-ADDRESSABLE)</text>
+      
+      <!-- Bit Split -->
+      <g transform="translate(15, 36)">
+        <rect width="160" height="36" rx="4" fill="#0F172A" stroke="#334155" />
+        <text x="80" y="16" text-anchor="middle" fill="#818CF8" font-size="10" font-weight="600">Timer 1 (Bits 7..6)</text>
+        <text x="80" y="30" text-anchor="middle" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="9">TF1 (8FH) | TR1 (8EH)</text>
+
+        <rect x="175" y="0" width="160" height="36" rx="4" fill="#0F172A" stroke="#334155" />
+        <text x="255" y="16" text-anchor="middle" fill="#34D399" font-size="10" font-weight="600">Timer 0 (Bits 5..4)</text>
+        <text x="255" y="30" text-anchor="middle" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="9">TF0 (8DH) | TR0 (8CH)</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- TIMER 0 CARD -->
+  <g transform="translate(60, 195)">
+    <rect width="375" height="175" rx="8" fill="url(#cardGrad)" stroke="#10B981" stroke-width="1.5" />
+    <rect width="375" height="32" rx="8" fill="#064E3B" />
+    <text x="20" y="21" fill="#6EE7B7" font-size="12" font-weight="700">TIMER 0 (16-BIT COUNTER)</text>
+
+    <text x="25" y="60" fill="#94A3B8" font-size="11">Physical Counting Registers:</text>
+
+    <!-- TL0 (8AH) / TH0 (8CH) -->
+    <g transform="translate(25, 75)">
+      <rect x="0" y="0" width="155" height="46" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="15" y="20" fill="#94A3B8" font-size="10">Low Byte (8AH)</text>
+      <text x="15" y="36" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600">TL0 = 8AH</text>
+
+      <rect x="170" y="0" width="155" height="46" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="185" y="20" fill="#94A3B8" font-size="10">High Byte (8CH)</text>
+      <text x="185" y="36" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600">TH0 = 8CH</text>
+    </g>
+
+    <text x="25" y="145" fill="#CBD5E1" font-size="11">Run bit: <tspan fill="#38BDF8" font-family="'IBM Plex Mono', monospace">TR0 (8CH)</tspan>  |  Overflow flag: <tspan fill="#F59E0B" font-family="'IBM Plex Mono', monospace">TF0 (8DH)</tspan></text>
+    <text x="25" y="162" fill="#94A3B8" font-size="10">External input pin: P3.4 (T0)</text>
+  </g>
+
+  <!-- TIMER 1 CARD -->
+  <g transform="translate(465, 195)">
+    <rect width="375" height="175" rx="8" fill="url(#cardGrad)" stroke="#6366F1" stroke-width="1.5" />
+    <rect width="375" height="32" rx="8" fill="#312E81" />
+    <text x="20" y="21" fill="#A5B4FC" font-size="12" font-weight="700">TIMER 1 (16-BIT COUNTER)</text>
+
+    <text x="25" y="60" fill="#94A3B8" font-size="11">Physical Counting Registers:</text>
+
+    <!-- TL1 (8BH) / TH1 (8DH) -->
+    <g transform="translate(25, 75)">
+      <rect x="0" y="0" width="155" height="46" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="15" y="20" fill="#94A3B8" font-size="10">Low Byte (8BH)</text>
+      <text x="15" y="36" fill="#818CF8" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600">TL1 = 8BH</text>
+
+      <rect x="170" y="0" width="155" height="46" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="185" y="20" fill="#94A3B8" font-size="10">High Byte (8DH)</text>
+      <text x="185" y="36" fill="#818CF8" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="600">TH1 = 8DH</text>
+    </g>
+
+    <text x="25" y="145" fill="#CBD5E1" font-size="11">Run bit: <tspan fill="#38BDF8" font-family="'IBM Plex Mono', monospace">TR1 (8EH)</tspan>  |  Overflow flag: <tspan fill="#F59E0B" font-family="'IBM Plex Mono', monospace">TF1 (8FH)</tspan></text>
+    <text x="25" y="162" fill="#94A3B8" font-size="10">External input pin: P3.5 (T1) | Often generates UART baud rate</text>
+  </g>
+</svg>

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 370" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">IP (B8H) &#8212; TWO-LEVEL PRIORITY CONTROL</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Assigning 0 (Low Priority) or 1 (High Priority) to each interrupt source</text>
+
+  <!-- IP REGISTER ROW -->
+  <g transform="translate(60, 85)">
+    <rect width="820" height="95" rx="8" fill="url(#cardGrad)" stroke="#A855F7" stroke-width="1.5" />
+    <rect width="820" height="26" rx="8" fill="#581C87" />
+    <text x="410" y="18" text-anchor="middle" fill="#E9D5FF" font-size="11" font-weight="700" letter-spacing="0.05em">IP REGISTER (B8H) &#8212; BIT-ADDRESSABLE</text>
+
+    <!-- 8 Bit Cells -->
+    <g transform="translate(20, 34)">
+      <rect width="90" height="50" rx="4" fill="#1E293B" stroke="#475569" stroke-dasharray="2,2" />
+      <text x="45" y="15" text-anchor="middle" fill="#64748B" font-size="8">Bit 7</text>
+      <text x="45" y="32" text-anchor="middle" fill="#475569" font-family="'IBM Plex Mono', monospace" font-size="13">&#8212;</text>
+      <text x="45" y="44" text-anchor="middle" fill="#64748B" font-size="7">Reserved</text>
+    </g>
+
+    <g transform="translate(118, 34)">
+      <rect width="90" height="50" rx="4" fill="#1E293B" stroke="#475569" stroke-dasharray="2,2" />
+      <text x="45" y="15" text-anchor="middle" fill="#64748B" font-size="8">Bit 6</text>
+      <text x="45" y="32" text-anchor="middle" fill="#475569" font-family="'IBM Plex Mono', monospace" font-size="13">&#8212;</text>
+      <text x="45" y="44" text-anchor="middle" fill="#64748B" font-size="7">Reserved</text>
+    </g>
+
+    <g transform="translate(216, 34)">
+      <rect width="90" height="50" rx="4" fill="#1E293B" stroke="#475569" stroke-dasharray="2,2" />
+      <text x="45" y="15" text-anchor="middle" fill="#64748B" font-size="8">Bit 5</text>
+      <text x="45" y="32" text-anchor="middle" fill="#475569" font-family="'IBM Plex Mono', monospace" font-size="13">&#8212;</text>
+      <text x="45" y="44" text-anchor="middle" fill="#64748B" font-size="7">Reserved</text>
+    </g>
+
+    <g transform="translate(314, 34)">
+      <rect width="90" height="50" rx="4" fill="#581C87" stroke="#A855F7" stroke-width="1.5" />
+      <text x="45" y="15" text-anchor="middle" fill="#D8B4FE" font-size="8" font-weight="600">Bit 4 (BCH)</text>
+      <text x="45" y="32" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">PS</text>
+      <text x="45" y="44" text-anchor="middle" fill="#E9D5FF" font-size="7">Serial Priority</text>
+    </g>
+
+    <g transform="translate(412, 34)">
+      <rect width="90" height="50" rx="4" fill="#581C87" stroke="#A855F7" stroke-width="1.5" />
+      <text x="45" y="15" text-anchor="middle" fill="#D8B4FE" font-size="8" font-weight="600">Bit 3 (BBH)</text>
+      <text x="45" y="32" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">PT1</text>
+      <text x="45" y="44" text-anchor="middle" fill="#E9D5FF" font-size="7">Timer 1 Priority</text>
+    </g>
+
+    <g transform="translate(510, 34)">
+      <rect width="90" height="50" rx="4" fill="#581C87" stroke="#A855F7" stroke-width="1.5" />
+      <text x="45" y="15" text-anchor="middle" fill="#D8B4FE" font-size="8" font-weight="600">Bit 2 (BAH)</text>
+      <text x="45" y="32" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">PX1</text>
+      <text x="45" y="44" text-anchor="middle" fill="#E9D5FF" font-size="7">Ext Int 1 Priority</text>
+    </g>
+
+    <g transform="translate(608, 34)">
+      <rect width="90" height="50" rx="4" fill="#581C87" stroke="#A855F7" stroke-width="1.5" />
+      <text x="45" y="15" text-anchor="middle" fill="#D8B4FE" font-size="8" font-weight="600">Bit 1 (B9H)</text>
+      <text x="45" y="32" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">PT0</text>
+      <text x="45" y="44" text-anchor="middle" fill="#E9D5FF" font-size="7">Timer 0 Priority</text>
+    </g>
+
+    <g transform="translate(706, 34)">
+      <rect width="90" height="50" rx="4" fill="#581C87" stroke="#A855F7" stroke-width="1.5" />
+      <text x="45" y="15" text-anchor="middle" fill="#D8B4FE" font-size="8" font-weight="600">Bit 0 (B8H)</text>
+      <text x="45" y="32" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">PX0</text>
+      <text x="45" y="44" text-anchor="middle" fill="#E9D5FF" font-size="7">Ext Int 0 Priority</text>
+    </g>
+  </g>
+
+  <!-- PRIORITY MATRIX PANEL -->
+  <g transform="translate(60, 200)">
+    <rect width="820" height="140" rx="8" fill="#1E293B" stroke="#334155" />
+
+    <g transform="translate(25, 20)">
+      <rect width="240" height="100" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1.5" />
+      <text x="120" y="24" text-anchor="middle" fill="#34D399" font-size="11" font-weight="700">HIGH PREEMPTS LOW</text>
+      <text x="120" y="48" text-anchor="middle" fill="#CBD5E1" font-size="10">High priority (1) interrupt</text>
+      <text x="120" y="64" text-anchor="middle" fill="#CBD5E1" font-size="10"><tspan fill="#34D399" font-weight="600">CAN preempt</tspan> an active</text>
+      <text x="120" y="80" text-anchor="middle" fill="#CBD5E1" font-size="10">low priority (0) ISR.</text>
+    </g>
+
+    <g transform="translate(290, 20)">
+      <rect width="240" height="100" rx="6" fill="#0F172A" stroke="#EF4444" stroke-width="1.5" />
+      <text x="120" y="24" text-anchor="middle" fill="#F87171" font-size="11" font-weight="700">LOW CANNOT PREEMPT</text>
+      <text x="120" y="48" text-anchor="middle" fill="#CBD5E1" font-size="10">Low priority (0) interrupt</text>
+      <text x="120" y="64" text-anchor="middle" fill="#CBD5E1" font-size="10"><tspan fill="#EF4444" font-weight="600">CANNOT preempt</tspan> an</text>
+      <text x="120" y="80" text-anchor="middle" fill="#CBD5E1" font-size="10">active high priority ISR.</text>
+    </g>
+
+    <g transform="translate(555, 20)">
+      <rect width="240" height="100" rx="6" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="120" y="24" text-anchor="middle" fill="#FBBF24" font-size="11" font-weight="700">EQUAL CANNOT PREEMPT</text>
+      <text x="120" y="48" text-anchor="middle" fill="#CBD5E1" font-size="10">Interrupt at same level</text>
+      <text x="120" y="64" text-anchor="middle" fill="#CBD5E1" font-size="10"><tspan fill="#FBBF24" font-weight="600">CANNOT preempt</tspan> another</text>
+      <text x="120" y="80" text-anchor="middle" fill="#CBD5E1" font-size="10">ISR of the same level.</text>
+    </g>
+  </g>
+</svg>

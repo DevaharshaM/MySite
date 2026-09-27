@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 370" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="irq-arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="irq-arr-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">THE SERIAL INTERRUPT PATHWAY</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Two distinct hardware events converge onto one single vector at 0023H</text>
+
+  <!-- CONVERGENCE FLOW -->
+  <g transform="translate(40, 85)">
+    <!-- Event A: Transmission Complete (TI) -->
+    <g transform="translate(0, 0)">
+      <rect width="230" height="65" rx="6" fill="url(#cardGrad)" stroke="#F43F5E" stroke-width="1.5" />
+      <text x="115" y="24" text-anchor="middle" fill="#FECDD3" font-size="11" font-weight="700">TRANSMIT COMPLETE</text>
+      <text x="115" y="44" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">TI = 1 (SCON.1)</text>
+    </g>
+
+    <!-- Event B: Reception Complete (RI) -->
+    <g transform="translate(0, 85)">
+      <rect width="230" height="65" rx="6" fill="url(#cardGrad)" stroke="#F43F5E" stroke-width="1.5" />
+      <text x="115" y="24" text-anchor="middle" fill="#FECDD3" font-size="11" font-weight="700">RECEPTION COMPLETE</text>
+      <text x="115" y="44" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">RI = 1 (SCON.0)</text>
+    </g>
+
+    <!-- Converging OR Gate -->
+    <path d="M 235 32 L 285 32 L 285 75" fill="none" stroke="#F43F5E" stroke-width="2" />
+    <path d="M 235 118 L 285 118 L 285 75" fill="none" stroke="#F43F5E" stroke-width="2" />
+    <line x1="285" y1="75" x2="330" y2="75" stroke="#F43F5E" stroke-width="2" marker-end="url(#irq-arr)" />
+
+    <!-- OR Gate Box -->
+    <g transform="translate(335, 45)">
+      <rect width="110" height="60" rx="6" fill="#1E293B" stroke="#F43F5E" stroke-width="1.5" />
+      <text x="55" y="26" text-anchor="middle" fill="#FECDD3" font-size="10" font-weight="700">INTERNAL</text>
+      <text x="55" y="44" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="700">OR GATE</text>
+    </g>
+
+    <!-- Arrow from OR Gate to IE Gating -->
+    <line x1="450" y1="75" x2="490" y2="75" stroke="#F43F5E" stroke-width="2" marker-end="url(#irq-arr)" />
+
+    <!-- IE Gating Stage -->
+    <g transform="translate(495, 40)">
+      <rect width="150" height="70" rx="6" fill="url(#cardGrad)" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="75" y="22" text-anchor="middle" fill="#7DD3FC" font-size="10" font-weight="700">IE GATING (A8H)</text>
+      <text x="75" y="42" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="11">ES = 1 (Bit 4)</text>
+      <text x="75" y="58" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="11">EA = 1 (Bit 7)</text>
+    </g>
+
+    <!-- Arrow to Vector Table -->
+    <line x1="650" y1="75" x2="690" y2="75" stroke="#38BDF8" stroke-width="2" marker-end="url(#irq-arr-blue)" />
+
+    <!-- Vector Address Target -->
+    <g transform="translate(695, 35)">
+      <rect width="165" height="80" rx="6" fill="#064E3B" stroke="#10B981" stroke-width="2" />
+      <text x="82" y="24" text-anchor="middle" fill="#A7F3D0" font-size="10" font-weight="700">FIXED ROM VECTOR</text>
+      <text x="82" y="48" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="15" font-weight="700">0023H</text>
+      <text x="82" y="66" text-anchor="middle" fill="#6EE7B7" font-size="9">LJMP SERIAL_ISR</text>
+    </g>
+  </g>
+
+  <!-- ISR INSTRUCTIONS EXPLANATION -->
+  <g transform="translate(40, 255)">
+    <rect width="860" height="95" rx="8" fill="#1E293B" stroke="#F43F5E" stroke-width="1.2" />
+    <rect width="860" height="24" rx="8" fill="#831843" />
+    <text x="430" y="16" text-anchor="middle" fill="#FFE4E6" font-size="11" font-weight="700">THE SERIAL EXCEPTION: WHY SOFTWARE MUST CLEAR TI AND RI</text>
+
+    <g transform="translate(20, 34)">
+      <text x="0" y="16" fill="#CBD5E1" font-size="11">Unlike Timer 0/1 where hardware clears the flag upon branching, the 8051 <tspan fill="#F87171" font-weight="700">NEVER clears TI or RI automatically</tspan>.</text>
+      <text x="0" y="34" fill="#CBD5E1" font-size="11">The ISR must test <tspan font-family="'IBM Plex Mono', monospace" fill="#FDE68A">JNB TI</tspan> or <tspan font-family="'IBM Plex Mono', monospace" fill="#FDE68A">JNB RI</tspan> to determine the source, and execute <tspan font-family="'IBM Plex Mono', monospace" fill="#10B981">CLR TI</tspan> or <tspan font-family="'IBM Plex Mono', monospace" fill="#10B981">CLR RI</tspan> before returning with <tspan font-family="'IBM Plex Mono', monospace" fill="#7DD3FC">RETI</tspan>.</text>
+      <text x="0" y="50" fill="#94A3B8" font-size="10">If software forgets to clear the flag, the CPU will re-enter the ISR continuously in an unbreakable loop!</text>
+    </g>
+  </g>
+</svg>

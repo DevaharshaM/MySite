@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="rowGrad0" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">ONE PIECE OF SILICON &#8212; FOUR INTERNAL TOPOLOGIES</text>
+  <text x="480" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">How the M1, M0 control bits re-route the internal data paths of the 8051 timer hardware</text>
+
+  <!-- 4 ROWS -->
+  <!-- ROW 0: MODE 0 -->
+  <g transform="translate(40, 85)">
+    <rect width="880" height="75" rx="6" fill="url(#rowGrad0)" stroke="#334155" stroke-width="1.5" />
+    <!-- Mode Badge -->
+    <rect x="15" y="15" width="110" height="45" rx="4" fill="#0F172A" stroke="#64748B" />
+    <text x="70" y="34" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">MODE 0</text>
+    <text x="70" y="50" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">M1=0  M0=0</text>
+
+    <!-- Architecture Visual -->
+    <g transform="translate(145, 15)">
+      <rect width="180" height="45" rx="4" fill="#1E293B" stroke="#475569" />
+      <text x="90" y="24" text-anchor="middle" fill="#CBD5E1" font-size="11" font-weight="600">THx (8b) + TLx (5b)</text>
+      <text x="90" y="40" text-anchor="middle" fill="#64748B" font-size="9">Upper 3 bits of TLx unused</text>
+    </g>
+
+    <!-- Details -->
+    <g transform="translate(345, 18)">
+      <text x="0" y="16" fill="#38BDF8" font-size="11" font-weight="600">13-Bit Counter</text>
+      <text x="0" y="34" fill="#94A3B8" font-size="10">Counts 0000H &#8594; 1FFFH (8,192 states). Rollover sets TFx.</text>
+    </g>
+
+    <!-- Application / Significance -->
+    <g transform="translate(640, 18)">
+      <rect width="220" height="38" rx="4" fill="#0F172A" />
+      <text x="110" y="16" text-anchor="middle" fill="#E2E8F0" font-size="10" font-weight="600">MCS-48 Backward Compatibility</text>
+      <text x="110" y="30" text-anchor="middle" fill="#64748B" font-size="9">Legacy compatibility with 8048 code</text>
+    </g>
+  </g>
+
+  <!-- ROW 1: MODE 1 -->
+  <g transform="translate(40, 175)">
+    <rect width="880" height="75" rx="6" fill="url(#rowGrad0)" stroke="#38BDF8" stroke-width="1.5" />
+    <!-- Mode Badge -->
+    <rect x="15" y="15" width="110" height="45" rx="4" fill="#0C4A6E" stroke="#38BDF8" />
+    <text x="70" y="34" text-anchor="middle" fill="#7DD3FC" font-size="11" font-weight="700">MODE 1</text>
+    <text x="70" y="50" text-anchor="middle" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="11">M1=0  M0=1</text>
+
+    <!-- Architecture Visual -->
+    <g transform="translate(145, 15)">
+      <rect width="180" height="45" rx="4" fill="#0C4A6E" stroke="#38BDF8" />
+      <text x="90" y="24" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">THx (8b) : TLx (8b)</text>
+      <text x="90" y="40" text-anchor="middle" fill="#7DD3FC" font-size="9">Full 16-bit unified cascade</text>
+    </g>
+
+    <!-- Details -->
+    <g transform="translate(345, 18)">
+      <text x="0" y="16" fill="#38BDF8" font-size="11" font-weight="600">16-Bit Counter</text>
+      <text x="0" y="34" fill="#94A3B8" font-size="10">Counts 0000H &#8594; FFFFH (65,536 states). Rollover sets TFx.</text>
+    </g>
+
+    <!-- Application / Significance -->
+    <g transform="translate(640, 18)">
+      <rect width="220" height="38" rx="4" fill="#0F172A" />
+      <text x="110" y="16" text-anchor="middle" fill="#38BDF8" font-size="10" font-weight="600">Longest Time Delays</text>
+      <text x="110" y="30" text-anchor="middle" fill="#94A3B8" font-size="9">Up to 65.536 ms intervals (at 12 MHz)</text>
+    </g>
+  </g>
+
+  <!-- ROW 2: MODE 2 -->
+  <g transform="translate(40, 265)">
+    <rect width="880" height="75" rx="6" fill="url(#rowGrad0)" stroke="#10B981" stroke-width="1.5" />
+    <!-- Mode Badge -->
+    <rect x="15" y="15" width="110" height="45" rx="4" fill="#064E3B" stroke="#10B981" />
+    <text x="70" y="34" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="700">MODE 2</text>
+    <text x="70" y="50" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="11">M1=1  M0=0</text>
+
+    <!-- Architecture Visual -->
+    <g transform="translate(145, 15)">
+      <rect width="180" height="45" rx="4" fill="#064E3B" stroke="#10B981" />
+      <text x="90" y="24" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">TLx (Count) &#8592; THx (Reload)</text>
+      <text x="90" y="40" text-anchor="middle" fill="#6EE7B7" font-size="9">Silicon auto-reload on overflow</text>
+    </g>
+
+    <!-- Details -->
+    <g transform="translate(345, 18)">
+      <text x="0" y="16" fill="#34D399" font-size="11" font-weight="600">8-Bit Auto-Reload</text>
+      <text x="0" y="34" fill="#94A3B8" font-size="10">Counts [THx] &#8594; FFH (1 to 256 ticks). Never stops or drifts.</text>
+    </g>
+
+    <!-- Application / Significance -->
+    <g transform="translate(640, 18)">
+      <rect width="220" height="38" rx="4" fill="#0F172A" />
+      <text x="110" y="16" text-anchor="middle" fill="#34D399" font-size="10" font-weight="600">UART Baud Rates &amp; Clean Pulses</text>
+      <text x="110" y="30" text-anchor="middle" fill="#94A3B8" font-size="9">Zero jitter, zero software reload latency</text>
+    </g>
+  </g>
+
+  <!-- ROW 3: MODE 3 -->
+  <g transform="translate(40, 355)">
+    <rect width="880" height="75" rx="6" fill="url(#rowGrad0)" stroke="#F59E0B" stroke-width="1.5" />
+    <!-- Mode Badge -->
+    <rect x="15" y="15" width="110" height="45" rx="4" fill="#78350F" stroke="#F59E0B" />
+    <text x="70" y="34" text-anchor="middle" fill="#FDE68A" font-size="11" font-weight="700">MODE 3</text>
+    <text x="70" y="50" text-anchor="middle" fill="#FBBF24" font-family="'IBM Plex Mono', monospace" font-size="11">M1=1  M0=1</text>
+
+    <!-- Architecture Visual -->
+    <g transform="translate(145, 15)">
+      <rect width="180" height="45" rx="4" fill="#78350F" stroke="#F59E0B" />
+      <text x="90" y="24" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">TL0 (TR0) + TH0 (TR1)</text>
+      <text x="90" y="40" text-anchor="middle" fill="#FDE68A" font-size="9">Split Timer 0 dual operation</text>
+    </g>
+
+    <!-- Details -->
+    <g transform="translate(345, 18)">
+      <text x="0" y="16" fill="#FBBF24" font-size="11" font-weight="600">Split Timer 0 (Two 8-Bit Timers)</text>
+      <text x="0" y="34" fill="#94A3B8" font-size="10">TH0 borrows TR1 &amp; TF1. Timer 1 runs free for UART baud rate.</text>
+    </g>
+
+    <!-- Application / Significance -->
+    <g transform="translate(640, 18)">
+      <rect width="220" height="38" rx="4" fill="#0F172A" />
+      <text x="110" y="16" text-anchor="middle" fill="#FBBF24" font-size="10" font-weight="600">Extra Timer Channel</text>
+      <text x="110" y="30" text-anchor="middle" fill="#94A3B8" font-size="9">Baud generator + 2 timing intervals</text>
+    </g>
+  </g>
+
+  <!-- Bottom Realization -->
+  <text x="480" y="460" text-anchor="middle" fill="#64748B" font-size="11" font-weight="500">Same physical registers &#8212; different silicon connections steered purely by software configuration.</text>
+</svg>

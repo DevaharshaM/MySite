@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <marker id="w-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="w-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <marker id="w-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">FROM OVERFLOW EVENT TO PHYSICAL WAVEFORM</text>
+  <text x="450" y="58" text-anchor="middle" fill="#94A3B8" font-size="13">The causal chain: Hardware overflow triggers CPU/ISR response to toggle an output pin</text>
+
+  <!-- 1. TIMER COUNT (SAWTOOTH) -->
+  <g transform="translate(60, 85)">
+    <text x="0" y="16" fill="#38BDF8" font-size="12" font-weight="700">[HARDWARE] 1. SILICON COUNTER (TH0:TL0)</text>
+    <text x="780" y="16" text-anchor="end" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">FFFFH (Limit)</text>
+
+    <!-- Sawtooth Wave -->
+    <path d="M 0 100 L 150 30 L 150 100 L 300 30 L 300 100 L 450 30 L 450 100 L 600 30 L 600 100 L 750 30 L 750 100" fill="none" stroke="#38BDF8" stroke-width="2" />
+    
+    <!-- Dashed Overflow Threshold -->
+    <line x1="0" y1="30" x2="780" y2="30" stroke="#F59E0B" stroke-width="1" stroke-dasharray="4 4" />
+    <text x="15" y="25" fill="#F59E0B" font-size="10">Overflow Rollover (FFFFH &#8594; 0000H)</text>
+
+    <!-- Overflow pulses -->
+    <circle cx="150" cy="30" r="4" fill="#F59E0B" />
+    <circle cx="300" cy="30" r="4" fill="#F59E0B" />
+    <circle cx="450" cy="30" r="4" fill="#F59E0B" />
+    <circle cx="600" cy="30" r="4" fill="#F59E0B" />
+    <circle cx="750" cy="30" r="4" fill="#F59E0B" />
+
+    <!-- Pulse arrows down -->
+    <line x1="150" y1="35" x2="150" y2="115" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="2 2" marker-end="url(#w-amber)" />
+    <line x1="300" y1="35" x2="300" y2="115" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="2 2" marker-end="url(#w-amber)" />
+    <line x1="450" y1="35" x2="450" y2="115" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="2 2" marker-end="url(#w-amber)" />
+    <line x1="600" y1="35" x2="600" y2="115" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="2 2" marker-end="url(#w-amber)" />
+    <line x1="750" y1="35" x2="750" y2="115" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="2 2" marker-end="url(#w-amber)" />
+  </g>
+
+  <!-- 2. INTERMEDIATE SOFTWARE RESPONSE (CAUSAL BRIDGE) -->
+  <g transform="translate(60, 215)">
+    <rect width="780" height="42" rx="6" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+    <text x="20" y="26" fill="#FCD34D" font-size="11" font-weight="700">[CPU / SOFTWARE]</text>
+    <text x="145" y="26" fill="#E2E8F0" font-size="11">Hardware sets <tspan fill="#F59E0B" font-family="'IBM Plex Mono', monospace" font-weight="700">TF0 = 1</tspan> &#8594; CPU ISR or polling loop executes <tspan fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-weight="700">CPL P1.0</tspan> &#8594; Pin port latch state inverts</text>
+  </g>
+
+  <!-- 3. PHYSICAL PIN OUTPUT (SQUARE WAVEFORM) -->
+  <g transform="translate(60, 275)">
+    <text x="0" y="16" fill="#10B981" font-size="12" font-weight="700">[PHYSICAL WORLD] 3. PIN P1.0 ELECTRICAL VOLTAGE</text>
+    <text x="780" y="16" text-anchor="end" fill="#94A3B8" font-size="11">Square Waveform</text>
+
+    <!-- Square Wave -->
+    <path d="M 0 80 L 150 80 L 150 30 L 300 30 L 300 80 L 450 80 L 450 30 L 600 30 L 600 80 L 750 80 L 750 30 L 780 30" fill="none" stroke="#10B981" stroke-width="2.5" />
+
+    <text x="75" y="98" text-anchor="middle" fill="#94A3B8" font-size="10">LOW (0V)</text>
+    <text x="225" y="24" text-anchor="middle" fill="#34D399" font-size="10" font-weight="600">HIGH (+5V)</text>
+    <text x="375" y="98" text-anchor="middle" fill="#94A3B8" font-size="10">LOW (0V)</text>
+    <text x="525" y="24" text-anchor="middle" fill="#34D399" font-size="10" font-weight="600">HIGH (+5V)</text>
+    <text x="675" y="98" text-anchor="middle" fill="#94A3B8" font-size="10">LOW (0V)</text>
+  </g>
+
+  <!-- FOOTER NOTE -->
+  <text x="450" y="395" text-anchor="middle" fill="#64748B" font-size="11">Classic 8051 timers do not directly toggle GPIO pins; hardware asserts TF0, and CPU software inverts the pin.</text>
+</svg>

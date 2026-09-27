@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 370" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <marker id="fl-arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="fl-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">THE 8051 INTERRUPT LIFECYCLE</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">From physical silicon event to software service routine and RETI unstacking</text>
+
+  <!-- 6 STAGES PIPELINE -->
+  <g transform="translate(30, 95)">
+    <!-- 1. EVENT -->
+    <g transform="translate(0, 0)">
+      <rect width="130" height="120" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+      <rect width="130" height="24" rx="6" fill="#334155" />
+      <text x="65" y="17" text-anchor="middle" fill="#F8FAFC" font-size="10" font-weight="700">1. EVENT</text>
+      <text x="65" y="52" text-anchor="middle" fill="#38BDF8" font-size="11" font-weight="600">Hardware Trigger</text>
+      <text x="65" y="72" text-anchor="middle" fill="#94A3B8" font-size="9">Pin falling edge</text>
+      <text x="65" y="86" text-anchor="middle" fill="#94A3B8" font-size="9">or Timer overflow</text>
+      <text x="65" y="105" text-anchor="middle" fill="#64748B" font-size="8">Physical occurrence</text>
+    </g>
+
+    <line x1="135" y1="60" x2="150" y2="60" stroke="#38BDF8" stroke-width="2" marker-end="url(#fl-arr)" />
+
+    <!-- 2. FLAG LATCH -->
+    <g transform="translate(155, 0)">
+      <rect width="130" height="120" rx="6" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" />
+      <rect width="130" height="24" rx="6" fill="#78350F" />
+      <text x="65" y="17" text-anchor="middle" fill="#FDE68A" font-size="10" font-weight="700">2. FLAG LATCH</text>
+      <text x="65" y="52" text-anchor="middle" fill="#F59E0B" font-size="11" font-weight="600">SFR Bit Raised</text>
+      <text x="65" y="72" text-anchor="middle" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="10">TFx=1 or IEx=1</text>
+      <text x="65" y="90" text-anchor="middle" fill="#94A3B8" font-size="9">in TCON / SCON</text>
+      <text x="65" y="105" text-anchor="middle" fill="#64748B" font-size="8">Latched in silicon</text>
+    </g>
+
+    <line x1="290" y1="60" x2="305" y2="60" stroke="#38BDF8" stroke-width="2" marker-end="url(#fl-arr)" />
+
+    <!-- 3. AUTHORIZATION -->
+    <g transform="translate(310, 0)">
+      <rect width="130" height="120" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+      <rect width="130" height="24" rx="6" fill="#064E3B" />
+      <text x="65" y="17" text-anchor="middle" fill="#6EE7B7" font-size="10" font-weight="700">3. PERMISSION</text>
+      <text x="65" y="52" text-anchor="middle" fill="#34D399" font-size="11" font-weight="600">IE Gate Check</text>
+      <text x="65" y="72" text-anchor="middle" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="10">EA = 1</text>
+      <text x="65" y="90" text-anchor="middle" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="10">&amp; Source Bit = 1</text>
+      <text x="65" y="105" text-anchor="middle" fill="#64748B" font-size="8">Both gates open</text>
+    </g>
+
+    <line x1="445" y1="60" x2="460" y2="60" stroke="#38BDF8" stroke-width="2" marker-end="url(#fl-arr)" />
+
+    <!-- 4. RESOLUTION -->
+    <g transform="translate(465, 0)">
+      <rect width="130" height="120" rx="6" fill="#1E293B" stroke="#A855F7" stroke-width="1.5" />
+      <rect width="130" height="24" rx="6" fill="#581C87" />
+      <text x="65" y="17" text-anchor="middle" fill="#E9D5FF" font-size="10" font-weight="700">4. PRIORITY</text>
+      <text x="65" y="52" text-anchor="middle" fill="#C084FC" font-size="11" font-weight="600">IP Evaluation</text>
+      <text x="65" y="72" text-anchor="middle" fill="#CBD5E1" font-size="9">High vs Low</text>
+      <text x="65" y="88" text-anchor="middle" fill="#CBD5E1" font-size="9">Preempt if higher</text>
+      <text x="65" y="105" text-anchor="middle" fill="#64748B" font-size="8">Polling tie-breaker</text>
+    </g>
+
+    <line x1="600" y1="60" x2="615" y2="60" stroke="#38BDF8" stroke-width="2" marker-end="url(#fl-arr)" />
+
+    <!-- 5. HARDWARE DISPATCH -->
+    <g transform="translate(620, 0)">
+      <rect width="130" height="120" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" />
+      <rect width="130" height="24" rx="6" fill="#0C4A6E" />
+      <text x="65" y="17" text-anchor="middle" fill="#7DD3FC" font-size="10" font-weight="700">5. VECTORING</text>
+      <text x="65" y="52" text-anchor="middle" fill="#38BDF8" font-size="11" font-weight="600">Stack &amp; Branch</text>
+      <text x="65" y="72" text-anchor="middle" fill="#CBD5E1" font-size="9">Push PC to stack</text>
+      <text x="65" y="88" text-anchor="middle" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="10">PC &#8592; Vector</text>
+      <text x="65" y="105" text-anchor="middle" fill="#64748B" font-size="8">Auto-clear flag</text>
+    </g>
+
+    <line x1="755" y1="60" x2="770" y2="60" stroke="#10B981" stroke-width="2" marker-end="url(#fl-green)" />
+
+    <!-- 6. ISR & RETI -->
+    <g transform="translate(775, 0)">
+      <rect width="130" height="120" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.8" />
+      <rect width="130" height="24" rx="6" fill="#064E3B" />
+      <text x="65" y="17" text-anchor="middle" fill="#6EE7B7" font-size="10" font-weight="700">6. RETI RETURN</text>
+      <text x="65" y="52" text-anchor="middle" fill="#34D399" font-size="11" font-weight="600">Handler &amp; Exit</text>
+      <text x="65" y="72" text-anchor="middle" fill="#CBD5E1" font-size="9">Execute ISR body</text>
+      <text x="65" y="90" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="700">RETI</text>
+      <text x="65" y="105" text-anchor="middle" fill="#64748B" font-size="8">Clear priority latch</text>
+    </g>
+  </g>
+
+  <!-- Bottom Synthesis Banner -->
+  <g transform="translate(30, 245)">
+    <rect width="875" height="95" rx="6" fill="#1E293B" stroke="#334155" />
+    <text x="25" y="24" fill="#38BDF8" font-size="11" font-weight="700">THE CONVERSATION BETWEEN SILICON COMPONENTS</text>
+    <text x="25" y="46" fill="#CBD5E1" font-size="11">The timer didn't know how to interrupt the CPU &#8212; it only knew how to count. When its count overflowed, a bit in TCON changed. The interrupt unit recognized that event, checked IE permissions, resolved IP priorities, pushed the Program Counter, redirected execution to low ROM space, and allowed software to respond.</text>
+    <text x="25" y="74" fill="#94A3B8" font-size="10">What looked like a single hardware event was actually an orchestrated conversation across five different Special Function Registers.</text>
+  </g>
+</svg>

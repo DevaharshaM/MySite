@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 400" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="hubGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="src-arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="src-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">THE FIVE VOICES OF THE 8051</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Hardware channels that demand processor attention in the classic architecture</text>
+
+  <!-- 5 SOURCE CARDS (LEFT) -->
+  <g transform="translate(40, 85)">
+    <!-- 1. INT0 -->
+    <g transform="translate(0, 0)">
+      <rect width="260" height="48" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+      <text x="15" y="22" fill="#6EE7B7" font-size="11" font-weight="700">1. EXTERNAL PIN INT0 (P3.2)</text>
+      <text x="15" y="38" fill="#94A3B8" font-size="9">Pin transition or low level &#8594; Latch IE0</text>
+      <line x1="265" y1="24" x2="350" y2="135" stroke="#10B981" stroke-width="1.5" marker-end="url(#src-arr)" />
+    </g>
+
+    <!-- 2. TF0 -->
+    <g transform="translate(0, 60)">
+      <rect width="260" height="48" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="15" y="22" fill="#7DD3FC" font-size="11" font-weight="700">2. TIMER 0 OVERFLOW (TF0)</text>
+      <text x="15" y="38" fill="#94A3B8" font-size="9">TH0:TL0 rollover (FFFFH &#8594; 0000H)</text>
+      <line x1="265" y1="24" x2="350" y2="140" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#src-arr)" />
+    </g>
+
+    <!-- 3. INT1 -->
+    <g transform="translate(0, 120)">
+      <rect width="260" height="48" rx="6" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+      <text x="15" y="22" fill="#6EE7B7" font-size="11" font-weight="700">3. EXTERNAL PIN INT1 (P3.3)</text>
+      <text x="15" y="38" fill="#94A3B8" font-size="9">Pin transition or low level &#8594; Latch IE1</text>
+      <line x1="265" y1="24" x2="350" y2="145" stroke="#10B981" stroke-width="1.5" marker-end="url(#src-arr)" />
+    </g>
+
+    <!-- 4. TF1 -->
+    <g transform="translate(0, 180)">
+      <rect width="260" height="48" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="15" y="22" fill="#7DD3FC" font-size="11" font-weight="700">4. TIMER 1 OVERFLOW (TF1)</text>
+      <text x="15" y="38" fill="#94A3B8" font-size="9">TH1:TL1 rollover (FFFFH &#8594; 0000H)</text>
+      <line x1="265" y1="24" x2="350" y2="150" stroke="#38BDF8" stroke-width="1.5" marker-end="url(#src-arr)" />
+    </g>
+
+    <!-- 5. SERIAL UART -->
+    <g transform="translate(0, 240)">
+      <rect width="260" height="48" rx="6" fill="#1E293B" stroke="#A855F7" stroke-width="1.5" />
+      <text x="15" y="22" fill="#D8B4FE" font-size="11" font-weight="700">5. SERIAL UART (RI / TI)</text>
+      <text x="15" y="38" fill="#94A3B8" font-size="9">Byte received (RI) OR byte transmitted (TI)</text>
+      <line x1="265" y1="24" x2="350" y2="155" stroke="#A855F7" stroke-width="1.5" marker-end="url(#src-arr)" />
+    </g>
+  </g>
+
+  <!-- CENTRAL ARBITRATION HUB -->
+  <g transform="translate(400, 140)">
+    <rect width="230" height="180" rx="8" fill="url(#hubGrad)" stroke="#38BDF8" stroke-width="2" />
+    <rect width="230" height="28" rx="8" fill="#0C4A6E" />
+    <text x="115" y="19" text-anchor="middle" fill="#7DD3FC" font-size="11" font-weight="700">INTERRUPT ENGINE</text>
+
+    <g transform="translate(15, 40)">
+      <rect width="200" height="34" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="100" y="16" text-anchor="middle" fill="#CBD5E1" font-size="9" font-weight="600">1. Gating Check (IE Register)</text>
+      <text x="100" y="28" text-anchor="middle" fill="#64748B" font-size="8">Is EA=1 and Bit Enabled?</text>
+
+      <rect y="42" width="200" height="34" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="100" y="58" text-anchor="middle" fill="#CBD5E1" font-size="9" font-weight="600">2. Priority Check (IP Register)</text>
+      <text x="100" y="70" text-anchor="middle" fill="#64748B" font-size="8">High Priority or Low Priority?</text>
+
+      <rect y="84" width="200" height="34" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="100" y="100" text-anchor="middle" fill="#CBD5E1" font-size="9" font-weight="600">3. Polling Tie-Breaker</text>
+      <text x="100" y="112" text-anchor="middle" fill="#64748B" font-size="8">Hardware order resolves ties</text>
+    </g>
+  </g>
+
+  <!-- ARROW TO CPU -->
+  <line x1="635" y1="230" x2="695" y2="230" stroke="#F59E0B" stroke-width="2.5" marker-end="url(#src-amber)" />
+
+  <!-- CPU DESTINATION (RIGHT) -->
+  <g transform="translate(705, 140)">
+    <rect width="190" height="180" rx="8" fill="url(#hubGrad)" stroke="#F59E0B" stroke-width="1.8" />
+    <rect width="190" height="28" rx="8" fill="#78350F" />
+    <text x="95" y="19" text-anchor="middle" fill="#FDE68A" font-size="11" font-weight="700">CPU EXECUTION</text>
+
+    <g transform="translate(15, 45)">
+      <circle cx="80" cy="18" r="14" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="80" y="22" text-anchor="middle" fill="#F59E0B" font-size="10" font-weight="700">PC</text>
+
+      <text x="80" y="52" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">Vector Redirection</text>
+      <text x="80" y="68" text-anchor="middle" fill="#CBD5E1" font-size="9">Push return PC to stack</text>
+      <text x="80" y="82" text-anchor="middle" fill="#CBD5E1" font-size="9">Branch to ISR Vector</text>
+
+      <rect y="92" width="160" height="24" rx="3" fill="#0F172A" />
+      <text x="80" y="108" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="600">RETI ends handler</text>
+    </g>
+  </g>
+</svg>

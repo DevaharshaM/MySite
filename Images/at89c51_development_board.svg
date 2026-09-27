@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <!-- Background Grid -->
+    <pattern id="grid-dev-board" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+
+    <!-- PCB Surface Gradient -->
+    <linearGradient id="pcb-surface" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064E3B" />
+      <stop offset="60%" stop-color="#04382A" />
+      <stop offset="100%" stop-color="#02241B" />
+    </linearGradient>
+
+    <!-- Metallic Solder Pad -->
+    <radialGradient id="solder-pad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#CBD5E1" />
+      <stop offset="70%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#64748B" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" fill="url(#grid-dev-board)" />
+  <rect x="12" y="12" width="736" height="396" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="380" y="36" fill="#E2E8F0" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE AT89C51 &amp; THE LAB WORKBENCH EXPERIENCE</text>
+  <text x="380" y="52" fill="#94A3B8" font-size="8.5" text-anchor="middle">How Atmel's Flash-based 8051 compatible microcontroller powered decades of hands-on learning</text>
+
+  <!-- Development Board PCB (Centered at x=380, width=680, height=316) -->
+  <g transform="translate(40, 68)">
+    <!-- PCB Base -->
+    <rect width="680" height="316" rx="10" fill="url(#pcb-surface)" stroke="#059669" stroke-width="1.8" />
+    <rect x="6" y="6" width="668" height="304" rx="7" fill="none" stroke="rgba(52, 211, 153, 0.2)" stroke-width="1" stroke-dasharray="6 4" />
+
+    <!-- Corner Mounting Holes -->
+    <circle cx="20" cy="20" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5" />
+    <circle cx="660" cy="20" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5" />
+    <circle cx="20" cy="296" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5" />
+    <circle cx="660" cy="296" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5" />
+
+    <!-- PCB Silkscreen Header -->
+    <text x="30" y="34" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" letter-spacing="0.1em">8051 / AT89C51 DEVELOPMENT BOARD</text>
+    <text x="30" y="46" fill="#059669" font-family="'IBM Plex Mono', monospace" font-size="6.5">MCS-51 EDUCATIONAL TRAINER KIT</text>
+
+    <!-- Power Section (Top Left) -->
+    <g transform="translate(30, 60)">
+      <rect width="60" height="42" rx="4" fill="#0F172A" stroke="rgba(148,163,184,0.3)" stroke-width="1" />
+      <text x="30" y="16" fill="#F43F5E" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="700" text-anchor="middle">5V DC</text>
+      <circle cx="30" cy="28" r="4" fill="#10B981" />
+      <text x="30" y="38" fill="#6EE7B7" font-size="6" text-anchor="middle">PWR LED</text>
+    </g>
+
+    <!-- Reset Switch & Crystal (Left of MCU) -->
+    <g transform="translate(110, 60)">
+      <!-- Reset Button -->
+      <rect width="44" height="42" rx="4" fill="#1E293B" stroke="#38BDF8" stroke-width="1" />
+      <circle cx="22" cy="18" r="7" fill="#0284C7" />
+      <text x="22" y="35" fill="#38BDF8" font-size="6" font-weight="600" text-anchor="middle">RESET</text>
+
+      <!-- Crystal Oscillator (11.0592 MHz) -->
+      <g transform="translate(0, 56)">
+        <rect width="44" height="30" rx="3" fill="#64748B" stroke="#CBD5E1" stroke-width="1" />
+        <text x="22" y="14" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="6" font-weight="700" text-anchor="middle">11.0592</text>
+        <text x="22" y="23" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="5.5" text-anchor="middle">MHz XTAL</text>
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- CENTER: AT89C51 40-PIN SOCKETED MCU        -->
+    <!-- ========================================== -->
+    <g transform="translate(180, 50)">
+      <!-- IC Socket Border -->
+      <rect width="180" height="230" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1.4" />
+      <path d="M 76 50 A 14 14 0 0 0 104 50 Z" fill="#064E3B" stroke="#10B981" stroke-width="1" />
+
+      <!-- Chip Pins Representation -->
+      <g fill="#CBD5E1">
+        <!-- Left pins -->
+        <rect x="-8" y="65" width="10" height="4" rx="1" />
+        <rect x="-8" y="77" width="10" height="4" rx="1" />
+        <rect x="-8" y="89" width="10" height="4" rx="1" />
+        <rect x="-8" y="101" width="10" height="4" rx="1" />
+        <rect x="-8" y="113" width="10" height="4" rx="1" />
+        <rect x="-8" y="125" width="10" height="4" rx="1" />
+        <rect x="-8" y="137" width="10" height="4" rx="1" />
+        <rect x="-8" y="149" width="10" height="4" rx="1" />
+        <rect x="-8" y="161" width="10" height="4" rx="1" />
+        <rect x="-8" y="173" width="10" height="4" rx="1" />
+        <rect x="-8" y="185" width="10" height="4" rx="1" />
+        <rect x="-8" y="197" width="10" height="4" rx="1" />
+        <rect x="-8" y="209" width="10" height="4" rx="1" />
+        <rect x="-8" y="221" width="10" height="4" rx="1" />
+
+        <!-- Right pins -->
+        <rect x="178" y="65" width="10" height="4" rx="1" />
+        <rect x="178" y="77" width="10" height="4" rx="1" />
+        <rect x="178" y="89" width="10" height="4" rx="1" />
+        <rect x="178" y="101" width="10" height="4" rx="1" />
+        <rect x="178" y="113" width="10" height="4" rx="1" />
+        <rect x="178" y="125" width="10" height="4" rx="1" />
+        <rect x="178" y="137" width="10" height="4" rx="1" />
+        <rect x="178" y="149" width="10" height="4" rx="1" />
+        <rect x="178" y="161" width="10" height="4" rx="1" />
+        <rect x="178" y="173" width="10" height="4" rx="1" />
+        <rect x="178" y="185" width="10" height="4" rx="1" />
+        <rect x="178" y="197" width="10" height="4" rx="1" />
+        <rect x="178" y="209" width="10" height="4" rx="1" />
+        <rect x="178" y="221" width="10" height="4" rx="1" />
+      </g>
+
+      <!-- AT89C51 Epoxy Body -->
+      <rect x="8" y="56" width="164" height="170" rx="5" fill="#1E293B" stroke="#34D399" stroke-width="1.2" />
+
+      <!-- Silkscreen on AT89C51 -->
+      <g font-family="'IBM Plex Mono', monospace" text-anchor="middle">
+        <text x="90" y="88" fill="#FBBF24" font-size="11" font-weight="700">AIMEL</text>
+        <text x="90" y="108" fill="#FFFFFF" font-size="12" font-weight="700">AT89C51</text>
+        <text x="90" y="124" fill="#34D399" font-size="7.5" font-weight="600">24PC · FLASH MCU</text>
+        <line x1="30" y1="134" x2="150" y2="134" stroke="rgba(148,163,184,0.2)" stroke-width="1" />
+        <text x="90" y="150" fill="#94A3B8" font-size="7">8051 INSTRUCTION SET</text>
+        <text x="90" y="164" fill="#94A3B8" font-size="7">4 KB RE-FLASHABLE ROM</text>
+        <text x="90" y="178" fill="#94A3B8" font-size="7">128 BYTES ON-CHIP RAM</text>
+        <text x="90" y="192" fill="#94A3B8" font-size="7">4 PORTS · 32 I/O PINS</text>
+        <text x="90" y="210" fill="#64748B" font-size="6">STANDARD 40-PIN DIP</text>
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- RIGHT SIDE: FAMILIAR LAB PERIPHERALS       -->
+    <!-- ========================================== -->
+
+    <!-- Peripheral 1: 8x User LEDs (Port 1) -->
+    <g transform="translate(385, 50)">
+      <rect width="270" height="52" rx="5" fill="#0F172A" stroke="rgba(52, 211, 153, 0.3)" stroke-width="1" />
+      <text x="12" y="16" fill="#34D399" font-size="7.5" font-weight="700">8× USER LEDS (PORT 1)</text>
+      <text x="258" y="16" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="end">P1.0 → P1.7</text>
+
+      <!-- 8 LEDs row -->
+      <g transform="translate(18, 24)">
+        <circle cx="10" cy="12" r="5.5" fill="#10B981" />
+        <circle cx="40" cy="12" r="5.5" fill="#10B981" />
+        <circle cx="70" cy="12" r="5.5" fill="#10B981" />
+        <circle cx="100" cy="12" r="5.5" fill="#10B981" />
+        <circle cx="130" cy="12" r="5.5" fill="#F59E0B" />
+        <circle cx="160" cy="12" r="5.5" fill="#F59E0B" />
+        <circle cx="190" cy="12" r="5.5" fill="#F59E0B" />
+        <circle cx="220" cy="12" r="5.5" fill="#F59E0B" />
+      </g>
+    </g>
+
+    <!-- Peripheral 2: 7-Segment Display (Port 0) -->
+    <g transform="translate(385, 110)">
+      <rect width="130" height="96" rx="5" fill="#0F172A" stroke="rgba(56, 189, 248, 0.3)" stroke-width="1" />
+      <text x="10" y="16" fill="#38BDF8" font-size="7.5" font-weight="700">7-SEG DISPLAY</text>
+      <text x="120" y="16" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="end">PORT 0</text>
+
+      <!-- 7-Segment Digit Graphic -->
+      <g transform="translate(48, 26)">
+        <rect width="34" height="60" rx="3" fill="#1E293B" stroke="#334155" stroke-width="1" />
+        <!-- Glowing '8' Segments in Red/Pink -->
+        <rect x="6" y="6" width="22" height="4" fill="#F43F5E" rx="1" />
+        <rect x="4" y="8" width="4" height="20" fill="#F43F5E" rx="1" />
+        <rect x="26" y="8" width="4" height="20" fill="#F43F5E" rx="1" />
+        <rect x="6" y="27" width="22" height="4" fill="#F43F5E" rx="1" />
+        <rect x="4" y="30" width="4" height="20" fill="#F43F5E" rx="1" />
+        <rect x="26" y="30" width="4" height="20" fill="#F43F5E" rx="1" />
+        <rect x="6" y="49" width="22" height="4" fill="#F43F5E" rx="1" />
+        <circle cx="31" cy="53" r="1.5" fill="#F43F5E" />
+      </g>
+    </g>
+
+    <!-- Peripheral 3: 4x Push Buttons / Switches (Port 3) -->
+    <g transform="translate(525, 110)">
+      <rect width="130" height="96" rx="5" fill="#0F172A" stroke="rgba(251, 191, 36, 0.3)" stroke-width="1" />
+      <text x="10" y="16" fill="#FBBF24" font-size="7.5" font-weight="700">INPUT SWITCHES</text>
+      <text x="120" y="16" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="end">PORT 3</text>
+
+      <!-- 4 Tactile Switches -->
+      <g transform="translate(18, 30)">
+        <rect x="0" y="0" width="40" height="24" rx="3" fill="#1E293B" stroke="#64748B" stroke-width="1" />
+        <circle cx="20" cy="12" r="5" fill="#F59E0B" />
+        <rect x="54" y="0" width="40" height="24" rx="3" fill="#1E293B" stroke="#64748B" stroke-width="1" />
+        <circle cx="74" cy="12" r="5" fill="#F59E0B" />
+
+        <rect x="0" y="32" width="40" height="24" rx="3" fill="#1E293B" stroke="#64748B" stroke-width="1" />
+        <circle cx="20" cy="44" r="5" fill="#F59E0B" />
+        <rect x="54" y="32" width="40" height="24" rx="3" fill="#1E293B" stroke="#64748B" stroke-width="1" />
+        <circle cx="74" cy="44" r="5" fill="#F59E0B" />
+      </g>
+    </g>
+
+    <!-- Peripheral 4: 16×2 Character LCD Header (Port 2) -->
+    <g transform="translate(385, 214)">
+      <rect width="270" height="66" rx="5" fill="#0F172A" stroke="rgba(167, 139, 250, 0.3)" stroke-width="1" />
+      <text x="12" y="16" fill="#A78BFA" font-size="7.5" font-weight="700">16×2 CHARACTER LCD / MOTOR INTERFACE</text>
+      <text x="258" y="16" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.5" text-anchor="end">PORT 2</text>
+
+      <!-- Green backlit miniature display -->
+      <rect x="12" y="24" width="246" height="32" rx="3" fill="#064E3B" stroke="#10B981" stroke-width="1" />
+      <text x="22" y="38" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="600">HELLO WORLD 8051</text>
+      <text x="22" y="49" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="6.5">PRAJNAEDGE LAB</text>
+    </g>
+
+  </g>
+
+  <!-- Footnote -->
+  <text x="380" y="406" fill="#64748B" font-size="7.5" text-anchor="middle">Atmel's AT89C51 introduced Flash reprogramming to the 8051 architecture, making it the definitive embedded trainer kit</text>
+</svg>

@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 410" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid-rb" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow-rb" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#grid-rb)" />
+  <rect x="12" y="12" width="736" height="386" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="380" y="38" fill="#E2E8F0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE FOUR 8051 REGISTER BANKS IN RAM (00H → 1FH)</text>
+  <text x="380" y="55" fill="#94A3B8" font-size="8.5" text-anchor="middle">How R0 through R7 map dynamically to the first 32 bytes of internal data memory</text>
+
+  <!-- ============================================================ -->
+  <!-- LEFT: 4 REGISTER BANKS DISPLAY (x=35, width=420)              -->
+  <!-- ============================================================ -->
+  <g transform="translate(35, 75)" filter="url(#shadow-rb)">
+    <rect width="430" height="285" rx="6" fill="#131B2A" stroke="rgba(167, 139, 250, 0.4)" stroke-width="1.2" />
+    <rect width="430" height="26" rx="6" fill="rgba(167, 139, 250, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#A78BFA" />
+    <text x="215" y="17" fill="#C4B5FD" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.05em">32 BYTES OF INTERNAL RAM DEDICATED TO REGISTERS</text>
+
+    <!-- Bank 0 (Default upon Reset) -->
+    <g transform="translate(15, 36)">
+      <rect width="400" height="54" rx="4" fill="#1E293B" stroke="#A78BFA" stroke-width="1.2" />
+      <rect x="0" y="0" width="80" height="54" rx="4" fill="rgba(167, 139, 250, 0.2)" />
+      <text x="40" y="24" fill="#FFFFFF" font-size="8.5" font-weight="700" text-anchor="middle">BANK 0</text>
+      <text x="40" y="38" fill="#C4B5FD" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">00H–07H</text>
+      <text x="40" y="48" fill="#34D399" font-size="6" font-weight="600" text-anchor="middle">(DEFAULT)</text>
+
+      <!-- 8 register slots -->
+      <g transform="translate(86, 6)">
+        <!-- R0 -->
+        <rect x="0" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="18" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R0</text>
+        <text x="18" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">00H</text>
+
+        <!-- R1 -->
+        <rect x="39" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="57" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R1</text>
+        <text x="57" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">01H</text>
+
+        <!-- R2 -->
+        <rect x="78" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="96" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R2</text>
+        <text x="96" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">02H</text>
+
+        <!-- R3 -->
+        <rect x="117" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="135" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R3</text>
+        <text x="135" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">03H</text>
+
+        <!-- R4 -->
+        <rect x="156" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="174" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R4</text>
+        <text x="174" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">04H</text>
+
+        <!-- R5 -->
+        <rect x="195" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="213" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R5</text>
+        <text x="213" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">05H</text>
+
+        <!-- R6 -->
+        <rect x="234" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="252" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R6</text>
+        <text x="252" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">06H</text>
+
+        <!-- R7 -->
+        <rect x="273" y="0" width="36" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.2)" />
+        <text x="291" y="16" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">R7</text>
+        <text x="291" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="6.8" text-anchor="middle">07H</text>
+      </g>
+    </g>
+
+    <!-- Bank 1 -->
+    <g transform="translate(15, 96)">
+      <rect width="400" height="54" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" />
+      <rect x="0" y="0" width="80" height="54" rx="4" fill="rgba(148, 163, 184, 0.08)" />
+      <text x="40" y="24" fill="#CBD5E1" font-size="8.5" font-weight="600" text-anchor="middle">BANK 1</text>
+      <text x="40" y="38" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">08H–0FH</text>
+
+      <g transform="translate(86, 6)">
+        <rect x="0" y="0" width="310" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.15)" />
+        <text x="155" y="24" fill="#94A3B8" font-size="8" text-anchor="middle">R0 (08H) · R1 (09H) · R2 (0AH) · R3 (0BH) · R4 (0CH) · R5 (0DH) · R6 (0EH) · R7 (0FH)</text>
+      </g>
+    </g>
+
+    <!-- Bank 2 -->
+    <g transform="translate(15, 156)">
+      <rect width="400" height="54" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" />
+      <rect x="0" y="0" width="80" height="54" rx="4" fill="rgba(148, 163, 184, 0.08)" />
+      <text x="40" y="24" fill="#CBD5E1" font-size="8.5" font-weight="600" text-anchor="middle">BANK 2</text>
+      <text x="40" y="38" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">10H–17H</text>
+
+      <g transform="translate(86, 6)">
+        <rect x="0" y="0" width="310" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.15)" />
+        <text x="155" y="24" fill="#94A3B8" font-size="8" text-anchor="middle">R0 (10H) · R1 (11H) · R2 (12H) · R3 (13H) · R4 (14H) · R5 (15H) · R6 (16H) · R7 (17H)</text>
+      </g>
+    </g>
+
+    <!-- Bank 3 -->
+    <g transform="translate(15, 216)">
+      <rect width="400" height="54" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" />
+      <rect x="0" y="0" width="80" height="54" rx="4" fill="rgba(148, 163, 184, 0.08)" />
+      <text x="40" y="24" fill="#CBD5E1" font-size="8.5" font-weight="600" text-anchor="middle">BANK 3</text>
+      <text x="40" y="38" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">18H–1FH</text>
+
+      <g transform="translate(86, 6)">
+        <rect x="0" y="0" width="310" height="42" rx="3" fill="#0B1120" stroke="rgba(148, 163, 184, 0.15)" />
+        <text x="155" y="24" fill="#94A3B8" font-size="8" text-anchor="middle">R0 (18H) · R1 (19H) · R2 (1AH) · R3 (1BH) · R4 (1CH) · R5 (1DH) · R6 (1EH) · R7 (1FH)</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- RIGHT: PSW BANK SWITCHING LOGIC (x=485, width=240)            -->
+  <!-- ============================================================ -->
+  <g transform="translate(485, 75)" filter="url(#shadow-rb)">
+    <rect width="240" height="285" rx="6" fill="#131B2A" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.2" />
+    <rect width="240" height="26" rx="6" fill="rgba(56, 189, 248, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#38BDF8" />
+    <text x="120" y="17" fill="#7DD3FC" font-size="9" font-weight="700" text-anchor="middle" letter-spacing="0.05em">PSW SELECTION (RS1 : RS0)</text>
+
+    <!-- Conceptual Explanation -->
+    <g transform="translate(12, 36)">
+      <text x="0" y="14" fill="#E2E8F0" font-size="8" font-weight="600">The Program Status Word (PSW)</text>
+      <text x="0" y="28" fill="#94A3B8" font-size="7.5">contains two bits that select the bank:</text>
+      <text x="0" y="42" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700">Bit 4 = RS1 · Bit 3 = RS0</text>
+    </g>
+
+    <!-- Selection Table -->
+    <g transform="translate(12, 90)">
+      <rect width="216" height="114" rx="4" fill="#1E293B" stroke="rgba(148, 163, 184, 0.2)" />
+      
+      <!-- Table Header -->
+      <rect width="216" height="22" rx="4" fill="rgba(148, 163, 184, 0.1)" />
+      <text x="35" y="15" fill="#CBD5E1" font-size="7.5" font-weight="700" text-anchor="middle">RS1</text>
+      <text x="75" y="15" fill="#CBD5E1" font-size="7.5" font-weight="700" text-anchor="middle">RS0</text>
+      <text x="125" y="15" fill="#CBD5E1" font-size="7.5" font-weight="700" text-anchor="middle">ACTIVE BANK</text>
+      <text x="185" y="15" fill="#CBD5E1" font-size="7.5" font-weight="700" text-anchor="middle">RAM RANGE</text>
+
+      <!-- Row 0 -->
+      <text x="35" y="38" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">0</text>
+      <text x="75" y="38" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">0</text>
+      <text x="125" y="38" fill="#FFFFFF" font-weight="700" font-size="8" text-anchor="middle">Bank 0</text>
+      <text x="185" y="38" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">00H–07H</text>
+
+      <!-- Row 1 -->
+      <line x1="10" y1="46" x2="206" y2="46" stroke="rgba(148, 163, 184, 0.1)" />
+      <text x="35" y="60" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">0</text>
+      <text x="75" y="60" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">1</text>
+      <text x="125" y="60" fill="#CBD5E1" font-size="8" text-anchor="middle">Bank 1</text>
+      <text x="185" y="60" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">08H–0FH</text>
+
+      <!-- Row 2 -->
+      <line x1="10" y1="68" x2="206" y2="68" stroke="rgba(148, 163, 184, 0.1)" />
+      <text x="35" y="82" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">1</text>
+      <text x="75" y="82" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">0</text>
+      <text x="125" y="82" fill="#CBD5E1" font-size="8" text-anchor="middle">Bank 2</text>
+      <text x="185" y="82" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">10H–17H</text>
+
+      <!-- Row 3 -->
+      <line x1="10" y1="90" x2="206" y2="90" stroke="rgba(148, 163, 184, 0.1)" />
+      <text x="35" y="104" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">1</text>
+      <text x="75" y="104" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8" text-anchor="middle">1</text>
+      <text x="125" y="104" fill="#CBD5E1" font-size="8" text-anchor="middle">Bank 3</text>
+      <text x="185" y="104" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5" text-anchor="middle">18H–1FH</text>
+    </g>
+
+    <!-- Key takeaway box -->
+    <g transform="translate(12, 214)">
+      <rect width="216" height="58" rx="4" fill="rgba(56, 189, 248, 0.08)" stroke="rgba(56, 189, 248, 0.25)" />
+      <text x="108" y="18" fill="#38BDF8" font-size="7.5" font-weight="700" text-anchor="middle">Same Register Name · Different RAM</text>
+      <text x="108" y="34" fill="#CBD5E1" font-size="7" text-anchor="middle">"MOV A, R0" accesses 00H under Bank 0,</text>
+      <text x="108" y="48" fill="#CBD5E1" font-size="7" text-anchor="middle">but accesses 18H under Bank 3.</text>
+    </g>
+  </g>
+
+  <!-- Bottom banner -->
+  <rect x="35" y="372" width="690" height="20" rx="4" fill="rgba(148, 163, 184, 0.05)" />
+  <text x="380" y="386" fill="#64748B" font-size="7.5" text-anchor="middle">Fast Context Switching: Interrupt Service Routines can switch to another bank without pushing all 8 registers to the stack</text>
+</svg>

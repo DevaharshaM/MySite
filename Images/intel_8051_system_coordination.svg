@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid-sys" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow-sys" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#grid-sys)" />
+  <rect x="12" y="12" width="736" height="396" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="380" y="34" fill="#E2E8F0" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE 8051 COORDINATED CONTROLLER PIPELINE</text>
+  <text x="380" y="49" fill="#94A3B8" font-size="8.5" text-anchor="middle">How firmware instructions, CPU execution, internal storage, peripherals, and physical pins unite to govern machines</text>
+
+  <!-- Level 1: PROGRAM MEMORY (Firmware) -->
+  <g transform="translate(260, 64)" filter="url(#shadow-sys)">
+    <rect width="240" height="36" rx="5" fill="#1E293B" stroke="#A78BFA" stroke-width="1.2" />
+    <text x="120" y="17" fill="#C4B5FD" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="700" text-anchor="middle">PROGRAM MEMORY (ROM / FLASH)</text>
+    <text x="120" y="28" fill="#94A3B8" font-size="7" text-anchor="middle">Stores Firmware Instructions (What to do)</text>
+  </g>
+
+  <!-- Down arrow to CPU -->
+  <line x1="380" y1="100" x2="380" y2="118" stroke="#A78BFA" stroke-width="1.5" />
+  <polygon points="380,118 376,112 384,112" fill="#A78BFA" />
+
+  <!-- Level 2: CPU CORE -->
+  <g transform="translate(240, 120)" filter="url(#shadow-sys)">
+    <rect width="280" height="42" rx="5" fill="#131B2A" stroke="#38BDF8" stroke-width="1.4" />
+    <text x="140" y="20" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="9.5" font-weight="700" text-anchor="middle">CPU CORE (ALU, A, B, PC, DPTR, PSW)</text>
+    <text x="140" y="33" fill="#E2E8F0" font-size="7.5" text-anchor="middle">Fetches, decodes, calculates, and coordinates all activity</text>
+  </g>
+
+  <!-- Branching arrows from CPU to RAM, SFRs, CONTROL -->
+  <path d="M 330 162 L 330 174 L 175 174 L 175 186" fill="none" stroke="#34D399" stroke-width="1.4" />
+  <polygon points="175,186 171,180 179,180" fill="#34D399" />
+
+  <line x1="380" y1="162" x2="380" y2="186" stroke="#F59E0B" stroke-width="1.4" />
+  <polygon points="380,186 376,180 384,180" fill="#F59E0B" />
+
+  <path d="M 430 162 L 430 174 L 585 174 L 585 186" fill="none" stroke="#60A5FA" stroke-width="1.4" />
+  <polygon points="585,186 581,180 589,180" fill="#60A5FA" />
+
+  <!-- Level 3: MEMORY & CONTROL TRIAD -->
+  <!-- Left: RAM -->
+  <g transform="translate(70, 188)" filter="url(#shadow-sys)">
+    <rect width="210" height="38" rx="5" fill="#1E293B" stroke="#34D399" stroke-width="1.2" />
+    <text x="105" y="16" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">INTERNAL RAM (128 BYTES)</text>
+    <text x="105" y="28" fill="#94A3B8" font-size="6.8" text-anchor="middle">Variables, Register Banks &amp; Stack</text>
+  </g>
+
+  <!-- Center: SFRs -->
+  <g transform="translate(295, 188)" filter="url(#shadow-sys)">
+    <rect width="170" height="38" rx="5" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2" />
+    <text x="85" y="16" fill="#FBBF24" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">SPECIAL FUNCTION REGS</text>
+    <text x="85" y="28" fill="#94A3B8" font-size="6.8" text-anchor="middle">Control &amp; Status of Hardware</text>
+  </g>
+
+  <!-- Right: CLOCK & CONTROL -->
+  <g transform="translate(480, 188)" filter="url(#shadow-sys)">
+    <rect width="210" height="38" rx="5" fill="#1E293B" stroke="#60A5FA" stroke-width="1.2" />
+    <text x="105" y="16" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">TIMING &amp; CLOCK ENGINE</text>
+    <text x="105" y="28" fill="#94A3B8" font-size="6.8" text-anchor="middle">Oscillator (12 Osc Cycles / Machine Cycle)</text>
+  </g>
+
+  <!-- Down arrow from SFRs to Peripherals Bus -->
+  <line x1="380" y1="226" x2="380" y2="246" stroke="#F59E0B" stroke-width="1.4" />
+  <polygon points="380,246 376,240 384,240" fill="#F59E0B" />
+
+  <!-- Peripheral Dispatch Bar -->
+  <line x1="175" y1="246" x2="585" y2="246" stroke="#F59E0B" stroke-width="1.2" stroke-dasharray="3,3" />
+
+  <!-- Level 4: PERIPHERAL ENGINES -->
+  <!-- Ports -->
+  <g transform="translate(70, 258)" filter="url(#shadow-sys)">
+    <rect width="190" height="42" rx="5" fill="#131B2A" stroke="#3B82F6" stroke-width="1.2" />
+    <text x="95" y="18" fill="#60A5FA" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">FOUR 8-BIT PORTS (P0–P3)</text>
+    <text x="95" y="32" fill="#94A3B8" font-size="6.8" text-anchor="middle">32 Parallel Digital I/O Lines</text>
+  </g>
+
+  <!-- Timers -->
+  <g transform="translate(285, 258)" filter="url(#shadow-sys)">
+    <rect width="190" height="42" rx="5" fill="#131B2A" stroke="#EAB308" stroke-width="1.2" />
+    <text x="95" y="18" fill="#FDE047" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">TWO 16-BIT TIMERS (T0, T1)</text>
+    <text x="95" y="32" fill="#94A3B8" font-size="6.8" text-anchor="middle">Precision Timing &amp; Event Counting</text>
+  </g>
+
+  <!-- Serial -->
+  <g transform="translate(500, 258)" filter="url(#shadow-sys)">
+    <rect width="190" height="42" rx="5" fill="#131B2A" stroke="#38BDF8" stroke-width="1.2" />
+    <text x="95" y="18" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">SERIAL PORT (UART)</text>
+    <text x="95" y="32" fill="#94A3B8" font-size="6.8" text-anchor="middle">Full-Duplex Communication</text>
+  </g>
+
+  <!-- Peripheral lines to Interrupts -->
+  <line x1="165" y1="246" x2="165" y2="258" stroke="#F59E0B" stroke-width="1.2" />
+  <line x1="380" y1="246" x2="380" y2="258" stroke="#F59E0B" stroke-width="1.2" />
+  <line x1="595" y1="246" x2="595" y2="258" stroke="#F59E0B" stroke-width="1.2" />
+
+  <!-- Interrupt System Banner -->
+  <g transform="translate(170, 314)" filter="url(#shadow-sys)">
+    <rect width="420" height="28" rx="4" fill="#1E293B" stroke="#EC4899" stroke-width="1.2" />
+    <text x="210" y="18" fill="#F472B6" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">INTERRUPT SYSTEM · 5 HARDWARE SOURCES (2 PRIORITY LEVELS)</text>
+  </g>
+
+  <!-- Down line to I/O Pins -->
+  <line x1="380" y1="342" x2="380" y2="356" stroke="#3B82F6" stroke-width="1.4" />
+  <polygon points="380,356 376,350 384,350" fill="#38BDF8" />
+
+  <!-- Level 5: PHYSICAL PINS & EXTERNAL MACHINE -->
+  <g transform="translate(140, 358)">
+    <rect width="480" height="34" rx="5" fill="#1E293B" stroke="#10B981" stroke-width="1.2" />
+    <text x="240" y="15" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="700" text-anchor="middle">40 PHYSICAL PINS (DIP-40 PACKAGE BOUNDARY)</text>
+    <text x="240" y="27" fill="#E2E8F0" font-size="7" text-anchor="middle">Switches · Sensors · Displays · Motors · Relays · External Machine</text>
+  </g>
+</svg>

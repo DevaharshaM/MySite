@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid-comb" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow-comb" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#grid-comb)" />
+  <rect x="12" y="12" width="736" height="436" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="380" y="38" fill="#E2E8F0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE UNIFIED 8051 MEMORY ARCHITECTURE</text>
+  <text x="380" y="55" fill="#94A3B8" font-size="8.5" text-anchor="middle">Hierarchical Map of Program Code Memory, Internal Data RAM, and Hardware SFRs</text>
+
+  <!-- ROOT NODE: 8051 ADDRESSING (x=380, y=75) -->
+  <g transform="translate(290, 72)" filter="url(#shadow-comb)">
+    <rect width="180" height="36" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" />
+    <text x="90" y="22" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="9.5" font-weight="700" text-anchor="middle">8051 ADDRESSING</text>
+  </g>
+
+  <!-- Connectors from Root to 2 main spaces -->
+  <path d="M 380 108 L 380 128 L 180 128 L 180 148" fill="none" stroke="rgba(148, 163, 184, 0.4)" stroke-width="1.5" />
+  <path d="M 380 128 L 540 128 L 540 148" fill="none" stroke="rgba(148, 163, 184, 0.4)" stroke-width="1.5" />
+
+  <!-- ============================================================ -->
+  <!-- BRANCH 1: PROGRAM MEMORY SPACE (x=50, y=148, width=260)     -->
+  <!-- ============================================================ -->
+  <g transform="translate(50, 148)" filter="url(#shadow-comb)">
+    <rect width="260" height="260" rx="6" fill="#131B2A" stroke="#A78BFA" stroke-width="1.2" />
+    <rect width="260" height="28" rx="6" fill="rgba(167, 139, 250, 0.15)" />
+    <circle cx="15" cy="14" r="3.5" fill="#A78BFA" />
+    <text x="130" y="18" fill="#DDD6FE" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="700" text-anchor="middle">PROGRAM SPACE · 0000H–FFFFH</text>
+
+    <!-- Subtitle -->
+    <text x="130" y="44" fill="#94A3B8" font-size="7.5" text-anchor="middle">16-Bit Addresses · Up to 64 KB Code</text>
+
+    <!-- Sub-block 1: On-Chip ROM -->
+    <g transform="translate(15, 56)">
+      <rect width="230" height="80" rx="4" fill="#1E293B" stroke="#A78BFA" stroke-width="1.2" />
+      <text x="15" y="22" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="700">INTERNAL ON-CHIP ROM</text>
+      <text x="15" y="38" fill="#C4B5FD" font-family="'IBM Plex Mono', monospace" font-size="7.5">0000H → 0FFFH (4 KB)</text>
+      <text x="15" y="54" fill="#CBD5E1" font-size="7">Classic 8051 firmware storage</text>
+      <text x="15" y="68" fill="#94A3B8" font-size="7">Contains Reset Vector (0000H) &amp; IVT</text>
+    </g>
+
+    <!-- Sub-block 2: External ROM Region -->
+    <g transform="translate(15, 148)">
+      <rect width="230" height="66" rx="4" fill="#0B1120" stroke="rgba(167, 139, 250, 0.3)" stroke-width="1" stroke-dasharray="3,3" />
+      <text x="15" y="20" fill="#C4B5FD" font-family="'IBM Plex Mono', monospace" font-size="8" font-weight="600">EXTERNAL PROGRAM SPACE</text>
+      <text x="15" y="34" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7.5">1000H → FFFFH (60 KB)</text>
+      <text x="15" y="48" fill="#64748B" font-size="7">Expansion space off-chip</text>
+      <text x="15" y="58" fill="#64748B" font-size="7">(or internal Flash in modern derivatives)</text>
+    </g>
+
+    <!-- Tag at bottom -->
+    <rect x="15" y="224" width="230" height="22" rx="3" fill="rgba(167, 139, 250, 0.08)" />
+    <text x="130" y="238" fill="#A78BFA" font-size="7" font-weight="600" text-anchor="middle">Addressed by 16-bit PC · Read-Only at Runtime</text>
+  </g>
+
+  <!-- ============================================================ -->
+  <!-- BRANCH 2: DATA MEMORY SPACE (x=350, y=148, width=360)       -->
+  <!-- ============================================================ -->
+  <g transform="translate(340, 148)" filter="url(#shadow-comb)">
+    <rect width="375" height="260" rx="6" fill="#131B2A" stroke="#38BDF8" stroke-width="1.2" />
+    <rect width="375" height="28" rx="6" fill="rgba(56, 189, 248, 0.15)" />
+    <circle cx="15" cy="14" r="3.5" fill="#38BDF8" />
+    <text x="187" y="18" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="8.5" font-weight="700" text-anchor="middle">INTERNAL DATA SPACE · 00H–FFH (256 BYTES)</text>
+
+    <!-- Split Header: RAM vs SFR -->
+    <g transform="translate(15, 36)">
+      <!-- Left Split: Internal RAM (00H-7FH) -->
+      <g transform="translate(0, 0)">
+        <rect width="215" height="206" rx="5" fill="#0F172A" stroke="#34D399" stroke-width="1.2" />
+        <rect width="215" height="22" rx="5" fill="rgba(52, 211, 153, 0.15)" />
+        <text x="107" y="15" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="7.5" font-weight="700" text-anchor="middle">INTERNAL RAM · 00H–7FH</text>
+
+        <!-- Reg Banks -->
+        <g transform="translate(10, 30)">
+          <rect width="195" height="42" rx="3" fill="#1E293B" stroke="rgba(167, 139, 250, 0.3)" />
+          <text x="10" y="18" fill="#C4B5FD" font-size="7.5" font-weight="700">REGISTER BANKS 0–3</text>
+          <text x="10" y="32" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="7">00H → 1FH (32 Bytes · R0–R7)</text>
+        </g>
+
+        <!-- Bit-Addressable RAM -->
+        <g transform="translate(10, 80)">
+          <rect width="195" height="46" rx="3" fill="#1E293B" stroke="rgba(56, 189, 248, 0.3)" />
+          <text x="10" y="18" fill="#38BDF8" font-size="7.5" font-weight="700">BIT-ADDRESSABLE RAM</text>
+          <text x="10" y="30" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="7">20H → 2FH (16 Bytes)</text>
+          <text x="10" y="41" fill="#94A3B8" font-size="6.5">128 Individually Addressable Bits</text>
+        </g>
+
+        <!-- General RAM -->
+        <g transform="translate(10, 134)">
+          <rect width="195" height="46" rx="3" fill="#1E293B" stroke="rgba(52, 211, 153, 0.3)" />
+          <text x="10" y="18" fill="#34D399" font-size="7.5" font-weight="700">GENERAL-PURPOSE RAM</text>
+          <text x="10" y="30" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="7">30H → 7FH (80 Bytes)</text>
+          <text x="10" y="41" fill="#94A3B8" font-size="6.5">Variables, Arrays &amp; Hardware Stack</text>
+        </g>
+
+        <text x="107" y="196" fill="#34D399" font-size="6.5" font-weight="600" text-anchor="middle">Physical RAM Cells (True Storage)</text>
+      </g>
+
+      <!-- Right Split: SFR Space (80H-FFH) -->
+      <g transform="translate(225, 0)">
+        <rect width="120" height="206" rx="5" fill="#0F172A" stroke="#F59E0B" stroke-width="1.2" />
+        <rect width="120" height="22" rx="5" fill="rgba(245, 158, 11, 0.15)" />
+        <text x="60" y="15" fill="#FBBF24" font-family="'IBM Plex Mono', monospace" font-size="7" font-weight="700" text-anchor="middle">SFRs · 80H–FFH</text>
+
+        <g transform="translate(8, 30)">
+          <rect width="104" height="34" rx="3" fill="#1E293B" stroke="rgba(245, 158, 11, 0.2)" />
+          <text x="52" y="15" fill="#FDE68A" font-size="6.8" font-weight="700" text-anchor="middle">CPU REGISTERS</text>
+          <text x="52" y="27" fill="#CBD5E1" font-size="6.2" text-anchor="middle">ACC, B, PSW, SP</text>
+        </g>
+
+        <g transform="translate(8, 70)">
+          <rect width="104" height="34" rx="3" fill="#1E293B" stroke="rgba(56, 189, 248, 0.2)" />
+          <text x="52" y="15" fill="#7DD3FC" font-size="6.8" font-weight="700" text-anchor="middle">I/O PORTS</text>
+          <text x="52" y="27" fill="#CBD5E1" font-size="6.2" text-anchor="middle">P0, P1, P2, P3</text>
+        </g>
+
+        <g transform="translate(8, 110)">
+          <rect width="104" height="42" rx="3" fill="#1E293B" stroke="rgba(167, 139, 250, 0.2)" />
+          <text x="52" y="15" fill="#DDD6FE" font-size="6.8" font-weight="700" text-anchor="middle">PERIPHERALS</text>
+          <text x="52" y="27" fill="#CBD5E1" font-size="6.2" text-anchor="middle">TCON, TMOD</text>
+          <text x="52" y="37" fill="#CBD5E1" font-size="6.2" text-anchor="middle">SCON, SBUF, IE, IP</text>
+        </g>
+
+        <g transform="translate(8, 160)">
+          <rect width="104" height="26" rx="3" fill="rgba(245, 158, 11, 0.08)" />
+          <text x="52" y="16" fill="#F59E0B" font-size="6" font-weight="700" text-anchor="middle">NOT ORDINARY RAM</text>
+        </g>
+
+        <text x="60" y="196" fill="#94A3B8" font-size="6" text-anchor="middle">Hardware Control Latches</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Bottom banner -->
+  <rect x="50" y="420" width="665" height="18" rx="4" fill="rgba(148, 163, 184, 0.05)" />
+  <text x="380" y="433" fill="#94A3B8" font-size="7.5" text-anchor="middle">To the programmer, the 8051 is an orderly constellation of addresses · Behind every address is physical silicon ready to act</text>
+</svg>

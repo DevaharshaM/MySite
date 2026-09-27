@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 390" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">TCON (88H) &#8212; THE DUAL-NATURE REGISTER</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Where hardware timing controls meet external interrupt triggers on the 8051 surface</text>
+
+  <!-- TCON REGISTER CONTAINER -->
+  <g transform="translate(60, 85)">
+    <rect width="820" height="110" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect width="820" height="26" rx="8" fill="#1E293B" />
+    <text x="410" y="18" text-anchor="middle" fill="#94A3B8" font-size="11" font-weight="700" letter-spacing="0.05em">TCON (88H) &#8212; BIT-ADDRESSABLE SPECIAL FUNCTION REGISTER</text>
+
+    <!-- 8 Bit Cells -->
+    <!-- Bit 7: TF1 -->
+    <g transform="translate(20, 36)">
+      <rect width="90" height="60" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="45" y="16" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="600">Bit 7 (8FH)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">TF1</text>
+      <text x="45" y="50" text-anchor="middle" fill="#BAE6FD" font-size="8">Timer 1 Flag</text>
+    </g>
+
+    <!-- Bit 6: TR1 -->
+    <g transform="translate(118, 36)">
+      <rect width="90" height="60" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="45" y="16" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="600">Bit 6 (8EH)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">TR1</text>
+      <text x="45" y="50" text-anchor="middle" fill="#BAE6FD" font-size="8">Timer 1 Run</text>
+    </g>
+
+    <!-- Bit 5: TF0 -->
+    <g transform="translate(216, 36)">
+      <rect width="90" height="60" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="45" y="16" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="600">Bit 5 (8DH)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">TF0</text>
+      <text x="45" y="50" text-anchor="middle" fill="#BAE6FD" font-size="8">Timer 0 Flag</text>
+    </g>
+
+    <!-- Bit 4: TR0 -->
+    <g transform="translate(314, 36)">
+      <rect width="90" height="60" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="45" y="16" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="600">Bit 4 (8CH)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">TR0</text>
+      <text x="45" y="50" text-anchor="middle" fill="#BAE6FD" font-size="8">Timer 0 Run</text>
+    </g>
+
+    <!-- Boundary Divider -->
+    <line x1="410" y1="30" x2="410" y2="102" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4,4" />
+
+    <!-- Bit 3: IE1 -->
+    <g transform="translate(416, 36)">
+      <rect width="90" height="60" rx="4" fill="#78350F" stroke="#F59E0B" stroke-width="1.8" />
+      <text x="45" y="16" text-anchor="middle" fill="#FDE68A" font-size="9" font-weight="700">Bit 3 (8BH)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">IE1</text>
+      <text x="45" y="50" text-anchor="middle" fill="#FEF08A" font-size="8">Ext Int 1 Flag</text>
+    </g>
+
+    <!-- Bit 2: IT1 -->
+    <g transform="translate(514, 36)">
+      <rect width="90" height="60" rx="4" fill="#78350F" stroke="#F59E0B" stroke-width="1.8" />
+      <text x="45" y="16" text-anchor="middle" fill="#FDE68A" font-size="9" font-weight="700">Bit 2 (8AH)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">IT1</text>
+      <text x="45" y="50" text-anchor="middle" fill="#FEF08A" font-size="8">Type 1 Select</text>
+    </g>
+
+    <!-- Bit 1: IE0 -->
+    <g transform="translate(612, 36)">
+      <rect width="90" height="60" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1.8" />
+      <text x="45" y="16" text-anchor="middle" fill="#6EE7B7" font-size="9" font-weight="700">Bit 1 (89H)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">IE0</text>
+      <text x="45" y="50" text-anchor="middle" fill="#A7F3D0" font-size="8">Ext Int 0 Flag</text>
+    </g>
+
+    <!-- Bit 0: IT0 -->
+    <g transform="translate(710, 36)">
+      <rect width="90" height="60" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1.8" />
+      <text x="45" y="16" text-anchor="middle" fill="#6EE7B7" font-size="9" font-weight="700">Bit 0 (88H)</text>
+      <text x="45" y="34" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">IT0</text>
+      <text x="45" y="50" text-anchor="middle" fill="#A7F3D0" font-size="8">Type 0 Select</text>
+    </g>
+  </g>
+
+  <!-- ANNOTATIONS BELOW -->
+  <g transform="translate(60, 215)">
+    <!-- Left: Timers -->
+    <g transform="translate(0, 0)">
+      <rect width="385" height="135" rx="6" fill="#1E293B" stroke="#38BDF8" stroke-width="1" />
+      <text x="20" y="24" fill="#38BDF8" font-size="11" font-weight="700">&#9650; UPPER NIBBLE: TIMERS (BITS 7..4)</text>
+      <text x="20" y="46" fill="#CBD5E1" font-size="11">&#8226; <tspan fill="#38BDF8" font-weight="600">TR0, TR1:</tspan> Software run gates that start/stop counting.</text>
+      <text x="20" y="68" fill="#CBD5E1" font-size="11">&#8226; <tspan fill="#38BDF8" font-weight="600">TF0, TF1:</tspan> Hardware overflow flags raised on rollover.</text>
+      <text x="20" y="90" fill="#94A3B8" font-size="10">Explored thoroughly in previous chapters as the heartbeat of machine timing.</text>
+      <rect x="20" y="102" width="345" height="20" rx="3" fill="#0F172A" />
+      <text x="192" y="116" text-anchor="middle" fill="#38BDF8" font-size="9">Auto-cleared by CPU when branching to timer ISR</text>
+    </g>
+
+    <!-- Right: External Interrupts -->
+    <g transform="translate(435, 0)">
+      <rect width="385" height="135" rx="6" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+      <text x="20" y="24" fill="#FBBF24" font-size="11" font-weight="700">&#9650; LOWER NIBBLE: EXTERNAL INTERRUPTS (BITS 3..0)</text>
+      <text x="20" y="46" fill="#CBD5E1" font-size="11">&#8226; <tspan fill="#F59E0B" font-weight="600">IT0, IT1:</tspan> Trigger Mode. 0 = Low-Level, 1 = Falling-Edge.</text>
+      <text x="20" y="68" fill="#CBD5E1" font-size="11">&#8226; <tspan fill="#F59E0B" font-weight="600">IE0, IE1:</tspan> External Interrupt Flags (Pin INT0/INT1 state).</text>
+      <text x="20" y="90" fill="#94A3B8" font-size="10">The mystery revealed: TCON also serves as the external interrupt latch.</text>
+      <rect x="20" y="102" width="345" height="20" rx="3" fill="#0F172A" />
+      <text x="192" y="116" text-anchor="middle" fill="#FBBF24" font-size="9">In edge mode, hardware auto-clears IEx upon vectoring</text>
+    </g>
+  </g>
+</svg>

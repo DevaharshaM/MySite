@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Inside the Controller | PrajnaEdge</title>
+<meta name="description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<meta name="author" content="Devaharsha Meesarapu" />
+<link rel="canonical" href="https://prajnaedge.dev/explorations/inside-the-controller/" />
+<meta name="robots" content="index, follow" />
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://prajnaedge.dev/" />
+<meta property="og:title" content="PrajnaEdge" />
+<meta property="og:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content="https://prajnaedge.dev/" />
+<meta property="twitter:title" content="PrajnaEdge" />
+<meta property="twitter:description" content="PrajnaEdge explores embedded systems, firmware architecture, Edge AI, and intelligent computation through systems thinking." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght=600;700;800&family=DM+Sans:wght=300;400;500&family=IBM+Plex+Mono:wght=400;500&display=swap" rel="stylesheet" />
+  <!-- External Premium Stylesheet -->
+  <link rel="stylesheet" href="../../style.css" />
+  <!-- External Payment SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+  <!-- TensorFlow Lite WebAssembly Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.10/dist/tf-tflite.min.js" defer></script>
+  <!-- External Behavior and Logic -->
+  <script src="../../script.js" defer></script>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6Y8ZVQB1V0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6Y8ZVQB1V0');
+</script>
+  <!-- Google AdSense Auto Ads -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9430257211388410"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Blackhole Transition Overlay -->
+<div class="blackhole-transition-overlay" id="blackhole-transition-overlay"></div>
+
+<!-- Design Language Guide Overlay -->
+<div class="nav-tutorial-overlay" id="nav-tutorial-overlay">
+  <div class="nav-tutorial-modal">
+    <h3>How PrajnaEdge Works</h3>
+    <p style="max-width: 500px; margin-left: auto; margin-right: auto;">
+      PrajnaEdge is not navigated like a conventional website. Knowledge is represented through paths, structures, and transitions.
+    </p>
+    
+    <div class="diagram-flow">
+      <!-- 1. Node -->
+      <div class="diagram-branch">
+        <div class="concept-visual nodes-click-visual" aria-hidden="true">
+          <div class="guide-mini-node active">
+            <span>Matter</span>
+            <div class="guide-node-ring"></div>
+            <svg viewBox="0 0 24 24" class="guide-cursor-hand node-cursor">
+              <path d="M4 3l12 6-4.5 1.5L16 15l-2 1-4.5-4.5L5 15V3z" />
+            </svg>
+          </div>
+        </div>
+        <strong>Node</strong>
+        <span>Click a node name to enter that concept and continue along the awakened path.</span>
+      </div>
+
+      <!-- 2. Explorations -->
+      <div class="diagram-branch">
+        <div class="concept-visual card-visual" aria-hidden="true">
+          <div class="card-bar"></div>
+          <div class="card-line long"></div>
+          <div class="card-line short"></div>
+          <div class="card-bottom">
+            <div class="card-subline"></div>
+            <div class="card-dot"></div>
+          </div>
+        </div>
+        <strong>Explorations</strong>
+        <span>Step-by-step learning experiences containing theory, architecture, and interactive elements.</span>
+      </div>
+
+      <!-- 3. Setu -->
+      <div class="diagram-branch">
+        <div class="concept-visual setu-visual" aria-hidden="true">
+          <svg viewBox="0 0 100 40" width="80" height="30">
+            <path d="M 10 25 Q 50 5 90 25" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,3" />
+            <circle cx="10" cy="25" r="3" fill="#d97706" />
+            <circle cx="90" cy="25" r="3" fill="#d97706" />
+            <polygon points="50,7 54,12 50,17 46,12" fill="#f59e0b" />
+          </svg>
+        </div>
+        <strong>Setu</strong>
+        <span>A Setu connects related concepts that can be explored independently from the main sequence.</span>
+      </div>
+
+      <!-- 4. Vortex -->
+      <div class="diagram-branch">
+        <div class="concept-visual vortex-visual" aria-hidden="true">
+          <svg viewBox="0 0 100 100" width="50" height="50">
+            <defs>
+              <radialGradient id="guide-vortex-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#000" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="45" fill="url(#guide-vortex-glow)" />
+            <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+            <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+          </svg>
+        </div>
+        <strong>Vortex</strong>
+        <span>A Vortex opens a path toward another knowledge area, foundation, or future domain.</span>
+      </div>
+
+      <!-- 5. Blackhole -->
+      <div class="diagram-branch">
+        <div class="concept-visual blackhole-visual" aria-hidden="true">
+          <svg viewBox="0 0 110 56" width="110" height="56">
+            <!-- Dark spatial field -->
+            <rect x="1" y="1" width="108" height="54" rx="6" fill="#020617" stroke="rgba(59, 130, 246, 0.28)" stroke-width="1" />
+            
+            <!-- Sparse white cosmic stars -->
+            <circle cx="16" cy="18" r="0.75" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="28" cy="40" r="0.55" fill="#FFFFFF" opacity="0.5" />
+            <circle cx="46" cy="8" r="0.7" fill="#FFFFFF" opacity="0.75" />
+            <circle cx="64" cy="48" r="0.6" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="82" cy="10" r="0.65" fill="#FFFFFF" opacity="0.6" />
+            <circle cx="98" cy="22" r="0.75" fill="#FFFFFF" opacity="0.8" />
+            <circle cx="94" cy="44" r="0.5" fill="#FFFFFF" opacity="0.5" />
+            <circle cx="20" cy="30" r="0.5" fill="#FFFFFF" opacity="0.4" />
+            
+            <!-- Central glowing blue depth selector / Vortex control -->
+            <defs>
+              <radialGradient id="guide-bh-glow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.95" />
+                <stop offset="45%" stop-color="#1E1B4B" stop-opacity="0.75" />
+                <stop offset="100%" stop-color="#020617" stop-opacity="0.9" />
+              </radialGradient>
+            </defs>
+            <circle cx="55" cy="28" r="16.5" fill="url(#guide-bh-glow)" />
+            <path d="M 55 14 A 14 14 0 0 1 66 22 A 7 7 0 0 1 55 28" stroke="#60A5FA" stroke-width="0.9" stroke-linecap="round" fill="none" opacity="0.8" />
+            <path d="M 55 42 A 14 14 0 0 1 44 34 A 7 7 0 0 1 55 28" stroke="#60A5FA" stroke-width="0.9" stroke-linecap="round" fill="none" opacity="0.8" />
+            <circle cx="55" cy="28" r="11" fill="#020617" stroke="#3B82F6" stroke-width="1.2" />
+            <text x="55" y="26.2" font-family="'Syne', sans-serif" font-size="3" font-weight="800" fill="#60A5FA" text-anchor="middle" letter-spacing="0.06em">SELECT</text>
+            <text x="55" y="31" font-family="'Syne', sans-serif" font-size="3" font-weight="800" fill="#93C5FD" text-anchor="middle" letter-spacing="0.06em">DEPTH</text>
+            
+            <!-- Floating conceptual nodes from actual Blackhole page -->
+            <!-- Architecture -->
+            <rect x="5" y="5" width="31" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(148, 163, 184, 0.22)" stroke-width="0.5" />
+            <circle cx="8.5" cy="9.25" r="1.1" fill="#3B82F6" />
+            <text x="12" y="11.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="500" fill="#CBD5E1">Architecture</text>
+            
+            <!-- Controller (active) -->
+            <rect x="74" y="5" width="30" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(59, 130, 246, 0.55)" stroke-width="0.6" />
+            <circle cx="77.5" cy="9.25" r="1.1" fill="#60A5FA" />
+            <text x="81" y="11.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="600" fill="#FFFFFF">Controller</text>
+            
+            <!-- Digital -->
+            <rect x="6" y="42" width="22" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(148, 163, 184, 0.18)" stroke-width="0.5" />
+            <circle cx="9.5" cy="46.25" r="1.1" fill="#64748B" />
+            <text x="13" y="48.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="500" fill="#94A3B8">Digital</text>
+            
+            <!-- Processor (active) -->
+            <rect x="76" y="42" width="28" height="8.5" rx="2.5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(59, 130, 246, 0.55)" stroke-width="0.6" />
+            <circle cx="79.5" cy="46.25" r="1.1" fill="#60A5FA" />
+            <text x="83" y="48.2" font-family="'DM Sans', sans-serif" font-size="3.8" font-weight="600" fill="#FFFFFF">Processor</text>
+          </svg>
+        </div>
+        <strong>Blackhole</strong>
+        <span>A deeper exploration space opened through the Vortex, where you select the depth of investigation.</span>
+      </div>
+
+      <!-- 6. Antarguha -->
+      <div class="diagram-branch">
+        <div class="concept-visual antarguha-visual" aria-hidden="true">
+          <svg viewBox="0 0 110 56" width="110" height="56">
+            <!-- Concealed Exploration document (tucked behind regular path layer) -->
+            <g>
+              <!-- Antarguha Exploration page canvas -->
+              <rect x="7" y="3" width="76" height="50" rx="4" fill="#171426" stroke="rgba(251, 191, 36, 0.6)" stroke-width="1" />
+              
+              <!-- Mini return to explorations link -->
+              <line x1="13" y1="8" x2="28" y2="8" stroke="#A78BFA" stroke-width="1" stroke-linecap="round" opacity="0.65" />
+              
+              <!-- Clear ✦ ANTARGUHA designation -->
+              <text x="13" y="14.5" font-family="'IBM Plex Mono', monospace" font-size="4.2" font-weight="700" fill="#FBBF24" letter-spacing="0.06em">✦ ANTARGUHA</text>
+              
+              <!-- Title line (Microprocessor vs Microcontroller) -->
+              <rect x="13" y="18" width="48" height="3" rx="1" fill="#FFFFFF" opacity="0.95" />
+              <rect x="13" y="23" width="32" height="1.8" rx="0.9" fill="#DDD6FE" opacity="0.75" />
+              
+              <!-- Conceptual tags -->
+              <rect x="13" y="27" width="13" height="3" rx="1" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.35)" stroke-width="0.5" />
+              <rect x="28" y="27" width="14" height="3" rx="1" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.35)" stroke-width="0.5" />
+              <rect x="44" y="27" width="13" height="3" rx="1" fill="rgba(167, 139, 250, 0.15)" stroke="rgba(167, 139, 250, 0.35)" stroke-width="0.5" />
+              
+              <!-- Article content lines -->
+              <line x1="13" y1="34" x2="68" y2="34" stroke="#CBD5E1" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="13" y1="38" x2="56" y2="38" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="13" y1="42" x2="62" y2="42" stroke="#64748B" stroke-width="1.2" stroke-linecap="round" />
+              <line x1="13" y1="46" x2="48" y2="46" stroke="#475569" stroke-width="1.2" stroke-linecap="round" />
+            </g>
+            
+            <!-- Concealing Foreground Layer (normal visible path concealing the exploration) -->
+            <g>
+              <path d="M 52 54 L 103 54 L 103 16 L 70 16 Z" fill="#0B1120" stroke="rgba(148, 163, 184, 0.25)" stroke-width="1" />
+              <!-- Normal visible path on foreground surface -->
+              <line x1="73" y1="26" x2="98" y2="26" stroke="#334155" stroke-width="1.5" stroke-linecap="round" />
+              <circle cx="77" cy="26" r="2.2" fill="#3B82F6" />
+              <line x1="84" y1="26" x2="98" y2="26" stroke="#475569" stroke-width="1" stroke-linecap="round" />
+              
+              <line x1="73" y1="35" x2="96" y2="35" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" />
+              <line x1="73" y1="42" x2="90" y2="42" stroke="#1E293B" stroke-width="2" stroke-linecap="round" />
+              
+              <!-- Subtle dashed discovery boundary where concealed exploration emerges -->
+              <line x1="52" y1="54" x2="70" y2="16" stroke="rgba(251, 191, 36, 0.45)" stroke-width="1" stroke-dasharray="2 2" />
+            </g>
+          </svg>
+        </div>
+        <strong>Antarguha</strong>
+        <span>A concealed exploration existing outside the regular path, waiting to be discovered within the system.</span>
+      </div>
+    </div>
+    
+    <button class="tutorial-dismiss-btn" onclick="dismissNavigationTutorial()">Begin Exploration</button>
+    <p style="font-size: 0.75rem; color: var(--muted); opacity: 0.7; margin-top: 1.5rem; margin-bottom: 0;">
+      For the best experience, open PrajnaEdge on a desktop or laptop screen.
+    </p>
+  </div>
+</div>
+
+<nav>
+  <div class="nav-links">
+    <a id="nav-home" class="active" href="/" onclick="showPage('home'); return false;">Home</a>
+    <a id="nav-blogs" href="/explorations/" onclick="openDirectExplorations(); return false;">Explorations</a>
+    <a id="nav-playground" href="/playground/" onclick="showPage('playground'); return false;">Playground</a>
+    <a id="nav-products" href="/products/" onclick="showPage('products'); return false;">Products</a>
+    <a id="nav-about" href="/about/" onclick="showPage('about'); return false;">About Us</a>
+    <a id="nav-contact" href="/contact/" onclick="showPage('contact'); return false;">Contact Us</a>
+  </div>
+  <button class="nav-help-btn" onclick="openDesignLanguageGuide()" aria-label="How PrajnaEdge Works" title="How PrajnaEdge Works" style="display: none;">?</button>
+</nav>
+
+<div class="page" id="page-home">
+  <div class="empty-page" style="padding-top: 140px;">
+    <div class="empty-title" style="margin-bottom: 1.5rem;">PrajnaEdge</div>
+    <div class="empty-sub" style="max-width:600px;text-align:center;line-height:1.75;color:var(--muted);font-size:0.98rem;font-family:'DM Sans', sans-serif;margin-bottom:2.25rem;">
+      A curiosphere for curious minds who want to understand, experiment with, and experience technology.
+    </div>
+
+    <!-- Technology / Worldview Statement -->
+    <div class="home-tech-statement home-domains-overview" aria-label="Technology Statement">
+      <h2 class="home-tech-heading">Technology is a system of connections.</h2>
+      
+      <div class="home-tech-body">
+        <p>
+          Modern technology is built from layers that continuously interact with one another. At the physical level, electronic devices transform electrical signals into digital information. Digital logic turns that information into computation, while processors, memory and communication interfaces provide the machinery needed to execute instructions and move data. As these components become part of embedded systems, they begin to interact with the physical world through sensors, controllers, actuators and real-time software.
+        </p>
+
+        <p>
+          But computation does not exist in isolation. Operating systems coordinate hardware and software, firmware gives specialized machines their behaviour, and communication protocols allow independent systems to exchange information. At the same time, machine learning is moving beyond the cloud into edge and on-device systems, where models must operate within real constraints such as memory, processing power, latency and energy consumption.
+        </p>
+
+        <p>
+          PrajnaEdge explores these connections as one continuous technology landscape &mdash; and takes them beyond explanation. From computing foundations and embedded systems to intelligent machines and edge AI, ideas can be understood, experimented with, and eventually turned into technology that can be experienced in the real world.
+        </p>
+      </div>
+    </div>
+
+    <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.2em; margin-bottom:1.25rem; opacity:0.8;">
+      To continue exploring
+    </div>
+
+    <!-- Exploration Path Selection -->
+    <div class="explore-options-grid" style="margin-top: 0;">
+      <!-- UNDERSTAND -->
+      <a class="explore-option-card" href="/explorations/" onclick="openDirectExplorations(); return false;">
+        <span class="option-verb">Understand</span>
+        <span class="option-desc">Explore knowledge</span>
+      </a>
+
+      <!-- EXPERIMENT -->
+      <a class="explore-option-card" href="/playground/" onclick="showPage('playground'); return false;">
+        <span class="option-verb">Experiment</span>
+        <span class="option-desc">Explore technology</span>
+      </a>
+
+      <!-- PLAY WITH -->
+      <a class="explore-option-card" href="/products/" onclick="showPage('products'); return false;">
+        <span class="option-verb">Play With</span>
+        <span class="option-desc">Experience products</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-products">
+  <div class="empty-page" style="padding-top: 140px;">
+    <div class="portal-badge" style="display:inline-block; font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:1.25rem;">
+      Products
+    </div>
+    <h1 class="empty-title" style="margin-bottom: 1.25rem;">Technology, made tangible.</h1>
+    <div class="empty-sub" style="max-width:520px; text-align:center; line-height:1.75; color:var(--muted); font-size:0.98rem; font-family:'DM Sans', sans-serif; margin-bottom:2rem;">
+      PrajnaEdge products and technology experiences are currently in development.
+    </div>
+    <div style="display:inline-flex; align-items:center; gap:0.6rem; padding:0.5rem 1rem; border-radius:999px; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148, 163, 184, 0.15); font-family:var(--mono); font-size:0.75rem; color:#94A3B8; letter-spacing:0.05em;">
+      <span style="width:6px; height:6px; border-radius:50%; background:#3B82F6; opacity:0.8;"></span>
+      In Development
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-playground">
+  <div class="playground-page-wrapper">
+    <!-- Page Header (sits on existing site background) -->
+    <div class="playground-header">
+      <h1 class="playground-title">Playground</h1>
+      <p class="playground-intro">
+        Experiment with intelligence beyond the cloud.
+      </p>
+    </div>
+
+    <!-- Dedicated Playground Workspace (Contained Overlay/Panel) -->
+    <div class="playground-workspace">
+      <!-- Workspace Header / Category Strip -->
+      <div class="playground-workspace-header">
+        <!-- Segmented Tab Control -->
+        <div class="playground-tabs-container">
+          <div class="playground-tabs-segmented" id="playground-tabs-segmented">
+            <button class="playground-tab-btn active" id="playground-tab-edge-ai" onclick="switchPlaygroundTab('edge-ai')">Edge AI</button>
+            <button class="playground-tab-btn" id="playground-tab-on-device-ai" onclick="switchPlaygroundTab('on-device-ai')">On-device AI</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Category Explanation -->
+        <div class="playground-category-description" id="playground-category-description">
+          AI runs closer to where data is generated — reducing dependence on distant cloud infrastructure and enabling faster, more responsive systems.
+        </div>
+      </div>
+
+      <!-- Workspace Interactive Canvas -->
+      <div class="playground-workspace-canvas">
+        <!-- Dynamic Playground Tab Panes -->
+        <div class="playground-tab-pane active show" id="playground-pane-edge-ai">
+          <div class="playground-item-card" onclick="showPage('playground-edge-ai')">
+            <div class="playground-card-top">
+              <span class="playground-card-badge">Edge AI</span>
+              <span class="playground-card-tag">Computer Vision</span>
+            </div>
+            <h3 class="playground-card-title">Image Classification</h3>
+            <p class="playground-card-desc">
+              Can this image classifier maintain its intelligence while becoming small enough for the edge?
+            </p>
+            <div class="playground-card-footer">
+              <span class="playground-card-action">Open Experiment →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="playground-tab-pane" id="playground-pane-on-device-ai">
+          <div class="playground-item-card playground-card-disabled">
+            <div class="playground-card-top">
+              <span class="playground-card-badge disabled-badge">On-Device AI</span>
+              <span class="playground-card-tag coming-later-tag">Coming later</span>
+            </div>
+            <h3 class="playground-card-title disabled-title">On-Device Intelligence</h3>
+            <p class="playground-card-desc">
+              AI runs directly on the device where data is generated, bringing intelligence into the device itself while operating within its compute, memory, power and latency constraints.
+            </p>
+            <div class="playground-card-footer">
+              <span class="playground-card-action disabled-action">Experimental Surface · In Development</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-playground-edge-ai">
+  <div class="playground-detail-page-wrapper">
+    <div class="playground-detail-container">
+      <!-- Back Navigation (same style as Exploration detail pages) -->
+      <button class="blog-back-btn" onclick="showPage('playground')">← Back to Playground</button>
+
+      <!-- 1. Header / Problem Statement -->
+      <div class="playground-detail-header">
+        <div class="playground-detail-badge">Edge AI Playground</div>
+        <h1 class="playground-detail-title">Image Classification</h1>
+        <p class="playground-detail-problem">
+          Can this image classifier maintain its intelligence while becoming small enough for the edge?
+        </p>
+      </div>
+
+      <!-- Architectural Workbench Container -->
+      <div class="playground-experiment-workbench">
+        <!-- 2. Input Image Section -->
+        <div class="playground-exp-section">
+          <h2 class="playground-exp-heading">Choose an image</h2>
+          
+          <div class="playground-upload-container">
+            <input type="file" id="playground-file-input" accept=".jpg, .jpeg, .png, image/jpeg, image/png" style="display: none;" onchange="handlePlaygroundImageUpload(event)">
+            
+            <!-- Empty Upload State -->
+            <div id="playground-upload-empty" class="playground-upload-zone" onclick="document.getElementById('playground-file-input').click()">
+              <div class="playground-upload-icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </div>
+              <div class="playground-upload-btn-text">Upload an image</div>
+              <div class="playground-upload-hint">Supports JPG, JPEG, PNG</div>
+            </div>
+
+            <!-- Selected Image Preview State -->
+            <div id="playground-upload-preview-wrap" class="playground-preview-zone" style="display: none;">
+              <div class="playground-preview-frame">
+                <img id="playground-preview-img" src="" alt="Uploaded image preview" class="playground-preview-img">
+              </div>
+              <div class="playground-preview-actions">
+                <span id="playground-filename-display" class="playground-filename-display"></span>
+                <button type="button" class="playground-change-btn" onclick="document.getElementById('playground-file-input').click()">
+                  Change image
+                </button>
+              </div>
+            </div>
+
+            <!-- Upload Error Notice -->
+            <div id="playground-upload-error" class="playground-error-box" style="display: none;"></div>
+          </div>
+          <div class="playground-scope-note">
+            This classifier recognizes only Apple, Banana, and Orange. Other objects may be incorrectly classified as one of these classes.
+          </div>
+        </div>
+
+        <!-- 3. Model Selection Section -->
+        <div class="playground-exp-section">
+          <h2 class="playground-exp-heading">Choose the model</h2>
+          
+          <div class="playground-slider-wrap">
+            <div class="playground-slider-track-box">
+              <input type="range" min="0" max="2" step="1" value="0" id="playground-model-slider" class="playground-slider" oninput="setModelRepresentation(parseInt(this.value, 10))" aria-label="Choose model precision">
+              <div class="playground-slider-ticks">
+                <span class="playground-tick active" id="tick-0" onclick="setModelRepresentation(0)"></span>
+                <span class="playground-tick" id="tick-1" onclick="setModelRepresentation(1)"></span>
+                <span class="playground-tick" id="tick-2" onclick="setModelRepresentation(2)"></span>
+              </div>
+            </div>
+            <div class="playground-slider-labels">
+              <button type="button" class="playground-slider-label active" id="label-FP32" onclick="setModelRepresentation(0)">FP32</button>
+              <button type="button" class="playground-slider-label" id="label-FP16" onclick="setModelRepresentation(1)">FP16</button>
+              <button type="button" class="playground-slider-label" id="label-INT8" onclick="setModelRepresentation(2)">INT8</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Model Information Section (Compact Instrumentation) -->
+        <div class="playground-exp-section">
+          <div class="playground-metrics-grid">
+            <div class="playground-metric-item">
+              <div class="playground-metric-label">Model size</div>
+              <div class="playground-metric-value" id="playground-metric-size">4.91 MiB</div>
+            </div>
+            <div class="playground-metric-item">
+              <div class="playground-metric-label">Largest activation</div>
+              <div class="playground-metric-value" id="playground-metric-activation">~625 KiB</div>
+            </div>
+            <div class="playground-metric-item">
+              <div class="playground-metric-label">Test accuracy</div>
+              <div class="playground-metric-value" id="playground-metric-accuracy">99.11%</div>
+              <div class="playground-metric-subtext">Measured model accuracy</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Primary Action Button & Privacy Note -->
+        <div class="playground-action-area">
+          <button id="playground-experiment-btn" class="playground-primary-btn disabled" disabled onclick="handleExperimentClick()">
+            Let's Experiment
+          </button>
+          <div class="playground-privacy-note">Your image is processed locally in your browser.</div>
+        </div>
+
+        <!-- 6. Results Area -->
+        <div id="playground-results-area" class="playground-results-area" style="display: none;">
+          <!-- Loading State -->
+          <div id="playground-results-loading" class="playground-results-loading" style="display: none;">
+            <div class="playground-spinner"></div>
+            <div class="playground-loading-text">Running locally...</div>
+          </div>
+
+          <!-- Structured Results -->
+          <div id="playground-results-content" class="playground-results-content" style="display: none;">
+            <div class="playground-result-header">
+              <div class="playground-result-label">PREDICTION</div>
+              <div class="playground-result-prediction" id="playground-pred-class">--</div>
+            </div>
+
+            <div class="playground-probabilities-section">
+              <div class="playground-probs-heading">Class Probabilities</div>
+              <div class="playground-probs-list" id="playground-probs-list">
+                <!-- Injected dynamically via JS -->
+              </div>
+            </div>
+
+            <div class="playground-result-timing">
+              <span class="playground-timing-label">Browser inference time</span>
+              <span class="playground-timing-val" id="playground-bench-time">-- ms</span>
+            </div>
+
+            <!-- Open Code Link (shown only after successful inference) -->
+            <div class="playground-open-code-box" id="playground-open-code-box" style="display: none;">
+              <a href="https://github.com/DevaharshaM/EmbeddedAI/blob/inception/Image_Classifier/Image_Classifier_EdgeAI.ipynb" target="_blank" rel="noopener noreferrer" class="playground-open-code-link">
+                Open Code →
+              </a>
+            </div>
+          </div>
+
+          <!-- Inference Error Box -->
+          <div id="playground-inference-error" class="playground-error-box" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-playground-on-device-ai">
+  <div class="playground-detail-page-wrapper">
+    <div class="playground-detail-container" style="max-width: 600px; text-align: center; padding-top: 3rem;">
+      <button class="blog-back-btn" onclick="showPage('playground')" style="margin-bottom: 2rem;">← Back to Playground</button>
+      
+      <div class="portal-badge" style="display:inline-block; font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.15em; margin-bottom:1.25rem;">
+        Playground · Future Area
+      </div>
+      <h1 class="empty-title" style="font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 1rem;">On-Device AI</h1>
+      <p class="empty-sub" style="max-width: 500px; margin: 0 auto 2rem; line-height: 1.75; color: var(--muted); font-size: 0.95rem;">
+        AI runs directly on the device where data is generated, bringing intelligence into the device itself while operating within its compute, memory, power and latency constraints.
+      </p>
+      
+      <div style="display:inline-flex; align-items:center; gap:0.6rem; padding:0.5rem 1rem; border-radius:999px; background:rgba(30, 41, 59, 0.4); border:1px solid rgba(148, 163, 184, 0.15); font-family:var(--mono); font-size:0.75rem; color:#94A3B8; letter-spacing:0.05em;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#64748B; opacity:0.8;"></span>
+        Coming later
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-blogs">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem;display:flex;flex-direction:column;align-items:center;">
+      
+      <button id="blogsBackToTreeBtn" class="blog-back-btn" style="display:none; margin-bottom:2rem; align-self:flex-start;" onclick="handleBlogsBackClick()">← Back to Systems Tree</button>
+
+      <div style="text-align:center; margin-bottom:2rem; width:100%;">
+        <h2 class="section-title" id="blogsPageTitle" style="margin-bottom:0.25rem; text-align:center; display:none;">Explorations</h2>
+        <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem; text-align:center; max-width:600px; margin:0 auto;" id="blogsPageSubtitle">
+          Explore the ideas, systems and connections that shape technology — choose any node to begin your journey.
+        </p>
+      </div>
+
+      <!-- Cinematic Evolution Viewport Container -->
+      <div class="tree-viewport" id="tree-viewport" style="margin-bottom:1.5rem;">
+        <button class="close-tree-btn" id="close-tree-btn" aria-label="Close Tree" title="Close Tree" onclick="toggleEnlargeTree(false)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="tree-tooltip" id="tree-tooltip"></div>
+        
+        <!-- Aspect ratio locked container to align video, fallback image, and hotspots SVG perfectly -->
+        <div class="homepage-video-container">
+          <!-- 1. Intro Video Asset (hidden/opacity 0 when finished) -->
+          <video id="intro-video" class="homepage-media" playsinline muted preload="auto">
+            <source src="../../HomepageAnimation/AnimationHome.mp4" type="video/mp4" />
+          </video>
+          
+          <!-- 2. Final Frame Fallback Image (initially hidden, visible when video ends or skipped) -->
+          <img id="final-frame" class="homepage-media" src="../../HomepageAnimation/Final.jpg" alt="PrajnaEdge Navigation Tree" draggable="false" style="opacity: 0; pointer-events: none;" />
+          
+          <!-- Subtle label overlay indicating the specific tree -->
+          <div id="tree-label-overlay" class="tree-label-overlay">Embedded Systems Tree</div>
+          
+          <!-- 3. SVG Clickable Hotspots Overlay (only pointer-events active on children) -->
+          <svg id="interactive-overlay" viewBox="0 0 2752 1536" class="homepage-media-overlay" style="pointer-events: none;">
+            <g id="hotspots" fill="none" stroke="transparent" stroke-linecap="round" style="pointer-events: auto;">
+              <!-- Active Trunk Nodes -->
+              <rect id="hotspot-Matter" class="hotspot-active" x="1260" y="1400" width="232" height="70" />
+              <rect id="hotspot-Computation" class="hotspot-active" x="1210" y="1210" width="332" height="70" />
+              <rect id="hotspot-Interaction" class="hotspot-active" x="1230" y="1040" width="292" height="70" />
+              <rect id="hotspot-Coordination" class="hotspot-active" x="1220" y="800" width="312" height="70" />
+              <rect id="hotspot-Integration" class="hotspot-active" x="1220" y="585" width="270" height="70" />
+              
+              <!-- Special Paths (Future/Interlinked) -->
+              <rect id="hotspot-path-BareMetal" class="hotspot-active" x="890" y="855" width="160" height="60" />
+              <rect id="hotspot-path-OperatingSystems" class="hotspot-special" x="1660" y="865" width="280" height="60" />
+              
+              <!-- Industry Branches (Dormant) -->
+              <rect id="hotspot-branch-NetworkingConnectivity" class="hotspot-branch" x="870" y="640" width="200" height="100" />
+              <rect id="hotspot-branch-AerospaceDefence" class="hotspot-branch" x="910" y="540" width="180" height="70" />
+              <rect id="hotspot-branch-Industrial" class="hotspot-branch" x="900" y="470" width="140" height="50" />
+              <rect id="hotspot-branch-Robotics" class="hotspot-branch" x="1000" y="405" width="120" height="50" />
+              <rect id="hotspot-branch-EdgeAI" class="hotspot-branch" x="1260" y="275" width="232" height="80" />
+              <rect id="hotspot-branch-Medical" class="hotspot-branch" x="1590" y="320" width="120" height="50" />
+              <rect id="hotspot-branch-Consumer" class="hotspot-branch" x="1580" y="580" width="140" height="50" />
+              <rect id="hotspot-branch-Automotive" class="hotspot-branch" x="1690" y="650" width="140" height="50" />
+            </g>
+          </svg>
+
+          <!-- Portal Vortices -->
+          <div class="portal-vortex portal-top-right" id="portal-top-right" role="button" tabindex="0" aria-label="Explore knowledge paths" onclick="triggerBlackholeTransition(() => showPage('domain-select'))">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <defs>
+                <radialGradient id="vortex-glow-tr" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                  <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                  <stop offset="100%" stop-color="#000" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-tr)" />
+              <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <div class="portal-vortex portal-bottom-left" id="portal-bottom-left" role="button" tabindex="0" aria-label="Enter another path" onclick="triggerBlackholeTransition(() => showPage('foundation-select'))">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <defs>
+                <radialGradient id="vortex-glow-bl" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.8" />
+                  <stop offset="35%" stop-color="#1e1b4b" stop-opacity="0.5" />
+                  <stop offset="100%" stop-color="#000" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="50" cy="50" r="45" fill="url(#vortex-glow-bl)" />
+              <path d="M 50 15 A 35 35 0 0 1 75 35 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 50 85 A 35 35 0 0 1 25 65 A 15 15 0 0 1 50 50" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8" />
+              <path d="M 85 50 A 35 35 0 0 1 65 75 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <path d="M 15 50 A 35 35 0 0 1 35 25 A 15 15 0 0 1 50 50" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6" />
+              <circle cx="68" cy="28" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="32" cy="72" r="1.5" fill="#93c5fd" opacity="0.8" />
+              <circle cx="78" cy="62" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="22" cy="38" r="1.2" fill="#a5f3fc" opacity="0.7" />
+              <circle cx="50" cy="50" r="10" fill="#030712" stroke="#60a5fa" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <!-- 4. Floating Playback Controls -->
+          <div class="homepage-controls-group">
+            <button id="volume-control-btn" class="control-btn volume-btn" aria-label="Turn sound on" title="Turn sound on">
+              <!-- SVG icon injected dynamically via JS based on mute state -->
+            </button>
+            
+            <button id="replay-intro-btn" class="control-btn replay-btn" title="Replay Cinematic Intro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              <span>Replay</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enlarge Tree Icon Control -->
+      <button id="enlarge-tree-btn" class="enlarge-tree-icon-btn" aria-label="Enlarge Tree" title="Enlarge Tree" onclick="toggleEnlargeTree(true)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="11" y1="8" x2="11" y2="14"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </button>
+
+      <!-- Exploration List Control -->
+      <button id="exploration-list-btn" class="blog-back-btn" style="margin-bottom:2rem; cursor:pointer;" onclick="openExplorationList()">
+        Exploration List &rarr;
+      </button>
+
+      <!-- Sorting Toggles -->
+      <div style="display:none; justify-content:flex-end; align-items:center; gap:0.5rem; width:100%; margin-bottom:1.5rem;" class="control-housing-wrapper" id="blogs-sort-control-wrapper">
+        <div class="control-housing" style="display:flex; align-items:center; gap:0.5rem;">
+          <span class="control-label" style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">Sort by:</span>
+          <select id="blogSortOrderSelect" class="select-dark" onchange="handleSortSelectChange()">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="blogList" style="display:flex;flex-direction:column;gap:1.25rem;width:100%;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-demos">
+  <div style="padding-top:80px;min-height:100vh">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem">
+      
+      <button id="demosBackToTreeBtn" class="blog-back-btn" style="display:none;" onclick="clearDemoFilterAndGoHome()">← Back to Systems Tree</button>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.5rem;">
+        <div>
+          <h2 class="section-title" id="demosPageTitle" style="margin-bottom:0.25rem">Edge AI Demonstrations</h2>
+          <p style="color:var(--muted);font-family:var(--mono);font-size:0.8rem" id="demosPageSubtitle">
+            Deploying neural networks and intelligent decision loops on raw silicon targets.
+          </p>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="control-housing">
+            <span class="control-label">Sort:</span>
+            <select id="demoSortOrderSelect" class="select-dark" onchange="handleSortChange('demos')">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+
+          <button id="clearDemoFilterBtn" class="tag" style="display:none; padding:0.45rem 0.85rem; cursor:pointer; color:var(--blue); border-color:rgba(59,130,246,0.3); background:var(--blue-glow);" onclick="clearDemoFilter()">
+            Clear Filter [x]
+          </button>
+        </div>
+      </div>
+      <div id="demoList" style="display:flex;flex-direction:column;gap:1.25rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page active" id="page-blog-post">
+  <div style="padding-top:80px">
+    <div style="max-width:760px;margin:0 auto;padding:3rem 2.5rem 5rem">
+      <button id="readerBackBtn" class="blog-back-btn" onclick="showPage('blogs')">← Back to Exploration</button>
+      <div id="blog-post-content">
+    <div style="font-family:var(--mono);font-size:0.7rem;color:#64748B;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem">Controller</div>
+    <h1 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.15;letter-spacing:-0.03em;color:#fff;margin-bottom:1rem">Inside the Controller</h1>
+    <p style="color:#64748B;font-size:1rem;line-height:1.75;font-weight:300;margin-bottom:1rem">How computation, memory, and peripherals unite inside a single chip to observe, decide, and act.</p>
+    <div class="tags" style="margin-bottom:3rem"><span class="tag">Controller</span><span class="tag">Architecture</span><span class="tag">Closed Loop</span><span class="tag">Peripherals</span><span class="tag">Embedded Systems</span><span class="tag">Hardware</span></div>
+    <div style="border-top:1px solid var(--border);margin-bottom:3rem"></div>
+    <div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">1. From the Controller to the System</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">At the end of the previous exploration, we asked a fundamental question:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line"><em>How does it interact with the world around it?</em></p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">A microcontroller does not exist in isolation. It does not sit inside a desktop calculating spreadsheets or rendering graphics. It lives directly embedded inside a physical machine — surrounded by heat, motion, light, sound, and pressure.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To govern that machine, the controller operates in a continuous, perpetual rhythm: a <strong>closed feedback loop</strong>.</p><div class="blog-img-wrap"><img src="../../Images/controller_closed_loop_system.svg" alt="Closed-Loop System: SENSE → PROCESS → DECIDE → ACT → SENSE AGAIN"><div class="blog-img-caption">Closed-Loop System: SENSE → PROCESS → DECIDE → ACT → SENSE AGAIN</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Consider a simple temperature regulator:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">1. <strong>SENSE</strong>: A temperature sensor converts thermal energy into a measurable electrical signal.
+2. <strong>PROCESS</strong>: The controller reads this measurement and translates it into a digital value.
+3. <strong>DECIDE</strong>: The processor compares the reading against a target threshold to determine if action is required.
+4. <strong>ACT</strong>: If the system is too hot, the controller triggers a relay to spin up a cooling fan.
+5. <strong>SENSE AGAIN</strong>: The cooler air alters the physical environment, and the next measurement reflects the consequence of that action.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The controller does not simply compute; it actively participates in reality. Every action it takes loops back into the next state it observes.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">2. What's Actually Inside a Microcontroller?</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">To carry out this continuous loop inside a compact, reliable device, the microcontroller integrates everything it needs onto a single piece of silicon.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Where a general-purpose computer spreads its processor, memory chips, bus controllers, and interface cards across an entire motherboard, the microcontroller gathers them into a single, unified integrated circuit.</p><div class="blog-img-wrap"><img src="../../Images/microcontroller_architecture_blocks.svg" alt="Microcontroller Internal Architecture: CPU, Memories, Buses, and Peripherals"><div class="blog-img-caption">Microcontroller Internal Architecture: CPU, Memories, Buses, and Peripherals</div></div><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">At the heart of the chip sits the central processing core. Surrounding it are internal memory blocks and dedicated hardware peripherals, all interconnected by high-speed internal buses.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Each piece has a singular, specialized role.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">3. Meet the Parts</h2><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;">CPU / Core</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The decision engine of the chip. It fetches instructions from memory, decodes what needs to be done, executes arithmetic and logic, and orchestrates the surrounding peripherals.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/the-architecture-of-memory/" onclick="openItem('the-architecture-of-memory', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Flash Memory</a></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The non-volatile memory that stores the program code. Its contents remain intact when power is removed, allowing the microcontroller to retain the instructions it needs to run.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/the-architecture-of-memory/" onclick="openItem('the-architecture-of-memory', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">SRAM</a></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The volatile working memory used while the program runs. It holds runtime variables, the stack, buffers, and other temporary data needed during execution.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/the-physical-edge-of-software/" onclick="openItem('the-physical-edge-of-software', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">GPIO</a> (General-Purpose Input/Output)</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The digital pins connecting the microcontroller to the physical world. They can read digital signals from the outside world or produce digital signals to control external components.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/when-machines-learned-to-observe/" onclick="openItem('when-machines-learned-to-observe', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">ADC</a> (Analog-to-Digital Converter)</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The translator between the continuous analog world and the digital world. It converts signals such as temperature, light, or pressure into digital values that the microcontroller can process.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/when-machines-learned-to-speak-back/" onclick="openItem('when-machines-learned-to-speak-back', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">DAC</a> (Digital-to-Analog Converter)</h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The counterpart to the ADC. It converts digital values from the microcontroller into analog signals that can interact with the physical world.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/the-architecture-of-time/" onclick="openItem('the-architecture-of-time', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Timers</a></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The internal timekeepers of the microcontroller. They measure time, trigger events at precise intervals, and can generate signals such as PWM for controlling external devices.</p><h3 style="font-family:'Syne',sans-serif; font-size:1.025rem; font-weight:600; color:#fff; margin-top:1.5rem; margin-bottom:0.75rem; border-left: 2px solid var(--blue); padding-left: 0.5rem;"><a href="../../explorations/why-embedded-systems-speak-in-protocols/" onclick="openItem('why-embedded-systems-speak-in-protocols', 'blogs'); return false;" style="color:var(--blue); cursor:pointer; text-decoration:underline; font-style: normal;">Communication Peripherals</a></h3><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Dedicated hardware that allows the microcontroller to exchange information with other devices using interfaces such as UART, SPI, I²C, and CAN.</p></div><div style="margin-bottom:2.5rem"><h2 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;color:#fff;margin-bottom:1rem">4. Bringing It Together</h2><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">None of these parts operates in isolation.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">The CPU provides computation.
+Flash holds the program.
+SRAM provides working space.
+GPIO, ADC and DAC connect the digital system to the physical world.
+Timers give it a sense of time.
+Communication peripherals allow it to exchange information with other devices.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">Together, these building blocks transform a processor, memory and a collection of peripherals into something much more useful:</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">a small computer designed to observe, decide, communicate and act.</p><p style="color:#CBD5E1;line-height:1.85;font-size:0.975rem;margin-bottom:1rem;white-space:pre-line">All of it brought together inside a single microcontroller.</p></div>
+    
+    
+      <div class="exploration-nav-block">
+        <div class="exploration-nav-header">
+          <span class="nav-node-label">System Tree Node</span>
+          <span class="nav-node-name">Controller</span>
+        </div>
+        <div class="exploration-nav-grid">
+          <div class="nav-prev">
+            <span class="nav-dir-label">← Previous</span>
+            <a class="nav-link active" href="../../explorations/two-paths-one-controller/" onclick="openItem('two-paths-one-controller', 'blogs')">Two Paths, One Controller</a>
+        </div>
+          <div class="nav-current">
+            <span class="nav-dir-label">Current Exploration</span>
+            <span class="nav-title-current">Inside the Controller</span>
+          </div>
+          <div class="nav-next" id="exploration-nav-next">
+            <span class="nav-dir-label">Next →</span>
+            <a class="nav-link active" href="../../explorations/the-8051-the-controller-that-started-a-generation/" onclick="openItem('the-8051-the-controller-that-started-a-generation', 'blogs')">The 8051 — The Controller That Started a Generation</a>
+        </div>
+        </div>
+      </div>
+    
+    </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-about">
+  <!-- Hero Section -->
+  <section id="about-hero" style="padding-top: 140px; padding-bottom: 3rem;">
+    <div style="max-width: 800px; margin: 0 auto; padding: 0 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+      <h1 style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 6vw, 4rem); color: #FFF; margin: 0;">PrajnaEdge</h1>
+      <div style="font-family: var(--mono); font-size: 0.9rem; color: var(--blue); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.25rem;">
+        Engineering concepts you don't just read — you experience.
+      </div>
+      <div style="font-family: var(--mono); font-size: 0.75rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem;">
+        Founded in 2026.
+      </div>
+      <p style="font-size: 1.05rem; line-height: 1.75; color: #CBD5E1; max-width: 680px; font-weight: 300; margin: 0;">
+        PrajnaEdge is a technology company exploring the space between understanding technology, experimenting with ideas, and turning them into things that can be experienced.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mission & Vision Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border); background: rgba(30, 41, 59, 0.08);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;" class="about-split-grid">
+      <!-- Our Mission -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <h2 style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.35rem; color: #FFF; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Our Mission</h2>
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.2rem, 3vw, 1.6rem); color: #FFF; line-height: 1.4;">
+          To make technology easier to explore, deeper to understand, and more exciting to experience.
+        </div>
+      </div>
+
+      <!-- Our Vision -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <h2 style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.35rem; color: #FFF; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Our Vision</h2>
+        <div style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.2rem, 3vw, 1.6rem); color: #FFF; line-height: 1.4;">
+          To build a technology ecosystem where curiosity, experimentation and creation continuously lead to one another.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Where it Began Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 600px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.25rem;">
+      <h2 style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.35rem; color: #FFF; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Where it began</h2>
+      <div style="font-family: var(--mono); font-size: 0.95rem; color: var(--blue); line-height: 1.6; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;">
+        Embedded Systems
+      </div>
+      <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.75; font-weight: 300; margin: 0;">
+        PrajnaEdge began with Embedded Systems — exploring the foundations that connect hardware, software and intelligent computation.
+      </p>
+      <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.75; font-weight: 300; margin: 0;">
+        The first technology universe is built around that foundation. The journey will expand as new ideas, experiments and products emerge.
+      </p>
+    </div>
+  </section>
+
+  <!-- Creator Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+      <p style="color: #CBD5E1; font-size: 0.95rem; line-height: 1.75; max-width: 500px; margin: 0; font-weight: 300;">
+        PrajnaEdge is a technology company created by <a href="/creator/" target="_blank" style="color: var(--blue); cursor: pointer; text-decoration: underline; transition: color 0.2s;" onmouseover="this.style.color='#2563EB'" onmouseout="this.style.color='var(--blue)'">Devaharsha Meesarapu</a>.
+      </p>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-creator">
+  <!-- Hero Section -->
+  <section id="creator-hero" style="padding-top: 120px; padding-bottom: 3rem;">
+    <div class="hero-grid" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div>
+        <div class="hero-tag" style="font-family: var(--mono); font-size: 0.8rem; color: var(--blue); letter-spacing: 0.1em; text-transform: uppercase;">CREATOR PROFILE</div>
+        <h1 class="hero-title" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.5rem); color: #FFF; line-height: 1.1; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+          Devaharsha Meesarapu
+        </h1>
+        <div style="font-family: var(--mono); font-size: 1rem; color: var(--blue); font-weight: 500; margin-bottom: 1.5rem; letter-spacing: 0.05em;">
+          Embedded Systems &bull; Firmware &bull; Edge AI
+        </div>
+        <p class="hero-sub" style="font-size: 1.05rem; line-height: 1.6; color: #CBD5E1; max-width: 680px; margin-bottom: 2rem;">
+          I am the engineer behind the design, development, and content of PrajnaEdge. I build low-level systems where code directly controls hardware, bridging the gap between register-level silicon behavior and intelligent edge decision loops.
+        </p>
+        <div class="hero-btns" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://drive.google.com/file/d/1BXr4KyzmVKIraQVAOSr-tPsPYPG-GBk4/view?usp=sharing"
+             target="_blank" rel="noopener noreferrer" class="btn-primary"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            View Resume →
+          </a>
+          <button class="btn-ghost" onclick="showPage('journey')"
+             onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+             onmouseout="this.style.transform='translateY(0) scale(1)'">
+            Career Journey →
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me & Philosophy Section -->
+  <section style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;" class="about-grid">
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ABOUT ME</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          I am an Embedded Firmware Engineer focused on developing software for resource-constrained systems. My experience spans bare-metal firmware, device drivers, microcontroller peripherals, and communication protocols, working across the boundary between hardware and software.<br><br>
+          My work has involved microcontroller-based systems, real-time behaviour, hardware interfaces, and communication technologies such as CAN, CAN FD, UART, SPI, and I²C. I am particularly interested in understanding systems from the lowest level upward—from registers and peripherals to intelligent edge systems.
+        </p>
+      </div>
+      <div>
+        <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem;">ENGINEERING PHILOSOPHY</h2>
+        <p style="color: #CBD5E1; line-height: 1.75; font-size: 0.95rem;">
+          Engineering is not just about writing code; it is about managing constraints, timings, and physical hardware characteristics. True mastery of complex systems comes from understanding the interactions across different layers of the stack.<br><br>
+          This conviction is why I built PrajnaEdge—to bridge the gap between conceptual theory and direct, register-level physical reality.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Social Links -->
+  <section style="padding: 2rem 2rem 4rem; border-top: 1px solid var(--border);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; color: #FFF; margin-bottom: 1.5rem; text-align: center;">CONNECT</h2>
+      <div style="display: flex; gap: 1.5rem; justify-content: center; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
+        <a href="https://www.linkedin.com/in/devaharsham/" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          LinkedIn →
+        </a>
+        <a href="https://github.com/DevaharshaM" target="_blank" rel="noopener noreferrer" class="btn-ghost"
+           style="text-decoration: none;"
+           onmouseover="this.style.transform='translateY(-2px) scale(1.03)'"
+           onmouseout="this.style.transform='translateY(0) scale(1)'">
+          GitHub →
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-journey">
+  <!-- Interactive Career Journey -->
+  <section id="journey-section" style="padding-top: 120px; padding-bottom: 5rem;">
+    <div class="journey-inner" style="max-width: 800px; margin: 0 auto; padding: 0 2rem;">
+      <div class="section-label">// career_journey</div>
+      <h2 class="section-title" style="font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem; color: #FFF; margin-top: 0.5rem; margin-bottom: 2rem;">Interactive Career Journey</h2>
+      <div class="node-selector" id="node-selector">
+        <button class="node-btn active" onclick="setNode(0)"><span class="step-num">01</span>Foundations</button>
+        <button class="node-btn" onclick="setNode(1)"><span class="step-num">02</span>Systems</button>
+        <button class="node-btn" onclick="setNode(2)"><span class="step-num">03</span>Intelligence</button>
+        <button class="node-btn" onclick="setNode(3)"><span class="step-num">04</span>Current Focus</button>
+      </div>
+      <div class="journey-content">
+        <div class="node-meta fade-in" id="node-meta">
+          <span class="node-badge">BTech · ECE</span>
+          <h3 class="node-heading">Foundations</h3>
+          <p class="node-desc">Where it all began — understanding the physical layer of computation. Circuits, signals, and systems gave me a mental model of how information moves through hardware.</p>
+          <div class="node-connector">
+            <div class="connector-icon">⬡</div>
+            <div class="connector-text"><strong>Connects to Systems</strong><br>Understanding circuits directly enables writing firmware that talks to peripherals at the register level.</div>
+          </div>
+        </div>
+        <div class="node-cards fade-in" id="node-cards">
+          <div class="info-card">
+            <div class="info-card-label">What it is</div>
+            <div class="info-card-title">BTech in Electronics and Communication</div>
+            <div class="info-card-text">Undergraduate foundation covering analog &amp; digital circuits, signal processing, microprocessors, and communication systems.</div>
+            <div class="tags"><span class="tag">Circuits</span><span class="tag">Signal Processing</span><span class="tag">Microprocessors</span><span class="tag">VLSI</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">What I did</div>
+            <div class="info-card-title">Core Engineering Fundamentals</div>
+            <div class="info-card-text">Studied semiconductor physics, digital logic design, and embedded microcontrollers. Built prototypes using 8-bit MCUs.</div>
+            <div class="tags"><span class="tag">8051</span><span class="tag">Logic Design</span><span class="tag">PCB Basics</span></div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">What I learned</div>
+            <div class="info-card-title">The Hardware Mental Model</div>
+            <div class="info-card-text">Every software abstraction sits on physical reality. Understanding silicon teaches you why timing, power, and noise are first-class engineering problems.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-contact">
+  <section class="empty-page" style="padding-top: 100px;">
+    <!-- Segmented Tab Control -->
+    <div class="contact-tabs-container">
+      <div class="contact-tabs-segmented">
+        <button class="contact-tab-btn active" onclick="switchContactTab('connect')">Connect</button>
+        <button class="contact-tab-btn" onclick="switchContactTab('feedback')">Feedback</button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Connect -->
+    <div class="contact-tab-pane active show" id="pane-connect">
+      <div class="empty-title">Let's Connect</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Interested in embedded systems, AI, or building something meaningful? I'd love to hear from you.
+      </div>
+      <div class="connect-cards-grid">
+        <a href="https://www.linkedin.com/company/prajnaedge" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">LinkedIn</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">Company Page</div>
+        </a>
+        <a href="https://www.instagram.com/prajnaedge/" target="_blank" rel="noopener noreferrer" class="info-card connect-card">
+          <div class="info-card-label">Instagram</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">@prajnaedge</div>
+        </a>
+        <a href="mailto:contact@prajnaedge.dev" class="info-card connect-card">
+          <div class="info-card-label">Contact</div>
+          <div class="info-card-title" style="margin-top: 0.5rem;">contact@prajnaedge.dev</div>
+        </a>
+      </div>
+      <div class="connect-note">
+        Open to collaborations, research, and interesting engineering conversations.
+      </div>
+    </div>
+
+    <!-- Tab 2: Feedback -->
+    <div class="contact-tab-pane" id="pane-feedback">
+      <div class="empty-title">Help Improve PrajnaEdge</div>
+      <div class="empty-sub" style="max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 2rem;">
+        Found something to improve? I'd love to hear your thoughts.
+      </div>
+      <div class="feedback-form-container">
+        <form id="feedback-form" class="feedback-form">
+          <div class="feedback-group">
+            <label for="feedback-category" class="feedback-label">Category</label>
+            <select id="feedback-category" class="feedback-select" required>
+              <option value="Technical Correction">Technical Correction</option>
+              <option value="Exploration Suggestion">Exploration Suggestion</option>
+              <option value="UI / UX Feedback">UI / UX Feedback</option>
+              <option value="Bug Report">Bug Report</option>
+              <option value="General Feedback">General Feedback</option>
+            </select>
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-subject" class="feedback-label">Topic</label>
+            <input type="text" id="feedback-subject" class="feedback-input" placeholder="What is this feedback about?" required />
+          </div>
+          <div class="feedback-group">
+            <label for="feedback-textarea" class="feedback-label">Message</label>
+            <textarea id="feedback-textarea" class="feedback-textarea" rows="5" placeholder="Please describe details..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem; width: 100%; justify-content: center;">
+            Send Feedback →
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="page" id="page-bare-metal">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Tree
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Bare Metal</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      Software that runs directly on hardware without an operating system.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Operating Systems</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Bare Metal
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "Every embedded application begins long before main()."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Bare Metal')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-operating-systems">
+  <div style="max-width:600px; display:flex; flex-direction:column; align-items:center; gap:2.5rem; margin:auto;">
+    <!-- Minimal Header or Back Link -->
+    <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;">
+      ← Return to Tree
+    </button>
+    
+    <!-- Title -->
+    <div>
+      <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(3rem, 6vw, 5rem); color:#F59E0B; margin:0; letter-spacing:-0.03em; line-height:1;">Operating Systems</h1>
+      <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+    </div>
+    
+    <!-- Concise Definition -->
+    <p style="font-size:1.15rem; font-weight:300; line-height:1.7; color:#E7E5E4; max-width:480px; margin:0;">
+      An Operating System manages hardware and software resources so complex applications can work efficiently.
+    </p>
+
+    <!-- Knowledge Position Visual Diagram -->
+    <div class="transition-stack" style="display:flex; flex-direction:column; align-items:center; gap:0.8rem; margin:1.5rem 0; font-family:var(--mono); width:100%; max-width:280px;">
+      <div style="color:#78716C; font-size:0.75rem; letter-spacing:0.05em;">Applications</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#F59E0B; background:rgba(217, 119, 6, 0.08); border:1px solid #D97706; border-radius:6px; padding:0.65rem 1.25rem; font-weight:bold; font-size:0.85rem; text-align:center; width:100%; letter-spacing:0.05em; box-shadow:0 0 20px rgba(217,119,6,0.15); box-sizing: border-box;">
+        <div style="font-size:0.6rem; color:#D97706; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.2rem; font-weight:500;">YOU ARE HERE</div>
+        Operating Systems
+      </div>
+      
+      <!-- Divider/Boundary -->
+      <div style="width:100%; border-top:1px dashed rgba(217, 119, 6, 0.3); margin:0.4rem 0;"></div>
+      
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Bare Metal</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Processor</div>
+      <div style="color:#78716C; font-size:0.75rem; opacity:0.5;">↑</div>
+      <div style="color:#D6D3D1; font-size:0.75rem; letter-spacing:0.05em;">Hardware</div>
+    </div>
+
+    <!-- Curiosity Sentence -->
+    <p style="font-style:italic; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:#A8A29E; margin:0; letter-spacing:-0.01em;">
+      "When one loop is no longer enough to carry the burden."
+    </p>
+    
+    <!-- CTA Button -->
+    <button onclick="filterNodeRoute('Operating Systems')" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.95rem; padding:0.9rem 2.5rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 20px rgba(217,119,6,0.3); transition:all 0.2s;" onmouseover="this.style.background='#F59E0B'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 24px rgba(217,119,6,0.4)';" onmouseout="this.style.background='#D97706'; this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(217,119,6,0.3)';">
+      Begin
+    </button>
+  </div>
+</div>
+
+<div class="page" id="page-domain-select">
+  <div class="cosmic-star-field">
+    <div class="cosmic-star" style="left: 15%; top: 20%; width: 2px; height: 2px; opacity: 0.8;"></div>
+    <div class="cosmic-star" style="left: 75%; top: 15%; width: 3px; height: 3px; opacity: 0.9;"></div>
+    <div class="cosmic-star" style="left: 85%; top: 60%; width: 1.5px; height: 1.5px; opacity: 0.6;"></div>
+    <div class="cosmic-star" style="left: 25%; top: 75%; width: 2.5px; height: 2.5px; opacity: 0.7;"></div>
+    <div class="cosmic-star" style="left: 50%; top: 85%; width: 2px; height: 2px; opacity: 0.5;"></div>
+  </div>
+  
+  <a class="portal-return-link" href="/explorations/" onclick="portalReturnTarget = null; triggerBlackholeTransition(() => openDirectExplorations()); return false;">
+    ← Return to Systems Tree
+  </a>
+
+  <div class="portal-selection-center">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="portal-center-glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#1e1b4b" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#portal-center-glow)" />
+      <path d="M 50 10 A 40 40 0 0 1 80 30 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
+    </svg>
+    <div class="portal-center-title" style="font-size: 0.6rem;">Select Domain</div>
+    <div class="portal-center-subtitle">Explore application domains branching from the Systems Tree</div>
+  </div>
+
+  <div class="portal-branch-item dormant" style="--x: -220px; --y: -160px;" tabindex="0" role="button" aria-label="Automotive (unawakened domain)" onclick="showBranchNotAwakenedMessage('Automotive', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Automotive</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 0px; --y: -240px;" tabindex="0" role="button" aria-label="Aerospace & Defence (unawakened domain)" onclick="showBranchNotAwakenedMessage('Aerospace & Defence', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Aerospace & Defence</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 230px; --y: -170px;" tabindex="0" role="button" aria-label="Consumer (unawakened domain)" onclick="showBranchNotAwakenedMessage('Consumer', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Consumer</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -280px; --y: -30px;" tabindex="0" role="button" aria-label="Embedded AI (unawakened domain)" onclick="showBranchNotAwakenedMessage('Embedded AI', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Embedded AI</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 290px; --y: -20px;" tabindex="0" role="button" aria-label="Industrial (unawakened domain)" onclick="showBranchNotAwakenedMessage('Industrial', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Industrial</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -240px; --y: 120px;" tabindex="0" role="button" aria-label="Medical (unawakened domain)" onclick="showBranchNotAwakenedMessage('Medical', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Medical</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -80px; --y: 220px;" tabindex="0" role="button" aria-label="Multimedia (unawakened domain)" onclick="showBranchNotAwakenedMessage('Multimedia', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Multimedia</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 100px; --y: 240px;" tabindex="0" role="button" aria-label="Network & Connectivity (unawakened domain)" onclick="showBranchNotAwakenedMessage('Network & Connectivity', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Network & Connectivity</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 250px; --y: 130px;" tabindex="0" role="button" aria-label="Robotics (unawakened domain)" onclick="showBranchNotAwakenedMessage('Robotics', this, 'page-domain-select')">
+    <span class="branch-dot"></span><span class="branch-text">Robotics</span>
+  </div>
+
+  <div class="portal-action-bridge">
+    <a href="/explorations/" onclick="openDirectExplorations(); return false;" class="portal-action-link">
+      Explore Active Systems Tree →
+    </a>
+  </div>
+</div>
+
+<div class="page" id="page-foundation-select">
+  <div class="cosmic-star-field">
+    <div class="cosmic-star" style="left: 20%; top: 25%; width: 2px; height: 2px; opacity: 0.8;"></div>
+    <div class="cosmic-star" style="left: 80%; top: 20%; width: 3px; height: 3px; opacity: 0.9;"></div>
+    <div class="cosmic-star" style="left: 70%; top: 70%; width: 1.5px; height: 1.5px; opacity: 0.6;"></div>
+    <div class="cosmic-star" style="left: 30%; top: 80%; width: 2.5px; height: 2.5px; opacity: 0.7;"></div>
+  </div>
+
+  <a class="portal-return-link" href="/explorations/" onclick="portalReturnTarget = null; triggerBlackholeTransition(() => openDirectExplorations()); return false;">
+    ← Return to Systems Tree
+  </a>
+
+  <div class="portal-selection-center">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="portal-center-glow-bl" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.9" />
+          <stop offset="40%" stop-color="#1e1b4b" stop-opacity="0.6" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="45" fill="url(#portal-center-glow-bl)" />
+      <path d="M 50 10 A 40 40 0 0 1 80 30 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <path d="M 50 90 A 40 40 0 0 1 20 70 A 20 20 0 0 1 50 50" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7" />
+      <circle cx="50" cy="50" r="14" fill="#020617" stroke="#3b82f6" stroke-width="2" />
+    </svg>
+    <div class="portal-center-title" style="font-size: 0.6rem;">Select Depth</div>
+    <div class="portal-center-subtitle">Examine computation through architectural depth layers</div>
+  </div>
+
+  <div class="portal-branch-item dormant" style="--x: -210px; --y: -130px;" tabindex="0" role="button" aria-label="Architecture (unawakened foundation)" onclick="showBranchNotAwakenedMessage('Architecture', this, 'page-foundation-select')">
+    <span class="branch-dot"></span><span class="branch-text">Architecture</span>
+  </div>
+  <div class="portal-branch-item active" style="--x: 220px; --y: -120px;" tabindex="0" role="button" aria-label="Controller (foundation)" onclick="triggerBlackholeTransition(() => filterNodeRoute('Controller'))">
+    <span class="branch-dot"></span><span class="branch-text">Controller</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: -250px; --y: 80px;" tabindex="0" role="button" aria-label="Digital (unawakened foundation)" onclick="showBranchNotAwakenedMessage('Digital', this, 'page-foundation-select')">
+    <span class="branch-dot"></span><span class="branch-text">Digital</span>
+  </div>
+  <div class="portal-branch-item dormant" style="--x: 240px; --y: 90px;" tabindex="0" role="button" aria-label="Programming (unawakened foundation)" onclick="showBranchNotAwakenedMessage('Programming', this, 'page-foundation-select')">
+    <span class="branch-dot"></span><span class="branch-text">Programming</span>
+  </div>
+  <div class="portal-branch-item active" style="--x: 0px; --y: 210px;" tabindex="0" role="button" aria-label="Processor (foundation)" onclick="triggerBlackholeTransition(() => filterNodeRoute('Processor'))">
+    <span class="branch-dot"></span><span class="branch-text">Processor</span>
+  </div>
+
+  <div class="portal-action-bridge">
+    <a href="/explorations/?category=Processor" onclick="filterNodeRoute('Processor'); return false;" class="portal-action-link">
+      Explore Processors →
+    </a>
+    <a href="/explorations/?category=Controller" onclick="filterNodeRoute('Controller'); return false;" class="portal-action-link">
+      Explore Controllers →
+    </a>
+  </div>
+</div>
+
+<div class="page" id="page-support">
+  <div style="padding-top: 80px; min-height: 80vh;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 3rem 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 2rem; text-align: center;">
+      <!-- Return to Tree Link -->
+      <button onclick="showPage('home')" style="background:transparent; border:none; color:#A8A29E; font-family:var(--mono); font-size:0.75rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.15em; transition:color 0.2s;" onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#A8A29E';">
+        ← Return to Tree
+      </button>
+      
+      <!-- Title -->
+      <div>
+        <h1 style="font-family:'Syne', sans-serif; font-weight:800; font-size:clamp(2.5rem, 5vw, 4rem); color:#FFF; margin:0; letter-spacing:-0.03em; line-height:1.1;">Support PrajnaEdge</h1>
+        <div style="width:40px; height:2px; background:#D97706; margin:1.5rem auto 0;"></div>
+      </div>
+      
+      <!-- Short Message -->
+      <div style="font-family:'DM Sans', sans-serif; font-size:1.1rem; line-height:1.7; color:#E2E8F0; display:flex; flex-direction:column; gap:1.25rem; max-width:500px;">
+        <p style="margin:0; font-weight:500;">
+          PrajnaEdge is an independent education platform built to make knowledge freely accessible.
+        </p>
+        <p style="margin:0; font-size:0.95rem; color:var(--muted); font-weight:300;">
+          If you find PrajnaEdge useful, you can support its continued development.
+        </p>
+        <p style="margin:0; font-size:0.88rem; color:var(--muted); font-weight:300; opacity:0.85;">
+          Your support helps fund the time, tools, infrastructure, and experimentation that go into building and maintaining PrajnaEdge.
+        </p>
+      </div>
+      
+      <!-- Support Payment Options Container -->
+      <div class="support-payment-container" style="width:100%; border:1px solid rgba(148, 163, 184, 0.15); border-radius:12px; padding:2rem; background:rgba(30, 41, 59, 0.15); box-sizing:border-box; display:flex; flex-direction:column; gap:1.5rem; text-align:left;">
+        
+        <!-- Region Selector -->
+        <div style="display:flex; flex-direction:column; gap:0.6rem;">
+          <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em;">Select Region</div>
+          <div style="display:flex; gap:1.5rem; align-items:center;">
+            <label class="support-radio-label" style="display:flex; align-items:center; gap:0.5rem; font-family:'DM Sans', sans-serif; font-size:0.9rem; color:#E2E8F0; cursor:pointer; user-select:none;">
+              <input type="radio" name="support-region" value="IN" checked onclick="setSupportRegion('IN')" style="accent-color:var(--blue); cursor:pointer;" />
+              India
+            </label>
+            <label class="support-radio-label" style="display:flex; align-items:center; gap:0.5rem; font-family:'DM Sans', sans-serif; font-size:0.9rem; color:#E2E8F0; cursor:pointer; user-select:none;">
+              <input type="radio" name="support-region" value="INT" onclick="setSupportRegion('INT')" style="accent-color:var(--blue); cursor:pointer;" />
+              International
+            </label>
+          </div>
+        </div>
+
+        <div style="font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em;">Select Amount</div>
+        
+        <!-- Preset Grid -->
+        <div class="support-presets-grid" id="support-presets-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.75rem;">
+          <!-- Dynamically populated -->
+        </div>
+        
+        <!-- Custom Input Container -->
+        <div id="custom-amount-container" style="display:none; flex-direction:column; gap:0.5rem;">
+          <label style="font-family:var(--mono); font-size:0.75rem; color:var(--muted);">Enter Custom Amount (INR)</label>
+          <div style="position:relative; display:flex; align-items:center;">
+            <span style="position:absolute; left:1rem; color:#fff; font-family:'DM Sans', sans-serif; font-weight:500;">₹</span>
+            <input type="number" id="custom-amount-input" min="1" max="100000" placeholder="Minimum ₹1" style="width:100%; padding:0.75rem 1rem 0.75rem 2rem; background:#0f172a; border:1px solid rgba(148, 163, 184, 0.2); border-radius:8px; color:#fff; font-family:'DM Sans', sans-serif; font-size:0.95rem; outline:none; box-sizing:border-box; transition:border-color 0.2s;" oninput="onCustomAmountChange()" />
+          </div>
+        </div>
+        
+        <!-- Status Messages -->
+        <div id="support-status-message" style="font-family:'DM Sans', sans-serif; font-size:0.85rem; color:var(--muted); line-height:1.5;">
+          Select an amount to support PrajnaEdge.
+        </div>
+        
+        <!-- Action CTA Button -->
+        <button id="pay-button" onclick="initiateSupportPayment()" style="background:#D97706; border:none; border-radius:8px; color:#171210; font-family:'Syne', sans-serif; font-weight:700; font-size:0.9rem; padding:0.9rem; cursor:pointer; text-transform:uppercase; letter-spacing:0.08em; text-align:center; transition:all 0.2s; display:flex; justify-content:center; align-items:center; gap:0.5rem; width:100%;" disabled>
+          Support PrajnaEdge
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-legal">
+  <div class="legal-page-wrapper">
+    <div class="legal-content-container">
+      <header class="legal-page-header">
+        <h1 class="legal-main-title">Legal &amp; Privacy</h1>
+        <p class="legal-meta-date">Last updated: September 2026</p>
+      </header>
+
+      <!-- Section Navigation Strip -->
+      <nav class="legal-nav-strip" aria-label="Legal sections">
+        <a href="#terms" class="legal-nav-pill">1. Terms of Use</a>
+        <a href="#privacy" class="legal-nav-pill">2. Privacy Policy</a>
+        <a href="#adsense-cookies" class="legal-nav-pill">3. Advertising &amp; Cookies</a>
+        <a href="#analytics" class="legal-nav-pill">4. Analytics</a>
+        <a href="#contact-rights" class="legal-nav-pill">5. User Rights &amp; Contact</a>
+      </nav>
+
+      <!-- SECTION 1: TERMS OF USE -->
+      <section class="legal-section" id="terms">
+        <h2 class="legal-section-title">1. Terms of Use</h2>
+        <p>
+          Welcome to PrajnaEdge (<a href="/" style="color:var(--blue); text-decoration:underline;">prajnaedge.dev</a>), an independent engineering and technology platform created and maintained by Devaharsha Meesarapu. By using this website, you agree to these terms.
+        </p>
+        <p>
+          <strong>Educational &amp; Research Focus:</strong> PrajnaEdge publishes interactive technical explorations, architectural models, and simulation walk-throughs covering embedded systems, computer architecture, operating systems, and edge artificial intelligence. All materials, interactive tools, and code demonstrations are provided solely for educational and conceptual understanding.
+        </p>
+        <p>
+          <strong>Hardware &amp; Firmware Disclaimer:</strong> Embedded programming interacts directly with hardware registers, physical voltages, and precise timing. While all writeups and code demonstrations are prepared with care, they are provided "as is" without warranty of any kind. You are responsible for reviewing component datasheets, circuit schematics, and electrical ratings before deploying code to physical microcontrollers or custom hardware.
+        </p>
+        <p>
+          <strong>Intellectual Property:</strong> All original articles, custom SVG architectures, interactive simulators, curriculum sequences, and source code are the intellectual property of Devaharsha Meesarapu (&copy; 2026 PrajnaEdge. All rights reserved). Non-commercial educational study and citation are welcome with proper attribution. Direct republication, unauthorized mirroring, or mass scraping of content is not permitted.
+        </p>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 2: PRIVACY POLICY -->
+      <section class="legal-section" id="privacy">
+        <h2 class="legal-section-title">2. Privacy Policy</h2>
+        <p>
+          PrajnaEdge is committed to user privacy and minimal data collection. We do not sell, rent, or monetize your personal information.
+        </p>
+        <ul>
+          <li>
+            <strong>Voluntary Correspondence:</strong> When you submit a message through the Contact or Feedback forms, or write directly to <a href="mailto:contact@prajnaedge.dev" style="color:var(--blue); text-decoration:underline;">contact@prajnaedge.dev</a>, we receive your name, email address, and message. This information is used strictly to reply to your inquiry.
+          </li>
+          <li>
+            <strong>Server Diagnostics:</strong> Standard web hosting infrastructure automatically logs basic technical access data (such as IP address, browser type, and timestamps) for server security, performance monitoring, and error diagnostics.
+          </li>
+          <li>
+            <strong>Local Storage:</strong> PrajnaEdge uses client-side browser <code>localStorage</code> purely to remember your interface preferences on your device (such as sound preferences for animations and tutorial display states). No personal identity data is stored in localStorage.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 3: ADVERTISING & COOKIES -->
+      <section class="legal-section" id="adsense-cookies">
+        <h2 class="legal-section-title">3. Advertising &amp; Cookies</h2>
+        <p>
+          To help support platform operation and hosting, PrajnaEdge displays advertisements served by third-party advertising partners, including Google AdSense.
+        </p>
+        <ul>
+          <li>
+            <strong>Advertising Cookies:</strong> Google and other third-party vendors use cookies to serve ads based on your prior visits to this website and other websites across the Internet.
+          </li>
+          <li>
+            <strong>DoubleClick / DART Cookie:</strong> Google's use of advertising cookies enables it and its partners to serve ads based on your visit to PrajnaEdge and other sites on the web.
+          </li>
+          <li>
+            <strong>Personalized Ad Controls:</strong> You may opt out of personalized advertising at any time by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">Google Ads Settings</a>. You can also opt out of third-party advertising cookies by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">www.aboutads.info/choices/</a> or the Network Advertising Initiative at <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">optout.networkadvertising.org</a>.
+          </li>
+          <li>
+            <strong>Third-Party Ad Networks:</strong> When advertisements are requested by your browser, third-party ad networks automatically receive your IP address and may use technologies such as cookies or web beacons to measure ad effectiveness. PrajnaEdge does not control these cookies set by third-party advertisers.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 4: ANALYTICS -->
+      <section class="legal-section" id="analytics">
+        <h2 class="legal-section-title">4. Analytics</h2>
+        <p>
+          We use Google Analytics (measurement tag: <code>G-6Y8ZVQB1V0</code>) to evaluate anonymous, aggregate usage trends across our technical writeups.
+        </p>
+        <ul>
+          <li>
+            <strong>Aggregate Telemetry:</strong> Google Analytics uses cookies to collect anonymous metrics such as page visit counts, device screen sizes, and navigation flows. This data helps us optimize responsive layouts and focus on high-interest topics.
+          </li>
+          <li>
+            <strong>Opting Out:</strong> You can prevent Google Analytics from collecting your usage data by installing the official <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" style="color:var(--blue); text-decoration:underline;">Google Analytics Opt-out Browser Add-on</a>.
+          </li>
+          <li>
+            <strong>Voluntary Support (Razorpay):</strong> If you choose to support PrajnaEdge through the Support page, transactions are handled through Razorpay's PCI-DSS compliant checkout interface. PrajnaEdge never handles, collects, or stores payment card numbers, UPI PINs, or banking credentials.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="legal-divider" />
+
+      <!-- SECTION 5: USER RIGHTS & CONTACT -->
+      <section class="legal-section" id="contact-rights">
+        <h2 class="legal-section-title">5. User Rights &amp; Contact</h2>
+        <p>
+          Depending on your jurisdiction (including rights under GDPR, CCPA/CPRA, and applicable privacy laws), you have the right to request access to, correction of, or deletion of any personal communications you have submitted. We do not sell personal data.
+        </p>
+        <p>
+          For any questions regarding these terms, privacy practices, or data inquiries, contact the creator directly:
+        </p>
+        <div class="legal-card">
+          <div><strong>Platform:</strong> PrajnaEdge</div>
+          <div><strong>Creator &amp; Developer:</strong> Devaharsha Meesarapu</div>
+          <div><strong>Inquiries:</strong> <a href="mailto:contact@prajnaedge.dev">contact@prajnaedge.dev</a></div>
+          <div><strong>Website:</strong> <a href="https://prajnaedge.dev">https://prajnaedge.dev</a></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-brand-row">
+      <img src="../../Logo/Logo.png" alt="PrajnaEdge Logo" class="footer-logo">
+      <span class="footer-tagline">Engineering concepts you don't just read — you experience.</span>
+    </div>
+    <div class="footer-nav-row">
+      <a href="/about/" onclick="showPage('about'); return false;" class="footer-link">About Us</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/contact/" onclick="showPage('contact'); return false;" class="footer-link">Contact</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/support/" onclick="showPage('support'); return false;" class="footer-link">Support PrajnaEdge</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/#privacy" target="_blank" rel="noopener" class="footer-link">Privacy Policy</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/legal/#terms" target="_blank" rel="noopener" class="footer-link">Terms of Use</a>
+      <span class="footer-sep">&middot;</span>
+      <a href="/sitemap.xml" target="_blank" rel="noopener" class="footer-link">Sitemap</a>
+    </div>
+    <div class="footer-meta-row">
+      <span>&copy; 2026 PrajnaEdge&trade;</span>
+      <span class="footer-sep">&middot;</span>
+      <span>Designed &amp; Developed by <a href="/creator/" target="_blank" rel="noopener" class="footer-creator-link">Devaharsha Meesarapu</a></span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

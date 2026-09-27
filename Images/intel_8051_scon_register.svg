@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 390" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">SCON (98H) &#8212; SERIAL CONTROL REGISTER</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">The bit-addressable command surface governing the 8051 UART and shift register</text>
+
+  <!-- SCON REGISTER CONTAINER -->
+  <g transform="translate(40, 85)">
+    <rect width="860" height="115" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect width="860" height="26" rx="8" fill="#1E293B" />
+    <text x="430" y="18" text-anchor="middle" fill="#94A3B8" font-size="11" font-weight="700" letter-spacing="0.05em">SCON (98H) &#8212; SPECIAL FUNCTION REGISTER</text>
+
+    <!-- 8 Bit Cells -->
+    <!-- Bit 7: SM0 -->
+    <g transform="translate(18, 36)">
+      <rect width="96" height="64" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="48" y="17" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="600">Bit 7 (9FH)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">SM0</text>
+      <text x="48" y="52" text-anchor="middle" fill="#BAE6FD" font-size="8">Serial Mode 0</text>
+    </g>
+
+    <!-- Bit 6: SM1 -->
+    <g transform="translate(122, 36)">
+      <rect width="96" height="64" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="48" y="17" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="600">Bit 6 (9EH)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">SM1</text>
+      <text x="48" y="52" text-anchor="middle" fill="#BAE6FD" font-size="8">Serial Mode 1</text>
+    </g>
+
+    <!-- Bit 5: SM2 -->
+    <g transform="translate(226, 36)">
+      <rect width="96" height="64" rx="4" fill="#3B1C54" stroke="#C084FC" stroke-width="1.5" />
+      <text x="48" y="17" text-anchor="middle" fill="#E9D5FF" font-size="9" font-weight="600">Bit 5 (9DH)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">SM2</text>
+      <text x="48" y="52" text-anchor="middle" fill="#DDD6FE" font-size="8">Multiprocessor</text>
+    </g>
+
+    <!-- Bit 4: REN -->
+    <g transform="translate(330, 36)">
+      <rect width="96" height="64" rx="4" fill="#064E3B" stroke="#10B981" stroke-width="1.8" />
+      <text x="48" y="17" text-anchor="middle" fill="#6EE7B7" font-size="9" font-weight="700">Bit 4 (9CH)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">REN</text>
+      <text x="48" y="52" text-anchor="middle" fill="#A7F3D0" font-size="8">Receive Enable</text>
+    </g>
+
+    <!-- Bit 3: TB8 -->
+    <g transform="translate(434, 36)">
+      <rect width="96" height="64" rx="4" fill="#78350F" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="48" y="17" text-anchor="middle" fill="#FDE68A" font-size="9" font-weight="600">Bit 3 (9BH)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">TB8</text>
+      <text x="48" y="52" text-anchor="middle" fill="#FEF08A" font-size="8">Tx 9th Bit</text>
+    </g>
+
+    <!-- Bit 2: RB8 -->
+    <g transform="translate(538, 36)">
+      <rect width="96" height="64" rx="4" fill="#78350F" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="48" y="17" text-anchor="middle" fill="#FDE68A" font-size="9" font-weight="600">Bit 2 (9AH)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">RB8</text>
+      <text x="48" y="52" text-anchor="middle" fill="#FEF08A" font-size="8">Rx 9th Bit</text>
+    </g>
+
+    <!-- Bit 1: TI -->
+    <g transform="translate(642, 36)">
+      <rect width="96" height="64" rx="4" fill="#831843" stroke="#F43F5E" stroke-width="1.8" />
+      <text x="48" y="17" text-anchor="middle" fill="#FECDD3" font-size="9" font-weight="700">Bit 1 (99H)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">TI</text>
+      <text x="48" y="52" text-anchor="middle" fill="#FFE4E6" font-size="8">Tx Int Flag</text>
+    </g>
+
+    <!-- Bit 0: RI -->
+    <g transform="translate(746, 36)">
+      <rect width="96" height="64" rx="4" fill="#831843" stroke="#F43F5E" stroke-width="1.8" />
+      <text x="48" y="17" text-anchor="middle" fill="#FECDD3" font-size="9" font-weight="700">Bit 0 (98H)</text>
+      <text x="48" y="36" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">RI</text>
+      <text x="48" y="52" text-anchor="middle" fill="#FFE4E6" font-size="8">Rx Int Flag</text>
+    </g>
+  </g>
+
+  <!-- FUNCTIONAL GROUP LEGEND CARDS -->
+  <g transform="translate(40, 225)">
+    <!-- Group 1: Mode Select -->
+    <g transform="translate(0, 0)">
+      <rect width="200" height="135" rx="6" fill="#1E293B" stroke="#0C4A6E" />
+      <rect width="200" height="22" rx="6" fill="#0C4A6E" />
+      <text x="100" y="15" text-anchor="middle" fill="#38BDF8" font-size="10" font-weight="700">MODE SELECTION</text>
+      <text x="12" y="42" fill="#E2E8F0" font-size="11" font-weight="600">SM0, SM1 (Bits 7..6)</text>
+      <text x="12" y="62" fill="#94A3B8" font-size="10">&#8226; 00: Mode 0 (Sync Shift Reg)</text>
+      <text x="12" y="80" fill="#94A3B8" font-size="10">&#8226; 01: Mode 1 (8-bit UART Var)</text>
+      <text x="12" y="98" fill="#94A3B8" font-size="10">&#8226; 10: Mode 2 (9-bit Fixed)</text>
+      <text x="12" y="116" fill="#94A3B8" font-size="10">&#8226; 11: Mode 3 (9-bit Var)</text>
+    </g>
+
+    <!-- Group 2: Multiprocessor & Reception -->
+    <g transform="translate(220, 0)">
+      <rect width="200" height="135" rx="6" fill="#1E293B" stroke="#3B1C54" />
+      <rect width="200" height="22" rx="6" fill="#3B1C54" />
+      <text x="100" y="15" text-anchor="middle" fill="#C084FC" font-size="10" font-weight="700">MULTIPROCESSOR &amp; RX</text>
+      <text x="12" y="42" fill="#E2E8F0" font-size="11" font-weight="600">SM2 (Bit 5) &amp; REN (Bit 4)</text>
+      <text x="12" y="62" fill="#94A3B8" font-size="10">&#8226; <tspan fill="#C084FC" font-weight="700">SM2:</tspan> Enables address-only interrupt filtering in Modes 2 &amp; 3.</text>
+      <text x="12" y="98" fill="#94A3B8" font-size="10">&#8226; <tspan fill="#10B981" font-weight="700">REN:</tspan> Master receive enable. 1 = Rx on; 0 = Rx locked.</text>
+    </g>
+
+    <!-- Group 3: 9th Bit Transport -->
+    <g transform="translate(440, 0)">
+      <rect width="200" height="135" rx="6" fill="#1E293B" stroke="#78350F" />
+      <rect width="200" height="22" rx="6" fill="#78350F" />
+      <text x="100" y="15" text-anchor="middle" fill="#F59E0B" font-size="10" font-weight="700">9TH BIT DATA REPOSITORIES</text>
+      <text x="12" y="42" fill="#E2E8F0" font-size="11" font-weight="600">TB8 (Bit 3) &amp; RB8 (Bit 2)</text>
+      <text x="12" y="62" fill="#94A3B8" font-size="10">&#8226; <tspan fill="#F59E0B" font-weight="700">TB8:</tspan> Holds the 9th bit to transmit in Modes 2 &amp; 3.</text>
+      <text x="12" y="98" fill="#94A3B8" font-size="10">&#8226; <tspan fill="#F59E0B" font-weight="700">RB8:</tspan> Captures the 9th received bit (or Stop bit in Mode 1).</text>
+    </g>
+
+    <!-- Group 4: Interrupt Flags -->
+    <g transform="translate(660, 0)">
+      <rect width="200" height="135" rx="6" fill="#1E293B" stroke="#831843" />
+      <rect width="200" height="22" rx="6" fill="#831843" />
+      <text x="100" y="15" text-anchor="middle" fill="#F43F5E" font-size="10" font-weight="700">INTERRUPT STATUS FLAGS</text>
+      <text x="12" y="42" fill="#E2E8F0" font-size="11" font-weight="600">TI (Bit 1) &amp; RI (Bit 0)</text>
+      <text x="12" y="62" fill="#94A3B8" font-size="10">&#8226; <tspan fill="#F43F5E" font-weight="700">TI:</tspan> Set by hardware on Tx complete. Must be cleared by software.</text>
+      <text x="12" y="98" fill="#94A3B8" font-size="10">&#8226; <tspan fill="#F43F5E" font-weight="700">RI:</tspan> Set by hardware on Rx complete. Must be cleared by software.</text>
+    </g>
+  </g>
+</svg>

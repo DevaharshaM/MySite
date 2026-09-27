@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 400" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="sbuf-arr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="sbuf-arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <marker id="sbuf-arr-emerald" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">SBUF (99H) &#8212; ONE ADDRESS, TWO PHYSICAL PATHS</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Software sees a single register; silicon routes writes to transmission and reads from reception</text>
+
+  <!-- CENTRAL SOFTWARE PORTAL (SBUF) -->
+  <g transform="translate(320, 85)">
+    <rect width="300" height="60" rx="8" fill="url(#cardGrad)" stroke="#38BDF8" stroke-width="2" />
+    <text x="150" y="26" text-anchor="middle" fill="#F8FAFC" font-family="'IBM Plex Mono', monospace" font-size="14" font-weight="700">SBUF (SFR 99H)</text>
+    <text x="150" y="44" text-anchor="middle" fill="#94A3B8" font-size="10">Internal CPU Bus Software Interface</text>
+  </g>
+
+  <!-- LEFT BRANCH: TRANSMIT PATH (WRITE ONLY) -->
+  <g transform="translate(60, 185)">
+    <rect width="360" height="150" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" />
+    <rect width="360" height="26" rx="8" fill="#78350F" />
+    <text x="180" y="18" text-anchor="middle" fill="#FDE68A" font-size="11" font-weight="700">TRANSMISSION PATH (WRITE BUS)</text>
+
+    <!-- Transmit Buffer Box -->
+    <rect x="25" y="42" width="310" height="42" rx="4" fill="#0F172A" stroke="#B45309" stroke-width="1.2" />
+    <text x="180" y="61" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600">Transmit Buffer &amp; Shift Register</text>
+    <text x="180" y="75" text-anchor="middle" fill="#FDE68A" font-size="9">Loaded when CPU executes: MOV SBUF, A</text>
+
+    <!-- Transmit Pin Output -->
+    <g transform="translate(100, 100)">
+      <line x1="80" y1="0" x2="80" y2="25" stroke="#F59E0B" stroke-width="2" marker-end="url(#sbuf-arr-amber)" />
+      <rect x="30" y="25" width="100" height="20" rx="3" fill="#0C4A6E" stroke="#38BDF8" />
+      <text x="80" y="38" text-anchor="middle" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="700">TXD (P3.1)</text>
+    </g>
+  </g>
+
+  <!-- RIGHT BRANCH: RECEIVE PATH (READ ONLY) -->
+  <g transform="translate(520, 185)">
+    <rect width="360" height="150" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+    <rect width="360" height="26" rx="8" fill="#064E3B" />
+    <text x="180" y="18" text-anchor="middle" fill="#A7F3D0" font-size="11" font-weight="700">RECEPTION PATH (READ BUS)</text>
+
+    <!-- Receive Buffer Box -->
+    <rect x="25" y="42" width="310" height="42" rx="4" fill="#0F172A" stroke="#047857" stroke-width="1.2" />
+    <text x="180" y="61" text-anchor="middle" fill="#FFFFFF" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600">Receive Shift Register &amp; Latch</text>
+    <text x="180" y="75" text-anchor="middle" fill="#A7F3D0" font-size="9">Read when CPU executes: MOV A, SBUF</text>
+
+    <!-- Receive Pin Input -->
+    <g transform="translate(100, 100)">
+      <rect x="30" y="25" width="100" height="20" rx="3" fill="#0C4A6E" stroke="#38BDF8" />
+      <text x="80" y="38" text-anchor="middle" fill="#7DD3FC" font-family="'IBM Plex Mono', monospace" font-size="9" font-weight="700">RXD (P3.0)</text>
+      <line x1="80" y1="25" x2="80" y2="0" stroke="#10B981" stroke-width="2" marker-end="url(#sbuf-arr-emerald)" />
+    </g>
+  </g>
+
+  <!-- Connectors from SBUF to Paths -->
+  <!-- Write Arrow: SBUF to Transmit -->
+  <path d="M 370 145 L 370 165 L 240 165 L 240 185" fill="none" stroke="#F59E0B" stroke-width="2" marker-end="url(#sbuf-arr-amber)" />
+  <rect x="260" y="152" width="100" height="18" rx="2" fill="#0F172A" stroke="#F59E0B" />
+  <text x="310" y="164" text-anchor="middle" fill="#FDE68A" font-size="8" font-weight="700">WRITE: MOV SBUF, A</text>
+
+  <!-- Read Arrow: Receive to SBUF -->
+  <path d="M 700 185 L 700 165 L 570 165 L 570 145" fill="none" stroke="#10B981" stroke-width="2" marker-end="url(#sbuf-arr-emerald)" />
+  <rect x="580" y="152" width="100" height="18" rx="2" fill="#0F172A" stroke="#10B981" />
+  <text x="630" y="164" text-anchor="middle" fill="#A7F3D0" font-size="8" font-weight="700">READ: MOV A, SBUF</text>
+
+  <!-- Full Duplex Architectural Realization Footer -->
+  <g transform="translate(60, 350)">
+    <rect width="820" height="34" rx="4" fill="#0F172A" stroke="#334155" />
+    <text x="410" y="16" text-anchor="middle" fill="#CBD5E1" font-size="10">
+      <tspan fill="#38BDF8" font-weight="700">Full-Duplex Architecture:</tspan> Because transmit and receive hardware registers are physically separate, the 8051 can transmit and receive simultaneously without collision.
+    </text>
+    <text x="410" y="28" text-anchor="middle" fill="#64748B" font-size="9">Writing SBUF never overwrites unread received bytes; reading SBUF never corrupts an active transmission.</text>
+  </g>
+</svg>

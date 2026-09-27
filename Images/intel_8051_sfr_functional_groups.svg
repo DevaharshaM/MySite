@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 460" width="100%" height="100%" style="background:#0F172A; font-family:'DM Sans', sans-serif;">
+  <defs>
+    <pattern id="grid-sfr-groups" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.04)" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow-groups" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#grid-sfr-groups)" />
+  <rect x="12" y="12" width="776" height="436" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" rx="8" />
+
+  <!-- Header -->
+  <text x="400" y="38" fill="#E2E8F0" font-size="13" font-weight="700" text-anchor="middle" letter-spacing="0.08em">THE 8051 SFR CONTROL SURFACE — FUNCTIONAL GROUPING</text>
+  <text x="400" y="55" fill="#94A3B8" font-size="8.5" text-anchor="middle">Twenty-One Special Function Registers Organized by Architectural Subsystem</text>
+
+  <!-- 3x2 Grid of Subsystems -->
+
+  <!-- 1. CPU Core Registers (Amber) -->
+  <g transform="translate(30, 75)" filter="url(#shadow-groups)">
+    <rect width="230" height="170" rx="6" fill="#131B2A" stroke="#F59E0B" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="rgba(245, 158, 11, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#F59E0B" />
+    <text x="30" y="17" fill="#FBBF24" font-size="8.5" font-weight="700" letter-spacing="0.04em">CPU REGISTERS (6)</text>
+    
+    <g transform="translate(12, 36)" font-family="'IBM Plex Mono', monospace" font-size="8">
+      <text x="0" y="14" fill="#FDE68A" font-weight="700">ACC</text><text x="42" y="14" fill="#94A3B8">· E0H · Accumulator</text>
+      <text x="0" y="34" fill="#FDE68A" font-weight="700">B</text><text x="42" y="34" fill="#94A3B8">· F0H · Math / Multiply / Divide</text>
+      <text x="0" y="54" fill="#FDE68A" font-weight="700">PSW</text><text x="42" y="54" fill="#94A3B8">· D0H · Program Status Word</text>
+      <text x="0" y="74" fill="#FDE68A" font-weight="700">SP</text><text x="42" y="74" fill="#94A3B8">· 81H · Stack Pointer (Init 07H)</text>
+      <text x="0" y="94" fill="#FDE68A" font-weight="700">DPL</text><text x="42" y="94" fill="#94A3B8">· 82H · Data Pointer Low</text>
+      <text x="0" y="114" fill="#FDE68A" font-weight="700">DPH</text><text x="42" y="114" fill="#94A3B8">· 83H · Data Pointer High</text>
+    </g>
+  </g>
+
+  <!-- 2. Parallel I/O Ports (Sky Blue) -->
+  <g transform="translate(285, 75)" filter="url(#shadow-groups)">
+    <rect width="230" height="170" rx="6" fill="#131B2A" stroke="#0284C7" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="rgba(2, 132, 199, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#38BDF8" />
+    <text x="30" y="17" fill="#7DD3FC" font-size="8.5" font-weight="700" letter-spacing="0.04em">PARALLEL I/O PORTS (4)</text>
+
+    <g transform="translate(12, 36)" font-family="'IBM Plex Mono', monospace" font-size="8">
+      <text x="0" y="18" fill="#7DD3FC" font-weight="700">P0</text><text x="35" y="18" fill="#94A3B8">· 80H · Port 0 (Addr/Data bus)</text>
+      <text x="0" y="44" fill="#7DD3FC" font-weight="700">P1</text><text x="35" y="44" fill="#94A3B8">· 90H · Port 1 (Dedicated I/O)</text>
+      <text x="0" y="70" fill="#7DD3FC" font-weight="700">P2</text><text x="35" y="70" fill="#94A3B8">· A0H · Port 2 (High Address bus)</text>
+      <text x="0" y="96" fill="#7DD3FC" font-weight="700">P3</text><text x="35" y="96" fill="#94A3B8">· B0H · Port 3 (Multi-function)</text>
+    </g>
+    <text x="12" y="152" fill="#38BDF8" font-size="7.5" font-style="italic">All 4 Ports are bit-addressable</text>
+  </g>
+
+  <!-- 3. Timers / Counters (Emerald) -->
+  <g transform="translate(540, 75)" filter="url(#shadow-groups)">
+    <rect width="230" height="170" rx="6" fill="#131B2A" stroke="#059669" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="rgba(5, 150, 105, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#34D399" />
+    <text x="30" y="17" fill="#6EE7B7" font-size="8.5" font-weight="700" letter-spacing="0.04em">TIMERS / COUNTERS (6)</text>
+
+    <g transform="translate(12, 36)" font-family="'IBM Plex Mono', monospace" font-size="8">
+      <text x="0" y="14" fill="#A7F3D0" font-weight="700">TCON</text><text x="45" y="14" fill="#94A3B8">· 88H · Timer Control (Run/Flags)</text>
+      <text x="0" y="34" fill="#A7F3D0" font-weight="700">TMOD</text><text x="45" y="34" fill="#94A3B8">· 89H · Timer Mode Configuration</text>
+      <text x="0" y="54" fill="#A7F3D0" font-weight="700">TL0</text><text x="45" y="54" fill="#94A3B8">· 8AH · Timer 0 Low Byte</text>
+      <text x="0" y="74" fill="#A7F3D0" font-weight="700">TH0</text><text x="45" y="74" fill="#94A3B8">· 8BH · Timer 0 High Byte</text>
+      <text x="0" y="94" fill="#A7F3D0" font-weight="700">TL1</text><text x="45" y="94" fill="#94A3B8">· 8CH · Timer 1 Low Byte</text>
+      <text x="0" y="114" fill="#A7F3D0" font-weight="700">TH1</text><text x="45" y="114" fill="#94A3B8">· 8DH · Timer 1 High Byte</text>
+    </g>
+  </g>
+
+  <!-- 4. Serial Communication (Violet) -->
+  <g transform="translate(30, 265)" filter="url(#shadow-groups)">
+    <rect width="230" height="155" rx="6" fill="#131B2A" stroke="#7C3AED" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="rgba(124, 58, 237, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#A78BFA" />
+    <text x="30" y="17" fill="#C4B5FD" font-size="8.5" font-weight="700" letter-spacing="0.04em">SERIAL INTERFACE (2)</text>
+
+    <g transform="translate(12, 38)" font-family="'IBM Plex Mono', monospace" font-size="8">
+      <text x="0" y="18" fill="#DDD6FE" font-weight="700">SCON</text><text x="45" y="18" fill="#94A3B8">· 98H · Serial Port Control</text>
+      <text x="0" y="48" fill="#DDD6FE" font-weight="700">SBUF</text><text x="45" y="48" fill="#94A3B8">· 99H · Serial Data Buffer</text>
+    </g>
+    <text x="12" y="115" fill="#94A3B8" font-size="7.5" font-family="'DM Sans', sans-serif">SBUF is dual-mapped: write to transmit, read to receive. SCON is bit-addressable.</text>
+  </g>
+
+  <!-- 5. Interrupt System (Rose) -->
+  <g transform="translate(285, 265)" filter="url(#shadow-groups)">
+    <rect width="230" height="155" rx="6" fill="#131B2A" stroke="#E11D48" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="rgba(225, 29, 72, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#FB7185" />
+    <text x="30" y="17" fill="#FDA4AF" font-size="8.5" font-weight="700" letter-spacing="0.04em">INTERRUPT SYSTEM (2)</text>
+
+    <g transform="translate(12, 38)" font-family="'IBM Plex Mono', monospace" font-size="8">
+      <text x="0" y="18" fill="#FECDD3" font-weight="700">IE</text><text x="35" y="18" fill="#94A3B8">· A8H · Interrupt Enable</text>
+      <text x="0" y="48" fill="#FECDD3" font-weight="700">IP</text><text x="35" y="48" fill="#94A3B8">· B8H · Interrupt Priority</text>
+    </g>
+    <text x="12" y="115" fill="#94A3B8" font-size="7.5" font-family="'DM Sans', sans-serif">Controls 5 classic interrupt sources: INT0, Timer 0, INT1, Timer 1, Serial. Both bit-addressable.</text>
+  </g>
+
+  <!-- 6. Power & System Control (Indigo) -->
+  <g transform="translate(540, 265)" filter="url(#shadow-groups)">
+    <rect width="230" height="155" rx="6" fill="#131B2A" stroke="#4F46E5" stroke-width="1.2" />
+    <rect width="230" height="26" rx="6" fill="rgba(79, 70, 229, 0.15)" />
+    <circle cx="15" cy="13" r="3.5" fill="#818CF8" />
+    <text x="30" y="17" fill="#A5B4FC" font-size="8.5" font-weight="700" letter-spacing="0.04em">POWER CONTROL (1)</text>
+
+    <g transform="translate(12, 38)" font-family="'IBM Plex Mono', monospace" font-size="8">
+      <text x="0" y="18" fill="#C7D2FE" font-weight="700">PCON</text><text x="45" y="18" fill="#94A3B8">· 87H · Power Control</text>
+    </g>
+    <text x="12" y="85" fill="#94A3B8" font-size="7.5" font-family="'DM Sans', sans-serif">Holds SMOD (baud rate doubler bit), and power-down/idle bits (in CMOS 80C51 derivatives). Not bit-addressable.</text>
+    <text x="12" y="132" fill="#E2E8F0" font-size="7.5" font-weight="600" font-family="'DM Sans', sans-serif">Total Classic SFRs = 21 Registers</text>
+  </g>
+</svg>

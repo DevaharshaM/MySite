@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <marker id="synth-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+  </defs>
+
+  <!-- Title & Subtitle -->
+  <text x="450" y="42" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">WHERE SOFTWARE TOUCHES HARDWARE</text>
+  <text x="450" y="68" text-anchor="middle" fill="#94A3B8" font-size="13">The unbroken chain of causality connecting abstract code to physical reality</text>
+
+  <!-- HORIZONTAL 6-STAGE CHAIN -->
+  <!-- STAGE 1: SOFTWARE -->
+  <g transform="translate(40, 110)">
+    <rect width="115" height="180" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+    <rect width="115" height="30" rx="8" fill="#334155" />
+    <text x="57" y="20" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">1. SOFTWARE</text>
+    <text x="57" y="65" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">Firmware Logic</text>
+    <text x="57" y="90" text-anchor="middle" fill="#94A3B8" font-size="10">High-level intent</text>
+    <text x="57" y="110" text-anchor="middle" fill="#94A3B8" font-size="10">Control loop</text>
+    <text x="57" y="130" text-anchor="middle" fill="#94A3B8" font-size="10">State machine</text>
+    <text x="57" y="160" text-anchor="middle" fill="#64748B" font-family="'IBM Plex Mono', monospace" font-size="10">"Turn on LED"</text>
+  </g>
+
+  <!-- ARROW 1 -->
+  <line x1="160" y1="200" x2="185" y2="200" stroke="#38BDF8" stroke-width="2" marker-end="url(#synth-arrow)" />
+
+  <!-- STAGE 2: INSTRUCTION -->
+  <g transform="translate(190, 110)">
+    <rect width="115" height="180" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+    <rect width="115" height="30" rx="8" fill="#334155" />
+    <text x="57" y="20" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">2. INSTRUCTION</text>
+    <text x="57" y="65" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">Opcode Exec</text>
+    <text x="57" y="95" text-anchor="middle" fill="#CBD5E1" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600">MOV 90H, #01H</text>
+    <text x="57" y="125" text-anchor="middle" fill="#94A3B8" font-size="10">Decoded by</text>
+    <text x="57" y="142" text-anchor="middle" fill="#94A3B8" font-size="10">instruction register</text>
+    <text x="57" y="160" text-anchor="middle" fill="#64748B" font-size="10">&amp; CPU sequencer</text>
+  </g>
+
+  <!-- ARROW 2 -->
+  <line x1="310" y1="200" x2="335" y2="200" stroke="#38BDF8" stroke-width="2" marker-end="url(#synth-arrow)" />
+
+  <!-- STAGE 3: ADDRESS / BUS -->
+  <g transform="translate(340, 110)">
+    <rect width="115" height="180" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+    <rect width="115" height="30" rx="8" fill="#334155" />
+    <text x="57" y="20" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">3. ADDRESS</text>
+    <text x="57" y="65" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">Bus Strobe</text>
+    <text x="57" y="95" text-anchor="middle" fill="#F59E0B" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">90H</text>
+    <text x="57" y="125" text-anchor="middle" fill="#94A3B8" font-size="10">Address decoder</text>
+    <text x="57" y="142" text-anchor="middle" fill="#94A3B8" font-size="10">asserts specific</text>
+    <text x="57" y="160" text-anchor="middle" fill="#94A3B8" font-size="10">SFR write line</text>
+  </g>
+
+  <!-- ARROW 3 -->
+  <line x1="460" y1="200" x2="485" y2="200" stroke="#38BDF8" stroke-width="2" marker-end="url(#synth-arrow)" />
+
+  <!-- STAGE 4: SFR -->
+  <g transform="translate(490, 110)">
+    <rect width="115" height="180" rx="8" fill="#1E293B" stroke="#2563EB" stroke-width="1.5" />
+    <rect width="115" height="30" rx="8" fill="#1D4ED8" />
+    <text x="57" y="20" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">4. SFR</text>
+    <text x="57" y="65" text-anchor="middle" fill="#60A5FA" font-size="12" font-weight="600">Control Latch</text>
+    <text x="57" y="95" text-anchor="middle" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="12" font-weight="700">P1 (PORT 1)</text>
+    <text x="57" y="125" text-anchor="middle" fill="#94A3B8" font-size="10">Latches data byte</text>
+    <text x="57" y="142" text-anchor="middle" fill="#94A3B8" font-size="10">0000 0001b into</text>
+    <text x="57" y="160" text-anchor="middle" fill="#94A3B8" font-size="10">hardware flip-flops</text>
+  </g>
+
+  <!-- ARROW 4 -->
+  <line x1="610" y1="200" x2="635" y2="200" stroke="#38BDF8" stroke-width="2" marker-end="url(#synth-arrow)" />
+
+  <!-- STAGE 5: HARDWARE -->
+  <g transform="translate(640, 110)">
+    <rect width="115" height="180" rx="8" fill="#1E293B" stroke="#059669" stroke-width="1.5" />
+    <rect width="115" height="30" rx="8" fill="#047857" />
+    <text x="57" y="20" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">5. HARDWARE</text>
+    <text x="57" y="65" text-anchor="middle" fill="#34D399" font-size="12" font-weight="600">Pin Drivers</text>
+    <text x="57" y="95" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="600">FET Transistors</text>
+    <text x="57" y="125" text-anchor="middle" fill="#94A3B8" font-size="10">Switches pull-up</text>
+    <text x="57" y="142" text-anchor="middle" fill="#94A3B8" font-size="10">FET network on</text>
+    <text x="57" y="160" text-anchor="middle" fill="#94A3B8" font-size="10">Pin 1 (P1.0)</text>
+  </g>
+
+  <!-- ARROW 5 -->
+  <line x1="760" y1="200" x2="785" y2="200" stroke="#38BDF8" stroke-width="2" marker-end="url(#synth-arrow)" />
+
+  <!-- STAGE 6: PHYSICAL WORLD -->
+  <g transform="translate(790, 110)">
+    <rect width="90" height="180" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+    <rect width="90" height="30" rx="8" fill="#059669" />
+    <text x="45" y="20" text-anchor="middle" fill="#F8FAFC" font-size="10" font-weight="700">6. WORLD</text>
+    <text x="45" y="65" text-anchor="middle" fill="#A7F3D0" font-size="12" font-weight="700">Reality</text>
+    <text x="45" y="95" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="13" font-weight="700">HIGH</text>
+    <text x="45" y="125" text-anchor="middle" fill="#A7F3D0" font-size="10">Current flows</text>
+    <text x="45" y="142" text-anchor="middle" fill="#A7F3D0" font-size="10">LED turns ON</text>
+    <text x="45" y="160" text-anchor="middle" fill="#A7F3D0" font-size="10">Physics responds</text>
+  </g>
+
+  <!-- BOTTOM SUMMARY CARD -->
+  <g transform="translate(40, 325)">
+    <rect width="840" height="115" rx="8" fill="rgba(15, 23, 42, 0.7)" stroke="#334155" stroke-width="1" />
+    <text x="420" y="32" text-anchor="middle" fill="#E2E8F0" font-size="13" font-weight="700">THE ESSENCE OF SPECIAL FUNCTION REGISTERS</text>
+    <text x="420" y="60" text-anchor="middle" fill="#94A3B8" font-size="12">An address in the 8051 is not simply an abstract number for storing and fetching variables.</text>
+    <text x="420" y="82" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">The architecture gives addresses meaning — transforming numerical byte transfers into physical action.</text>
+  </g>
+</svg>

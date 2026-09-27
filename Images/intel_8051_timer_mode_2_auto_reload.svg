@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 410" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="m2-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="m2-reload" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="m2-overflow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">MODE 2 &#8212; THE 8-BIT AUTO-RELOAD ARCHITECTURE</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">TLx acts as the active counter while THx holds the permanent reload value in silicon</text>
+
+  <!-- ARCHITECTURE DIAGRAM -->
+  <g transform="translate(60, 85)">
+    <!-- 1. THx RELOAD VALUE HOLDER (UPPER BLOCK) -->
+    <g transform="translate(230, 10)">
+      <rect width="320" height="95" rx="8" fill="url(#cardGrad)" stroke="#10B981" stroke-width="1.8" />
+      <rect width="320" height="26" rx="8" fill="#064E3B" />
+      <text x="160" y="18" text-anchor="middle" fill="#6EE7B7" font-size="11" font-weight="700">THx REGISTER &#8212; PRESERVED RELOAD VALUE</text>
+
+      <rect x="25" y="38" width="270" height="42" rx="4" fill="#064E3B" stroke="#10B981" />
+      <text x="160" y="55" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">Static Storage Latch (Unchanged by Counting)</text>
+      <text x="160" y="70" text-anchor="middle" fill="#A7F3D0" font-family="'IBM Plex Mono', monospace" font-size="10">E.g., TH1 = FDH (for 9600 Baud at 11.0592 MHz)</text>
+    </g>
+
+    <!-- 2. INPUT SOURCE & TRx GATE -->
+    <g transform="translate(0, 155)">
+      <rect width="140" height="110" rx="8" fill="url(#cardGrad)" stroke="#334155" stroke-width="1.5" />
+      <rect width="140" height="26" rx="8" fill="#1E293B" />
+      <text x="70" y="18" text-anchor="middle" fill="#94A3B8" font-size="10" font-weight="700">INPUT SOURCE</text>
+      <text x="70" y="52" text-anchor="middle" fill="#38BDF8" font-size="11" font-weight="600">Osc &#247; 12</text>
+      <text x="70" y="66" text-anchor="middle" fill="#64748B" font-size="10">or Pin Tx Pulses</text>
+      <circle cx="70" cy="88" r="9" fill="#0F172A" stroke="#10B981" stroke-width="1.5" />
+      <text x="70" y="91" text-anchor="middle" fill="#10B981" font-family="'IBM Plex Mono', monospace" font-size="7">TRx</text>
+    </g>
+
+    <!-- Arrow from Input to TLx -->
+    <line x1="145" y1="210" x2="220" y2="210" stroke="#38BDF8" stroke-width="2" marker-end="url(#m2-arrow)" />
+
+    <!-- 3. TLx LIVE COUNTING REGISTER (LOWER BLOCK) -->
+    <g transform="translate(230, 155)">
+      <rect width="320" height="110" rx="8" fill="url(#cardGrad)" stroke="#38BDF8" stroke-width="1.8" />
+      <rect width="320" height="26" rx="8" fill="#0C4A6E" />
+      <text x="160" y="18" text-anchor="middle" fill="#7DD3FC" font-size="11" font-weight="700">TLx REGISTER &#8212; ACTIVE 8-BIT COUNTER</text>
+
+      <g transform="translate(25, 38)">
+        <rect width="270" height="42" rx="4" fill="#0369A1" stroke="#38BDF8" stroke-width="1.5" />
+        <text x="135" y="22" text-anchor="middle" fill="#FFFFFF" font-size="11" font-weight="700">Live Counter: Increments [THx Value] &#8594; FFH</text>
+        <text x="135" y="36" text-anchor="middle" fill="#BAE6FD" font-family="'IBM Plex Mono', monospace" font-size="10">Reaches ceiling at FFH &#8594; rolls to 00H</text>
+      </g>
+      <text x="160" y="98" text-anchor="middle" fill="#94A3B8" font-size="10">Capacity: 1 to 256 clock machine cycles</text>
+    </g>
+
+    <!-- 4. HARDWARE AUTO-RELOAD PATH (DOWNWARD ARROW FROM THx TO TLx) -->
+    <path d="M 390 110 L 390 145" fill="none" stroke="#10B981" stroke-width="2.5" marker-end="url(#m2-reload)" />
+    <rect x="290" y="118" width="200" height="20" rx="3" fill="#064E3B" stroke="#10B981" />
+    <text x="390" y="132" text-anchor="middle" fill="#A7F3D0" font-size="9" font-weight="700">SILICON AUTO-RELOAD (TLx &#8592; THx)</text>
+
+    <!-- 5. OVERFLOW OUTPUT PATH (TO TFx AND OUTSIDE) -->
+    <path d="M 555 210 L 650 210" fill="none" stroke="#F59E0B" stroke-width="2" marker-end="url(#m2-overflow)" />
+    <text x="600" y="200" text-anchor="middle" fill="#F59E0B" font-size="9" font-weight="700">FFH &#8594; 00H</text>
+
+    <!-- 6. OVERFLOW FLAG TFx -->
+    <g transform="translate(660, 155)">
+      <rect width="160" height="110" rx="8" fill="url(#cardGrad)" stroke="#F59E0B" stroke-width="1.5" />
+      <rect width="160" height="26" rx="8" fill="#78350F" />
+      <text x="80" y="18" text-anchor="middle" fill="#FDE68A" font-size="10" font-weight="700">TFx FLAG (TCON)</text>
+
+      <text x="80" y="55" text-anchor="middle" fill="#F59E0B" font-size="14" font-weight="700">TFx = 1</text>
+      <text x="80" y="72" text-anchor="middle" fill="#CBD5E1" font-size="10">Alerts CPU / ISR</text>
+      <rect x="15" y="82" width="130" height="20" rx="3" fill="#0F172A" />
+      <text x="80" y="96" text-anchor="middle" fill="#94A3B8" font-size="9">Or Drives Serial Clock</text>
+    </g>
+  </g>
+
+  <!-- Bottom Explanatory Banner -->
+  <g transform="translate(40, 335)">
+    <rect width="860" height="60" rx="6" fill="#1E293B" stroke="#334155" />
+    <text x="25" y="24" fill="#34D399" font-size="11" font-weight="700">THE ESSENCE OF AUTO-RELOAD &#8212; ZERO JITTER, ZERO CPU OVERHEAD</text>
+    <text x="25" y="44" fill="#CBD5E1" font-size="11">In Mode 1, software had to reload THx:TLx after every overflow, introducing interrupt latency and timing jitter. In Mode 2, dedicated silicon transfers the THx value into TLx on the exact clock edge of the overflow. The timer never stops, never misses a cycle, and never stutters.</text>
+  </g>
+</svg>

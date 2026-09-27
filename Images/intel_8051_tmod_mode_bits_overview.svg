@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 430" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <marker id="arr-sky" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="arr-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="36" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">THE TMOD MODE SELECTOR</text>
+  <text x="470" y="60" text-anchor="middle" fill="#94A3B8" font-size="13">Two bits in TMOD determine the internal hardware topology of each timer</text>
+
+  <!-- TMOD REGISTER ROW -->
+  <g transform="translate(130, 85)">
+    <rect width="680" height="74" rx="8" fill="url(#bgGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect width="680" height="24" rx="8" fill="#1E293B" />
+    <text x="340" y="17" text-anchor="middle" fill="#94A3B8" font-size="11" font-weight="700" letter-spacing="0.05em">TMOD (89H) &#8212; 8-BIT MODE REGISTER</text>
+
+    <!-- 8 Bit cells: Timer 1 (Bits 7..4) and Timer 0 (Bits 3..0) -->
+    <!-- Bit 7: GATE -->
+    <rect x="20" y="32" width="75" height="32" rx="4" fill="#0F172A" stroke="#334155" />
+    <text x="57" y="47" text-anchor="middle" fill="#64748B" font-size="9" font-weight="600">Bit 7</text>
+    <text x="57" y="59" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="10">GATE</text>
+
+    <!-- Bit 6: C/T -->
+    <rect x="100" y="32" width="75" height="32" rx="4" fill="#0F172A" stroke="#334155" />
+    <text x="137" y="47" text-anchor="middle" fill="#64748B" font-size="9" font-weight="600">Bit 6</text>
+    <text x="137" y="59" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="10">C/T</text>
+
+    <!-- Bit 5: M1 -->
+    <rect x="180" y="32" width="75" height="32" rx="4" fill="#1E1B4B" stroke="#6366F1" stroke-width="1.5" />
+    <text x="217" y="47" text-anchor="middle" fill="#A5B4FC" font-size="9" font-weight="700">Bit 5</text>
+    <text x="217" y="59" text-anchor="middle" fill="#C7D2FE" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700">M1</text>
+
+    <!-- Bit 4: M0 -->
+    <rect x="260" y="32" width="75" height="32" rx="4" fill="#1E1B4B" stroke="#6366F1" stroke-width="1.5" />
+    <text x="297" y="47" text-anchor="middle" fill="#A5B4FC" font-size="9" font-weight="700">Bit 4</text>
+    <text x="297" y="59" text-anchor="middle" fill="#C7D2FE" font-family="'IBM Plex Mono', monospace" font-size="10" font-weight="700">M0</text>
+
+    <!-- Divider -->
+    <line x1="345" y1="28" x2="345" y2="70" stroke="#475569" stroke-width="1.5" stroke-dasharray="3,3" />
+
+    <!-- Bit 3: GATE -->
+    <rect x="355" y="32" width="75" height="32" rx="4" fill="#0F172A" stroke="#334155" />
+    <text x="392" y="47" text-anchor="middle" fill="#64748B" font-size="9" font-weight="600">Bit 3</text>
+    <text x="392" y="59" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="10">GATE</text>
+
+    <!-- Bit 2: C/T -->
+    <rect x="435" y="32" width="75" height="32" rx="4" fill="#0F172A" stroke="#334155" />
+    <text x="472" y="47" text-anchor="middle" fill="#64748B" font-size="9" font-weight="600">Bit 2</text>
+    <text x="472" y="59" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="10">C/T</text>
+
+    <!-- Bit 1: M1 (Highlighted) -->
+    <rect x="515" y="32" width="75" height="32" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.8" />
+    <text x="552" y="47" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="700">Bit 1</text>
+    <text x="552" y="59" text-anchor="middle" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="700">M1</text>
+
+    <!-- Bit 0: M0 (Highlighted) -->
+    <rect x="595" y="32" width="75" height="32" rx="4" fill="#0C4A6E" stroke="#38BDF8" stroke-width="1.8" />
+    <text x="632" y="47" text-anchor="middle" fill="#7DD3FC" font-size="9" font-weight="700">Bit 0</text>
+    <text x="632" y="59" text-anchor="middle" fill="#38BDF8" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="700">M0</text>
+  </g>
+
+  <!-- Labels under Timer 1 and Timer 0 groups -->
+  <text x="290" y="174" text-anchor="middle" fill="#818CF8" font-size="11" font-weight="600">&#9650; Timer 1 Mode Controls</text>
+  <text x="650" y="174" text-anchor="middle" fill="#38BDF8" font-size="11" font-weight="600">&#9650; Timer 0 Mode Controls (Active Focus)</text>
+
+  <!-- BUS STEERING ARROWS TO 4 HARDWARE MODES -->
+  <path d="M 590 190 L 590 205 L 125 205 L 125 235" fill="none" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr-sky)" />
+  <path d="M 590 190 L 590 205 L 355 205 L 355 235" fill="none" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr-sky)" />
+  <path d="M 590 190 L 590 205 L 585 205 L 585 235" fill="none" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr-sky)" />
+  <path d="M 590 190 L 590 205 L 815 205 L 815 235" fill="none" stroke="#64748B" stroke-width="1.5" marker-end="url(#arr-sky)" />
+
+  <!-- 4 MODE CARDS -->
+  <!-- CARD 0: Mode 0 (13-bit) -->
+  <g transform="translate(25, 245)">
+    <rect width="200" height="155" rx="8" fill="url(#bgGrad)" stroke="#334155" stroke-width="1.5" />
+    <rect width="200" height="30" rx="8" fill="#1E293B" />
+    <text x="100" y="20" text-anchor="middle" fill="#F8FAFC" font-size="12" font-weight="700">MODE 0 (0 0)</text>
+    <text x="100" y="55" text-anchor="middle" fill="#38BDF8" font-size="13" font-weight="600">13-Bit Counter</text>
+    <text x="100" y="78" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">THx (8b) + TLx (5b)</text>
+    <text x="100" y="102" text-anchor="middle" fill="#E2E8F0" font-size="11">0000H &#8594; 1FFFH</text>
+    <text x="100" y="122" text-anchor="middle" fill="#64748B" font-size="10">8,192 max counts</text>
+    <rect x="25" y="132" width="150" height="15" rx="3" fill="#0F172A" />
+    <text x="100" y="143" text-anchor="middle" fill="#94A3B8" font-size="9">MCS-48 Compatibility</text>
+  </g>
+
+  <!-- CARD 1: Mode 1 (16-bit) -->
+  <g transform="translate(255, 245)">
+    <rect width="200" height="155" rx="8" fill="url(#bgGrad)" stroke="#38BDF8" stroke-width="1.8" />
+    <rect width="200" height="30" rx="8" fill="#0C4A6E" />
+    <text x="100" y="20" text-anchor="middle" fill="#7DD3FC" font-size="12" font-weight="700">MODE 1 (0 1)</text>
+    <text x="100" y="55" text-anchor="middle" fill="#38BDF8" font-size="13" font-weight="600">16-Bit Counter</text>
+    <text x="100" y="78" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">THx (8b) : TLx (8b)</text>
+    <text x="100" y="102" text-anchor="middle" fill="#E2E8F0" font-size="11">0000H &#8594; FFFFH</text>
+    <text x="100" y="122" text-anchor="middle" fill="#64748B" font-size="10">65,536 max counts</text>
+    <rect x="25" y="132" width="150" height="15" rx="3" fill="#0F172A" />
+    <text x="100" y="143" text-anchor="middle" fill="#38BDF8" font-size="9">General Purpose Timing</text>
+  </g>
+
+  <!-- CARD 2: Mode 2 (8-bit Auto-reload) -->
+  <g transform="translate(485, 245)">
+    <rect width="200" height="155" rx="8" fill="url(#bgGrad)" stroke="#10B981" stroke-width="1.8" />
+    <rect width="200" height="30" rx="8" fill="#064E3B" />
+    <text x="100" y="20" text-anchor="middle" fill="#6EE7B7" font-size="12" font-weight="700">MODE 2 (1 0)</text>
+    <text x="100" y="55" text-anchor="middle" fill="#34D399" font-size="13" font-weight="600">8-Bit Auto-Reload</text>
+    <text x="100" y="78" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">TLx counts &#8226; THx reloads</text>
+    <text x="100" y="102" text-anchor="middle" fill="#E2E8F0" font-size="11">TLx &#8592; THx on overflow</text>
+    <text x="100" y="122" text-anchor="middle" fill="#64748B" font-size="10">1 to 256 exact ticks</text>
+    <rect x="25" y="132" width="150" height="15" rx="3" fill="#0F172A" />
+    <text x="100" y="143" text-anchor="middle" fill="#34D399" font-size="9">Baud Rates &amp; PWM</text>
+  </g>
+
+  <!-- CARD 3: Mode 3 (Split Timer) -->
+  <g transform="translate(715, 245)">
+    <rect width="200" height="155" rx="8" fill="url(#bgGrad)" stroke="#F59E0B" stroke-width="1.8" />
+    <rect width="200" height="30" rx="8" fill="#78350F" />
+    <text x="100" y="20" text-anchor="middle" fill="#FDE68A" font-size="12" font-weight="700">MODE 3 (1 1)</text>
+    <text x="100" y="55" text-anchor="middle" fill="#FBBF24" font-size="13" font-weight="600">Split Timer 0</text>
+    <text x="100" y="78" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">Two 8-Bit Timers</text>
+    <text x="100" y="102" text-anchor="middle" fill="#E2E8F0" font-size="11">TL0 (TR0) + TH0 (TR1)</text>
+    <text x="100" y="122" text-anchor="middle" fill="#64748B" font-size="10">Timer 1 runs uninhibited</text>
+    <rect x="25" y="132" width="150" height="15" rx="3" fill="#0F172A" />
+    <text x="100" y="143" text-anchor="middle" fill="#FBBF24" font-size="9">Extra Timer + Baud Gen</text>
+  </g>
+</svg>

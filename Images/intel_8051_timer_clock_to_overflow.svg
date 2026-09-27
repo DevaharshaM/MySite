@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="100%" height="100%" style="background:#0B1120; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <marker id="t-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+    </marker>
+    <marker id="t-overflow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#F8FAFC" font-size="20" font-weight="700" letter-spacing="0.05em">THE 8051 CLOCK-TO-OVERFLOW PIPELINE</text>
+  <text x="450" y="62" text-anchor="middle" fill="#94A3B8" font-size="13">From oscillator rhythm to hardware flag in the 8051 architecture</text>
+
+  <!-- STAGES -->
+  <g transform="translate(40, 95)">
+    <!-- 1. CRYSTAL OSCILLATOR -->
+    <g transform="translate(0, 30)">
+      <rect width="140" height="130" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+      <rect width="140" height="28" rx="8" fill="#334155" />
+      <text x="70" y="19" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">1. OSCILLATOR</text>
+      <text x="70" y="58" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">Crystal Clock</text>
+      <text x="70" y="78" text-anchor="middle" fill="#94A3B8" font-family="'IBM Plex Mono', monospace" font-size="11">12 MHz</text>
+      <path d="M 25 108 Q 40 92 55 108 T 85 108 T 115 108" fill="none" stroke="#38BDF8" stroke-width="1.5" />
+      <text x="70" y="125" text-anchor="middle" fill="#64748B" font-size="9">Continuous rhythm</text>
+    </g>
+
+    <!-- ARROW 1 -->
+    <line x1="145" y1="95" x2="175" y2="95" stroke="#38BDF8" stroke-width="2" marker-end="url(#t-arrow)" />
+
+    <!-- 2. PRESCALER (DIVIDE BY 12) -->
+    <g transform="translate(180, 30)">
+      <rect width="130" height="130" rx="8" fill="#1E293B" stroke="#475569" stroke-width="1.5" />
+      <rect width="130" height="28" rx="8" fill="#334155" />
+      <text x="65" y="19" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">2. PRESCALER</text>
+      <text x="65" y="58" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">Divide by 12</text>
+      <text x="65" y="78" text-anchor="middle" fill="#94A3B8" font-size="10">1 Machine Cycle</text>
+      <text x="65" y="98" text-anchor="middle" fill="#E2E8F0" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600">= 1 &#181;s tick</text>
+      <text x="65" y="122" text-anchor="middle" fill="#64748B" font-size="9">(at 12 MHz xtal)</text>
+    </g>
+
+    <!-- ARROW 2 -->
+    <line x1="315" y1="95" x2="345" y2="95" stroke="#38BDF8" stroke-width="2" marker-end="url(#t-arrow)" />
+
+    <!-- 3. RUN GATE (TR0) -->
+    <g transform="translate(350, 30)">
+      <rect width="120" height="130" rx="8" fill="#1E293B" stroke="#2563EB" stroke-width="1.5" />
+      <rect width="120" height="28" rx="8" fill="#1D4ED8" />
+      <text x="60" y="19" text-anchor="middle" fill="#F8FAFC" font-size="11" font-weight="700">3. RUN GATE</text>
+      <text x="60" y="58" text-anchor="middle" fill="#60A5FA" font-size="12" font-weight="600">TR0 Bit</text>
+      <text x="60" y="78" text-anchor="middle" fill="#93C5FD" font-family="'IBM Plex Mono', monospace" font-size="11">TCON.4 (8CH)</text>
+      <circle cx="60" cy="102" r="12" fill="#0F172A" stroke="#38BDF8" stroke-width="1.5" />
+      <line x1="52" y1="108" x2="68" y2="96" stroke="#10B981" stroke-width="2" />
+      <text x="60" y="125" text-anchor="middle" fill="#94A3B8" font-size="9">SETB TR0</text>
+    </g>
+
+    <!-- ARROW 3 -->
+    <line x1="475" y1="95" x2="505" y2="95" stroke="#38BDF8" stroke-width="2" marker-end="url(#t-arrow)" />
+
+    <!-- 4. 16-BIT COUNTER (TH0:TL0) -->
+    <g transform="translate(510, 20)">
+      <rect width="170" height="150" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5" />
+      <rect width="170" height="28" rx="8" fill="#064E3B" />
+      <text x="85" y="19" text-anchor="middle" fill="#34D399" font-size="11" font-weight="700">4. 16-BIT COUNTER</text>
+      
+      <!-- Registers -->
+      <rect x="15" y="42" width="65" height="42" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="47" y="58" text-anchor="middle" fill="#94A3B8" font-size="10">TL0</text>
+      <text x="47" y="76" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600">8AH</text>
+
+      <rect x="90" y="42" width="65" height="42" rx="4" fill="#0F172A" stroke="#334155" />
+      <text x="122" y="58" text-anchor="middle" fill="#94A3B8" font-size="10">TH0</text>
+      <text x="122" y="76" text-anchor="middle" fill="#34D399" font-family="'IBM Plex Mono', monospace" font-size="11" font-weight="600">8CH</text>
+
+      <text x="85" y="108" text-anchor="middle" fill="#CBD5E1" font-size="11">Increments every tick</text>
+      <text x="85" y="128" text-anchor="middle" fill="#6EE7B7" font-family="'IBM Plex Mono', monospace" font-size="10">0000H &#8594; FFFFH</text>
+      <text x="85" y="145" text-anchor="middle" fill="#94A3B8" font-size="9">Up to 65,536 counts</text>
+    </g>
+
+    <!-- ARROW 4 (OVERFLOW) -->
+    <line x1="685" y1="95" x2="715" y2="95" stroke="#F59E0B" stroke-width="2.5" marker-end="url(#t-overflow)" />
+
+    <!-- 5. OVERFLOW FLAG (TF0) -->
+    <g transform="translate(720, 30)">
+      <rect width="140" height="130" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" />
+      <rect width="140" height="28" rx="8" fill="#78350F" />
+      <text x="70" y="19" text-anchor="middle" fill="#FCD34D" font-size="11" font-weight="700">5. OVERFLOW EVENT</text>
+      <text x="70" y="58" text-anchor="middle" fill="#F59E0B" font-size="12" font-weight="700">TF0 Flag</text>
+      <text x="70" y="78" text-anchor="middle" fill="#FDE68A" font-family="'IBM Plex Mono', monospace" font-size="11">TCON.5 (8DH) = 1</text>
+      <rect x="15" y="94" width="110" height="26" rx="4" fill="#451A03" stroke="#F59E0B" />
+      <text x="70" y="111" text-anchor="middle" fill="#FDE68A" font-size="10" font-weight="600">CPU Responds (ISR)</text>
+    </g>
+  </g>
+
+  <!-- BOTTOM REFLECTION -->
+  <text x="450" y="320" text-anchor="middle" fill="#94A3B8" font-size="12">A timer does not generate time out of nothing. It counts the continuous machine cycles of the 8051.</text>
+  <text x="450" y="340" text-anchor="middle" fill="#38BDF8" font-size="12" font-weight="600">When the counter overflows, time has become a hardware event.</text>
+</svg>
